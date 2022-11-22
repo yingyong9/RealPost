@@ -1,10 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class WidgetForm extends StatelessWidget {
   const WidgetForm({
     Key? key,
     this.hint,
+    this.hintStyle,
     required this.changeFunc,
     this.controller,
     this.maginTop,
@@ -12,9 +14,12 @@ class WidgetForm extends StatelessWidget {
     this.textStyle,
     this.fillColor,
     this.autoFocus,
+    this.textInputFormatters,
+    this.textInputType,
   }) : super(key: key);
 
   final String? hint;
+  final TextStyle? hintStyle;
   final Function(String) changeFunc;
   final TextEditingController? controller;
   final double? maginTop;
@@ -22,20 +27,25 @@ class WidgetForm extends StatelessWidget {
   final TextStyle? textStyle;
   final Color? fillColor;
   final bool? autoFocus;
+  final List<TextInputFormatter>? textInputFormatters;
+  final TextInputType? textInputType;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: maginTop ?? 0.0),
       width: width,
-      child: TextFormField(
+      child: TextFormField(keyboardType: textInputType,
+        inputFormatters: textInputFormatters,
+        onChanged: changeFunc,
         autofocus: autoFocus ?? false,
         style: textStyle,
-        decoration: InputDecoration(
+        decoration: InputDecoration(hintStyle: hintStyle,
+          hintText: hint,
           filled: true,
           fillColor: fillColor,
-          enabledBorder: OutlineInputBorder(),
-          focusedBorder: OutlineInputBorder(),
+          enabledBorder: const OutlineInputBorder(),
+          focusedBorder: const OutlineInputBorder(),
         ),
       ),
     );

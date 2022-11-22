@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:realpost/states/phone_number.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
-class DisplayName extends StatelessWidget {
+class DisplayName extends StatefulWidget {
   const DisplayName({super.key});
+
+  @override
+  State<DisplayName> createState() => _DisplayNameState();
+}
+
+class _DisplayNameState extends State<DisplayName> {
+  String? displayName;
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +42,19 @@ class DisplayName extends StatelessWidget {
                 textStyle: AppConstant().h1Style(),
                 width: 250,
                 maginTop: 16,
-                changeFunc: (p0) {},
+                changeFunc: (p0) {
+                  displayName = p0.trim();
+                },
               ),
               const Spacer(),
               WidgetButton(
                 width: 250,
                 label: 'ไปต่อ',
-                pressFunc: () {},
+                pressFunc: () {
+                  if (!(displayName?.isEmpty ?? true)) {
+                    Get.off(PhoneNumber(displayName: displayName!));
+                  }
+                },
               )
             ],
           ),
