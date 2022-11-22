@@ -9,6 +9,9 @@ class WidgetForm extends StatelessWidget {
     this.controller,
     this.maginTop,
     this.width,
+    this.textStyle,
+    this.fillColor,
+    this.autoFocus,
   }) : super(key: key);
 
   final String? hint;
@@ -16,6 +19,9 @@ class WidgetForm extends StatelessWidget {
   final TextEditingController? controller;
   final double? maginTop;
   final double? width;
+  final TextStyle? textStyle;
+  final Color? fillColor;
+  final bool? autoFocus;
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +29,11 @@ class WidgetForm extends StatelessWidget {
       margin: EdgeInsets.only(top: maginTop ?? 0.0),
       width: width,
       child: TextFormField(
+        autofocus: autoFocus ?? false,
+        style: textStyle,
         decoration: InputDecoration(
           filled: true,
-          fillColor: Colors.white,
+          fillColor: fillColor,
           enabledBorder: OutlineInputBorder(),
           focusedBorder: OutlineInputBorder(),
         ),
