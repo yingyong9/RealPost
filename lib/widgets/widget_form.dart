@@ -35,12 +35,14 @@ class WidgetForm extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(top: maginTop ?? 0.0),
       width: width,
-      child: TextFormField(keyboardType: textInputType,
+      child: TextFormField(
+        keyboardType: textInputType,
         inputFormatters: textInputFormatters,
         onChanged: changeFunc,
         autofocus: autoFocus ?? false,
         style: textStyle,
-        decoration: InputDecoration(hintStyle: hintStyle,
+        decoration: InputDecoration(
+          hintStyle: hintStyle,
           hintText: hint,
           filled: true,
           fillColor: fillColor,

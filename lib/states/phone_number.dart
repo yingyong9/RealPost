@@ -1,7 +1,8 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:realpost/utility/app_constant.dart';
+import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_text.dart';
@@ -9,10 +10,7 @@ import 'package:realpost/widgets/widget_text.dart';
 class PhoneNumber extends StatefulWidget {
   const PhoneNumber({
     Key? key,
-    required this.displayName,
   }) : super(key: key);
-
-  final String displayName;
 
   @override
   State<PhoneNumber> createState() => _PhoneNumberState();
@@ -20,7 +18,7 @@ class PhoneNumber extends StatefulWidget {
 
 class _PhoneNumberState extends State<PhoneNumber> {
   MaskTextInputFormatter maskTextInputFormatter =
-      MaskTextInputFormatter(mask: '## #### ####');
+      MaskTextInputFormatter(mask: '### ### ####');
 
   String? phonNumber;
 
@@ -33,7 +31,7 @@ class _PhoneNumberState extends State<PhoneNumber> {
         title: WidgetText(
           text: AppConstant.appName,
           textStyle:
-              AppConstant().h2Style(size: 30, color: AppConstant.yellowColor),
+              AppConstant().h2Style(size: 30, color: AppConstant.spcialColor),
         ),
       ),
       body: SafeArea(child:
@@ -49,14 +47,14 @@ class _PhoneNumberState extends State<PhoneNumber> {
               WidgetForm(
                 textInputFormatters: [maskTextInputFormatter],
                 textInputType: TextInputType.phone,
-                hint: '08 1123 4567',
+                hint: '081 123 4567',
                 autoFocus: true,
                 textStyle: AppConstant().h1Style(),
                 hintStyle: AppConstant().h1Style(color: Colors.grey),
                 width: 250,
                 maginTop: 16,
                 changeFunc: (p0) {
-                  // phonNumber = p0.trim();
+                  phonNumber = p0.trim();
                 },
               ),
               const Spacer(),
@@ -72,12 +70,13 @@ class _PhoneNumberState extends State<PhoneNumber> {
                 width: 250,
                 label: 'ไปต่อ',
                 pressFunc: () {
-                  phonNumber = maskTextInputFormatter.getUnmaskedText();
-                  
-                  if ((!(phonNumber?.isEmpty??true)) && (phonNumber!.length == 10)) {
-                    print('phoneNumber ==> $phonNumber');
-                  }
+                  // phonNumber = maskTextInputFormatter.getMaskedText();
 
+                  if ((!(phonNumber?.isEmpty ?? true)) &&
+                      (phonNumber!.length == 12)) {
+                    print('phoneNumber ==> $phonNumber');
+                    AppService().processSentSMS(fullPhoneNumber: phonNumber!);
+                  }
                 },
               )
             ],

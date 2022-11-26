@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 class AppConstant {
   static Color dark = Colors.white;
   static Color bgColor = Colors.black;
-  static Color yellowColor = const Color.fromARGB(255, 210, 228, 106);
+  static Color spcialColor = Colors.white;
 
   static String appName = 'Real Post.';
-  static String pageDisplayName = '/displayName';
+  
+  static String pagePhoneNumber = '/phoneNumber';
+  static String pageMainHome = '/mainHome';
+  
 
   TextStyle h1Style({Color? color, double? size}) {
     return TextStyle(
