@@ -1,10 +1,26 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 
 class WidgetImage extends StatelessWidget {
-  const WidgetImage({super.key});
+  const WidgetImage({
+    Key? key,
+    required this.path,
+    this.size,
+    this.tapFunc,
+  }) : super(key: key);
+
+  final String path;
+  final double? size;
+  final Function()? tapFunc;
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return InkWell(onTap: tapFunc,
+      child: Image.asset(
+        path,
+        width: size,
+        height: size,
+      ),
+    );
   }
 }

@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:realpost/utility/app_constant.dart';
 
 class WidgetForm extends StatelessWidget {
   const WidgetForm({
@@ -46,8 +47,8 @@ class WidgetForm extends StatelessWidget {
           hintText: hint,
           filled: true,
           fillColor: fillColor,
-          enabledBorder: const OutlineInputBorder(),
-          focusedBorder: const OutlineInputBorder(),
+          enabledBorder:  UnderlineInputBorder(borderSide: BorderSide(color: AppConstant.dark)),
+          focusedBorder:  UnderlineInputBorder(borderSide: BorderSide(color: AppConstant.dark)),
         ),
       ),
     );
