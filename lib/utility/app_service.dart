@@ -1,16 +1,34 @@
 // ignore_for_file: avoid_print
 
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/states/display_name.dart';
 import 'package:realpost/states/otp_check.dart';
 import 'package:realpost/utility/app_constant.dart';
 
 class AppService {
+  Future<File?> processTakePhoto({required ImageSource source}) async {
+    File? file;
+
+    var result = await ImagePicker().pickImage(
+      source: source,
+      maxWidth: 800,
+      maxHeight: 800,
+    );
+
+    if (result != null) {
+      file = File(result.path);
+    }
+
+    return file;
+  }
+
   Future<void> processInsertRoom({required RoomModel roomModel}) async {
-   
     await FirebaseFirestore.instance
         .collection('room')
         .doc()
