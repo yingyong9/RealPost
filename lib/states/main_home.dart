@@ -4,6 +4,7 @@ import 'package:realpost/bodys/body_discovery.dart';
 import 'package:realpost/bodys/body_me.dart';
 import 'package:realpost/states/add_room.dart';
 import 'package:realpost/utility/app_constant.dart';
+import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
@@ -33,6 +34,14 @@ class _MainHomeState extends State<MainHome> {
     const BodyDiscovery(),
     const BodyMe(),
   ];
+
+  AppController appController = Get.put(AppController());
+
+  @override
+  void initState() {
+    super.initState();
+    appController.readAllRoom();
+  }
 
   @override
   Widget build(BuildContext context) {

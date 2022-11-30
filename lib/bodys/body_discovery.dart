@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:realpost/utility/app_controller.dart';
@@ -17,7 +19,7 @@ class _BodyDiscoveryState extends State<BodyDiscovery> {
         init: AppController(),
         builder: (AppController appController) {
           print('##27nov roomModels ==> ${appController.roomModels}');
-          return WidgetText(text: 'This is Discovery');
+          return appController.roomModels.isEmpty ? WidgetText(text: 'load') : WidgetText(text: 'This is Discovery') ;
         });
   }
 }

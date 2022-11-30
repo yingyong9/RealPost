@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -51,95 +52,125 @@ class _AddRoomState extends State<AddRoom> {
             builder: (AppController appController) {
               print(
                   'emojiAddRoomChoose ==> ${appController.emojiAddRoomChooses}');
-              return Center(
-                child: Column(
+              return SizedBox(
+                width: boxConstraints.maxWidth,
+                height: boxConstraints.maxHeight,
+                child: Stack(
                   children: [
-                    const Divider(
-                      color: Colors.grey,
-                    ),
-                    WidgetForm(
-                      changeFunc: (p0) {
-                        room = p0.trim();
-                      },
-                      hint: 'กรอก ชื่อที่ คุณต้องการ',
-                      hintStyle: AppConstant().h3Style(
-                        color: AppConstant.grey,
-                        size: 24,
-                      ),
-                      width: 250,
-                      textStyle: AppConstant().h3Style(size: 24),
-                    ),
-                    appController.emojiAddRoomChooses.isEmpty
-                        ? file == null
-                            ? const SizedBox()
-                            : SizedBox(
+                    ListView(
+                      children: [
+                        const Divider(
+                          color: Colors.grey,
+                        ),
+                        WidgetForm(
+                          changeFunc: (p0) {
+                            room = p0.trim();
+                          },
+                          hint: 'กรอก ชื่อที่ คุณต้องการ',
+                          hintStyle: AppConstant().h3Style(
+                            color: AppConstant.grey,
+                            size: 24,
+                          ),
+                          width: 250,
+                          textStyle: AppConstant().h3Style(size: 24),
+                        ),
+                        appController.emojiAddRoomChooses.isEmpty
+                            ? file == null
+                                ? const SizedBox()
+                                : SizedBox(
+                                    width: boxConstraints.maxWidth * 0.75,
+                                    height: boxConstraints.maxWidth * 0.75,
+                                    child: Image.file(file!),
+                                  )
+                            : WidgetImageInternet(
+                                urlImage: appController.emojiAddRoomChooses[0],
                                 width: boxConstraints.maxWidth * 0.75,
                                 height: boxConstraints.maxWidth * 0.75,
-                                child: Image.file(file!),
-                              )
-                        : WidgetImageInternet(
-                            urlImage: appController.emojiAddRoomChooses[0],
-                            width: boxConstraints.maxWidth * 0.75,
-                            height: boxConstraints.maxWidth * 0.75,
-                          ),
-                    const Spacer(),
-                    Container(
-                      decoration: BoxDecoration(
-                          border:
-                              Border(top: BorderSide(color: AppConstant.grey))),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          WidgetTakePhoto(
-                            size: boxConstraints.maxWidth * 0.6,
-                            cameraFunc: () async {
-                              await AppService()
-                                  .processTakePhoto(source: ImageSource.camera)
-                                  .then((value) {
-                                appController.emojiAddRoomChooses.clear();
-                                file = value;
-                                setState(() {});
-                              });
-                            },
-                            galleryFunc: () async {
-                              await AppService()
-                                  .processTakePhoto(source: ImageSource.gallery)
-                                  .then((value) {
-                                appController.emojiAddRoomChooses.clear();
-                                file = value;
-                                setState(() {});
-                              });
-                            },
-                            emojiFunc: () {
-                              AppDialog(context: context).myBottonSheet(
-                                  tapFunc: () {
-                                print('you tab');
-                              });
-                            },
-                          ),
-                          WidgetIconButton(
-                            iconData: Icons.send,
-                            pressFunc: () async {
-                              if (room?.isEmpty ?? true) {
-                                //Have Space
-                              } else {
-                                var user = FirebaseAuth.instance.currentUser;
-                                RoomModel roomModel = RoomModel(
-                                    uidCreate: user!.uid, room: room!);
-                                await AppService()
-                                    .processInsertRoom(roomModel: roomModel)
-                                    .then((value) => Get.back());
-                              }
-                            },
-                          )
-                        ],
-                      ),
-                    )
+                              ),
+                      ],
+                    ),
+                    Positioned(bottom: 0,
+                      child:
+                          controlButton(boxConstraints, appController, context),
+                    ),
                   ],
                 ),
               );
             });
       }),
+    );
+  }
+
+  Widget controlButton(BoxConstraints boxConstraints,
+      AppController appController, BuildContext context) {
+    return Container(width: boxConstraints.maxWidth,
+      padding: Platform.isIOS ? const EdgeInsets.only(bottom: 48) : null,
+      decoration: BoxDecoration(
+          border: Border(top: BorderSide(color: AppConstant.grey))),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          WidgetTakePhoto(
+            size: boxConstraints.maxWidth * 0.6,
+            cameraFunc: () async {
+              await AppService()
+                  .processTakePhoto(source: ImageSource.camera)
+                  .then((value) {
+                appController.emojiAddRoomChooses.clear();
+                file = value;
+                setState(() {});
+              });
+            },
+            galleryFunc: () async {
+              await AppService()
+                  .processTakePhoto(source: ImageSource.gallery)
+                  .then((value) {
+                appController.emojiAddRoomChooses.clear();
+                file = value;
+                setState(() {});
+              });
+            },
+            emojiFunc: () {
+              AppDialog(context: context).myBottonSheet(tapFunc: () {
+                print('you tab');
+              });
+            },
+          ),
+          WidgetIconButton(
+            iconData: Icons.send,
+            pressFunc: () async {
+              if (room?.isEmpty ?? true) {
+                //Have Space
+              } else {
+                var user = FirebaseAuth.instance.currentUser;
+
+                if (file == null) {
+                  //No Photo
+                } else {
+                  //Have Photo
+                  if (appController.emojiAddRoomChooses.isEmpty) {
+                    urlPhoto = await AppService()
+                        .processUploadPhoto(file: file!, path: 'room');
+                  } else {
+                    urlPhoto = appController.emojiAddRoomChooses[0];
+                  }
+                }
+
+                RoomModel roomModel = RoomModel(
+                  uidCreate: user!.uid,
+                  room: room!,
+                  urlRoom: urlPhoto ?? appController.stampModels[0].url,
+                  timestamp: Timestamp.fromDate(DateTime.now()),
+                );
+                print('roomModel ==> ${roomModel.toMap()}');
+                await AppService()
+                    .processInsertRoom(roomModel: roomModel)
+                    .then((value) => Get.back());
+              }
+            },
+          )
+        ],
+      ),
     );
   }
 }
