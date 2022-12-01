@@ -89,7 +89,8 @@ class _AddRoomState extends State<AddRoom> {
                               ),
                       ],
                     ),
-                    Positioned(bottom: 0,
+                    Positioned(
+                      bottom: 0,
                       child:
                           controlButton(boxConstraints, appController, context),
                     ),
@@ -103,7 +104,8 @@ class _AddRoomState extends State<AddRoom> {
 
   Widget controlButton(BoxConstraints boxConstraints,
       AppController appController, BuildContext context) {
-    return Container(width: boxConstraints.maxWidth,
+    return Container(
+      width: boxConstraints.maxWidth,
       padding: Platform.isIOS ? const EdgeInsets.only(bottom: 48) : null,
       decoration: BoxDecoration(
           border: Border(top: BorderSide(color: AppConstant.grey))),
@@ -165,7 +167,10 @@ class _AddRoomState extends State<AddRoom> {
                 print('roomModel ==> ${roomModel.toMap()}');
                 await AppService()
                     .processInsertRoom(roomModel: roomModel)
-                    .then((value) => Get.back());
+                    .then((value) {
+                  appController.readAllRoom();
+                  Get.back();
+                });
               }
             },
           )

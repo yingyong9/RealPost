@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    return GetMaterialApp(debugShowCheckedModeBanner: false,
       title: AppConstant.appName,
       getPages: getPages,
       initialRoute: keyPage,
@@ -48,6 +48,7 @@ class MyApp extends StatelessWidget {
           appBarTheme: AppBarTheme(
             backgroundColor: AppConstant.bgColor,
             foregroundColor: AppConstant.dark,
+            elevation: 0,
           )),
     );
   }

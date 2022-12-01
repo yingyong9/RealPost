@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppConstant {
   static Color dark = Colors.white;
-  static Color bgColor = Colors.black;
+  static Color bgColor = Color.fromARGB(255, 15, 17, 67);
   static Color spcialColor = Colors.white;
   static Color grey = Colors.grey.shade700;
 
@@ -20,11 +20,11 @@ class AppConstant {
     );
   }
 
-  TextStyle h2Style({Color? color, double? size}) {
+  TextStyle h2Style({Color? color, double? size, FontWeight? fontWeight}) {
     return TextStyle(
       fontSize: size ?? 20,
       color: color ?? dark,
-      fontWeight: FontWeight.w700,
+      fontWeight: fontWeight ?? FontWeight.w700,
       fontFamily: 'Sarabun',
     );
   }

@@ -41,7 +41,7 @@ class _PhoneNumberState extends State<PhoneNumber> {
           child: Column(
             children: [
               WidgetText(
-                text: 'เบอร์โทรศัพท์ ที่คุณจะใช้',
+                text: 'เบอร์โทรศัพท์ ของคุณ',
                 textStyle: AppConstant().h2Style(size: 18),
               ),
               WidgetForm(

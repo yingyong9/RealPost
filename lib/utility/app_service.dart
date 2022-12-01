@@ -8,12 +8,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/states/display_name.dart';
 import 'package:realpost/states/otp_check.dart';
 import 'package:realpost/utility/app_constant.dart';
 
 class AppService {
+  String timeStampToString({required Timestamp timestamp, String? newPattern}) {
+    DateFormat dateFormat = DateFormat(newPattern ?? 'dd MMM');
+    String result = dateFormat.format(timestamp.toDate());
+    return result;
+  }
+
   Future<String?> processUploadPhoto(
       {required File file, required String path}) async {
     String? urlPhoto;

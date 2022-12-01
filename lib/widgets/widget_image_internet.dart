@@ -7,11 +7,13 @@ class WidgetImageInternet extends StatelessWidget {
     required this.urlImage,
     this.width,
     this.height,
+    this.boxFit,
   }) : super(key: key);
 
   final String urlImage;
   final double? width;
   final double? height;
+  final BoxFit? boxFit;
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +21,7 @@ class WidgetImageInternet extends StatelessWidget {
       urlImage,
       width: width,
       height: height,
+      fit: boxFit,
     );
   }
 }

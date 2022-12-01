@@ -5,6 +5,7 @@ import 'package:realpost/models/stamp_model.dart';
 
 class AppController extends GetxController {
   RxList<RoomModel> roomModels = <RoomModel>[].obs;
+  RxList<String> docIdRooms = <String>[].obs;
   RxList<StampModel> stampModels = <StampModel>[].obs;
   RxList<String> emojiAddRoomChooses = <String>[].obs;
 
@@ -24,11 +25,17 @@ class AppController extends GetxController {
   Future<void> readAllRoom() async {
     if (roomModels.isNotEmpty) {
       roomModels.clear();
+      docIdRooms.clear();
     }
-    await FirebaseFirestore.instance.collection('room').get().then((value) {
+    await FirebaseFirestore.instance
+        .collection('room')
+        .orderBy('timestamp', descending: true)
+        .get()
+        .then((value) {
       for (var element in value.docs) {
         RoomModel model = RoomModel.fromMap(element.data());
         roomModels.add(model);
+        docIdRooms.add(element.id);
       }
     });
   }

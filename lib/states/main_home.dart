@@ -54,12 +54,16 @@ class _MainHomeState extends State<MainHome> {
             height: boxConstraints.maxHeight,
             child: Stack(
               children: [
-                DefaultTabController(
-                  length: 2,
-                  child: Scaffold(
-                    backgroundColor: AppConstant.bgColor,
-                    appBar: TabBar(tabs: tabs),
-                    body: TabBarView(children: bodys),
+                SizedBox(
+                  width: boxConstraints.maxWidth,
+                  height: boxConstraints.maxHeight - 80,
+                  child: DefaultTabController(
+                    length: 2,
+                    child: Scaffold(
+                      backgroundColor: AppConstant.bgColor,
+                      appBar: TabBar(tabs: tabs),
+                      body: TabBarView(children: bodys),
+                    ),
                   ),
                 ),
                 contentBottom()
