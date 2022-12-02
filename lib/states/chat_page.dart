@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
+import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
@@ -75,7 +76,7 @@ class _ChatPageState extends State<ChatPage> {
                                     children: [
                                       Container(
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 8, vertical: 4),
+                                            horizontal: 16, vertical: 6),
                                         margin: const EdgeInsets.only(top: 8),
                                         decoration:
                                             AppConstant().boxChatLogin(),
@@ -86,7 +87,9 @@ class _ChatPageState extends State<ChatPage> {
                                     ],
                                   ),
                                 ),
-                      contentForm(),
+                      contentForm(
+                          boxConstraints: boxConstraints,
+                          appController: appController),
                     ],
                   ),
                 ),
@@ -96,13 +99,27 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  Column contentForm() {
+  Column contentForm(
+      {required BoxConstraints boxConstraints,
+      required AppController appController}) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        WidgetForm(
-          textStyle: AppConstant().h3Style(),
-          controller: textEditingController,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            WidgetForm(
+              width: boxConstraints.maxWidth - 64,
+              hintStyle: AppConstant().h3Style(color: AppConstant.grey),
+              hint: 'พิมพ์ข้อความ...',
+              textStyle: AppConstant().h3Style(),
+              controller: textEditingController,
+            ),
+            WidgetIconButton(
+              pressFunc: () {},
+              iconData: Icons.attach_file,
+            )
+          ],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -133,16 +150,22 @@ class _ChatPageState extends State<ChatPage> {
                   print('No Text form');
                 } else {
                   print('text = ${textEditingController.text}');
-                  ChatModel chatModel = ChatModel(
-                      message: textEditingController.text,
-                      timestamp: Timestamp.fromDate(DateTime.now()),
-                      uidChat: user!.uid);
-                  AppService()
-                      .processInsertChat(
-                          chatModel: chatModel, docIdRoom: widget.docIdRoom)
-                      .then((value) {
-                    return null;
-                  });
+                  print('userModel => ${appController.userModels[0].toMap()}');
+
+                  if (appController.userModels[0].urlAvatar?.isEmpty ?? true) {
+                    AppDialog(context: context).avatarBottonSheet();
+                  } else {}
+
+                  // ChatModel chatModel = ChatModel(
+                  //     message: textEditingController.text,
+                  //     timestamp: Timestamp.fromDate(DateTime.now()),
+                  //     uidChat: user!.uid);
+                  // AppService()
+                  //     .processInsertChat(
+                  //         chatModel: chatModel, docIdRoom: widget.docIdRoom)
+                  //     .then((value) {
+                  //   return null;
+                  // });
                 }
               },
             ),

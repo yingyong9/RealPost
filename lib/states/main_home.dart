@@ -41,6 +41,7 @@ class _MainHomeState extends State<MainHome> {
   void initState() {
     super.initState();
     appController.readAllRoom();
+    appController.findUserModels();
   }
 
   @override

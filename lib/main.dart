@@ -21,17 +21,21 @@ String? keyPage;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp().then((value) {
-    FirebaseAuth.instance.authStateChanges().listen((event) {
-      if (event == null) {
-        keyPage = AppConstant.pagePhoneNumber;
-        runApp(const MyApp());
-      } else {
-        keyPage = AppConstant.pageMainHome;
-        runApp(const MyApp());
-      }
+
+  if (GetPlatform.isMacOS) {
+  } else {
+    await Firebase.initializeApp().then((value) {
+      FirebaseAuth.instance.authStateChanges().listen((event) {
+        if (event == null) {
+          keyPage = AppConstant.pagePhoneNumber;
+          runApp(const MyApp());
+        } else {
+          keyPage = AppConstant.pageMainHome;
+          runApp(const MyApp());
+        }
+      });
     });
-  });
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -39,7 +43,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(debugShowCheckedModeBanner: false,
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       title: AppConstant.appName,
       getPages: getPages,
       initialRoute: keyPage,

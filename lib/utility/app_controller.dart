@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/stamp_model.dart';
+import 'package:realpost/models/user_model.dart';
 
 class AppController extends GetxController {
   RxList<RoomModel> roomModels = <RoomModel>[].obs;
@@ -11,6 +15,21 @@ class AppController extends GetxController {
   RxList<String> emojiAddRoomChooses = <String>[].obs;
   RxList<ChatModel> chatModels = <ChatModel>[].obs;
   RxBool load = true.obs;
+  RxList<UserModel> userModels = <UserModel>[].obs;
+  RxList<File> fileAvatars = <File>[].obs;
+
+  Future<void> findUserModels() async {
+    userModels.clear();
+    var user = FirebaseAuth.instance.currentUser;
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      UserModel model = UserModel.fromMap(value.data()!);
+      userModels.add(model);
+    });
+  }
 
   Future<void> readAllChat({required String docIdRoom}) async {
     if (chatModels.isNotEmpty) {

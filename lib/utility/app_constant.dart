@@ -15,7 +15,7 @@ class AppConstant {
   BoxDecoration boxChatLogin() {
     return BoxDecoration(
       color: lightColor,
-      borderRadius: BorderRadius.only(topLeft: Radius.circular(10),
+      borderRadius: const BorderRadius.only(topLeft: Radius.circular(10),
         bottomLeft: Radius.circular(10),
         bottomRight: Radius.circular(10),
       ),
@@ -25,7 +25,7 @@ class AppConstant {
   BoxDecoration boxChatGuest() {
     return BoxDecoration(
       color: lightColor,
-      borderRadius: BorderRadius.only(topRight: Radius.circular(10),
+      borderRadius: const BorderRadius.only(topRight: Radius.circular(10),
         bottomLeft: Radius.circular(10),
         bottomRight: Radius.circular(10),
       ),
