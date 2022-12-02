@@ -8,7 +8,7 @@ class WidgetForm extends StatelessWidget {
     Key? key,
     this.hint,
     this.hintStyle,
-    required this.changeFunc,
+    this.changeFunc,
     this.controller,
     this.maginTop,
     this.width,
@@ -21,7 +21,7 @@ class WidgetForm extends StatelessWidget {
 
   final String? hint;
   final TextStyle? hintStyle;
-  final Function(String) changeFunc;
+  final Function(String)? changeFunc;
   final TextEditingController? controller;
   final double? maginTop;
   final double? width;
@@ -37,6 +37,7 @@ class WidgetForm extends StatelessWidget {
       margin: EdgeInsets.only(top: maginTop ?? 0.0),
       width: width,
       child: TextFormField(
+        controller: controller,
         keyboardType: textInputType,
         inputFormatters: textInputFormatters,
         onChanged: changeFunc,
@@ -47,8 +48,10 @@ class WidgetForm extends StatelessWidget {
           hintText: hint,
           filled: true,
           fillColor: fillColor,
-          enabledBorder:  UnderlineInputBorder(borderSide: BorderSide(color: AppConstant.dark)),
-          focusedBorder:  UnderlineInputBorder(borderSide: BorderSide(color: AppConstant.dark)),
+          enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: AppConstant.dark)),
+          focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: AppConstant.dark)),
         ),
       ),
     );

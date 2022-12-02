@@ -26,7 +26,7 @@ class _BodyDiscoveryState extends State<BodyDiscovery> {
       return GetX(
           init: AppController(),
           builder: (AppController appController) {
-            print('##27nov roomModels ==> ${appController.roomModels}');
+            // print('##27nov roomModels ==> ${appController.roomModels}');
             return appController.roomModels.isEmpty
                 ? const WidgetProgress()
                 : ListView.builder(
@@ -36,7 +36,7 @@ class _BodyDiscoveryState extends State<BodyDiscovery> {
                       children: [
                         InkWell(
                           onTap: () {
-                            print('You Tap index = $index');
+                            // print('You Tap index = $index');
                             Get.to( ChatPage(docIdRoom: appController.docIdRooms[index],));
                           },
                           child: Row(

@@ -9,12 +9,24 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/states/display_name.dart';
 import 'package:realpost/states/otp_check.dart';
 import 'package:realpost/utility/app_constant.dart';
 
 class AppService {
+  Future<void> processInsertChat(
+      {required ChatModel chatModel, required String docIdRoom}) async {
+    await FirebaseFirestore.instance
+        .collection('room')
+        .doc(docIdRoom)
+        .collection('chat')
+        .doc()
+        .set(chatModel.toMap())
+        .then((value) => print('Process Insert Chat Success'));
+  }
+
   String timeStampToString({required Timestamp timestamp, String? newPattern}) {
     DateFormat dateFormat = DateFormat(newPattern ?? 'dd MMM');
     String result = dateFormat.format(timestamp.toDate());
