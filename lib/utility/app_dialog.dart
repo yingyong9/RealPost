@@ -18,12 +18,12 @@ class AppDialog {
   });
 
   void avatarBottonSheet() {
-    // AppController appController = Get.put(AppController());
-
     Get.bottomSheet(
       GetX(
           init: AppController(),
           builder: (AppController appController) {
+            print(
+                'at avatarBottonSheet urlAvatarChoose ==> ${appController.urlAvatarChooses}');
             return Container(
               decoration: BoxDecoration(color: AppConstant.bgColor),
               height: 300,
@@ -78,9 +78,7 @@ class AppDialog {
                       WidgetIconButton(
                         iconData: Icons.emoji_emotions,
                         pressFunc: () {
-                          Get.to(EmojiPage())!.then((value) {
-                            
-                          });
+                          Get.to(EmojiPage())!.then((value) {});
                         },
                       ),
                     ],

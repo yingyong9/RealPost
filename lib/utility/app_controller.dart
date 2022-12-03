@@ -17,6 +17,7 @@ class AppController extends GetxController {
   RxBool load = true.obs;
   RxList<UserModel> userModels = <UserModel>[].obs;
   RxList<File> fileAvatars = <File>[].obs;
+  RxList<String> urlAvatarChooses = <String>[].obs;
 
   Future<void> findUserModels() async {
     userModels.clear();
