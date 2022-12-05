@@ -7,10 +7,12 @@ class ChatModel {
   final String message;
   final Timestamp timestamp;
   final String uidChat;
+  final String urlRealPost;
   ChatModel({
     required this.message,
     required this.timestamp,
     required this.uidChat,
+    required this.urlRealPost,
   });
 
   Map<String, dynamic> toMap() {
@@ -18,6 +20,7 @@ class ChatModel {
       'message': message,
       'timestamp': timestamp,
       'uidChat': uidChat,
+      'urlRealPost': urlRealPost,
     };
   }
 
@@ -26,10 +29,12 @@ class ChatModel {
       message: (map['message'] ?? '') as String,
       timestamp: (map['timestamp']),
       uidChat: (map['uidChat'] ?? '') as String,
+      urlRealPost: (map['urlRealPost'] ?? '') as String,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory ChatModel.fromJson(String source) => ChatModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory ChatModel.fromJson(String source) =>
+      ChatModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

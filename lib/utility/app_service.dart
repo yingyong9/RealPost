@@ -14,8 +14,30 @@ import 'package:realpost/models/room_model.dart';
 import 'package:realpost/states/display_name.dart';
 import 'package:realpost/states/otp_check.dart';
 import 'package:realpost/utility/app_constant.dart';
+import 'package:realpost/utility/app_controller.dart';
 
 class AppService {
+  Future<void> editUrlAvatar() async {
+    AppController appController = Get.put(AppController());
+
+    Map<String, dynamic> map = appController.userModels[0].toMap();
+    print('map at editUrlAvatar before ===> $map');
+
+    map['urlAvatar'] = appController.urlAvatarChooses[0];
+    print('map at editUrlAvatar after ===> $map');
+
+    var user = FirebaseAuth.instance.currentUser;
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc(user!.uid)
+        .update(map)
+        .then((value) {
+      print('Edit Avatar Success');
+      appController.fileAvatars.clear();
+      appController.urlAvatarChooses.clear();
+    });
+  }
+
   Future<void> processInsertChat(
       {required ChatModel chatModel, required String docIdRoom}) async {
     await FirebaseFirestore.instance

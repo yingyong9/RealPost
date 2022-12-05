@@ -11,6 +11,8 @@ import 'package:realpost/models/user_model.dart';
 class AppController extends GetxController {
   RxList<RoomModel> roomModels = <RoomModel>[].obs;
   RxList<String> docIdRooms = <String>[].obs;
+  RxList<String> docIdRoomChooses = <String>[].obs;
+
   RxList<StampModel> stampModels = <StampModel>[].obs;
   RxList<String> emojiAddRoomChooses = <String>[].obs;
   RxList<ChatModel> chatModels = <ChatModel>[].obs;
@@ -18,6 +20,10 @@ class AppController extends GetxController {
   RxList<UserModel> userModels = <UserModel>[].obs;
   RxList<File> fileAvatars = <File>[].obs;
   RxList<String> urlAvatarChooses = <String>[].obs;
+
+  RxList<File> fileRealPosts = <File>[].obs;
+  RxList<String> urlRealPostChooses = <String>[].obs;
+  RxList<String> messageChats = <String>[].obs;
 
   Future<void> findUserModels() async {
     userModels.clear();

@@ -38,6 +38,10 @@ class _ChatPageState extends State<ChatPage> {
     docIdRoom = widget.docIdRoom;
     print('docIdRoom ==> $docIdRoom');
     appController.readAllChat(docIdRoom: widget.docIdRoom);
+    if (appController.docIdRoomChooses.isNotEmpty) {
+      appController.docIdRoomChooses.clear();
+    }
+    appController.docIdRoomChooses.add(docIdRoom.toString());
   }
 
   @override
@@ -150,11 +154,18 @@ class _ChatPageState extends State<ChatPage> {
                   print('No Text form');
                 } else {
                   print('text = ${textEditingController.text}');
+                  if (appController.messageChats.isNotEmpty) {
+                    appController.messageChats.clear();
+                  }
+                  appController.messageChats.add(textEditingController.text);
+
                   print('userModel => ${appController.userModels[0].toMap()}');
 
                   if (appController.userModels[0].urlAvatar?.isEmpty ?? true) {
                     AppDialog(context: context).avatarBottonSheet();
-                  } else {}
+                  } else {
+                    AppDialog(context: context).realPostBottonSheet();
+                  }
 
                   // ChatModel chatModel = ChatModel(
                   //     message: textEditingController.text,
