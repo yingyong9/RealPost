@@ -264,13 +264,20 @@ class AppDialog {
                                             Timestamp.fromDate(DateTime.now()),
                                         uidChat: FirebaseAuth
                                             .instance.currentUser!.uid,
-                                        urlRealPost: appController
-                                            .urlRealPostChooses[0]);
+                                        urlRealPost:
+                                            appController.urlRealPostChooses[0],
+                                        disPlayName: appController
+                                            .userModels[0].displayName,
+                                        urlAvatar:  appController
+                                              .userModels[0].urlAvatar!.isEmpty
+                                          ? appController.urlAvatarChooses[0]
+                                          : appController
+                                              .userModels[0].urlAvatar!);
                                     AppService()
                                         .processInsertChat(
                                             chatModel: chatModel,
-                                            docIdRoom:
-                                                appController.docIdRoomChooses[0])
+                                            docIdRoom: appController
+                                                .docIdRoomChooses[0])
                                         .then((value) {
                                       Get.back();
                                     });
@@ -283,7 +290,14 @@ class AppDialog {
                                       uidChat: FirebaseAuth
                                           .instance.currentUser!.uid,
                                       urlRealPost:
-                                          appController.urlRealPostChooses[0]);
+                                          appController.urlRealPostChooses[0],
+                                      disPlayName: appController
+                                          .userModels[0].displayName,
+                                      urlAvatar: appController
+                                              .userModels[0].urlAvatar!.isEmpty
+                                          ? appController.urlAvatarChooses[0]
+                                          : appController
+                                              .userModels[0].urlAvatar!);
                                   AppService()
                                       .processInsertChat(
                                           chatModel: chatModel,
@@ -301,7 +315,7 @@ class AppDialog {
                 ],
               ),
             );
-          }),
+          }),isDismissible: false
     );
   }
 

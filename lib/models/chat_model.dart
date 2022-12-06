@@ -2,16 +2,22 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:realpost/utility/app_constant.dart';
 
 class ChatModel {
   final String message;
   final Timestamp timestamp;
   final String uidChat;
+  final String disPlayName;
+  final String urlAvatar;
   final String urlRealPost;
+
   ChatModel({
     required this.message,
     required this.timestamp,
     required this.uidChat,
+    required this.disPlayName,
+    required this.urlAvatar,
     required this.urlRealPost,
   });
 
@@ -20,6 +26,8 @@ class ChatModel {
       'message': message,
       'timestamp': timestamp,
       'uidChat': uidChat,
+      'disPlayName': disPlayName,
+      'urlAvatar': urlAvatar,
       'urlRealPost': urlRealPost,
     };
   }
@@ -29,6 +37,8 @@ class ChatModel {
       message: (map['message'] ?? '') as String,
       timestamp: (map['timestamp']),
       uidChat: (map['uidChat'] ?? '') as String,
+      disPlayName: (map['disPlayName'] ?? '') as String,
+      urlAvatar: (map['urlAvatar'] ?? AppConstant.urlAvatar) as String,
       urlRealPost: (map['urlRealPost'] ?? '') as String,
     );
   }

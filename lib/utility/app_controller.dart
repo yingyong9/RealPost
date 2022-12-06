@@ -16,6 +16,7 @@ class AppController extends GetxController {
   RxList<StampModel> stampModels = <StampModel>[].obs;
   RxList<String> emojiAddRoomChooses = <String>[].obs;
   RxList<ChatModel> chatModels = <ChatModel>[].obs;
+
   RxBool load = true.obs;
   RxList<UserModel> userModels = <UserModel>[].obs;
   RxList<File> fileAvatars = <File>[].obs;
@@ -47,11 +48,10 @@ class AppController extends GetxController {
         .collection('room')
         .doc(docIdRoom)
         .collection('chat')
-        .orderBy('timestamp', descending: false)
+        .orderBy('timestamp')
         .snapshots()
-        .listen((event) {
+        .listen((event) async {
       load.value = false;
-
       if (event.docs.isNotEmpty) {
         if (chatModels.isNotEmpty) {
           chatModels.clear();
@@ -59,6 +59,7 @@ class AppController extends GetxController {
 
         for (var element in event.docs) {
           ChatModel model = ChatModel.fromMap(element.data());
+          print('chatModel ==> ${model.toMap()}');
           chatModels.add(model);
         }
       }

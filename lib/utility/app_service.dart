@@ -11,12 +11,21 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/room_model.dart';
+import 'package:realpost/models/user_model.dart';
 import 'package:realpost/states/display_name.dart';
 import 'package:realpost/states/otp_check.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 
 class AppService {
+  Future<UserModel?> findUserModel({required String uid}) async {
+    UserModel? userModel;
+    var result =
+        await FirebaseFirestore.instance.collection('user').doc(uid).get();
+    userModel = UserModel.fromMap(result.data()!);
+    return userModel;
+  }
+
   Future<void> editUrlAvatar() async {
     AppController appController = Get.put(AppController());
 
@@ -35,18 +44,23 @@ class AppService {
       print('Edit Avatar Success');
       appController.fileAvatars.clear();
       appController.urlAvatarChooses.clear();
+      appController.findUserModels();
     });
   }
 
   Future<void> processInsertChat(
       {required ChatModel chatModel, required String docIdRoom}) async {
+    AppController appController = Get.put(AppController());
     await FirebaseFirestore.instance
         .collection('room')
         .doc(docIdRoom)
         .collection('chat')
         .doc()
         .set(chatModel.toMap())
-        .then((value) => print('Process Insert Chat Success'));
+        .then((value) {
+      print('Process Insert Chat Success');
+      appController.urlRealPostChooses.clear();
+    });
   }
 
   String timeStampToString({required Timestamp timestamp, String? newPattern}) {

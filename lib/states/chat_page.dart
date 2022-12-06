@@ -1,13 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
-import 'package:realpost/utility/app_service.dart';
+import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_progress.dart';
@@ -54,6 +52,7 @@ class _ChatPageState extends State<ChatPage> {
             init: AppController(),
             builder: (AppController appController) {
               print('amount chatModels ==> ${appController.chatModels.length}');
+
               return GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () =>
@@ -72,12 +71,10 @@ class _ChatPageState extends State<ChatPage> {
                                       left: 16, right: 16),
                                   itemCount: appController.chatModels.length,
                                   itemBuilder: (context, index) => Row(
-                                    mainAxisAlignment: appController
-                                                .chatModels[index].uidChat ==
-                                            user!.uid
-                                        ? MainAxisAlignment.end
-                                        : MainAxisAlignment.start,
                                     children: [
+                                      WidgetCircularImage(
+                                          urlImage: appController
+                                              .chatModels[index].urlAvatar),
                                       Container(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 16, vertical: 6),
@@ -149,7 +146,7 @@ class _ChatPageState extends State<ChatPage> {
             ),
             WidgetIconButton(
               iconData: Icons.send,
-              pressFunc: () {
+              pressFunc: () async {
                 if (textEditingController.text.isEmpty) {
                   print('No Text form');
                 } else {
@@ -159,6 +156,8 @@ class _ChatPageState extends State<ChatPage> {
                   }
                   appController.messageChats.add(textEditingController.text);
 
+                  textEditingController.text = '';
+
                   print('userModel => ${appController.userModels[0].toMap()}');
 
                   if (appController.userModels[0].urlAvatar?.isEmpty ?? true) {
@@ -166,17 +165,6 @@ class _ChatPageState extends State<ChatPage> {
                   } else {
                     AppDialog(context: context).realPostBottonSheet();
                   }
-
-                  // ChatModel chatModel = ChatModel(
-                  //     message: textEditingController.text,
-                  //     timestamp: Timestamp.fromDate(DateTime.now()),
-                  //     uidChat: user!.uid);
-                  // AppService()
-                  //     .processInsertChat(
-                  //         chatModel: chatModel, docIdRoom: widget.docIdRoom)
-                  //     .then((value) {
-                  //   return null;
-                  // });
                 }
               },
             ),
