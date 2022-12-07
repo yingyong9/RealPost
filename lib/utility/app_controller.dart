@@ -48,7 +48,7 @@ class AppController extends GetxController {
         .collection('room')
         .doc(docIdRoom)
         .collection('chat')
-        .orderBy('timestamp')
+        .orderBy('timestamp', descending: true)
         .snapshots()
         .listen((event) async {
       load.value = false;

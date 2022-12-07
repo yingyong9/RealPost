@@ -21,11 +21,13 @@ class WidgetImageInternet extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: tapFunc,
-      child: Image.network(
-        urlImage,
-        width: width,
-        height: height,
-        fit: boxFit,
+      child: ClipRRect(borderRadius: BorderRadius.circular(10),
+        child: Image.network(
+          urlImage,
+          width: width,
+          height: height,
+          fit: boxFit,
+        ),
       ),
     );
   }

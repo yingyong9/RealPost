@@ -8,6 +8,7 @@ import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
+import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_progress.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
@@ -66,26 +67,78 @@ class _ChatPageState extends State<ChatPage> {
                           ? const WidgetProgress()
                           : appController.chatModels.isEmpty
                               ? const SizedBox()
-                              : ListView.builder(
-                                  padding: const EdgeInsets.only(
-                                      left: 16, right: 16),
-                                  itemCount: appController.chatModels.length,
-                                  itemBuilder: (context, index) => Row(
-                                    children: [
-                                      WidgetCircularImage(
-                                          urlImage: appController
-                                              .chatModels[index].urlAvatar),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 16, vertical: 6),
-                                        margin: const EdgeInsets.only(top: 8),
-                                        decoration:
-                                            AppConstant().boxChatLogin(),
-                                        child: WidgetText(
-                                            text: appController
-                                                .chatModels[index].message),
+                              : SizedBox(
+                                  width: boxConstraints.maxWidth,
+                                  height: boxConstraints.maxHeight - 100,
+                                  child: ListView.builder(
+                                    reverse: true,
+                                    padding: const EdgeInsets.only(
+                                        left: 16, right: 16),
+                                    itemCount: appController.chatModels.length,
+                                    itemBuilder: (context, index) => Container(
+                                      margin: const EdgeInsets.only(top: 16),
+                                      child: Row(
+                                        children: [
+                                          Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              WidgetCircularImage(
+                                                  urlImage: appController
+                                                      .chatModels[index]
+                                                      .urlAvatar),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  WidgetText(
+                                                      text: appController
+                                                                  .chatModels[
+                                                                      index]
+                                                                  .uidChat ==
+                                                              user!.uid
+                                                          ? 'ฉัน'
+                                                          : appController
+                                                              .chatModels[index]
+                                                              .disPlayName),
+                                                  Container(
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 16,
+                                                        vertical: 6),
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            top: 8),
+                                                    decoration: AppConstant()
+                                                        .boxChatLogin(),
+                                                    child: WidgetText(
+                                                        text: appController
+                                                                .chatModels[
+                                                                    index]
+                                                                .message
+                                                                .isEmpty
+                                                            ? '...'
+                                                            : appController
+                                                                .chatModels[
+                                                                    index]
+                                                                .message),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          appController.chatModels[index]
+                                                  .urlRealPost.isEmpty
+                                              ? const SizedBox()
+                                              : WidgetImageInternet(
+                                                  urlImage: appController
+                                                      .chatModels[index]
+                                                      .urlRealPost,
+                                                  width: 100,
+                                                  height: 100,
+                                                ),
+                                        ],
                                       ),
-                                    ],
+                                    ),
                                   ),
                                 ),
                       contentForm(
@@ -149,6 +202,11 @@ class _ChatPageState extends State<ChatPage> {
               pressFunc: () async {
                 if (textEditingController.text.isEmpty) {
                   print('No Text form');
+
+                  if (appController.userModels[0].urlAvatar!.isNotEmpty) {
+                    // การทำงานครั้งที่สอง
+                    AppDialog(context: context).realPostBottonSheet();
+                  }
                 } else {
                   print('text = ${textEditingController.text}');
                   if (appController.messageChats.isNotEmpty) {

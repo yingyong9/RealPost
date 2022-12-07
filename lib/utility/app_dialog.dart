@@ -130,149 +130,191 @@ class AppDialog {
 
   void realPostBottonSheet() {
     Get.bottomSheet(
-      GetX(
-          init: AppController(),
-          builder: (AppController appController) {
-            print(
-                'at realPostBottonSheet urlRealPostChoose ==> ${appController.urlRealPostChooses}');
-            return Container(
-              decoration: BoxDecoration(color: AppConstant.bgColor),
-              height: 300,
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  WidgetText(
-                    text: 'กรุณาเลือก Real Post Stamp',
-                    textStyle: AppConstant().h2Style(),
-                  ),
-                  appController.urlRealPostChooses.isNotEmpty
-                      ? WidgetImageInternet(
-                          urlImage: appController.urlRealPostChooses[0],
-                          width: 200,
-                          height: 200,
-                        )
-                      : appController.fileRealPosts.isEmpty
-                          ? const WidgetImage(
-                              path: 'images/funny1.png',
-                              size: 200,
-                            )
-                          : Image.file(
-                              appController.fileRealPosts[0],
-                              width: 200,
-                              height: 200,
-                            ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      WidgetIconButton(
-                        iconData: Icons.add_a_photo,
-                        pressFunc: () async {
-                          if (appController.fileRealPosts.isNotEmpty) {
-                            appController.fileRealPosts.clear();
-                          }
-
-                          if (appController.urlRealPostChooses.isNotEmpty) {
-                            appController.urlRealPostChooses.clear();
-                          }
-
-                          var result = await AppService()
-                              .processTakePhoto(source: ImageSource.camera);
-                          if (result != null) {
+        GetX(
+            init: AppController(),
+            builder: (AppController appController) {
+              print(
+                  'at realPostBottonSheet urlRealPostChoose ==> ${appController.urlRealPostChooses}');
+              return Container(
+                decoration: BoxDecoration(color: AppConstant.bgColor),
+                height: 300,
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    WidgetText(
+                      text: 'Real Post Stamp',
+                      textStyle: AppConstant().h2Style(),
+                    ),
+                    appController.urlRealPostChooses.isNotEmpty
+                        ? WidgetImageInternet(
+                            urlImage: appController.urlRealPostChooses[0],
+                            width: 200,
+                            height: 200,
+                          )
+                        : appController.fileRealPosts.isEmpty
+                            ? const WidgetImage(
+                                path: 'images/funny1.png',
+                                size: 200,
+                              )
+                            : Image.file(
+                                appController.fileRealPosts[0],
+                                width: 200,
+                                height: 200,
+                              ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        WidgetIconButton(
+                          iconData: Icons.border_color,
+                          pressFunc: () {},
+                        ),
+                        WidgetIconButton(
+                          iconData: Icons.share,
+                          pressFunc: () {},
+                        ),
+                        WidgetIconButton(
+                          iconData: Icons.add_a_photo,
+                          pressFunc: () async {
                             if (appController.fileRealPosts.isNotEmpty) {
                               appController.fileRealPosts.clear();
                             }
-                            appController.fileRealPosts.add(result);
-                          }
-                        },
-                      ),
-                      WidgetIconButton(
-                        iconData: Icons.add_photo_alternate,
-                        pressFunc: () async {
-                          if (appController.fileRealPosts.isNotEmpty) {
-                            appController.fileRealPosts.clear();
-                          }
 
-                          if (appController.urlRealPostChooses.isNotEmpty) {
-                            appController.urlRealPostChooses.clear();
-                          }
+                            if (appController.urlRealPostChooses.isNotEmpty) {
+                              appController.urlRealPostChooses.clear();
+                            }
 
-                          var result = await AppService()
-                              .processTakePhoto(source: ImageSource.gallery);
-                          if (result != null) {
+                            var result = await AppService()
+                                .processTakePhoto(source: ImageSource.camera);
+                            if (result != null) {
+                              if (appController.fileRealPosts.isNotEmpty) {
+                                appController.fileRealPosts.clear();
+                              }
+                              appController.fileRealPosts.add(result);
+                            }
+                          },
+                        ),
+                        WidgetIconButton(
+                          iconData: Icons.add_photo_alternate,
+                          pressFunc: () async {
                             if (appController.fileRealPosts.isNotEmpty) {
                               appController.fileRealPosts.clear();
                             }
-                            appController.fileRealPosts.add(result);
-                          }
-                        },
-                      ),
-                      WidgetIconButton(
-                        iconData: Icons.emoji_emotions,
-                        pressFunc: () {
-                          Get.to(const EmojiPage(
-                            avatarBol: false,
-                          ))!
-                              .then((value) {});
-                        },
-                      ),
-                      ((appController.fileRealPosts.isNotEmpty) ||
-                              (appController.urlRealPostChooses.isNotEmpty))
-                          ? WidgetIconButton(
-                              iconData: Icons.send,
-                              pressFunc: () async {
-                                //About Avatar
-                                if (appController.fileAvatars.isNotEmpty) {
-                                  //Have file Avatar
-                                  await AppService()
-                                      .processUploadPhoto(
-                                          file: appController.fileAvatars[0],
-                                          path: 'avatar')
-                                      .then((value) {
-                                    print('value upload avatar ==> $value');
 
-                                    appController.urlAvatarChooses.clear();
-                                    appController.urlAvatarChooses
-                                        .add(value.toString());
-                                    AppService().editUrlAvatar();
-                                  });
-                                } else {
-                                  if (appController
-                                      .urlAvatarChooses.isNotEmpty) {
-                                    AppService().editUrlAvatar();
-                                  }
-                                }
+                            if (appController.urlRealPostChooses.isNotEmpty) {
+                              appController.urlRealPostChooses.clear();
+                            }
 
-                                //About RealPost
-                                if (appController.fileRealPosts.isNotEmpty) {
-                                  //upload
-                                  await AppService()
-                                      .processUploadPhoto(
-                                          file: appController.fileRealPosts[0],
-                                          path: 'realpost')
-                                      .then((value) {
+                            var result = await AppService()
+                                .processTakePhoto(source: ImageSource.gallery);
+                            if (result != null) {
+                              if (appController.fileRealPosts.isNotEmpty) {
+                                appController.fileRealPosts.clear();
+                              }
+                              appController.fileRealPosts.add(result);
+                            }
+                          },
+                        ),
+                        WidgetIconButton(
+                          iconData: Icons.emoji_emotions,
+                          pressFunc: () {
+                            Get.to(const EmojiPage(
+                              avatarBol: false,
+                            ))!
+                                .then((value) {});
+                          },
+                        ),
+                        ((appController.fileRealPosts.isNotEmpty) ||
+                                (appController.urlRealPostChooses.isNotEmpty) ||
+                                appController
+                                    .userModels[0].urlAvatar!.isNotEmpty)
+                            ? WidgetIconButton(
+                                iconData: Icons.send,
+                                pressFunc: () async {
+                                  //About Avatar
+                                  if (appController.fileAvatars.isNotEmpty) {
+                                    //Have file Avatar
+                                    await AppService()
+                                        .processUploadPhoto(
+                                            file: appController.fileAvatars[0],
+                                            path: 'avatar')
+                                        .then((value) {
+                                      print('value upload avatar ==> $value');
+
+                                      appController.urlAvatarChooses.clear();
+                                      appController.urlAvatarChooses
+                                          .add(value.toString());
+                                      AppService().editUrlAvatar();
+                                    });
+                                  } else {
                                     if (appController
-                                        .urlRealPostChooses.isNotEmpty) {
-                                      appController.urlRealPostChooses.clear();
+                                        .urlAvatarChooses.isNotEmpty) {
+                                      AppService().editUrlAvatar();
                                     }
-                                    appController.urlRealPostChooses
-                                        .add(value.toString());
+                                  }
+
+                                  //About RealPost
+                                  if (appController.fileRealPosts.isNotEmpty) {
+                                    //upload
+                                    await AppService()
+                                        .processUploadPhoto(
+                                            file:
+                                                appController.fileRealPosts[0],
+                                            path: 'realpost')
+                                        .then((value) {
+                                      if (appController
+                                          .urlRealPostChooses.isNotEmpty) {
+                                        appController.urlRealPostChooses
+                                            .clear();
+                                      }
+                                      appController.urlRealPostChooses
+                                          .add(value.toString());
+                                      ChatModel chatModel = ChatModel(
+                                          message:
+                                              appController.messageChats[0],
+                                          timestamp: Timestamp.fromDate(
+                                              DateTime.now()),
+                                          uidChat: FirebaseAuth
+                                              .instance.currentUser!.uid,
+                                          urlRealPost: appController
+                                              .urlRealPostChooses[0],
+                                          disPlayName: appController
+                                              .userModels[0].displayName,
+                                          urlAvatar: appController.userModels[0]
+                                                  .urlAvatar!.isEmpty
+                                              ? appController
+                                                  .urlAvatarChooses[0]
+                                              : appController
+                                                  .userModels[0].urlAvatar!);
+                                      AppService()
+                                          .processInsertChat(
+                                              chatModel: chatModel,
+                                              docIdRoom: appController
+                                                  .docIdRoomChooses[0])
+                                          .then((value) {
+                                        Get.back();
+                                      });
+                                    });
+                                  } else {
                                     ChatModel chatModel = ChatModel(
-                                        message: appController.messageChats[0],
+                                        message: appController.messageChats.isEmpty ? '' : appController.messageChats[0] ,
                                         timestamp:
                                             Timestamp.fromDate(DateTime.now()),
                                         uidChat: FirebaseAuth
                                             .instance.currentUser!.uid,
-                                        urlRealPost:
-                                            appController.urlRealPostChooses[0],
+                                        urlRealPost: appController
+                                                .urlRealPostChooses.isEmpty
+                                            ? ''
+                                            : appController
+                                                .urlRealPostChooses[0],
                                         disPlayName: appController
                                             .userModels[0].displayName,
-                                        urlAvatar:  appController
-                                              .userModels[0].urlAvatar!.isEmpty
-                                          ? appController.urlAvatarChooses[0]
-                                          : appController
-                                              .userModels[0].urlAvatar!);
+                                        urlAvatar: appController.userModels[0]
+                                                .urlAvatar!.isEmpty
+                                            ? appController.urlAvatarChooses[0]
+                                            : appController
+                                                .userModels[0].urlAvatar!);
                                     AppService()
                                         .processInsertChat(
                                             chatModel: chatModel,
@@ -281,42 +323,17 @@ class AppDialog {
                                         .then((value) {
                                       Get.back();
                                     });
-                                  });
-                                } else {
-                                  ChatModel chatModel = ChatModel(
-                                      message: appController.messageChats[0],
-                                      timestamp:
-                                          Timestamp.fromDate(DateTime.now()),
-                                      uidChat: FirebaseAuth
-                                          .instance.currentUser!.uid,
-                                      urlRealPost:
-                                          appController.urlRealPostChooses[0],
-                                      disPlayName: appController
-                                          .userModels[0].displayName,
-                                      urlAvatar: appController
-                                              .userModels[0].urlAvatar!.isEmpty
-                                          ? appController.urlAvatarChooses[0]
-                                          : appController
-                                              .userModels[0].urlAvatar!);
-                                  AppService()
-                                      .processInsertChat(
-                                          chatModel: chatModel,
-                                          docIdRoom:
-                                              appController.docIdRoomChooses[0])
-                                      .then((value) {
-                                    Get.back();
-                                  });
-                                }
-                              },
-                            )
-                          : const SizedBox(),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          }),isDismissible: false
-    );
+                                  }
+                                },
+                              )
+                            : const SizedBox(),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            }),
+        isDismissible: false);
   }
 
   void myBottonSheet({required Function() tapFunc}) {
