@@ -134,7 +134,7 @@ class AppDialog {
             init: AppController(),
             builder: (AppController appController) {
               print(
-                  'at realPostBottonSheet urlRealPostChoose ==> ${appController.urlRealPostChooses}');
+                  '##9dec at realPostBottonSheet urlRealPostChoose ==> ${appController.urlRealPostChooses}');
               return Container(
                 decoration: BoxDecoration(color: AppConstant.bgColor),
                 height: 300,
@@ -166,13 +166,18 @@ class AppDialog {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        WidgetIconButton(
-                          iconData: Icons.border_color,
-                          pressFunc: () {},
-                        ),
-                        WidgetIconButton(
-                          iconData: Icons.share,
-                          pressFunc: () {},
+                        appController.urlRealPostChooses.isEmpty ? const SizedBox() :  Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            WidgetIconButton(
+                              iconData: Icons.border_color,
+                              pressFunc: () {},
+                            ),
+                            WidgetIconButton(
+                              iconData: Icons.share,
+                              pressFunc: () {},
+                            ),
+                          ],
                         ),
                         WidgetIconButton(
                           iconData: Icons.add_a_photo,
@@ -298,7 +303,10 @@ class AppDialog {
                                     });
                                   } else {
                                     ChatModel chatModel = ChatModel(
-                                        message: appController.messageChats.isEmpty ? '' : appController.messageChats[0] ,
+                                        message:
+                                            appController.messageChats.isEmpty
+                                                ? ''
+                                                : appController.messageChats[0],
                                         timestamp:
                                             Timestamp.fromDate(DateTime.now()),
                                         uidChat: FirebaseAuth
@@ -333,7 +341,7 @@ class AppDialog {
                 ),
               );
             }),
-        isDismissible: false);
+        isDismissible: true);
   }
 
   void myBottonSheet({required Function() tapFunc}) {

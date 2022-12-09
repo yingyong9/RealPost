@@ -37,7 +37,18 @@ class _BodyDiscoveryState extends State<BodyDiscovery> {
                         InkWell(
                           onTap: () {
                             // print('You Tap index = $index');
-                            Get.to( ChatPage(docIdRoom: appController.docIdRooms[index],));
+                            Get.to(ChatPage(
+                              docIdRoom: appController.docIdRooms[index],
+                            ))!
+                                .then((value) {
+                              if (appController.urlAvatarChooses.isNotEmpty) {
+                                appController.urlAvatarChooses.clear();
+                              }
+
+                              if (appController.urlRealPostChooses.isNotEmpty) {
+                                appController.urlRealPostChooses.clear();
+                              }
+                            });
                           },
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,

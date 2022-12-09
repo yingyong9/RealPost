@@ -40,9 +40,21 @@ class _MainHomeState extends State<MainHome> {
   @override
   void initState() {
     super.initState();
+    initialSetup();
+  }
+
+  void initialSetup() {
     appController.readAllRoom();
     appController.findUserModels();
     appController.readAllStamp();
+
+    if (appController.urlAvatarChooses.isNotEmpty) {
+      appController.urlAvatarChooses.clear();
+    }
+
+    if (appController.urlRealPostChooses.isNotEmpty) {
+      appController.urlRealPostChooses.clear();
+    }
   }
 
   @override

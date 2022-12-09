@@ -53,7 +53,6 @@ class _ChatPageState extends State<ChatPage> {
             init: AppController(),
             builder: (AppController appController) {
               print('amount chatModels ==> ${appController.chatModels.length}');
-
               return GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () =>
@@ -86,6 +85,7 @@ class _ChatPageState extends State<ChatPage> {
                                                   urlImage: appController
                                                       .chatModels[index]
                                                       .urlAvatar),
+                                                     
                                               Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -126,6 +126,7 @@ class _ChatPageState extends State<ChatPage> {
                                               ),
                                             ],
                                           ),
+                                           const SizedBox(width: 16,),
                                           appController.chatModels[index]
                                                   .urlRealPost.isEmpty
                                               ? const SizedBox()
@@ -159,21 +160,12 @@ class _ChatPageState extends State<ChatPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            WidgetForm(
-              width: boxConstraints.maxWidth - 64,
-              hintStyle: AppConstant().h3Style(color: AppConstant.grey),
-              hint: 'พิมพ์ข้อความ...',
-              textStyle: AppConstant().h3Style(),
-              controller: textEditingController,
-            ),
-            WidgetIconButton(
-              pressFunc: () {},
-              iconData: Icons.attach_file,
-            )
-          ],
+        WidgetForm(
+          width: boxConstraints.maxWidth ,
+          hintStyle: AppConstant().h3Style(color: AppConstant.grey),
+          hint: 'พิมพ์ข้อความ...',
+          textStyle: AppConstant().h3Style(),
+          controller: textEditingController,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
