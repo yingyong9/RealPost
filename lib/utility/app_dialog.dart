@@ -9,16 +9,37 @@ import 'package:realpost/states/emoji_page.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
+import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
+import 'package:realpost/widgets/widget_menu.dart';
 import 'package:realpost/widgets/widget_text.dart';
+import 'package:realpost/widgets/widget_text_button.dart';
 
 class AppDialog {
   final BuildContext context;
   AppDialog({
     required this.context,
   });
+
+  void normalDialog(
+      {required String title,
+      required Widget leadingWidget,
+      Widget? contentWidget,
+      List<Widget>? actions}) {
+    Get.dialog(AlertDialog(
+      title: WidgetMenu(
+        leadingWiget: leadingWidget,
+        titleWidget: WidgetText(
+          text: title,
+          textStyle: AppConstant().h2Style(color: AppConstant.bgColor),
+        ),
+      ),
+      content: contentWidget,
+      actions: actions,
+    ));
+  }
 
   void avatarBottonSheet() {
     Get.bottomSheet(
@@ -166,19 +187,55 @@ class AppDialog {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        appController.urlRealPostChooses.isEmpty ? const SizedBox() :  Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            WidgetIconButton(
-                              iconData: Icons.border_color,
-                              pressFunc: () {},
-                            ),
-                            WidgetIconButton(
-                              iconData: Icons.share,
-                              pressFunc: () {},
-                            ),
-                          ],
-                        ),
+                        appController.urlRealPostChooses.isEmpty
+                            ? const SizedBox()
+                            : Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  WidgetIconButton(
+                                    iconData: Icons.border_color,
+                                    pressFunc: () {
+                                      Get.back();
+                                      normalDialog(
+                                        title: 'บทความ :',
+                                        leadingWidget:
+                                            const Icon(Icons.border_color),
+                                        contentWidget: WidgetForm(
+                                          controller: appController
+                                              .articleControllers[0],
+                                        ),
+                                        actions: <Widget>[
+                                          WidgetTextButton(
+                                            text: 'Ok',
+                                            pressFunc: () {
+                                              print(
+                                                  '##9dec สิ่งที่กรอก --> ${appController.articleControllers[0].text}');
+                                              Get.back();
+                                              realPostBottonSheet();
+                                            },
+                                          ),
+                                          WidgetTextButton(
+                                            text: 'Cancel',
+                                            pressFunc: () {
+                                              Get.back();
+                                              realPostBottonSheet();
+                                            },
+                                          )
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                  WidgetIconButton(
+                                    iconData: Icons.share,
+                                    pressFunc: () {
+                                      normalDialog(
+                                        title: 'Link',
+                                        leadingWidget: const Icon(Icons.share),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
                         WidgetIconButton(
                           iconData: Icons.add_a_photo,
                           pressFunc: () async {
@@ -230,6 +287,9 @@ class AppDialog {
                                 .then((value) {});
                           },
                         ),
+                        WidgetIconButton(iconData: Icons.pin_drop,
+                          pressFunc: () {},
+                        ),
                         ((appController.fileRealPosts.isNotEmpty) ||
                                 (appController.urlRealPostChooses.isNotEmpty) ||
                                 appController
@@ -275,23 +335,26 @@ class AppDialog {
                                       }
                                       appController.urlRealPostChooses
                                           .add(value.toString());
+
                                       ChatModel chatModel = ChatModel(
-                                          message:
-                                              appController.messageChats[0],
-                                          timestamp: Timestamp.fromDate(
-                                              DateTime.now()),
-                                          uidChat: FirebaseAuth
-                                              .instance.currentUser!.uid,
-                                          urlRealPost: appController
-                                              .urlRealPostChooses[0],
-                                          disPlayName: appController
-                                              .userModels[0].displayName,
-                                          urlAvatar: appController.userModels[0]
-                                                  .urlAvatar!.isEmpty
-                                              ? appController
-                                                  .urlAvatarChooses[0]
-                                              : appController
-                                                  .userModels[0].urlAvatar!);
+                                        message: appController.messageChats[0],
+                                        timestamp:
+                                            Timestamp.fromDate(DateTime.now()),
+                                        uidChat: FirebaseAuth
+                                            .instance.currentUser!.uid,
+                                        urlRealPost:
+                                            appController.urlRealPostChooses[0],
+                                        disPlayName: appController
+                                            .userModels[0].displayName,
+                                        urlAvatar: appController.userModels[0]
+                                                .urlAvatar!.isEmpty
+                                            ? appController.urlAvatarChooses[0]
+                                            : appController
+                                                .userModels[0].urlAvatar!,
+                                        article: appController
+                                            .articleControllers[0].text,
+                                        link: '',
+                                      );
                                       AppService()
                                           .processInsertChat(
                                               chatModel: chatModel,
@@ -303,26 +366,29 @@ class AppDialog {
                                     });
                                   } else {
                                     ChatModel chatModel = ChatModel(
-                                        message:
-                                            appController.messageChats.isEmpty
-                                                ? ''
-                                                : appController.messageChats[0],
-                                        timestamp:
-                                            Timestamp.fromDate(DateTime.now()),
-                                        uidChat: FirebaseAuth
-                                            .instance.currentUser!.uid,
-                                        urlRealPost: appController
-                                                .urlRealPostChooses.isEmpty
-                                            ? ''
-                                            : appController
-                                                .urlRealPostChooses[0],
-                                        disPlayName: appController
-                                            .userModels[0].displayName,
-                                        urlAvatar: appController.userModels[0]
-                                                .urlAvatar!.isEmpty
-                                            ? appController.urlAvatarChooses[0]
-                                            : appController
-                                                .userModels[0].urlAvatar!);
+                                      message:
+                                          appController.messageChats.isEmpty
+                                              ? ''
+                                              : appController.messageChats[0],
+                                      timestamp:
+                                          Timestamp.fromDate(DateTime.now()),
+                                      uidChat: FirebaseAuth
+                                          .instance.currentUser!.uid,
+                                      urlRealPost: appController
+                                              .urlRealPostChooses.isEmpty
+                                          ? ''
+                                          : appController.urlRealPostChooses[0],
+                                      disPlayName: appController
+                                          .userModels[0].displayName,
+                                      urlAvatar: appController
+                                              .userModels[0].urlAvatar!.isEmpty
+                                          ? appController.urlAvatarChooses[0]
+                                          : appController
+                                              .userModels[0].urlAvatar!,
+                                      article: appController
+                                          .articleControllers[0].text,
+                                      link: '',
+                                    );
                                     AppService()
                                         .processInsertChat(
                                             chatModel: chatModel,

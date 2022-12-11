@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/room_model.dart';
@@ -25,6 +26,9 @@ class AppController extends GetxController {
   RxList<File> fileRealPosts = <File>[].obs;
   RxList<String> urlRealPostChooses = <String>[].obs;
   RxList<String> messageChats = <String>[].obs;
+
+  RxList<TextEditingController> articleControllers = <TextEditingController>[TextEditingController()].obs;
+  
 
   Future<void> findUserModels() async {
     userModels.clear();
