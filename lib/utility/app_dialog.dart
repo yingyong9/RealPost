@@ -10,6 +10,7 @@ import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_form.dart';
+import 'package:realpost/widgets/widget_google_map.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
@@ -39,6 +40,22 @@ class AppDialog {
       content: contentWidget,
       actions: actions,
     ));
+  }
+
+  void mapBottomSheet() {
+    Get.bottomSheet(GetX(
+        init: AppController(),
+        builder: (AppController appController) {
+          return Container(
+            height: 300,
+            decoration: BoxDecoration(color: AppConstant.bgColor),
+            child: Stack(
+              children: [
+                WidgetGoogleMap(position: appController.positions[0]),
+              ],
+            ),
+          );
+        }));
   }
 
   void avatarBottonSheet() {
@@ -287,8 +304,14 @@ class AppDialog {
                                 .then((value) {});
                           },
                         ),
-                        WidgetIconButton(iconData: Icons.pin_drop,
-                          pressFunc: () {},
+                        WidgetIconButton(
+                          iconData: Icons.pin_drop,
+                          pressFunc: () {
+                            print(
+                                'You tap pin ===> ${appController.positions[0]}');
+                            Get.back();
+                            mapBottomSheet();
+                          },
                         ),
                         ((appController.fileRealPosts.isNotEmpty) ||
                                 (appController.urlRealPostChooses.isNotEmpty) ||

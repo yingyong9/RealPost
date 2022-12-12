@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:realpost/bodys/body_discovery.dart';
 import 'package:realpost/bodys/body_me.dart';
@@ -55,6 +56,15 @@ class _MainHomeState extends State<MainHome> {
     if (appController.urlRealPostChooses.isNotEmpty) {
       appController.urlRealPostChooses.clear();
     }
+
+    Future.delayed(Duration.zero, (() async {
+      Position? position =
+          await AppService().processFindPosition(context: context);
+      if (position != null) {
+        appController.positions.add(position);
+      }
+      print('##11dec current Position --> $position');
+    }));
   }
 
   @override

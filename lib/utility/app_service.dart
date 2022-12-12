@@ -6,6 +6,8 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -16,8 +18,74 @@ import 'package:realpost/states/display_name.dart';
 import 'package:realpost/states/otp_check.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
+import 'package:realpost/utility/app_dialog.dart';
+import 'package:realpost/widgets/widget_text_button.dart';
 
 class AppService {
+  Future<Position?> processFindPosition({
+    required BuildContext context,
+  }) async {
+    Position? position;
+    bool locationServiceEnable = await Geolocator.isLocationServiceEnabled();
+    LocationPermission permission;
+    if (locationServiceEnable) {
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.deniedForever) {
+        alertDeniedForever(context: context);
+      } else {
+        if (permission == LocationPermission.denied) {
+          permission = await Geolocator.requestPermission();
+          if ((permission != LocationPermission.always) &&
+              (permission != LocationPermission.whileInUse)) {
+            alertDeniedForever(context: context);
+          } else {
+            position = await Geolocator.getCurrentPosition();
+          }
+        } else {
+          position = await Geolocator.getCurrentPosition();
+        }
+      }
+    } else {
+      AppDialog(context: context).normalDialog(
+        title: 'Location Service ปิดอยู่',
+        leadingWidget: const Icon(
+          Icons.pin_drop,
+          size: 48,
+        ),
+        actions: <Widget>[
+          WidgetTextButton(
+            text: 'คลิกเปิด',
+            pressFunc: () {
+              Geolocator.openLocationSettings();
+              exit(0);
+            },
+          )
+        ],
+      );
+    }
+
+    return position;
+  }
+
+  void alertDeniedForever({required BuildContext context}) {
+    AppDialog(context: context).normalDialog(
+      title: 'RealPost ต้องการพิกัดของคุณ กรุณาเปิด',
+      leadingWidget: const Icon(
+        Icons.pin_drop,
+        size: 48,
+      ),
+      actions: <Widget>[
+        WidgetTextButton(
+          text: 'คลิกเปิด',
+          pressFunc: () {
+            Geolocator.openAppSettings();
+            exit(0);
+          },
+        )
+      ],
+    );
+  }
+
   Future<UserModel?> findUserModel({required String uid}) async {
     UserModel? userModel;
     var result =
