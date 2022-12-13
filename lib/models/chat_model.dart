@@ -3,8 +3,6 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:realpost/utility/app_constant.dart';
-
 class ChatModel {
   final String message;
   final Timestamp timestamp;
@@ -14,6 +12,7 @@ class ChatModel {
   final String urlRealPost;
   final String? article;
   final String? link;
+  final GeoPoint? geoPoint;
 
   ChatModel({
     required this.message,
@@ -24,6 +23,7 @@ class ChatModel {
     required this.urlRealPost,
     this.article,
     this.link,
+    this.geoPoint,
   });
 
   Map<String, dynamic> toMap() {
@@ -36,6 +36,7 @@ class ChatModel {
       'urlRealPost': urlRealPost,
       'article': article,
       'link': link,
+      'geoPoint': geoPoint,
     };
   }
 
@@ -47,12 +48,14 @@ class ChatModel {
       disPlayName: (map['disPlayName'] ?? '') as String,
       urlAvatar: (map['urlAvatar'] ?? '') as String,
       urlRealPost: (map['urlRealPost'] ?? '') as String,
-      article: map['article'] ?? '',
-      link: map['link'] ?? '',
+      article: map['article'] != null ? map['article'] as String : null,
+      link: map['link'] != null ? map['link'] as String : null,
+      geoPoint: map['geoPoint'] ?? const GeoPoint(0, 0) ,
     );
   }
 
   //timestamp: (map['timestamp']),
+  //geoPoint: map['geoPoint'] ?? const GeoPoint(0, 0) ,
 
   String toJson() => json.encode(toMap());
 

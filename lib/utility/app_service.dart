@@ -22,6 +22,10 @@ import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/widgets/widget_text_button.dart';
 
 class AppService {
+
+  
+
+
   Future<Position?> processFindPosition({
     required BuildContext context,
   }) async {

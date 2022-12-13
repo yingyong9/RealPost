@@ -9,6 +9,7 @@ import 'package:realpost/states/emoji_page.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
+import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_google_map.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
@@ -47,11 +48,49 @@ class AppDialog {
         init: AppController(),
         builder: (AppController appController) {
           return Container(
-            height: 300,
             decoration: BoxDecoration(color: AppConstant.bgColor),
-            child: Stack(
+            child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                WidgetGoogleMap(position: appController.positions[0]),
+                SizedBox(
+                  height: 280,
+                  child: Stack(
+                    children: [
+                      WidgetGoogleMap(lat: appController.positions[0].latitude, lng: appController.positions[0].longitude,),
+                    ],
+                  ),
+                ),
+                WidgetButton(
+                  bgColor: AppConstant.spColor,
+                  width: 250,
+                  label: 'ส่งตำแหน่ง',
+                  pressFunc: () {
+                    ChatModel chatModel = ChatModel(
+                      message: appController.messageChats.isEmpty
+                          ? ''
+                          : appController.messageChats[0],
+                      timestamp: Timestamp.fromDate(DateTime.now()),
+                      uidChat: FirebaseAuth.instance.currentUser!.uid,
+                      urlRealPost: appController.urlRealPostChooses.isEmpty
+                          ? ''
+                          : appController.urlRealPostChooses[0],
+                      disPlayName: appController.userModels[0].displayName,
+                      urlAvatar: appController.userModels[0].urlAvatar!.isEmpty
+                          ? appController.urlAvatarChooses[0]
+                          : appController.userModels[0].urlAvatar!,
+                      article: appController.articleControllers[0].text,
+                      link: '',
+                      geoPoint: GeoPoint(appController.positions[0].latitude,
+                          appController.positions[0].longitude),
+                    );
+                    AppService()
+                        .processInsertChat(
+                            chatModel: chatModel,
+                            docIdRoom: appController.docIdRoomChooses[0])
+                        .then((value) {
+                      Get.back();
+                    });
+                  },
+                ),
               ],
             ),
           );

@@ -7,6 +7,7 @@ import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_form.dart';
+import 'package:realpost/widgets/widget_google_map.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_progress.dart';
@@ -85,7 +86,6 @@ class _ChatPageState extends State<ChatPage> {
                                                   urlImage: appController
                                                       .chatModels[index]
                                                       .urlAvatar),
-                                                     
                                               Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -126,17 +126,42 @@ class _ChatPageState extends State<ChatPage> {
                                               ),
                                             ],
                                           ),
-                                           const SizedBox(width: 16,),
+                                          const SizedBox(
+                                            width: 16,
+                                          ),
                                           appController.chatModels[index]
-                                                  .urlRealPost.isEmpty
-                                              ? const SizedBox()
-                                              : WidgetImageInternet(
-                                                  urlImage: appController
-                                                      .chatModels[index]
-                                                      .urlRealPost,
+                                                      .geoPoint!.latitude !=
+                                                  0
+                                              ? SizedBox(
                                                   width: 100,
                                                   height: 100,
-                                                ),
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                    child: WidgetGoogleMap(
+                                                      zoom: 12,
+                                                      lat: appController
+                                                          .chatModels[index]
+                                                          .geoPoint!
+                                                          .latitude,
+                                                      lng: appController
+                                                          .chatModels[index]
+                                                          .geoPoint!
+                                                          .longitude,
+                                                    ),
+                                                  ),
+                                                )
+                                              : appController.chatModels[index]
+                                                      .urlRealPost.isEmpty
+                                                  ? const SizedBox()
+                                                  : WidgetImageInternet(
+                                                      urlImage: appController
+                                                          .chatModels[index]
+                                                          .urlRealPost,
+                                                      width: 100,
+                                                      height: 100,
+                                                    ),
                                         ],
                                       ),
                                     ),
@@ -161,7 +186,7 @@ class _ChatPageState extends State<ChatPage> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         WidgetForm(
-          width: boxConstraints.maxWidth ,
+          width: boxConstraints.maxWidth,
           hintStyle: AppConstant().h3Style(color: AppConstant.grey),
           hint: 'พิมพ์ข้อความ...',
           textStyle: AppConstant().h3Style(),
