@@ -133,22 +133,41 @@ class _ChatPageState extends State<ChatPage> {
                                                       .geoPoint!.latitude !=
                                                   0
                                               ? SizedBox(
-                                                  width: 100,
-                                                  height: 100,
+                                                  width: 150,
+                                                  height: 120,
                                                   child: ClipRRect(
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             15),
-                                                    child: WidgetGoogleMap(
-                                                      zoom: 12,
-                                                      lat: appController
-                                                          .chatModels[index]
-                                                          .geoPoint!
-                                                          .latitude,
-                                                      lng: appController
-                                                          .chatModels[index]
-                                                          .geoPoint!
-                                                          .longitude,
+                                                    child: Stack(
+                                                      children: [
+                                                        WidgetGoogleMap(
+                                                          zoom: 12,
+                                                          lat: appController
+                                                              .chatModels[index]
+                                                              .geoPoint!
+                                                              .latitude,
+                                                          lng: appController
+                                                              .chatModels[index]
+                                                              .geoPoint!
+                                                              .longitude,
+                                                        ),
+                                                        Positioned(
+                                                          bottom: 0,
+                                                          child: Container(padding: const EdgeInsets.only(left: 4, right: 4),
+                                                            width: 150,
+                                                            height: 60,
+                                                            decoration: BoxDecoration(
+                                                                color: AppConstant
+                                                                    .lightColor
+                                                                    .withOpacity(
+                                                                        0.75)),
+                                                            child: WidgetText(
+                                                                text:
+                                                                    '123/456 Bangna BKK 10260',),
+                                                          ),
+                                                        )
+                                                      ],
                                                     ),
                                                   ),
                                                 )
