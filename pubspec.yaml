@@ -50,6 +50,7 @@ dependencies:
   badges: ^2.0.3
   geolocator: ^9.0.2
   google_maps_flutter: ^2.2.1
+  url_launcher: ^6.1.7
 
 dev_dependencies:
   flutter_test:

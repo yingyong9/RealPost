@@ -8,11 +8,13 @@ class WidgetGoogleMap extends StatelessWidget {
     required this.lat,
     required this.lng,
     this.zoom,
+    this.tapFunc,
   }) : super(key: key);
 
   final double lat;
   final double lng;
   final double? zoom;
+  final Function(LatLng)? tapFunc;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +24,7 @@ class WidgetGoogleMap extends StatelessWidget {
         zoom: zoom ?? 16,
       ),
       onMapCreated: (controller) {},
+      onTap: tapFunc,
       markers: <Marker>[
         Marker(
           markerId: const MarkerId('id'),

@@ -20,11 +20,14 @@ import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/widgets/widget_text_button.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AppService {
-
-  
-
+  Future<void> processLunchUrl({required String url}) async {
+    print('url ----> $url');
+    final Uri uri = Uri.parse(url);
+    await canLaunchUrl(uri) ? await launchUrl(uri) : throw 'Link False';
+  }
 
   Future<Position?> processFindPosition({
     required BuildContext context,

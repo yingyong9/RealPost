@@ -2,13 +2,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
+import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_google_map.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
+import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_progress.dart';
 import 'package:realpost/widgets/widget_text.dart';
@@ -65,7 +68,8 @@ class _ChatPageState extends State<ChatPage> {
                     children: [
                       appController.load.value
                           ? const WidgetProgress()
-                          : appController.chatModels.isEmpty
+                          : (appController.chatModels.isEmpty) ||
+                                  (appController.addressMaps.isEmpty)
                               ? const SizedBox()
                               : SizedBox(
                                   width: boxConstraints.maxWidth,
@@ -83,9 +87,21 @@ class _ChatPageState extends State<ChatPage> {
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
                                               WidgetCircularImage(
-                                                  urlImage: appController
+                                                urlImage: appController
+                                                    .chatModels[index]
+                                                    .urlAvatar,
+                                                tapFunc: () {
+                                                  String uid = appController
                                                       .chatModels[index]
-                                                      .urlAvatar),
+                                                      .uidChat;
+                                                  print(
+                                                      'You tap avatar uid ---> $uid');
+
+                                                  if (uid != user!.uid) {
+                                                    print('Open Private Chat');
+                                                  }
+                                                },
+                                              ),
                                               Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -133,40 +149,82 @@ class _ChatPageState extends State<ChatPage> {
                                                       .geoPoint!.latitude !=
                                                   0
                                               ? SizedBox(
-                                                  width: 150,
-                                                  height: 120,
+                                                  width: 100,
+                                                  height: 100,
                                                   child: ClipRRect(
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             15),
                                                     child: Stack(
                                                       children: [
-                                                        WidgetGoogleMap(
-                                                          zoom: 12,
-                                                          lat: appController
-                                                              .chatModels[index]
-                                                              .geoPoint!
-                                                              .latitude,
-                                                          lng: appController
-                                                              .chatModels[index]
-                                                              .geoPoint!
-                                                              .longitude,
+                                                        // WidgetGoogleMap(
+                                                        //   tapFunc:
+                                                        //       (LatLng latLng) {
+                                                        //     double? lat =
+                                                        //         appController
+                                                        //             .chatModels[
+                                                        //                 index]
+                                                        //             .geoPoint!
+                                                        //             .latitude;
+                                                        //     double? lng =
+                                                        //         appController
+                                                        //             .chatModels[
+                                                        //                 index]
+                                                        //             .geoPoint!
+                                                        //             .longitude;
+                                                        //     String url =
+                                                        //         'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+                                                        //     AppService()
+                                                        //         .processLunchUrl(
+                                                        //             url: url);
+                                                        //   },
+                                                        //   zoom: 12,
+                                                        //   lat: appController
+                                                        //       .chatModels[index]
+                                                        //       .geoPoint!
+                                                        //       .latitude,
+                                                        //   lng: appController
+                                                        //       .chatModels[index]
+                                                        //       .geoPoint!
+                                                        //       .longitude,
+                                                        // ),
+                                                        WidgetImage(
+                                                          path:
+                                                              'images/map.png',
+                                                          tapFunc: () {
+                                                            double? lat =
+                                                                appController
+                                                                    .chatModels[
+                                                                        index]
+                                                                    .geoPoint!
+                                                                    .latitude;
+                                                            double? lng =
+                                                                appController
+                                                                    .chatModels[
+                                                                        index]
+                                                                    .geoPoint!
+                                                                    .longitude;
+                                                            String url =
+                                                                'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+                                                            AppService()
+                                                                .processLunchUrl(
+                                                                    url: url);
+                                                          },
                                                         ),
-                                                        Positioned(
-                                                          bottom: 0,
-                                                          child: Container(padding: const EdgeInsets.only(left: 4, right: 4),
-                                                            width: 150,
-                                                            height: 60,
-                                                            decoration: BoxDecoration(
-                                                                color: AppConstant
-                                                                    .lightColor
-                                                                    .withOpacity(
-                                                                        0.75)),
-                                                            child: WidgetText(
-                                                                text:
-                                                                    '123/456 Bangna BKK 10260',),
-                                                          ),
-                                                        )
+                                                        // Positioned(
+                                                        //   bottom: 0,
+                                                        //   child: Container(padding: const EdgeInsets.only(left: 4, right: 4),
+                                                        //     width: 150,
+                                                        //     height: 40,
+                                                        //     decoration: BoxDecoration(
+                                                        //         color: AppConstant
+                                                        //             .lightColor
+                                                        //             .withOpacity(
+                                                        //                 0.75)),
+                                                        //     child: WidgetText(
+                                                        //         text: appController.addressMaps[index],),
+                                                        //   ),
+                                                        // ),
                                                       ],
                                                     ),
                                                   ),

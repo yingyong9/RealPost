@@ -5,14 +5,18 @@ class WidgetCircularImage extends StatelessWidget {
   const WidgetCircularImage({
     Key? key,
     required this.urlImage,
+    this.tapFunc,
   }) : super(key: key);
 
   final String urlImage;
+  final Function()? tapFunc;
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      backgroundImage: NetworkImage(urlImage),
+    return InkWell(onTap: tapFunc,
+      child: CircleAvatar(
+        backgroundImage: NetworkImage(urlImage),
+      ),
     );
   }
 }
