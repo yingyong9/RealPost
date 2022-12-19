@@ -1,52 +1,48 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: avoid_print
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:realpost/states/private_chat.dart';
+
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
-import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_content_form.dart';
-import 'package:realpost/widgets/widget_form.dart';
-import 'package:realpost/widgets/widget_google_map.dart';
-import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_progress.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
-class ChatPage extends StatefulWidget {
-  const ChatPage({
+class PrivateChat extends StatefulWidget {
+  const PrivateChat({
     Key? key,
-    required this.docIdRoom,
+    required this.uidFriend,
   }) : super(key: key);
 
-  final String docIdRoom;
+  final String uidFriend;
 
   @override
-  State<ChatPage> createState() => _ChatPageState();
+  State<PrivateChat> createState() => _PrivateChatState();
 }
 
-class _ChatPageState extends State<ChatPage> {
-  String? docIdRoom;
+class _PrivateChatState extends State<PrivateChat> {
   TextEditingController textEditingController = TextEditingController();
   var user = FirebaseAuth.instance.currentUser;
+  String? uidFriend, uidLogin;
 
-  AppController appController = Get.put(AppController());
+  AppController controller = Get.put(AppController());
 
   @override
   void initState() {
     super.initState();
-    docIdRoom = widget.docIdRoom;
-    print('docIdRoom ==> $docIdRoom');
-    appController.readAllChat(docIdRoom: widget.docIdRoom);
-    if (appController.docIdRoomChooses.isNotEmpty) {
-      appController.docIdRoomChooses.clear();
-    }
-    appController.docIdRoomChooses.add(docIdRoom.toString());
+    uidFriend = widget.uidFriend;
+    uidLogin = user!.uid;
+
+    // controller.load = true;
+    controller.processFindDocIdPrivateChat(
+        uidLogin: uidLogin!, uidFriend: uidFriend!);
   }
 
   @override
@@ -58,9 +54,10 @@ class _ChatPageState extends State<ChatPage> {
         return GetX(
             init: AppController(),
             builder: (AppController appController) {
-              print('amount chatModels ==> ${appController.chatModels.length}');
-              return GestureDetector(
-                behavior: HitTestBehavior.opaque,
+              print(
+                  ' ##17dec docIdPrivateChats ---> ${appController.docIdPrivateChats}');
+              print('##17dec load ---> ${appController.load}');
+              return GestureDetector( behavior: HitTestBehavior.opaque,
                 onTap: () =>
                     FocusScope.of(context).requestFocus(FocusScopeNode()),
                 child: SizedBox(
@@ -70,8 +67,7 @@ class _ChatPageState extends State<ChatPage> {
                     children: [
                       appController.load.value
                           ? const WidgetProgress()
-                          : (appController.chatModels.isEmpty) ||
-                                  (appController.addressMaps.isEmpty)
+                          : appController.docIdPrivateChats.isEmpty
                               ? const SizedBox()
                               : SizedBox(
                                   width: boxConstraints.maxWidth,
@@ -80,7 +76,7 @@ class _ChatPageState extends State<ChatPage> {
                                     reverse: true,
                                     padding: const EdgeInsets.only(
                                         left: 16, right: 16),
-                                    itemCount: appController.chatModels.length,
+                                    itemCount: appController.privateChatModels.length,
                                     itemBuilder: (context, index) => Container(
                                       margin: const EdgeInsets.only(top: 16),
                                       child: Row(
@@ -90,11 +86,11 @@ class _ChatPageState extends State<ChatPage> {
                                             children: [
                                               WidgetCircularImage(
                                                 urlImage: appController
-                                                    .chatModels[index]
+                                                    .privateChatModels[index]
                                                     .urlAvatar,
                                                 tapFunc: () {
                                                   String uid = appController
-                                                      .chatModels[index]
+                                                      .privateChatModels[index]
                                                       .uidChat;
                                                   print(
                                                       'You tap avatar uid ---> $uid');
@@ -111,13 +107,13 @@ class _ChatPageState extends State<ChatPage> {
                                                 children: [
                                                   WidgetText(
                                                       text: appController
-                                                                  .chatModels[
+                                                                  .privateChatModels[
                                                                       index]
                                                                   .uidChat ==
                                                               user!.uid
                                                           ? 'ฉัน'
                                                           : appController
-                                                              .chatModels[index]
+                                                              .privateChatModels[index]
                                                               .disPlayName),
                                                   Container(
                                                     padding: const EdgeInsets
@@ -131,13 +127,13 @@ class _ChatPageState extends State<ChatPage> {
                                                         .boxChatLogin(),
                                                     child: WidgetText(
                                                         text: appController
-                                                                .chatModels[
+                                                                .privateChatModels[
                                                                     index]
                                                                 .message
                                                                 .isEmpty
                                                             ? '...'
                                                             : appController
-                                                                .chatModels[
+                                                                .privateChatModels[
                                                                     index]
                                                                 .message),
                                                   ),
@@ -148,7 +144,7 @@ class _ChatPageState extends State<ChatPage> {
                                           const SizedBox(
                                             width: 16,
                                           ),
-                                          appController.chatModels[index]
+                                          appController.privateChatModels[index]
                                                       .geoPoint!.latitude !=
                                                   0
                                               ? SizedBox(
@@ -167,13 +163,13 @@ class _ChatPageState extends State<ChatPage> {
                                                           tapFunc: () {
                                                             double? lat =
                                                                 appController
-                                                                    .chatModels[
+                                                                    .privateChatModels[
                                                                         index]
                                                                     .geoPoint!
                                                                     .latitude;
                                                             double? lng =
                                                                 appController
-                                                                    .chatModels[
+                                                                    .privateChatModels[
                                                                         index]
                                                                     .geoPoint!
                                                                     .longitude;
@@ -189,12 +185,12 @@ class _ChatPageState extends State<ChatPage> {
                                                     ),
                                                   ),
                                                 )
-                                              : appController.chatModels[index]
+                                              : appController.privateChatModels[index]
                                                       .urlRealPost.isEmpty
                                                   ? const SizedBox()
                                                   : WidgetImageInternet(
                                                       urlImage: appController
-                                                          .chatModels[index]
+                                                          .privateChatModels[index]
                                                           .urlRealPost,
                                                       width: 100,
                                                       height: 100,
@@ -203,11 +199,12 @@ class _ChatPageState extends State<ChatPage> {
                                       ),
                                     ),
                                   ),
-                                ), //here
+                                ),
                       WidgetContentForm(
                         boxConstraints: boxConstraints,
                         appController: appController,
                         textEditingController: textEditingController,
+                        collection: 'privatechat',
                       ),
                     ],
                   ),
@@ -217,6 +214,4 @@ class _ChatPageState extends State<ChatPage> {
       }),
     );
   }
-
- 
 }

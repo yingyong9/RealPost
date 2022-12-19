@@ -43,19 +43,23 @@ class AppDialog {
     ));
   }
 
-  void mapBottomSheet() {
+  void mapBottomSheet({String? collection}) {
     Get.bottomSheet(GetX(
         init: AppController(),
         builder: (AppController appController) {
           return Container(
             decoration: BoxDecoration(color: AppConstant.bgColor),
-            child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SizedBox(
                   height: 280,
                   child: Stack(
                     children: [
-                      WidgetGoogleMap(lat: appController.positions[0].latitude, lng: appController.positions[0].longitude,),
+                      WidgetGoogleMap(
+                        lat: appController.positions[0].latitude,
+                        lng: appController.positions[0].longitude,
+                      ),
                     ],
                   ),
                 ),
@@ -85,7 +89,10 @@ class AppDialog {
                     AppService()
                         .processInsertChat(
                             chatModel: chatModel,
-                            docIdRoom: appController.docIdRoomChooses[0])
+                            docId: collection != null
+                                ? appController.docIdPrivateChats[0]
+                                : appController.docIdRoomChooses[0],
+                            collection: collection)
                         .then((value) {
                       Get.back();
                     });
@@ -205,7 +212,7 @@ class AppDialog {
     );
   }
 
-  void realPostBottonSheet() {
+  void realPostBottonSheet({String? collection}) {
     Get.bottomSheet(
         GetX(
             init: AppController(),
@@ -243,55 +250,55 @@ class AppDialog {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        appController.urlRealPostChooses.isEmpty
-                            ? const SizedBox()
-                            : Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  WidgetIconButton(
-                                    iconData: Icons.border_color,
-                                    pressFunc: () {
-                                      Get.back();
-                                      normalDialog(
-                                        title: 'บทความ :',
-                                        leadingWidget:
-                                            const Icon(Icons.border_color),
-                                        contentWidget: WidgetForm(
-                                          controller: appController
-                                              .articleControllers[0],
-                                        ),
-                                        actions: <Widget>[
-                                          WidgetTextButton(
-                                            text: 'Ok',
-                                            pressFunc: () {
-                                              print(
-                                                  '##9dec สิ่งที่กรอก --> ${appController.articleControllers[0].text}');
-                                              Get.back();
-                                              realPostBottonSheet();
-                                            },
-                                          ),
-                                          WidgetTextButton(
-                                            text: 'Cancel',
-                                            pressFunc: () {
-                                              Get.back();
-                                              realPostBottonSheet();
-                                            },
-                                          )
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                  WidgetIconButton(
-                                    iconData: Icons.share,
-                                    pressFunc: () {
-                                      normalDialog(
-                                        title: 'Link',
-                                        leadingWidget: const Icon(Icons.share),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
+                        // appController.urlRealPostChooses.isEmpty
+                        //     ? const SizedBox()
+                        //     : Row(
+                        //         mainAxisSize: MainAxisSize.min,
+                        //         children: [
+                        //           WidgetIconButton(
+                        //             iconData: Icons.border_color,
+                        //             pressFunc: () {
+                        //               Get.back();
+                        //               normalDialog(
+                        //                 title: 'บทความ :',
+                        //                 leadingWidget:
+                        //                     const Icon(Icons.border_color),
+                        //                 contentWidget: WidgetForm(
+                        //                   controller: appController
+                        //                       .articleControllers[0],
+                        //                 ),
+                        //                 actions: <Widget>[
+                        //                   WidgetTextButton(
+                        //                     text: 'Ok',
+                        //                     pressFunc: () {
+                        //                       print(
+                        //                           '##9dec สิ่งที่กรอก --> ${appController.articleControllers[0].text}');
+                        //                       Get.back();
+                        //                       realPostBottonSheet();
+                        //                     },
+                        //                   ),
+                        //                   WidgetTextButton(
+                        //                     text: 'Cancel',
+                        //                     pressFunc: () {
+                        //                       Get.back();
+                        //                       realPostBottonSheet();
+                        //                     },
+                        //                   )
+                        //                 ],
+                        //               );
+                        //             },
+                        //           ),
+                        //           WidgetIconButton(
+                        //             iconData: Icons.share,
+                        //             pressFunc: () {
+                        //               normalDialog(
+                        //                 title: 'Link',
+                        //                 leadingWidget: const Icon(Icons.share),
+                        //               );
+                        //             },
+                        //           ),
+                        //         ],
+                        //       ),
                         WidgetIconButton(
                           iconData: Icons.add_a_photo,
                           pressFunc: () async {
@@ -306,34 +313,34 @@ class AppDialog {
                             var result = await AppService()
                                 .processTakePhoto(source: ImageSource.camera);
                             if (result != null) {
-                              if (appController.fileRealPosts.isNotEmpty) {
-                                appController.fileRealPosts.clear();
-                              }
+                              // if (appController.fileRealPosts.isNotEmpty) {
+                              //   appController.fileRealPosts.clear();
+                              // }
                               appController.fileRealPosts.add(result);
                             }
                           },
                         ),
-                        WidgetIconButton(
-                          iconData: Icons.add_photo_alternate,
-                          pressFunc: () async {
-                            if (appController.fileRealPosts.isNotEmpty) {
-                              appController.fileRealPosts.clear();
-                            }
+                        // WidgetIconButton(
+                        //   iconData: Icons.add_photo_alternate,
+                        //   pressFunc: () async {
+                        //     if (appController.fileRealPosts.isNotEmpty) {
+                        //       appController.fileRealPosts.clear();
+                        //     }
 
-                            if (appController.urlRealPostChooses.isNotEmpty) {
-                              appController.urlRealPostChooses.clear();
-                            }
+                        //     if (appController.urlRealPostChooses.isNotEmpty) {
+                        //       appController.urlRealPostChooses.clear();
+                        //     }
 
-                            var result = await AppService()
-                                .processTakePhoto(source: ImageSource.gallery);
-                            if (result != null) {
-                              if (appController.fileRealPosts.isNotEmpty) {
-                                appController.fileRealPosts.clear();
-                              }
-                              appController.fileRealPosts.add(result);
-                            }
-                          },
-                        ),
+                        //     var result = await AppService()
+                        //         .processTakePhoto(source: ImageSource.gallery);
+                        //     if (result != null) {
+                        //       if (appController.fileRealPosts.isNotEmpty) {
+                        //         appController.fileRealPosts.clear();
+                        //       }
+                        //       appController.fileRealPosts.add(result);
+                        //     }
+                        //   },
+                        // ),
                         WidgetIconButton(
                           iconData: Icons.emoji_emotions,
                           pressFunc: () {
@@ -349,7 +356,7 @@ class AppDialog {
                             print(
                                 'You tap pin ===> ${appController.positions[0]}');
                             Get.back();
-                            mapBottomSheet();
+                            mapBottomSheet(collection: collection);
                           },
                         ),
                         ((appController.fileRealPosts.isNotEmpty) ||
@@ -383,6 +390,9 @@ class AppDialog {
 
                                   //About RealPost
                                   if (appController.fileRealPosts.isNotEmpty) {
+                                    print(
+                                        '##19dec แบบถ่ายภาพ  ${appController.fileRealPosts.length}');
+
                                     //upload
                                     await AppService()
                                         .processUploadPhoto(
@@ -390,6 +400,9 @@ class AppDialog {
                                                 appController.fileRealPosts[0],
                                             path: 'realpost')
                                         .then((value) {
+                                      print(
+                                          '##19dec url ของภาพที่ อัพโหลดไป ---> $value');
+
                                       if (appController
                                           .urlRealPostChooses.isNotEmpty) {
                                         appController.urlRealPostChooses
@@ -398,35 +411,51 @@ class AppDialog {
                                       appController.urlRealPostChooses
                                           .add(value.toString());
 
-                                      ChatModel chatModel = ChatModel(
-                                        message: appController.messageChats[0],
-                                        timestamp:
-                                            Timestamp.fromDate(DateTime.now()),
-                                        uidChat: FirebaseAuth
-                                            .instance.currentUser!.uid,
-                                        urlRealPost:
-                                            appController.urlRealPostChooses[0],
-                                        disPlayName: appController
-                                            .userModels[0].displayName,
-                                        urlAvatar: appController.userModels[0]
-                                                .urlAvatar!.isEmpty
-                                            ? appController.urlAvatarChooses[0]
-                                            : appController
-                                                .userModels[0].urlAvatar!,
-                                        article: appController
-                                            .articleControllers[0].text,
-                                        link: '',
-                                      );
+                                      print(
+                                          '##19dec urlRealPostChoose[0] ----> ${appController.urlRealPostChooses[0]}');
+
+                                     ChatModel chatModel = ChatModel(
+                                      message:
+                                          appController.messageChats.isEmpty
+                                              ? ''
+                                              : appController.messageChats[0],
+                                      timestamp:
+                                          Timestamp.fromDate(DateTime.now()),
+                                      uidChat: FirebaseAuth
+                                          .instance.currentUser!.uid,
+                                      urlRealPost: appController
+                                              .urlRealPostChooses.isEmpty
+                                          ? ''
+                                          : appController.urlRealPostChooses[0],
+                                      disPlayName: appController
+                                          .userModels[0].displayName,
+                                      urlAvatar: appController
+                                              .userModels[0].urlAvatar!.isEmpty
+                                          ? appController.urlAvatarChooses[0]
+                                          : appController
+                                              .userModels[0].urlAvatar!,
+                                      article: appController
+                                          .articleControllers[0].text,
+                                      link: '',
+                                    );
+
+                                      print(
+                                          'chatModel ---> ${chatModel.toMap()}');
+
                                       AppService()
                                           .processInsertChat(
-                                              chatModel: chatModel,
-                                              docIdRoom: appController
-                                                  .docIdRoomChooses[0])
+                                        chatModel: chatModel,
+                                        docId:
+                                            appController.docIdRoomChooses[0],
+                                        collection: collection,
+                                      )
                                           .then((value) {
                                         Get.back();
                                       });
                                     });
                                   } else {
+                                    print('##19dec ไม่ได้ถ่ายภาพ');
+
                                     ChatModel chatModel = ChatModel(
                                       message:
                                           appController.messageChats.isEmpty
@@ -453,9 +482,12 @@ class AppDialog {
                                     );
                                     AppService()
                                         .processInsertChat(
-                                            chatModel: chatModel,
-                                            docIdRoom: appController
-                                                .docIdRoomChooses[0])
+                                      chatModel: chatModel,
+                                      docId: collection != null
+                                          ? appController.docIdPrivateChats[0]
+                                          : appController.docIdRoomChooses[0],
+                                      collection: collection,
+                                    )
                                         .then((value) {
                                       Get.back();
                                     });

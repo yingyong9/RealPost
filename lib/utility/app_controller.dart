@@ -8,6 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:realpost/models/address_map_model.dart';
 import 'package:realpost/models/chat_model.dart';
+import 'package:realpost/models/private_chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/stamp_model.dart';
 import 'package:realpost/models/user_model.dart';
@@ -35,6 +36,52 @@ class AppController extends GetxController {
       <TextEditingController>[TextEditingController()].obs;
 
   RxList<Position> positions = <Position>[].obs;
+
+  RxList<String> docIdPrivateChats = <String>[].obs;
+  RxList<ChatModel> privateChatModels = <ChatModel>[].obs;
+
+  Future<void> processFindDocIdPrivateChat(
+      {required String uidLogin, required String uidFriend}) async {
+    if (docIdPrivateChats.isNotEmpty) {
+      docIdPrivateChats.clear();
+      privateChatModels.clear();
+    }
+
+    await FirebaseFirestore.instance
+        .collection('privatechat')
+        .get()
+        .then((value) async {
+      if (value.docs.isNotEmpty) {
+        for (var element in value.docs) {
+          PrivateChatModel privateChatModel =
+              PrivateChatModel.fromMap(element.data());
+          print('##17dec privateChatModel ---> ${privateChatModel.toMap()}');
+          if (privateChatModel.uidchats.contains(uidLogin)) {
+            if (privateChatModel.uidchats.contains(uidFriend)) {
+              docIdPrivateChats.add(element.id);
+
+              await FirebaseFirestore.instance
+                  .collection('privatechat')
+                  .doc(element.id)
+                  .collection('chat')
+                  .orderBy('timestamp', descending: true)
+                  .snapshots()
+                  .listen((event) {
+                if (privateChatModels.isNotEmpty) {
+                  privateChatModels.clear();
+                }
+                for (var element2 in event.docs) {
+                  ChatModel model = ChatModel.fromMap(element2.data());
+                  privateChatModels.add(model);
+                }
+              });
+            }
+          }
+        }
+      }
+      load.value = false;
+    });
+  }
 
   Future<void> findUserModels() async {
     userModels.clear();

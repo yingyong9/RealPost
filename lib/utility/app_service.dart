@@ -124,17 +124,25 @@ class AppService {
   }
 
   Future<void> processInsertChat(
-      {required ChatModel chatModel, required String docIdRoom}) async {
+      {required ChatModel chatModel,
+      required String docId,
+      String? collection}) async {
     AppController appController = Get.put(AppController());
+
+    print(
+        '##19dec @processInsertChat collection --> $collection, docId --> $docId');
+
     await FirebaseFirestore.instance
-        .collection('room')
-        .doc(docIdRoom)
+        .collection(collection ?? 'room')
+        .doc(docId)
         .collection('chat')
         .doc()
         .set(chatModel.toMap())
         .then((value) {
-      print('Process Insert Chat Success');
+      print('##19dec Process Insert Chat Success');
       appController.urlRealPostChooses.clear();
+      appController.messageChats.clear();
+     
     });
   }
 
