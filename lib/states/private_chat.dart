@@ -57,7 +57,8 @@ class _PrivateChatState extends State<PrivateChat> {
               print(
                   ' ##17dec docIdPrivateChats ---> ${appController.docIdPrivateChats}');
               print('##17dec load ---> ${appController.load}');
-              return GestureDetector( behavior: HitTestBehavior.opaque,
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 onTap: () =>
                     FocusScope.of(context).requestFocus(FocusScopeNode()),
                 child: SizedBox(
@@ -76,7 +77,8 @@ class _PrivateChatState extends State<PrivateChat> {
                                     reverse: true,
                                     padding: const EdgeInsets.only(
                                         left: 16, right: 16),
-                                    itemCount: appController.privateChatModels.length,
+                                    itemCount:
+                                        appController.privateChatModels.length,
                                     itemBuilder: (context, index) => Container(
                                       margin: const EdgeInsets.only(top: 16),
                                       child: Row(
@@ -97,7 +99,9 @@ class _PrivateChatState extends State<PrivateChat> {
 
                                                   if (uid != user!.uid) {
                                                     print('Open Private Chat');
-                                                    Get.to(PrivateChat(uidFriend: uid,));
+                                                    Get.to(PrivateChat(
+                                                      uidFriend: uid,
+                                                    ));
                                                   }
                                                 },
                                               ),
@@ -113,9 +117,13 @@ class _PrivateChatState extends State<PrivateChat> {
                                                               user!.uid
                                                           ? 'ฉัน'
                                                           : appController
-                                                              .privateChatModels[index]
+                                                              .privateChatModels[
+                                                                  index]
                                                               .disPlayName),
                                                   Container(
+                                                    constraints:
+                                                        const BoxConstraints(
+                                                            maxWidth: 170),
                                                     padding: const EdgeInsets
                                                             .symmetric(
                                                         horizontal: 16,
@@ -156,7 +164,6 @@ class _PrivateChatState extends State<PrivateChat> {
                                                             15),
                                                     child: Stack(
                                                       children: [
-                                                      
                                                         WidgetImage(
                                                           path:
                                                               'images/map.png',
@@ -180,17 +187,19 @@ class _PrivateChatState extends State<PrivateChat> {
                                                                     url: url);
                                                           },
                                                         ),
-                                                       
                                                       ],
                                                     ),
                                                   ),
                                                 )
-                                              : appController.privateChatModels[index]
-                                                      .urlRealPost.isEmpty
+                                              : appController
+                                                      .privateChatModels[index]
+                                                      .urlRealPost
+                                                      .isEmpty
                                                   ? const SizedBox()
                                                   : WidgetImageInternet(
                                                       urlImage: appController
-                                                          .privateChatModels[index]
+                                                          .privateChatModels[
+                                                              index]
                                                           .urlRealPost,
                                                       width: 100,
                                                       height: 100,

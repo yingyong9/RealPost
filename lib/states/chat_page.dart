@@ -119,7 +119,9 @@ class _ChatPageState extends State<ChatPage> {
                                                           : appController
                                                               .chatModels[index]
                                                               .disPlayName),
-                                                  Container(
+                                                  Container(constraints:
+                                                        const BoxConstraints(
+                                                            maxWidth: 170),
                                                     padding: const EdgeInsets
                                                             .symmetric(
                                                         horizontal: 16,

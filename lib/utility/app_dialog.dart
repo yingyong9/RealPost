@@ -445,9 +445,10 @@ class AppDialog {
                                       AppService()
                                           .processInsertChat(
                                         chatModel: chatModel,
-                                        docId:
-                                            appController.docIdRoomChooses[0],
-                                        collection: collection,
+                                      docId: collection != null
+                                          ? appController.docIdPrivateChats[0]
+                                          : appController.docIdRoomChooses[0],
+                                      collection: collection,
                                       )
                                           .then((value) {
                                         Get.back();
