@@ -140,9 +140,12 @@ class AppService {
         .set(chatModel.toMap())
         .then((value) {
       print('##19dec Process Insert Chat Success');
+      appController.shareLocation.value = false;
       appController.urlRealPostChooses.clear();
       appController.messageChats.clear();
-     
+      if (appController.fileRealPosts.isNotEmpty) {
+        appController.fileRealPosts.clear();
+      }
     });
   }
 

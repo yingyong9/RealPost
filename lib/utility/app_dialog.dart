@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,14 +11,12 @@ import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_button.dart';
-import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_google_map.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_menu.dart';
 import 'package:realpost/widgets/widget_text.dart';
-import 'package:realpost/widgets/widget_text_button.dart';
 
 class AppDialog {
   final BuildContext context;
@@ -222,214 +221,294 @@ class AppDialog {
               return Container(
                 decoration: BoxDecoration(color: AppConstant.bgColor),
                 height: 306,
-                child: Column(
+                child: Stack(
                   children: [
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    WidgetText(
-                      text: 'Real Post Stamp',
-                      textStyle: AppConstant().h2Style(),
-                    ),
-                    appController.urlRealPostChooses.isNotEmpty
-                        ? WidgetImageInternet(
-                            urlImage: appController.urlRealPostChooses[0],
-                            width: 200,
-                            height: 200,
-                          )
-                        : appController.fileRealPosts.isEmpty
-                            ? const WidgetImage(
-                                path: 'images/funny1.png',
-                                size: 200,
-                              )
-                            : Image.file(
-                                appController.fileRealPosts[0],
+                    Column(
+                      children: [
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        WidgetText(
+                          text: 'Real Post Stamp',
+                          textStyle: AppConstant().h2Style(),
+                        ),
+                        appController.urlRealPostChooses.isNotEmpty
+                            ? WidgetImageInternet(
+                                urlImage: appController.urlRealPostChooses[0],
                                 width: 200,
                                 height: 200,
-                              ),
-                    Divider(
-                      color: AppConstant.dark,
-                      thickness: 1,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        WidgetIconButton(
-                          iconData: Icons.add_a_photo,
-                          pressFunc: () async {
-                            if (appController.fileRealPosts.isNotEmpty) {
-                              appController.fileRealPosts.clear();
-                            }
-
-                            if (appController.urlRealPostChooses.isNotEmpty) {
-                              appController.urlRealPostChooses.clear();
-                            }
-
-                            var result = await AppService()
-                                .processTakePhoto(source: ImageSource.camera);
-                            if (result != null) {
-                              appController.fileRealPosts.add(result);
-                            }
-                          },
+                              )
+                            : appController.fileRealPosts.isEmpty
+                                ? const WidgetImage(
+                                    path: 'images/funny1.png',
+                                    size: 200,
+                                  )
+                                : Image.file(
+                                    appController.fileRealPosts[0],
+                                    width: 200,
+                                    height: 200,
+                                  ),
+                        Divider(
+                          color: AppConstant.dark,
+                          thickness: 1,
                         ),
-                        WidgetIconButton(
-                          iconData: Icons.emoji_emotions,
-                          pressFunc: () {
-                            Get.to(const EmojiPage(
-                              avatarBol: false,
-                            ))!
-                                .then((value) {});
-                          },
-                        ),
-                        WidgetIconButton(
-                          iconData: Icons.pin_drop,
-                          pressFunc: () {
-                            print(
-                                'You tap pin ===> ${appController.positions[0]}');
-                            Get.back();
-                            mapBottomSheet(collection: collection);
-                          },
-                        ),const Spacer(),
-                        ((appController.fileRealPosts.isNotEmpty) ||
-                                (appController.urlRealPostChooses.isNotEmpty) ||
-                                appController
-                                    .userModels[0].urlAvatar!.isNotEmpty)
-                            ? WidgetIconButton(
-                                iconData: Icons.send,
-                                pressFunc: () async {
-                                  //About Avatar
-                                  if (appController.fileAvatars.isNotEmpty) {
-                                    //Have file Avatar
-                                    await AppService()
-                                        .processUploadPhoto(
-                                            file: appController.fileAvatars[0],
-                                            path: 'avatar')
-                                        .then((value) {
-                                      print('value upload avatar ==> $value');
-
-                                      appController.urlAvatarChooses.clear();
-                                      appController.urlAvatarChooses
-                                          .add(value.toString());
-                                      AppService().editUrlAvatar();
-                                    });
-                                  } else {
-                                    if (appController
-                                        .urlAvatarChooses.isNotEmpty) {
-                                      AppService().editUrlAvatar();
-                                    }
-                                  }
-
-                                  //About RealPost
-                                  if (appController.fileRealPosts.isNotEmpty) {
-                                    print(
-                                        '##19dec แบบถ่ายภาพ  ${appController.fileRealPosts.length}');
-
-                                    //upload
-                                    await AppService()
-                                        .processUploadPhoto(
-                                            file:
-                                                appController.fileRealPosts[0],
-                                            path: 'realpost')
-                                        .then((value) {
-                                      print(
-                                          '##19dec url ของภาพที่ อัพโหลดไป ---> $value');
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            (appController.fileRealPosts.isNotEmpty) ||
+                                    (appController
+                                        .urlRealPostChooses.isNotEmpty)
+                                ? const SizedBox()
+                                : WidgetIconButton(
+                                    iconData: Icons.add_a_photo,
+                                    pressFunc: () async {
+                                      if (appController
+                                          .fileRealPosts.isNotEmpty) {
+                                        appController.fileRealPosts.clear();
+                                      }
 
                                       if (appController
                                           .urlRealPostChooses.isNotEmpty) {
                                         appController.urlRealPostChooses
                                             .clear();
                                       }
-                                      appController.urlRealPostChooses
-                                          .add(value.toString());
 
+                                      var result = await AppService()
+                                          .processTakePhoto(
+                                              source: ImageSource.camera);
+                                      if (result != null) {
+                                        appController.fileRealPosts.add(result);
+                                      }
+                                    },
+                                  ),
+                            (appController.fileRealPosts.isNotEmpty) ||
+                                    (appController
+                                        .urlRealPostChooses.isNotEmpty)
+                                ? const SizedBox()
+                                : WidgetIconButton(
+                                    iconData: Icons.emoji_emotions,
+                                    pressFunc: () {
+                                      Get.to(const EmojiPage(
+                                        avatarBol: false,
+                                      ))!
+                                          .then((value) {});
+                                    },
+                                  ),
+                            (appController.fileRealPosts.isNotEmpty) ||
+                                    (appController
+                                        .urlRealPostChooses.isNotEmpty)
+                                ? SizedBox(
+                                    width: 150,
+                                    height: 45,
+                                    child: CheckboxListTile(
+                                      value: appController.shareLocation.value,
+                                      onChanged: (value) {
+                                        appController.shareLocation.value =
+                                            value!;
+                                      },
+                                      title:
+                                          const WidgetText(text: 'แชร์พิกัด'),
+                                    ),
+                                  )
+                                : WidgetIconButton(
+                                    iconData: Icons.pin_drop,
+                                    pressFunc: () {
                                       print(
-                                          '##19dec urlRealPostChoose[0] ----> ${appController.urlRealPostChooses[0]}');
+                                          'You tap pin ===> ${appController.positions[0]}');
+                                      Get.back();
+                                      mapBottomSheet(collection: collection);
+                                    },
+                                  ),
+                            const Spacer(),
+                            ((appController.fileRealPosts.isNotEmpty) ||
+                                    (appController
+                                        .urlRealPostChooses.isNotEmpty) ||
+                                    appController
+                                        .userModels[0].urlAvatar!.isNotEmpty)
+                                ? WidgetIconButton(
+                                    iconData: Icons.send,
+                                    pressFunc: () async {
+                                      //About Avatar
+                                      if (appController
+                                          .fileAvatars.isNotEmpty) {
+                                        //Have file Avatar
+                                        await AppService()
+                                            .processUploadPhoto(
+                                                file: appController
+                                                    .fileAvatars[0],
+                                                path: 'avatar')
+                                            .then((value) {
+                                          print(
+                                              'value upload avatar ==> $value');
 
-                                      ChatModel chatModel = ChatModel(
-                                        message:
-                                            appController.messageChats.isEmpty
+                                          appController.urlAvatarChooses
+                                              .clear();
+                                          appController.urlAvatarChooses
+                                              .add(value.toString());
+                                          AppService().editUrlAvatar();
+                                        });
+                                      } else {
+                                        if (appController
+                                            .urlAvatarChooses.isNotEmpty) {
+                                          AppService().editUrlAvatar();
+                                        }
+                                      }
+
+                                      //About RealPost
+                                      if (appController
+                                          .fileRealPosts.isNotEmpty) {
+                                        print(
+                                            '##19dec แบบถ่ายภาพ  ${appController.fileRealPosts.length}');
+
+                                        //upload
+                                        await AppService()
+                                            .processUploadPhoto(
+                                                file: appController
+                                                    .fileRealPosts[0],
+                                                path: 'realpost')
+                                            .then((value) {
+                                          print(
+                                              '##19dec url ของภาพที่ อัพโหลดไป ---> $value');
+
+                                          if (appController
+                                              .urlRealPostChooses.isNotEmpty) {
+                                            appController.urlRealPostChooses
+                                                .clear();
+                                          }
+                                          appController.urlRealPostChooses
+                                              .add(value.toString());
+
+                                          print(
+                                              '##19dec urlRealPostChoose[0] ----> ${appController.urlRealPostChooses[0]}');
+
+                                          ChatModel chatModel = ChatModel(
+                                            message: appController
+                                                    .messageChats.isEmpty
                                                 ? ''
                                                 : appController.messageChats[0],
-                                        timestamp:
-                                            Timestamp.fromDate(DateTime.now()),
-                                        uidChat: FirebaseAuth
-                                            .instance.currentUser!.uid,
-                                        urlRealPost: appController
-                                                .urlRealPostChooses.isEmpty
-                                            ? ''
-                                            : appController
-                                                .urlRealPostChooses[0],
-                                        disPlayName: appController
-                                            .userModels[0].displayName,
-                                        urlAvatar: appController.userModels[0]
-                                                .urlAvatar!.isEmpty
-                                            ? appController.urlAvatarChooses[0]
-                                            : appController
-                                                .userModels[0].urlAvatar!,
-                                        article: appController
-                                            .articleControllers[0].text,
-                                        link: '',
-                                      );
+                                            timestamp: Timestamp.fromDate(
+                                                DateTime.now()),
+                                            uidChat: FirebaseAuth
+                                                .instance.currentUser!.uid,
+                                            urlRealPost: appController
+                                                    .urlRealPostChooses.isEmpty
+                                                ? ''
+                                                : appController
+                                                    .urlRealPostChooses[0],
+                                            disPlayName: appController
+                                                .userModels[0].displayName,
+                                            urlAvatar: appController
+                                                    .userModels[0]
+                                                    .urlAvatar!
+                                                    .isEmpty
+                                                ? appController
+                                                    .urlAvatarChooses[0]
+                                                : appController
+                                                    .userModels[0].urlAvatar!,
+                                            article: appController
+                                                .articleControllers[0].text,
+                                            link: '',
+                                            geoPoint: appController
+                                                    .shareLocation.value
+                                                ? GeoPoint(
+                                                    appController
+                                                        .positions[0].latitude,
+                                                    appController
+                                                        .positions[0].longitude)
+                                                : null,
+                                          );
 
-                                      print(
-                                          'chatModel ---> ${chatModel.toMap()}');
+                                          print(
+                                              'chatModel ---> ${chatModel.toMap()}');
 
-                                      AppService()
-                                          .processInsertChat(
-                                        chatModel: chatModel,
-                                        docId: collection != null
-                                            ? appController.docIdPrivateChats[0]
-                                            : appController.docIdRoomChooses[0],
-                                        collection: collection,
-                                      )
-                                          .then((value) {
-                                        Get.back();
-                                      });
-                                    });
-                                  } else {
-                                    print('##19dec ไม่ได้ถ่ายภาพ');
+                                          AppService()
+                                              .processInsertChat(
+                                            chatModel: chatModel,
+                                            docId: collection != null
+                                                ? appController
+                                                    .docIdPrivateChats[0]
+                                                : appController
+                                                    .docIdRoomChooses[0],
+                                            collection: collection,
+                                          )
+                                              .then((value) {
+                                            Get.back();
+                                          });
+                                        });
+                                      } else {
+                                        print('##19dec ไม่ได้ถ่ายภาพ');
 
-                                    ChatModel chatModel = ChatModel(
-                                      message:
-                                          appController.messageChats.isEmpty
+                                        ChatModel chatModel = ChatModel(
+                                          message: appController
+                                                  .messageChats.isEmpty
                                               ? ''
                                               : appController.messageChats[0],
-                                      timestamp:
-                                          Timestamp.fromDate(DateTime.now()),
-                                      uidChat: FirebaseAuth
-                                          .instance.currentUser!.uid,
-                                      urlRealPost: appController
-                                              .urlRealPostChooses.isEmpty
-                                          ? ''
-                                          : appController.urlRealPostChooses[0],
-                                      disPlayName: appController
-                                          .userModels[0].displayName,
-                                      urlAvatar: appController
-                                              .userModels[0].urlAvatar!.isEmpty
-                                          ? appController.urlAvatarChooses[0]
-                                          : appController
-                                              .userModels[0].urlAvatar!,
-                                      article: appController
-                                          .articleControllers[0].text,
-                                      link: '',
-                                    );
-                                    AppService()
-                                        .processInsertChat(
-                                      chatModel: chatModel,
-                                      docId: collection != null
-                                          ? appController.docIdPrivateChats[0]
-                                          : appController.docIdRoomChooses[0],
-                                      collection: collection,
-                                    )
-                                        .then((value) {
-                                      Get.back();
-                                    });
-                                  }
-                                },
-                              )
-                            : const SizedBox(),
+                                          timestamp: Timestamp.fromDate(
+                                              DateTime.now()),
+                                          uidChat: FirebaseAuth
+                                              .instance.currentUser!.uid,
+                                          urlRealPost: appController
+                                                  .urlRealPostChooses.isEmpty
+                                              ? ''
+                                              : appController
+                                                  .urlRealPostChooses[0],
+                                          disPlayName: appController
+                                              .userModels[0].displayName,
+                                          urlAvatar: appController.userModels[0]
+                                                  .urlAvatar!.isEmpty
+                                              ? appController
+                                                  .urlAvatarChooses[0]
+                                              : appController
+                                                  .userModels[0].urlAvatar!,
+                                          article: appController
+                                              .articleControllers[0].text,
+                                          link: '',
+                                          geoPoint: appController
+                                                    .shareLocation.value
+                                                ? GeoPoint(
+                                                    appController
+                                                        .positions[0].latitude,
+                                                    appController
+                                                        .positions[0].longitude)
+                                                : null,
+                                        );
+                                        AppService()
+                                            .processInsertChat(
+                                          chatModel: chatModel,
+                                          docId: collection != null
+                                              ? appController
+                                                  .docIdPrivateChats[0]
+                                              : appController
+                                                  .docIdRoomChooses[0],
+                                          collection: collection,
+                                        )
+                                            .then((value) {
+                                          Get.back();
+                                        });
+                                      }
+                                    },
+                                  )
+                                : const SizedBox(),
+                          ],
+                        ),
                       ],
                     ),
+                    WidgetIconButton(
+                      pressFunc: () {
+                        if (appController.fileRealPosts.isNotEmpty) {
+                          appController.fileRealPosts.clear();
+                        }
+
+                        if (appController.urlRealPostChooses.isNotEmpty) {
+                          appController.urlRealPostChooses.clear();
+                        }
+
+                        // Get.back();
+                      },
+                      iconData: GetPlatform.isAndroid
+                          ? Icons.arrow_back
+                          : Icons.arrow_back_ios,
+                    )
                   ],
                 ),
               );
