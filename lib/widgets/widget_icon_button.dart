@@ -19,7 +19,7 @@ class WidgetIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
+    return IconButton(padding: const EdgeInsets.all(4),
         onPressed: pressFunc,
         icon: iconWidget ??
             Icon(
