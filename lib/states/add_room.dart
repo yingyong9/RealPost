@@ -44,7 +44,7 @@ class _AddRoomState extends State<AddRoom> {
       backgroundColor: AppConstant.bgColor,
       appBar: AppBar(
         title:
-            const WidgetText(text: 'ยินดีต้อนรับ สู่การสร้าง Real Post Room'),
+            const WidgetText(text: 'ยินดีต้อนรับ สู่การสร้าง Real Post'),
       ),
       body: LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
         return GetX(
