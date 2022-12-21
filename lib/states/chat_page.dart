@@ -101,7 +101,9 @@ class _ChatPageState extends State<ChatPage> {
 
                                                   if (uid != user!.uid) {
                                                     print('Open Private Chat');
-                                                    Get.to(PrivateChat(uidFriend: uid,));
+                                                    Get.to(PrivateChat(
+                                                      uidFriend: uid,
+                                                    ));
                                                   }
                                                 },
                                               ),
@@ -119,7 +121,8 @@ class _ChatPageState extends State<ChatPage> {
                                                           : appController
                                                               .chatModels[index]
                                                               .disPlayName),
-                                                  Container(constraints:
+                                                  Container(
+                                                    constraints:
                                                         const BoxConstraints(
                                                             maxWidth: 170),
                                                     padding: const EdgeInsets
@@ -150,56 +153,41 @@ class _ChatPageState extends State<ChatPage> {
                                           const SizedBox(
                                             width: 16,
                                           ),
-                                          appController.chatModels[index]
-                                                      .geoPoint!.latitude !=
-                                                  0
-                                              ? SizedBox(
-                                                  width: 100,
-                                                  height: 100,
-                                                  child: ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            15),
-                                                    child: Stack(
-                                                      children: [
-                                                      
-                                                        WidgetImage(
-                                                          path:
-                                                              'images/map.png',
-                                                          tapFunc: () {
-                                                            double? lat =
-                                                                appController
-                                                                    .chatModels[
-                                                                        index]
-                                                                    .geoPoint!
-                                                                    .latitude;
-                                                            double? lng =
-                                                                appController
-                                                                    .chatModels[
-                                                                        index]
-                                                                    .geoPoint!
-                                                                    .longitude;
-                                                            String url =
-                                                                'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
-                                                            AppService()
-                                                                .processLunchUrl(
-                                                                    url: url);
-                                                          },
-                                                        ),
-                                                       
-                                                      ],
-                                                    ),
-                                                  ),
-                                                )
+                                          (appController.chatModels[index]
+                                                          .geoPoint!.latitude !=
+                                                      0) &&
+                                                  (appController
+                                                      .chatModels[index]
+                                                      .urlRealPost
+                                                      .isEmpty)
+                                              ? imageMap(appController, index)
                                               : appController.chatModels[index]
                                                       .urlRealPost.isEmpty
                                                   ? const SizedBox()
-                                                  : WidgetImageInternet(
-                                                      urlImage: appController
-                                                          .chatModels[index]
-                                                          .urlRealPost,
-                                                      width: 100,
-                                                      height: 100,
+                                                  : Column(
+                                                      children: [
+                                                        WidgetImageInternet(
+                                                          urlImage:
+                                                              appController
+                                                                  .chatModels[
+                                                                      index]
+                                                                  .urlRealPost,
+                                                          width: 100,
+                                                          height: 100,
+                                                        ),
+                                                        appController
+                                                                    .chatModels[
+                                                                        index]
+                                                                    .geoPoint!
+                                                                    .latitude !=
+                                                                0
+                                                            ? Container(width: 30,height: 30,
+                                                              child: imageMap(
+                                                                  appController,
+                                                                  index),
+                                                            )
+                                                            : const SizedBox(),
+                                                      ],
                                                     ),
                                         ],
                                       ),
@@ -220,5 +208,29 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
- 
+  SizedBox imageMap(AppController appController, int index) {
+    return SizedBox(
+      width: 100,
+      height: 100,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: Stack(
+          children: [
+            WidgetImage(
+              path: 'images/map.png',
+              tapFunc: () {
+                double? lat =
+                    appController.chatModels[index].geoPoint!.latitude;
+                double? lng =
+                    appController.chatModels[index].geoPoint!.longitude;
+                String url =
+                    'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+                AppService().processLunchUrl(url: url);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
