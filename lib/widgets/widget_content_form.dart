@@ -39,7 +39,7 @@ class WidgetContentForm extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SizedBox(
-              width: 150,
+              width: 250,
               child: Row(
                 children: [
                   WidgetIconButton(
@@ -52,6 +52,14 @@ class WidgetContentForm extends StatelessWidget {
                   ),
                   WidgetIconButton(
                     iconData: Icons.emoji_emotions,
+                    pressFunc: () {},
+                  ),
+                   WidgetIconButton(
+                    iconData: Icons.shopping_cart,
+                    pressFunc: () {},
+                  ),
+                   WidgetIconButton(
+                    iconData: Icons.shopping_basket,
                     pressFunc: () {},
                   ),
                 ],

@@ -17,6 +17,7 @@ import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_menu.dart';
 import 'package:realpost/widgets/widget_text.dart';
+import 'package:realpost/widgets/widget_text_button.dart';
 
 class AppDialog {
   final BuildContext context;
@@ -298,16 +299,71 @@ class AppDialog {
                                     (appController
                                         .urlRealPostChooses.isNotEmpty)
                                 ? SizedBox(
-                                    width: 150,
-                                    height: 45,
-                                    child: CheckboxListTile(
-                                      value: appController.shareLocation.value,
-                                      onChanged: (value) {
-                                        appController.shareLocation.value =
-                                            value!;
-                                      },
-                                      title:
-                                          const WidgetText(text: 'แชร์พิกัด'),
+                                    child: Row(
+                                      children: [
+                                        WidgetIconButton(
+                                          iconData: Icons.map,
+                                          color:
+                                              appController.shareLocation.value
+                                                  ? AppConstant.lightColor
+                                                  : Colors.white,
+                                          pressFunc: () {
+                                            if (appController
+                                                .shareLocation.value) {
+                                              appController
+                                                  .shareLocation.value = false;
+                                            } else {
+                                              AppDialog(context: context)
+                                                  .normalDialog(
+                                                title:
+                                                    'ต้องการแชร์ พิกัด กด OK',
+                                                leadingWidget:
+                                                    const WidgetImage(
+                                                  path: 'images/map.png',
+                                                  size: 80,
+                                                ),
+                                                actions: <Widget>[
+                                                  WidgetTextButton(
+                                                    text: 'OK',
+                                                    pressFunc: () {
+                                                      appController
+                                                          .shareLocation
+                                                          .value = true;
+                                                      Get.back();
+                                                    },
+                                                  ),
+                                                  WidgetTextButton(
+                                                    text: 'Cancel',
+                                                    pressFunc: () {
+                                                      Get.back();
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            }
+                                          },
+                                        ),
+                                        WidgetIconButton(
+                                          iconData: Icons.filter_2,
+                                          pressFunc: () {},
+                                        ),
+                                        WidgetIconButton(
+                                          iconData: Icons.filter_3,
+                                          pressFunc: () {},
+                                        ),
+                                        WidgetIconButton(
+                                          iconData: Icons.filter_4,
+                                          pressFunc: () {},
+                                        ),
+                                        WidgetIconButton(
+                                          iconData: Icons.filter_5,
+                                          pressFunc: () {},
+                                        ),
+                                        WidgetIconButton(
+                                          iconData: Icons.filter_6,
+                                          pressFunc: () {},
+                                        ),
+                                      ],
                                     ),
                                   )
                                 : WidgetIconButton(
@@ -463,14 +519,14 @@ class AppDialog {
                                           article: appController
                                               .articleControllers[0].text,
                                           link: '',
-                                          geoPoint: appController
-                                                    .shareLocation.value
-                                                ? GeoPoint(
-                                                    appController
-                                                        .positions[0].latitude,
-                                                    appController
-                                                        .positions[0].longitude)
-                                                : null,
+                                          geoPoint:
+                                              appController.shareLocation.value
+                                                  ? GeoPoint(
+                                                      appController.positions[0]
+                                                          .latitude,
+                                                      appController.positions[0]
+                                                          .longitude)
+                                                  : null,
                                         );
                                         AppService()
                                             .processInsertChat(
