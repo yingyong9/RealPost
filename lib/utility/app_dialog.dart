@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:realpost/models/chat_model.dart';
+import 'package:realpost/states/album_picture.dart';
 import 'package:realpost/states/emoji_page.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_button.dart';
+import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_google_map.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
@@ -344,12 +346,57 @@ class AppDialog {
                                           },
                                         ),
                                         WidgetIconButton(
-                                          iconData: Icons.filter_2,
-                                          pressFunc: () {},
+                                          color: appController.links.isEmpty
+                                              ? null
+                                              : AppConstant.lightColor,
+                                          iconData: Icons.link,
+                                          pressFunc: () {
+                                            if (appController.links.isEmpty) {
+                                              AppDialog(context: context)
+                                                  .normalDialog(
+                                                title: 'แชร์ ลิ้งค์',
+                                                leadingWidget: const Icon(
+                                                  Icons.link,
+                                                  size: 64,
+                                                ),
+                                                contentWidget: WidgetForm(
+                                                  fillColor:
+                                                      Colors.grey.shade200,
+                                                  labelWidget: WidgetText(
+                                                    text: 'วางลิ้งค์ ที่นี่',
+                                                    textStyle: AppConstant()
+                                                        .h3Style(
+                                                            color:
+                                                                Colors.black),
+                                                  ),
+                                                  changeFunc: (p0) {
+                                                    appController.links.add(p0);
+                                                  },
+                                                ),
+                                                actions: <Widget>[
+                                                  WidgetTextButton(
+                                                    text: 'OK',
+                                                    pressFunc: () {
+                                                      if (appController
+                                                          .links.isNotEmpty) {
+                                                        print(
+                                                            '##23dec link --> ${appController.links.last}');
+                                                      }
+                                                      Get.back();
+                                                    },
+                                                  )
+                                                ],
+                                              );
+                                            } else {
+                                              appController.links.clear();
+                                            }
+                                          },
                                         ),
                                         WidgetIconButton(
                                           iconData: Icons.filter_3,
-                                          pressFunc: () {},
+                                          pressFunc: () {
+                                            Get.to(const AlbumPicture());
+                                          },
                                         ),
                                         WidgetIconButton(
                                           iconData: Icons.filter_4,
@@ -463,7 +510,7 @@ class AppDialog {
                                                     .userModels[0].urlAvatar!,
                                             article: appController
                                                 .articleControllers[0].text,
-                                            link: '',
+                                            link: appController.links.isEmpty ? '' : appController.links.last ,
                                             geoPoint: appController
                                                     .shareLocation.value
                                                 ? GeoPoint(
@@ -518,7 +565,7 @@ class AppDialog {
                                                   .userModels[0].urlAvatar!,
                                           article: appController
                                               .articleControllers[0].text,
-                                          link: '',
+                                          link: appController.links.isEmpty ? '' : appController.links.last ,
                                           geoPoint:
                                               appController.shareLocation.value
                                                   ? GeoPoint(

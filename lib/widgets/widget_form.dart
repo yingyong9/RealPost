@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:realpost/utility/app_constant.dart';
 
 class WidgetForm extends StatelessWidget {
@@ -17,6 +18,7 @@ class WidgetForm extends StatelessWidget {
     this.autoFocus,
     this.textInputFormatters,
     this.textInputType,
+    this.labelWidget,
   }) : super(key: key);
 
   final String? hint;
@@ -30,6 +32,7 @@ class WidgetForm extends StatelessWidget {
   final bool? autoFocus;
   final List<TextInputFormatter>? textInputFormatters;
   final TextInputType? textInputType;
+  final Widget? labelWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +46,7 @@ class WidgetForm extends StatelessWidget {
         onChanged: changeFunc,
         autofocus: autoFocus ?? false,
         style: textStyle,
-        decoration: InputDecoration(
+        decoration: InputDecoration(label: labelWidget,
           hintStyle: hintStyle,
           hintText: hint,
           filled: true,

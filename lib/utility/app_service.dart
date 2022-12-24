@@ -23,6 +23,18 @@ import 'package:realpost/widgets/widget_text_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppService {
+  Future<void> processChooseMultiImage() async {
+    AppController appController = Get.put(AppController());
+    await ImagePicker()
+        .pickMultiImage(
+      maxWidth: 800,
+      maxHeight: 800,
+    )
+        .then((value) {
+      appController.xFiles.addAll(value);
+    });
+  }
+
   Future<void> processLunchUrl({required String url}) async {
     print('url ----> $url');
     final Uri uri = Uri.parse(url);

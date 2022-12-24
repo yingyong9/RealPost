@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:realpost/models/address_map_model.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/private_chat_model.dart';
@@ -41,6 +42,10 @@ class AppController extends GetxController {
 
   RxList<String> docIdPrivateChats = <String>[].obs;
   RxList<ChatModel> privateChatModels = <ChatModel>[].obs;
+
+  RxList<String> links = <String>[].obs;
+
+  RxList<XFile> xFiles = <XFile>[].obs;
 
   Future<void> processFindDocIdPrivateChat(
       {required String uidLogin, required String uidFriend}) async {

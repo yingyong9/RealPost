@@ -82,8 +82,10 @@ class _ChatPageState extends State<ChatPage> {
                                         left: 16, right: 16),
                                     itemCount: appController.chatModels.length,
                                     itemBuilder: (context, index) => Container(
-                                      margin: const EdgeInsets.only(top: 16),
+                                      margin: const EdgeInsets.only(top: 32),
                                       child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Row(
                                             mainAxisSize: MainAxisSize.min,
@@ -153,9 +155,15 @@ class _ChatPageState extends State<ChatPage> {
                                           const SizedBox(
                                             width: 16,
                                           ),
-                                          (appController.chatModels[index]
-                                                          .geoPoint!.latitude !=
-                                                      0) &&
+                                          ((appController
+                                                              .chatModels[index]
+                                                              .geoPoint!
+                                                              .latitude !=
+                                                          0) ||
+                                                      (appController
+                                                          .chatModels[index]
+                                                          .link!
+                                                          .isNotEmpty)) &&
                                                   (appController
                                                       .chatModels[index]
                                                       .urlRealPost
@@ -175,18 +183,42 @@ class _ChatPageState extends State<ChatPage> {
                                                           width: 100,
                                                           height: 100,
                                                         ),
-                                                        appController
+                                                        Row(
+                                                          children: [
+                                                            appController
+                                                                        .chatModels[
+                                                                            index]
+                                                                        .geoPoint!
+                                                                        .latitude !=
+                                                                    0
+                                                                ? SizedBox(
+                                                                    width: 30,
+                                                                    height: 30,
+                                                                    child: imageMap(
+                                                                        appController,
+                                                                        index),
+                                                                  )
+                                                                : const SizedBox(),
+                                                            appController
                                                                     .chatModels[
                                                                         index]
-                                                                    .geoPoint!
-                                                                    .latitude !=
-                                                                0
-                                                            ? Container(width: 30,height: 30,
-                                                              child: imageMap(
-                                                                  appController,
-                                                                  index),
-                                                            )
-                                                            : const SizedBox(),
+                                                                    .link!
+                                                                    .isNotEmpty
+                                                                ? WidgetIconButton(
+                                                                    iconData:
+                                                                        Icons
+                                                                            .link,
+                                                                    pressFunc:
+                                                                        () {
+                                                                      AppService().processLunchUrl(
+                                                                          url: appController
+                                                                              .chatModels[index]
+                                                                              .link!);
+                                                                    },
+                                                                  )
+                                                                : const SizedBox(),
+                                                          ],
+                                                        ),
                                                       ],
                                                     ),
                                         ],
