@@ -23,6 +23,66 @@ import 'package:realpost/widgets/widget_text_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppService {
+  Future<ChatModel> createChatModel() async {
+    AppController appController = Get.put(AppController());
+    ChatModel chatModel;
+
+    if (appController.xFiles.isEmpty) {
+      //ไม่มี album
+      chatModel = ChatModel(
+        message: appController.messageChats.isEmpty
+            ? ''
+            : appController.messageChats[0],
+        timestamp: Timestamp.fromDate(DateTime.now()),
+        uidChat: FirebaseAuth.instance.currentUser!.uid,
+        urlRealPost: appController.urlRealPostChooses.isEmpty
+            ? ''
+            : appController.urlRealPostChooses[0],
+        disPlayName: appController.userModels[0].displayName,
+        urlAvatar: appController.userModels[0].urlAvatar!.isEmpty
+            ? appController.urlAvatarChooses[0]
+            : appController.userModels[0].urlAvatar!,
+        article: appController.articleControllers[0].text,
+        link: appController.links.isEmpty ? '' : appController.links.last,
+        geoPoint: appController.shareLocation.value
+            ? GeoPoint(appController.positions[0].latitude,
+                appController.positions[0].longitude)
+            : null,
+        albums: [],
+      );
+    } else {
+      //มี album
+
+      var albums =  await processUploadMultiPhoto();
+
+      chatModel = ChatModel(
+        message: appController.messageChats.isEmpty
+            ? ''
+            : appController.messageChats[0],
+        timestamp: Timestamp.fromDate(DateTime.now()),
+        uidChat: FirebaseAuth.instance.currentUser!.uid,
+        urlRealPost: appController.urlRealPostChooses.isEmpty
+            ? ''
+            : appController.urlRealPostChooses[0],
+        disPlayName: appController.userModels[0].displayName,
+        urlAvatar: appController.userModels[0].urlAvatar!.isEmpty
+            ? appController.urlAvatarChooses[0]
+            : appController.userModels[0].urlAvatar!,
+        article: appController.articleControllers[0].text,
+        link: appController.links.isEmpty ? '' : appController.links.last,
+        geoPoint: appController.shareLocation.value
+            ? GeoPoint(appController.positions[0].latitude,
+                appController.positions[0].longitude)
+            : null,
+        albums: albums,
+      );
+    }
+
+    print('##25dec chartModel ==> ${chatModel.toMap()}');
+
+    return chatModel;
+  }
+
   Future<void> processChooseMultiImage() async {
     AppController appController = Get.put(AppController());
     await ImagePicker()
@@ -165,6 +225,19 @@ class AppService {
     DateFormat dateFormat = DateFormat(newPattern ?? 'dd MMM');
     String result = dateFormat.format(timestamp.toDate());
     return result;
+  }
+
+  Future<List<String>> processUploadMultiPhoto() async {
+    AppController appController = Get.put(AppController());
+    var albums = <String>[];
+
+    for (var element in appController.xFiles) {
+      File file = File(element.path);
+      String? url = await processUploadPhoto(file: file, path: 'albums');
+      albums.add(url!);
+    }
+
+    return albums;
   }
 
   Future<String?> processUploadPhoto(

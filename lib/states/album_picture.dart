@@ -23,27 +23,29 @@ class _AlbumPictureState extends State<AlbumPicture> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppConstant.bgColor,
-      appBar: AppBar(
-        actions: [
-          controller.xFiles.isEmpty
-              ? const SizedBox()
-              : WidgetIconButton(iconData: Icons.cloud_upload,
-                  pressFunc: () {},
-                ),
-        ],
-        title: WidgetText(
-          text: 'สร้างอัลบัม',
-          textStyle: AppConstant().h2Style(),
-        ),
-      ),
-      body: GetX(
-          init: AppController(),
-          builder: (AppController appController) {
-            print(
-                '##23dec จำนวนรูปที่เลือก --> ${appController.xFiles.length}');
-            return appController.xFiles.isEmpty
+    return GetX(
+        init: AppController(),
+        builder: (AppController appController) {
+          print('##23dec จำนวนรูปที่เลือก --> ${appController.xFiles.length}');
+          return Scaffold(
+            backgroundColor: AppConstant.bgColor,
+            appBar: AppBar(
+              actions: [
+                appController.xFiles.isEmpty
+                    ? const SizedBox()
+                    : WidgetIconButton(
+                        iconData: Icons.cloud_upload,
+                        pressFunc: () {
+                          Get.back();
+                        },
+                      ),
+              ],
+              title: WidgetText(
+                text: 'สร้างอัลบัม',
+                textStyle: AppConstant().h2Style(),
+              ),
+            ),
+            body: appController.xFiles.isEmpty
                 ? const SizedBox()
                 : GridView.builder(
                     itemCount: appController.xFiles.length,
@@ -52,19 +54,34 @@ class _AlbumPictureState extends State<AlbumPicture> {
                             crossAxisCount: 3,
                             mainAxisSpacing: 4,
                             crossAxisSpacing: 4),
-                    itemBuilder: (context, index) => Image.file(
-                      File(appController.xFiles[index].path),
-                      fit: BoxFit.cover,
+                    itemBuilder: (context, index) => Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Image.file(
+                          File(appController.xFiles[index].path),
+                          fit: BoxFit.cover,
+                        ),
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: WidgetIconButton(
+                            iconData: Icons.cancel,
+                            pressFunc: () {
+                              appController.xFiles.removeAt(index);
+                            },
+                          ),
+                        )
+                      ],
                     ),
-                  );
-          }),
-      floatingActionButton: WidgetIconButton(
-        iconData: Icons.add_photo_alternate,
-        size: 36,
-        pressFunc: () {
-          AppService().processChooseMultiImage();
-        },
-      ),
-    );
+                  ),
+            floatingActionButton: WidgetIconButton(
+              iconData: Icons.add_photo_alternate,
+              size: 36,
+              pressFunc: () {
+                AppService().processChooseMultiImage();
+              },
+            ),
+          );
+        });
   }
 }

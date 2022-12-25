@@ -87,6 +87,7 @@ class AppDialog {
                       link: '',
                       geoPoint: GeoPoint(appController.positions[0].latitude,
                           appController.positions[0].longitude),
+                      albums: [],
                     );
                     AppService()
                         .processInsertChat(
@@ -393,9 +394,17 @@ class AppDialog {
                                           },
                                         ),
                                         WidgetIconButton(
-                                          iconData: Icons.filter_3,
+                                          iconData:
+                                              Icons.photo_library_outlined,
+                                          color: appController.xFiles.isNotEmpty
+                                              ? AppConstant.lightColor
+                                              : null,
                                           pressFunc: () {
-                                            Get.to(const AlbumPicture());
+                                            if (appController.xFiles.isEmpty) {
+                                              Get.to(const AlbumPicture());
+                                            } else {
+                                              appController.xFiles.clear();
+                                            }
                                           },
                                         ),
                                         WidgetIconButton(
@@ -469,7 +478,7 @@ class AppDialog {
                                                 file: appController
                                                     .fileRealPosts[0],
                                                 path: 'realpost')
-                                            .then((value) {
+                                            .then((value) async {
                                           print(
                                               '##19dec url ของภาพที่ อัพโหลดไป ---> $value');
 
@@ -484,42 +493,9 @@ class AppDialog {
                                           print(
                                               '##19dec urlRealPostChoose[0] ----> ${appController.urlRealPostChooses[0]}');
 
-                                          ChatModel chatModel = ChatModel(
-                                            message: appController
-                                                    .messageChats.isEmpty
-                                                ? ''
-                                                : appController.messageChats[0],
-                                            timestamp: Timestamp.fromDate(
-                                                DateTime.now()),
-                                            uidChat: FirebaseAuth
-                                                .instance.currentUser!.uid,
-                                            urlRealPost: appController
-                                                    .urlRealPostChooses.isEmpty
-                                                ? ''
-                                                : appController
-                                                    .urlRealPostChooses[0],
-                                            disPlayName: appController
-                                                .userModels[0].displayName,
-                                            urlAvatar: appController
-                                                    .userModels[0]
-                                                    .urlAvatar!
-                                                    .isEmpty
-                                                ? appController
-                                                    .urlAvatarChooses[0]
-                                                : appController
-                                                    .userModels[0].urlAvatar!,
-                                            article: appController
-                                                .articleControllers[0].text,
-                                            link: appController.links.isEmpty ? '' : appController.links.last ,
-                                            geoPoint: appController
-                                                    .shareLocation.value
-                                                ? GeoPoint(
-                                                    appController
-                                                        .positions[0].latitude,
-                                                    appController
-                                                        .positions[0].longitude)
-                                                : null,
-                                          );
+                                          ChatModel chatModel =
+                                              await AppService()
+                                                  .createChatModel();
 
                                           print(
                                               'chatModel ---> ${chatModel.toMap()}');
@@ -534,47 +510,15 @@ class AppDialog {
                                                     .docIdRoomChooses[0],
                                             collection: collection,
                                           )
-                                              .then((value) {
+                                              .then((value) async {
                                             Get.back();
                                           });
                                         });
                                       } else {
                                         print('##19dec ไม่ได้ถ่ายภาพ');
 
-                                        ChatModel chatModel = ChatModel(
-                                          message: appController
-                                                  .messageChats.isEmpty
-                                              ? ''
-                                              : appController.messageChats[0],
-                                          timestamp: Timestamp.fromDate(
-                                              DateTime.now()),
-                                          uidChat: FirebaseAuth
-                                              .instance.currentUser!.uid,
-                                          urlRealPost: appController
-                                                  .urlRealPostChooses.isEmpty
-                                              ? ''
-                                              : appController
-                                                  .urlRealPostChooses[0],
-                                          disPlayName: appController
-                                              .userModels[0].displayName,
-                                          urlAvatar: appController.userModels[0]
-                                                  .urlAvatar!.isEmpty
-                                              ? appController
-                                                  .urlAvatarChooses[0]
-                                              : appController
-                                                  .userModels[0].urlAvatar!,
-                                          article: appController
-                                              .articleControllers[0].text,
-                                          link: appController.links.isEmpty ? '' : appController.links.last ,
-                                          geoPoint:
-                                              appController.shareLocation.value
-                                                  ? GeoPoint(
-                                                      appController.positions[0]
-                                                          .latitude,
-                                                      appController.positions[0]
-                                                          .longitude)
-                                                  : null,
-                                        );
+                                        ChatModel chatModel = await AppService()
+                                            .createChatModel();
                                         AppService()
                                             .processInsertChat(
                                           chatModel: chatModel,
@@ -604,6 +548,10 @@ class AppDialog {
 
                         if (appController.urlRealPostChooses.isNotEmpty) {
                           appController.urlRealPostChooses.clear();
+                        }
+
+                        if (appController.xFiles.isNotEmpty) {
+                          appController.xFiles.clear();
                         }
 
                         // Get.back();

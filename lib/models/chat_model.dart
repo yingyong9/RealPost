@@ -13,6 +13,7 @@ class ChatModel {
   final String? article;
   final String? link;
   final GeoPoint? geoPoint;
+  final List<String> albums;
 
   ChatModel({
     required this.message,
@@ -24,6 +25,7 @@ class ChatModel {
     this.article,
     this.link,
     this.geoPoint,
+    required this.albums,
   });
 
   Map<String, dynamic> toMap() {
@@ -37,6 +39,7 @@ class ChatModel {
       'article': article,
       'link': link,
       'geoPoint': geoPoint,
+      'albums': albums,
     };
   }
 
@@ -50,7 +53,8 @@ class ChatModel {
       urlRealPost: (map['urlRealPost'] ?? '') as String,
       article: map['article'] != null ? map['article'] as String : null,
       link: map['link'] != null ? map['link'] as String : null,
-      geoPoint: map['geoPoint'] ?? const GeoPoint(0, 0) ,
+      geoPoint: map['geoPoint'] ?? const GeoPoint(0, 0),
+      albums: List<String>.from(map['albums'] ?? []),
     );
   }
 
