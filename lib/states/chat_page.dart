@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:realpost/states/display_album.dart';
 import 'package:realpost/states/private_chat.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
@@ -214,6 +215,23 @@ class _ChatPageState extends State<ChatPage> {
                                                                           url: appController
                                                                               .chatModels[index]
                                                                               .link!);
+                                                                    },
+                                                                  )
+                                                                : const SizedBox(),
+                                                            appController
+                                                                    .chatModels[
+                                                                        index]
+                                                                    .albums
+                                                                    .isNotEmpty
+                                                                ? WidgetIconButton(
+                                                                    iconData: Icons
+                                                                        .photo_album_outlined,
+                                                                    pressFunc:
+                                                                        () {
+                                                                      Get.to(DisplayAlbum(
+                                                                          albums: appController
+                                                                              .chatModels[index]
+                                                                              .albums));
                                                                     },
                                                                   )
                                                                 : const SizedBox(),

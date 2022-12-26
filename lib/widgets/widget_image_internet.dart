@@ -9,6 +9,7 @@ class WidgetImageInternet extends StatelessWidget {
     this.height,
     this.boxFit,
     this.tapFunc,
+    this.radius,
   }) : super(key: key);
 
   final String urlImage;
@@ -16,12 +17,14 @@ class WidgetImageInternet extends StatelessWidget {
   final double? height;
   final BoxFit? boxFit;
   final Function()? tapFunc;
+  final double? radius;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: tapFunc,
-      child: ClipRRect(borderRadius: BorderRadius.circular(10),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(radius ?? 10),
         child: Image.network(
           urlImage,
           width: width,

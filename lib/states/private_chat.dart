@@ -152,9 +152,12 @@ class _PrivateChatState extends State<PrivateChat> {
                                           const SizedBox(
                                             width: 16,
                                           ),
-                                           (appController.chatModels[index]
+                                           ((appController.chatModels[index]
                                                           .geoPoint!.latitude !=
-                                                      0) &&
+                                                      0) || (appController
+                                                          .chatModels[index]
+                                                          .link!
+                                                          .isNotEmpty)) &&
                                                   (appController
                                                       .chatModels[index]
                                                       .urlRealPost
