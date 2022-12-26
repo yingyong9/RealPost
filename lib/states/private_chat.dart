@@ -4,12 +4,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:realpost/states/display_album.dart';
 
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_content_form.dart';
+import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_progress.dart';
@@ -152,14 +154,19 @@ class _PrivateChatState extends State<PrivateChat> {
                                           const SizedBox(
                                             width: 16,
                                           ),
-                                           ((appController.chatModels[index]
-                                                          .geoPoint!.latitude !=
-                                                      0) || (appController
-                                                          .chatModels[index]
+                                          ((appController
+                                                              .privateChatModels[
+                                                                  index]
+                                                              .geoPoint!
+                                                              .latitude !=
+                                                          0) ||
+                                                      (appController
+                                                          .privateChatModels[
+                                                              index]
                                                           .link!
                                                           .isNotEmpty)) &&
                                                   (appController
-                                                      .chatModels[index]
+                                                      .privateChatModels[index]
                                                       .urlRealPost
                                                       .isEmpty)
                                               ? imageMap(appController, index)
@@ -169,8 +176,8 @@ class _PrivateChatState extends State<PrivateChat> {
                                                       .isEmpty
                                                   ? const SizedBox()
                                                   : Column(
-                                                    children: [
-                                                      WidgetImageInternet(
+                                                      children: [
+                                                        WidgetImageInternet(
                                                           urlImage: appController
                                                               .privateChatModels[
                                                                   index]
@@ -178,20 +185,61 @@ class _PrivateChatState extends State<PrivateChat> {
                                                           width: 100,
                                                           height: 100,
                                                         ),
-                                                        appController
-                                                                    .chatModels[
+                                                        Row(
+                                                          children: [
+                                                            appController
+                                                                        .privateChatModels[
+                                                                            index]
+                                                                        .geoPoint!
+                                                                        .latitude !=
+                                                                    0
+                                                                ? SizedBox(
+                                                                    width: 30,
+                                                                    height: 30,
+                                                                    child: imageMap(
+                                                                        appController,
+                                                                        index),
+                                                                  )
+                                                                : const SizedBox(),
+                                                            appController
+                                                                    .privateChatModels[
                                                                         index]
-                                                                    .geoPoint!
-                                                                    .latitude !=
-                                                                0
-                                                            ? Container(width: 30,height: 30,
-                                                              child: imageMap(
-                                                                  appController,
-                                                                  index),
-                                                            )
-                                                            : const SizedBox(),
-                                                    ],
-                                                  ),
+                                                                    .link!
+                                                                    .isEmpty
+                                                                ? const SizedBox()
+                                                                : WidgetIconButton(
+                                                                    iconData:
+                                                                        Icons
+                                                                            .link,
+                                                                    pressFunc:
+                                                                        () {
+                                                                          AppService().processLunchUrl(
+                                                                          url: appController
+                                                                              .privateChatModels[index]
+                                                                              .link!);
+                                                                        },
+                                                                  ),
+                                                            appController
+                                                                    .privateChatModels[
+                                                                        index]
+                                                                    .albums
+                                                                    .isEmpty
+                                                                ? const SizedBox()
+                                                                : WidgetIconButton(
+                                                                    iconData: Icons
+                                                                        .photo_album_outlined,
+                                                                    pressFunc:
+                                                                        () {
+                                                                          Get.to(DisplayAlbum(
+                                                                          albums: appController
+                                                                              .privateChatModels[index]
+                                                                              .albums));
+                                                                        },
+                                                                  ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
                                         ],
                                       ),
                                     ),
@@ -214,40 +262,27 @@ class _PrivateChatState extends State<PrivateChat> {
 
   SizedBox imageMap(AppController appController, int index) {
     return SizedBox(
-                                                width: 100,
-                                                height: 100,
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          15),
-                                                  child: Stack(
-                                                    children: [
-                                                      WidgetImage(
-                                                        path:
-                                                            'images/map.png',
-                                                        tapFunc: () {
-                                                          double? lat =
-                                                              appController
-                                                                  .privateChatModels[
-                                                                      index]
-                                                                  .geoPoint!
-                                                                  .latitude;
-                                                          double? lng =
-                                                              appController
-                                                                  .privateChatModels[
-                                                                      index]
-                                                                  .geoPoint!
-                                                                  .longitude;
-                                                          String url =
-                                                              'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
-                                                          AppService()
-                                                              .processLunchUrl(
-                                                                  url: url);
-                                                        },
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
+      width: 100,
+      height: 100,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: Stack(
+          children: [
+            WidgetImage(
+              path: 'images/map.png',
+              tapFunc: () {
+                double? lat =
+                    appController.privateChatModels[index].geoPoint!.latitude;
+                double? lng =
+                    appController.privateChatModels[index].geoPoint!.longitude;
+                String url =
+                    'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+                AppService().processLunchUrl(url: url);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
