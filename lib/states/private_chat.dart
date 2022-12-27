@@ -68,183 +68,7 @@ class _PrivateChatState extends State<PrivateChat> {
                   height: boxConstraints.maxHeight,
                   child: Stack(
                     children: [
-                      appController.load.value
-                          ? const WidgetProgress()
-                          : appController.docIdPrivateChats.isEmpty
-                              ? const SizedBox()
-                              : SizedBox(
-                                  width: boxConstraints.maxWidth,
-                                  height: boxConstraints.maxHeight - 100,
-                                  child: ListView.builder(
-                                    reverse: true,
-                                    padding: const EdgeInsets.only(
-                                        left: 16, right: 16),
-                                    itemCount:
-                                        appController.privateChatModels.length,
-                                    itemBuilder: (context, index) => Container(
-                                      margin: const EdgeInsets.only(top: 16),
-                                      child: Row(
-                                        children: [
-                                          Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              WidgetCircularImage(
-                                                urlImage: appController
-                                                    .privateChatModels[index]
-                                                    .urlAvatar,
-                                                tapFunc: () {
-                                                  String uid = appController
-                                                      .privateChatModels[index]
-                                                      .uidChat;
-                                                  print(
-                                                      'You tap avatar uid ---> $uid');
-
-                                                  if (uid != user!.uid) {
-                                                    print('Open Private Chat');
-                                                    Get.to(PrivateChat(
-                                                      uidFriend: uid,
-                                                    ));
-                                                  }
-                                                },
-                                              ),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  WidgetText(
-                                                      text: appController
-                                                                  .privateChatModels[
-                                                                      index]
-                                                                  .uidChat ==
-                                                              user!.uid
-                                                          ? 'ฉัน'
-                                                          : appController
-                                                              .privateChatModels[
-                                                                  index]
-                                                              .disPlayName),
-                                                  Container(
-                                                    constraints:
-                                                        const BoxConstraints(
-                                                            maxWidth: 170),
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        horizontal: 16,
-                                                        vertical: 6),
-                                                    margin:
-                                                        const EdgeInsets.only(
-                                                            top: 8),
-                                                    decoration: AppConstant()
-                                                        .boxChatLogin(),
-                                                    child: WidgetText(
-                                                        text: appController
-                                                                .privateChatModels[
-                                                                    index]
-                                                                .message
-                                                                .isEmpty
-                                                            ? '...'
-                                                            : appController
-                                                                .privateChatModels[
-                                                                    index]
-                                                                .message),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(
-                                            width: 16,
-                                          ),
-                                          ((appController
-                                                              .privateChatModels[
-                                                                  index]
-                                                              .geoPoint!
-                                                              .latitude !=
-                                                          0) ||
-                                                      (appController
-                                                          .privateChatModels[
-                                                              index]
-                                                          .link!
-                                                          .isNotEmpty)) &&
-                                                  (appController
-                                                      .privateChatModels[index]
-                                                      .urlRealPost
-                                                      .isEmpty)
-                                              ? imageMap(appController, index)
-                                              : appController
-                                                      .privateChatModels[index]
-                                                      .urlRealPost
-                                                      .isEmpty
-                                                  ? const SizedBox()
-                                                  : Column(
-                                                      children: [
-                                                        WidgetImageInternet(
-                                                          urlImage: appController
-                                                              .privateChatModels[
-                                                                  index]
-                                                              .urlRealPost,
-                                                          width: 100,
-                                                          height: 100,
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            appController
-                                                                        .privateChatModels[
-                                                                            index]
-                                                                        .geoPoint!
-                                                                        .latitude !=
-                                                                    0
-                                                                ? SizedBox(
-                                                                    width: 30,
-                                                                    height: 30,
-                                                                    child: imageMap(
-                                                                        appController,
-                                                                        index),
-                                                                  )
-                                                                : const SizedBox(),
-                                                            appController
-                                                                    .privateChatModels[
-                                                                        index]
-                                                                    .link!
-                                                                    .isEmpty
-                                                                ? const SizedBox()
-                                                                : WidgetIconButton(
-                                                                    iconData:
-                                                                        Icons
-                                                                            .link,
-                                                                    pressFunc:
-                                                                        () {
-                                                                          AppService().processLunchUrl(
-                                                                          url: appController
-                                                                              .privateChatModels[index]
-                                                                              .link!);
-                                                                        },
-                                                                  ),
-                                                            appController
-                                                                    .privateChatModels[
-                                                                        index]
-                                                                    .albums
-                                                                    .isEmpty
-                                                                ? const SizedBox()
-                                                                : WidgetIconButton(
-                                                                    iconData: Icons
-                                                                        .photo_album_outlined,
-                                                                    pressFunc:
-                                                                        () {
-                                                                          Get.to(DisplayAlbum(
-                                                                          albums: appController
-                                                                              .privateChatModels[index]
-                                                                              .albums));
-                                                                        },
-                                                                  ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                      contentChat(appController, boxConstraints),
                       WidgetContentForm(
                         boxConstraints: boxConstraints,
                         appController: appController,
@@ -257,6 +81,156 @@ class _PrivateChatState extends State<PrivateChat> {
               );
             });
       }),
+    );
+  }
+
+  Widget contentChat(
+      AppController appController, BoxConstraints boxConstraints) {
+    return appController.load.value
+        ? const WidgetProgress()
+        : appController.docIdPrivateChats.isEmpty
+            ? const SizedBox()
+            : SizedBox(
+                width: boxConstraints.maxWidth,
+                height: boxConstraints.maxHeight - 100,
+                child: ListView.builder(
+                  reverse: true,
+                  padding: const EdgeInsets.only(left: 16, right: 16),
+                  itemCount: appController.privateChatModels.length,
+                  itemBuilder: (context, index) => Container(
+                    margin: const EdgeInsets.only(top: 16),
+                    child: Row(
+                      children: [
+                        contentLeft(appController, index,
+                            boxConstraints: boxConstraints),
+                        const SizedBox(
+                          width: 16,
+                        ),
+                        contentRight(appController, index,
+                            boxConstraints: boxConstraints),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+  }
+
+  RenderObjectWidget contentRight(AppController appController, int index,
+      {required BoxConstraints boxConstraints}) {
+    return ((appController.privateChatModels[index].geoPoint!.latitude != 0) ||
+                (appController.privateChatModels[index].link!.isNotEmpty)) &&
+            (appController.privateChatModels[index].urlRealPost.isEmpty)
+        ? imageMap(appController, index)
+        : appController.privateChatModels[index].urlRealPost.isEmpty
+            ? const SizedBox()
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  WidgetImageInternet(
+                    urlImage:
+                        appController.privateChatModels[index].urlRealPost,
+                    width: boxConstraints.maxWidth * 0.3,
+                    // height: 100,
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Column(
+                    children: [
+                      appController.privateChatModels[index].geoPoint!
+                                  .latitude !=
+                              0
+                          ? SizedBox(
+                              width: 30,
+                              height: 30,
+                              child: imageMap(appController, index),
+                            )
+                          : const SizedBox(),
+                      appController.privateChatModels[index].link!.isEmpty
+                          ? const SizedBox()
+                          : WidgetIconButton(
+                              iconData: Icons.link,
+                              pressFunc: () {
+                                AppService().processLunchUrl(
+                                    url: appController
+                                        .privateChatModels[index].link!);
+                              },
+                            ),
+                      // appController.privateChatModels[index].albums.isEmpty
+                      //     ? const SizedBox()
+                      //     : WidgetIconButton(
+                      //         iconData: Icons.photo_album_outlined,
+                      //         pressFunc: () {
+                      //           Get.to(DisplayAlbum(
+                      //               albums: appController
+                      //                   .privateChatModels[index].albums));
+                      //         },
+                      //       ),
+                    ],
+                  ),
+                ],
+              );
+  }
+
+  Row contentLeft(AppController appController, int index,
+      {required BoxConstraints boxConstraints}) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        WidgetCircularImage(
+          urlImage: appController.privateChatModels[index].urlAvatar,
+          tapFunc: () {
+            String uid = appController.privateChatModels[index].uidChat;
+            print('You tap avatar uid ---> $uid');
+
+            if (uid != user!.uid) {
+              print('Open Private Chat');
+              Get.to(PrivateChat(
+                uidFriend: uid,
+              ));
+            }
+          },
+        ),
+        const SizedBox(
+          width: 8,
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            WidgetText(
+                text:
+                    appController.privateChatModels[index].uidChat == user!.uid
+                        ? 'ฉัน'
+                        : appController.privateChatModels[index].disPlayName),
+            Container(
+              constraints:
+                  BoxConstraints(maxWidth: boxConstraints.maxWidth * 0.4),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              margin: const EdgeInsets.only(top: 8),
+              decoration: AppConstant().boxChatLogin(),
+              child: WidgetText(
+                  text: appController.privateChatModels[index].message.isEmpty
+                      ? '...'
+                      : appController.privateChatModels[index].message),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            appController.privateChatModels[index].albums.isNotEmpty
+                ? WidgetImageInternet(
+                    urlImage: appController.privateChatModels[index].albums[0],
+                    width: boxConstraints.maxWidth * 0.4,
+                    tapFunc: () {
+                      Get.to(DisplayAlbum(
+                          albums:
+                              appController.privateChatModels[index].albums));
+                    },
+                  )
+                : const SizedBox(),
+          ],
+        ),
+      ],
     );
   }
 
