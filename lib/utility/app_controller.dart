@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,6 +15,7 @@ import 'package:realpost/models/private_chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/stamp_model.dart';
 import 'package:realpost/models/user_model.dart';
+import 'package:realpost/utility/app_service.dart';
 
 class AppController extends GetxController {
   RxList<RoomModel> roomModels = <RoomModel>[].obs;
@@ -26,7 +29,7 @@ class AppController extends GetxController {
 
   RxBool load = true.obs;
   RxBool shareLocation = false.obs;
-  
+
   RxList<UserModel> userModels = <UserModel>[].obs;
   RxList<File> fileAvatars = <File>[].obs;
   RxList<String> urlAvatarChooses = <String>[].obs;
@@ -59,31 +62,38 @@ class AppController extends GetxController {
         .get()
         .then((value) async {
       if (value.docs.isNotEmpty) {
+        bool createNewPrivate = true;
         for (var element in value.docs) {
           PrivateChatModel privateChatModel =
               PrivateChatModel.fromMap(element.data());
           print('##17dec privateChatModel ---> ${privateChatModel.toMap()}');
-          if (privateChatModel.uidchats.contains(uidLogin)) {
-            if (privateChatModel.uidchats.contains(uidFriend)) {
-              docIdPrivateChats.add(element.id);
 
-              await FirebaseFirestore.instance
-                  .collection('privatechat')
-                  .doc(element.id)
-                  .collection('chat')
-                  .orderBy('timestamp', descending: true)
-                  .snapshots()
-                  .listen((event) {
-                if (privateChatModels.isNotEmpty) {
-                  privateChatModels.clear();
-                }
-                for (var element2 in event.docs) {
-                  ChatModel model = ChatModel.fromMap(element2.data());
-                  privateChatModels.add(model);
-                }
-              });
-            }
+          if ((privateChatModel.uidchats.contains(uidLogin)) &&
+              (privateChatModel.uidchats.contains(uidFriend))) {
+            createNewPrivate = false;
+            docIdPrivateChats.add(element.id);
+
+            await FirebaseFirestore.instance
+                .collection('privatechat')
+                .doc(element.id)
+                .collection('chat')
+                .orderBy('timestamp', descending: true)
+                .snapshots()
+                .listen((event) {
+              if (privateChatModels.isNotEmpty) {
+                privateChatModels.clear();
+              }
+              for (var element2 in event.docs) {
+                ChatModel model = ChatModel.fromMap(element2.data());
+                privateChatModels.add(model);
+              }
+            });
           }
+        }
+
+        if (createNewPrivate) {
+          AppService()
+              .insertPrivateChat(uidLogin: uidLogin, uidFriend: uidFriend);
         }
       }
       load.value = false;

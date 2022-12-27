@@ -12,6 +12,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:realpost/models/chat_model.dart';
+import 'package:realpost/models/private_chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/user_model.dart';
 import 'package:realpost/states/display_name.dart';
@@ -23,6 +24,23 @@ import 'package:realpost/widgets/widget_text_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppService {
+  Future<void> insertPrivateChat(
+      {required String uidLogin, required String uidFriend}) async {
+    var uidChats = <String>[];
+    uidChats.add(uidLogin);
+    uidChats.add(uidFriend);
+
+    PrivateChatModel model = PrivateChatModel(uidchats: uidChats);
+
+    await FirebaseFirestore.instance
+        .collection('privatechat')
+        .doc()
+        .set(model.toMap())
+        .then((value) {
+      print('##17dec insert new PrivateChatSuccess');
+    });
+  }
+
   Future<ChatModel> createChatModel() async {
     AppController appController = Get.put(AppController());
     ChatModel chatModel;
@@ -53,7 +71,7 @@ class AppService {
     } else {
       //มี album
 
-      var albums =  await processUploadMultiPhoto();
+      var albums = await processUploadMultiPhoto();
 
       chatModel = ChatModel(
         message: appController.messageChats.isEmpty
