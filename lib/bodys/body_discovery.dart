@@ -26,7 +26,7 @@ class _BodyDiscoveryState extends State<BodyDiscovery> {
       return GetX(
           init: AppController(),
           builder: (AppController appController) {
-            // print('##27nov roomModels ==> ${appController.roomModels}');
+            // print('##29dec docIdRoomChooses ==> ${appController.docIdRoomChooses}');
             return appController.roomModels.isEmpty
                 ? const WidgetProgress()
                 : ListView.builder(

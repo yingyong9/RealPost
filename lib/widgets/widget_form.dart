@@ -12,13 +12,16 @@ class WidgetForm extends StatelessWidget {
     this.changeFunc,
     this.controller,
     this.maginTop,
+    this.maginBottom,
     this.width,
+    this.height,
     this.textStyle,
     this.fillColor,
     this.autoFocus,
     this.textInputFormatters,
     this.textInputType,
     this.labelWidget,
+    this.inputBorder,
   }) : super(key: key);
 
   final String? hint;
@@ -26,19 +29,22 @@ class WidgetForm extends StatelessWidget {
   final Function(String)? changeFunc;
   final TextEditingController? controller;
   final double? maginTop;
+  final double? maginBottom;
   final double? width;
+  final double? height;
   final TextStyle? textStyle;
   final Color? fillColor;
   final bool? autoFocus;
   final List<TextInputFormatter>? textInputFormatters;
   final TextInputType? textInputType;
   final Widget? labelWidget;
+  final InputBorder? inputBorder;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: maginTop ?? 0.0),
-      width: width,
+      margin: EdgeInsets.only(top: maginTop ?? 0.0, bottom: maginBottom ?? 0.0),
+      width: width,height: height,
       child: TextFormField(
         controller: controller,
         keyboardType: textInputType,
@@ -46,14 +52,15 @@ class WidgetForm extends StatelessWidget {
         onChanged: changeFunc,
         autofocus: autoFocus ?? false,
         style: textStyle,
-        decoration: InputDecoration(label: labelWidget,
+        decoration: InputDecoration(contentPadding: height != null ? const EdgeInsets.symmetric(horizontal: 8, vertical: 4) : null,
+          label: labelWidget,
           hintStyle: hintStyle,
           hintText: hint,
           filled: true,
           fillColor: fillColor,
-          enabledBorder: UnderlineInputBorder(
+          enabledBorder: inputBorder ?? UnderlineInputBorder(
               borderSide: BorderSide(color: AppConstant.dark)),
-          focusedBorder: UnderlineInputBorder(
+          focusedBorder: inputBorder ?? UnderlineInputBorder(
               borderSide: BorderSide(color: AppConstant.dark)),
         ),
       ),

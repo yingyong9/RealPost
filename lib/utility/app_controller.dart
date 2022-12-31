@@ -21,6 +21,7 @@ class AppController extends GetxController {
   RxList<RoomModel> roomModels = <RoomModel>[].obs;
   RxList<String> docIdRooms = <String>[].obs;
   RxList<String> docIdRoomChooses = <String>[].obs;
+ 
 
   RxList<StampModel> stampModels = <StampModel>[].obs;
   RxList<String> emojiAddRoomChooses = <String>[].obs;

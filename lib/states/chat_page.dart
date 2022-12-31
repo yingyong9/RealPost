@@ -38,11 +38,11 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
     docIdRoom = widget.docIdRoom;
-    print('docIdRoom ==> $docIdRoom');
+    print('##29dec docIdRoom ==> $docIdRoom');
     appController.readAllChat(docIdRoom: widget.docIdRoom);
-    if (appController.docIdRoomChooses.isNotEmpty) {
-      appController.docIdRoomChooses.clear();
-    }
+    // if (appController.docIdRoomChooses.isNotEmpty) {
+    //   appController.docIdRoomChooses.clear();
+    // }
     appController.docIdRoomChooses.add(docIdRoom.toString());
   }
 
@@ -55,7 +55,7 @@ class _ChatPageState extends State<ChatPage> {
         return GetX(
             init: AppController(),
             builder: (AppController appController) {
-              print('amount chatModels ==> ${appController.chatModels.length}');
+              // print('##29dec docIdRoomChooses ==> ${appController.docIdRoomChooses}');
               return GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () =>
@@ -70,176 +70,8 @@ class _ChatPageState extends State<ChatPage> {
                           : (appController.chatModels.isEmpty) ||
                                   (appController.addressMaps.isEmpty)
                               ? const SizedBox()
-                              : SizedBox(
-                                  width: boxConstraints.maxWidth,
-                                  height: boxConstraints.maxHeight - 100,
-                                  child: ListView.builder(
-                                    reverse: true,
-                                    padding: const EdgeInsets.only(
-                                        left: 16, right: 16),
-                                    itemCount: appController.chatModels.length,
-                                    itemBuilder: (context, index) => Container(
-                                      margin: const EdgeInsets.only(top: 32),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              WidgetCircularImage(
-                                                urlImage: appController
-                                                    .chatModels[index]
-                                                    .urlAvatar,
-                                                tapFunc: () {
-                                                  String uid = appController
-                                                      .chatModels[index]
-                                                      .uidChat;
-                                                  print(
-                                                      'You tap avatar uid ---> $uid');
-
-                                                  if (uid != user!.uid) {
-                                                    print('Open Private Chat');
-                                                    Get.to(PrivateChat(
-                                                      uidFriend: uid,
-                                                    ));
-                                                  }
-                                                },
-                                              ),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  WidgetText(
-                                                      text: appController
-                                                                  .chatModels[
-                                                                      index]
-                                                                  .uidChat ==
-                                                              user!.uid
-                                                          ? 'ฉัน'
-                                                          : appController
-                                                              .chatModels[index]
-                                                              .disPlayName),
-                                                  Container(
-                                                    constraints:
-                                                        const BoxConstraints(
-                                                            maxWidth: 170),
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        horizontal: 16,
-                                                        vertical: 6),
-                                                    margin:
-                                                        const EdgeInsets.only(
-                                                            top: 8),
-                                                    decoration: AppConstant()
-                                                        .boxChatLogin(),
-                                                    child: WidgetText(
-                                                        text: appController
-                                                                .chatModels[
-                                                                    index]
-                                                                .message
-                                                                .isEmpty
-                                                            ? '...'
-                                                            : appController
-                                                                .chatModels[
-                                                                    index]
-                                                                .message),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(
-                                            width: 16,
-                                          ),
-                                          ((appController
-                                                              .chatModels[index]
-                                                              .geoPoint!
-                                                              .latitude !=
-                                                          0) ||
-                                                      (appController
-                                                          .chatModels[index]
-                                                          .link!
-                                                          .isNotEmpty)) &&
-                                                  (appController
-                                                      .chatModels[index]
-                                                      .urlRealPost
-                                                      .isEmpty)
-                                              ? imageMap(appController, index)
-                                              : appController.chatModels[index]
-                                                      .urlRealPost.isEmpty
-                                                  ? const SizedBox()
-                                                  : Column(
-                                                      children: [
-                                                        WidgetImageInternet(
-                                                          urlImage:
-                                                              appController
-                                                                  .chatModels[
-                                                                      index]
-                                                                  .urlRealPost,
-                                                          width: 100,
-                                                          height: 100,
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            appController
-                                                                        .chatModels[
-                                                                            index]
-                                                                        .geoPoint!
-                                                                        .latitude !=
-                                                                    0
-                                                                ? SizedBox(
-                                                                    width: 30,
-                                                                    height: 30,
-                                                                    child: imageMap(
-                                                                        appController,
-                                                                        index),
-                                                                  )
-                                                                : const SizedBox(),
-                                                            appController
-                                                                    .chatModels[
-                                                                        index]
-                                                                    .link!
-                                                                    .isNotEmpty
-                                                                ? WidgetIconButton(
-                                                                    iconData:
-                                                                        Icons
-                                                                            .link,
-                                                                    pressFunc:
-                                                                        () {
-                                                                      AppService().processLunchUrl(
-                                                                          url: appController
-                                                                              .chatModels[index]
-                                                                              .link!);
-                                                                    },
-                                                                  )
-                                                                : const SizedBox(),
-                                                            appController
-                                                                    .chatModels[
-                                                                        index]
-                                                                    .albums
-                                                                    .isNotEmpty
-                                                                ? WidgetIconButton(
-                                                                    iconData: Icons
-                                                                        .photo_album_outlined,
-                                                                    pressFunc:
-                                                                        () {
-                                                                      Get.to(DisplayAlbum(
-                                                                          albums: appController
-                                                                              .chatModels[index]
-                                                                              .albums));
-                                                                    },
-                                                                  )
-                                                                : const SizedBox(),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ), //here
+                              : contentChat(
+                                  boxConstraints, appController), //here
                       WidgetContentForm(
                         boxConstraints: boxConstraints,
                         appController: appController,
@@ -251,6 +83,139 @@ class _ChatPageState extends State<ChatPage> {
               );
             });
       }),
+    );
+  }
+
+  SizedBox contentChat(
+      BoxConstraints boxConstraints, AppController appController) {
+    return SizedBox(
+      width: boxConstraints.maxWidth,
+      height: boxConstraints.maxHeight - 100,
+      child: ListView.builder(
+        reverse: true,
+        padding: const EdgeInsets.only(left: 16, right: 16),
+        itemCount: appController.chatModels.length,
+        itemBuilder: (context, index) => Container(
+          margin: const EdgeInsets.only(top: 32),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              contentLeft(appController, index, boxConstraints: boxConstraints),
+              const SizedBox(
+                width: 16,
+              ),
+              contentRight(appController, index,
+                  boxConstraints: boxConstraints),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  RenderObjectWidget contentRight(AppController appController, int index,
+      {required BoxConstraints boxConstraints}) {
+    return ((appController.chatModels[index].geoPoint!.latitude != 0) ||
+                (appController.chatModels[index].link!.isNotEmpty)) &&
+            (appController.chatModels[index].urlRealPost.isEmpty)
+        ? imageMap(appController, index)
+        : (appController.chatModels[index].urlRealPost.isEmpty) &&
+                (appController.chatModels[index].urlAvatar.isEmpty)
+            ? const SizedBox()
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  WidgetImageInternet(
+                    urlImage:
+                        appController.chatModels[index].urlRealPost.isNotEmpty
+                            ? appController.chatModels[index].urlRealPost
+                            : appController.chatModels[index].urlBigImage!,
+                    width: boxConstraints.maxWidth * 0.3,
+                    // height: 100,
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Column(
+                    children: [
+                      appController.chatModels[index].geoPoint!.latitude != 0
+                          ? SizedBox(
+                              width: 30,
+                              height: 30,
+                              child: imageMap(appController, index),
+                            )
+                          : const SizedBox(),
+                      appController.chatModels[index].link!.isNotEmpty
+                          ? WidgetIconButton(
+                              iconData: Icons.link,
+                              pressFunc: () {
+                                AppService().processLunchUrl(
+                                    url: appController.chatModels[index].link!);
+                              },
+                            )
+                          : const SizedBox(),
+                    ],
+                  ),
+                ],
+              );
+  }
+
+  Row contentLeft(AppController appController, int index,
+      {required BoxConstraints boxConstraints}) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        WidgetCircularImage(
+          urlImage: appController.chatModels[index].urlAvatar,
+          tapFunc: () {
+            String uid = appController.chatModels[index].uidChat;
+            print('You tap avatar uid ---> $uid');
+
+            if (uid != user!.uid) {
+              print('Open Private Chat');
+              Get.to(PrivateChat(
+                uidFriend: uid,
+              ));
+            }
+          },
+        ),
+        const SizedBox(width: 8),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            WidgetText(
+                text: appController.chatModels[index].uidChat == user!.uid
+                    ? 'ฉัน'
+                    : appController.chatModels[index].disPlayName),
+            Container(
+              constraints:
+                  BoxConstraints(maxWidth: boxConstraints.maxWidth * 0.4),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              margin: const EdgeInsets.only(top: 8),
+              decoration: AppConstant().boxChatLogin(),
+              child: WidgetText(
+                  text: appController.chatModels[index].message.isEmpty
+                      ? '...'
+                      : appController.chatModels[index].message),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            appController.chatModels[index].albums.isNotEmpty
+                ? WidgetImageInternet(
+                    urlImage: appController.chatModels[index].albums[0],
+                    width: boxConstraints.maxWidth * 0.4,
+                    tapFunc: () {
+                      Get.to(DisplayAlbum(
+                        chatModel: appController.chatModels[index],
+                      ));
+                    },
+                  )
+                : const SizedBox(),
+          ],
+        ),
+      ],
     );
   }
 

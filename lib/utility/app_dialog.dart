@@ -45,6 +45,44 @@ class AppDialog {
     ));
   }
 
+  void bigImageBottomSheet({
+    required String urlImage,
+    
+  }) {
+    Get.bottomSheet(
+      Container(
+        height: 280,
+        decoration: BoxDecoration(color: AppConstant.bgColor),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: WidgetImageInternet(
+                urlImage: urlImage,
+                height: 150,
+              ),
+            ),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                SizedBox(
+                  width: 250,
+                  child: WidgetForm(
+                    textStyle: AppConstant().h3Style(),
+                  ),
+                ),
+                WidgetIconButton(
+                  iconData: Icons.send,
+                  pressFunc: () {},
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
+      isScrollControlled: true,
+    );
+  }
+
   void mapBottomSheet({String? collection}) {
     Get.bottomSheet(GetX(
         init: AppController(),

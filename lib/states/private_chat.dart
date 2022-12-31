@@ -222,9 +222,8 @@ class _PrivateChatState extends State<PrivateChat> {
                     urlImage: appController.privateChatModels[index].albums[0],
                     width: boxConstraints.maxWidth * 0.4,
                     tapFunc: () {
-                      Get.to(DisplayAlbum(
-                          albums:
-                              appController.privateChatModels[index].albums));
+                      Get.to(DisplayAlbum(chatModel: appController.privateChatModels[index],
+                         ));
                     },
                   )
                 : const SizedBox(),

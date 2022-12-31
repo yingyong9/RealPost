@@ -41,7 +41,7 @@ class AppService {
     });
   }
 
-  Future<ChatModel> createChatModel() async {
+  Future<ChatModel> createChatModel({String? urlBigImage}) async {
     AppController appController = Get.put(AppController());
     ChatModel chatModel;
 
@@ -67,6 +67,7 @@ class AppService {
                 appController.positions[0].longitude)
             : null,
         albums: [],
+        urlBigImage: urlBigImage ?? ''
       );
     } else {
       //มี album
@@ -93,6 +94,7 @@ class AppService {
                 appController.positions[0].longitude)
             : null,
         albums: albums,
+        urlBigImage: urlBigImage ?? ''
       );
     }
 
