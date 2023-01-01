@@ -81,14 +81,7 @@ class _MainHomeState extends State<MainHome> {
                 SizedBox(
                   width: boxConstraints.maxWidth,
                   height: boxConstraints.maxHeight - 80,
-                  child: DefaultTabController(
-                    length: 2,
-                    child: Scaffold(
-                      backgroundColor: AppConstant.bgColor,
-                      appBar: TabBar(tabs: tabs),
-                      body: TabBarView(children: bodys),
-                    ),
-                  ),
+                  child: const BodyDiscovery(),
                 ),
                 contentBottom()
               ],
@@ -110,15 +103,13 @@ class _MainHomeState extends State<MainHome> {
               iconData: Icons.search_outlined,
               pressFunc: () {},
             ),
-            WidgetImage(
-              path: 'images/addgreen.png',
-              size: 48,
-              tapFunc: () {
+            WidgetIconButton(iconData: Icons.add_box_outlined,
+              pressFunc: () {
                 Get.to(const AddRoom());
               },
             ),
-            WidgetButton(
-              label: 'SignOut',
+            WidgetIconButton(
+              iconData: Icons.exit_to_app,
               pressFunc: () {
                 AppService().processSignOut();
               },

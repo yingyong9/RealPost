@@ -23,6 +23,7 @@ class AppController extends GetxController {
   RxList<String> docIdRoomChooses = <String>[].obs;
 
   RxList<List<ChatModel>> listChatModels = <List<ChatModel>>[].obs;
+  RxList<ChatModel> lastChatModelLogins = <ChatModel>[].obs;
 
   RxList<StampModel> stampModels = <StampModel>[].obs;
   RxList<String> emojiAddRoomChooses = <String>[].obs;
@@ -191,10 +192,15 @@ class AppController extends GetxController {
 
         var chatModels = <ChatModel>[];
 
+        ChatModel? lateChatModel;
+        var user = FirebaseAuth.instance.currentUser;
+        bool check = true;
+
         await FirebaseFirestore.instance
             .collection('room')
             .doc(element.id)
             .collection('chat')
+            .orderBy('timestamp', descending: true)
             .get()
             .then((value) {
           if (value.docs.isEmpty) {
@@ -202,9 +208,15 @@ class AppController extends GetxController {
             for (var element2 in value.docs) {
               ChatModel chatModel = ChatModel.fromMap(element2.data());
               chatModels.add(chatModel);
+
+              if ((chatModel.uidChat == user!.uid) && check) {
+                check = false;
+                lateChatModel = chatModel;
+              }
             }
           }
           listChatModels.add(chatModels);
+          lastChatModelLogins.add(lateChatModel!);
         });
       }
     });
