@@ -21,7 +21,8 @@ class AppController extends GetxController {
   RxList<RoomModel> roomModels = <RoomModel>[].obs;
   RxList<String> docIdRooms = <String>[].obs;
   RxList<String> docIdRoomChooses = <String>[].obs;
- 
+
+  RxList<List<ChatModel>> listChatModels = <List<ChatModel>>[].obs;
 
   RxList<StampModel> stampModels = <StampModel>[].obs;
   RxList<String> emojiAddRoomChooses = <String>[].obs;
@@ -176,16 +177,35 @@ class AppController extends GetxController {
     if (roomModels.isNotEmpty) {
       roomModels.clear();
       docIdRooms.clear();
+      listChatModels.clear();
     }
     await FirebaseFirestore.instance
         .collection('room')
         .orderBy('timestamp', descending: true)
         .get()
-        .then((value) {
+        .then((value) async {
       for (var element in value.docs) {
         RoomModel model = RoomModel.fromMap(element.data());
         roomModels.add(model);
         docIdRooms.add(element.id);
+
+        var chatModels = <ChatModel>[];
+
+        await FirebaseFirestore.instance
+            .collection('room')
+            .doc(element.id)
+            .collection('chat')
+            .get()
+            .then((value) {
+          if (value.docs.isEmpty) {
+          } else {
+            for (var element2 in value.docs) {
+              ChatModel chatModel = ChatModel.fromMap(element2.data());
+              chatModels.add(chatModel);
+            }
+          }
+          listChatModels.add(chatModels);
+        });
       }
     });
   }
