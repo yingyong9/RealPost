@@ -253,7 +253,7 @@ class AppDialog {
     );
   }
 
-  void realPostBottonSheet({String? collection}) {
+  void realPostBottonSheet({String? collection,  String? docIdRoom}) {
     Get.bottomSheet(
         GetX(
             init: AppController(),
@@ -560,11 +560,7 @@ class AppDialog {
                                         AppService()
                                             .processInsertChat(
                                           chatModel: chatModel,
-                                          docId: collection != null
-                                              ? appController
-                                                  .docIdPrivateChats[0]
-                                              : appController
-                                                  .docIdRoomChooses[0],
+                                          docId: docIdRoom ?? '',
                                           collection: collection,
                                         )
                                             .then((value) {

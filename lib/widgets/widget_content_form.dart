@@ -73,7 +73,7 @@ class WidgetContentForm extends StatelessWidget {
 
                   if (appController.userModels[0].urlAvatar!.isNotEmpty) {
                     // การทำงานครั้งที่สอง
-                    AppDialog(context: context).realPostBottonSheet(collection: collection);
+                    AppDialog(context: context).realPostBottonSheet(collection: collection, docIdRoom: docId!);
                   }
                 } else {
                   print('text = ${textEditingController.text}');
@@ -89,7 +89,7 @@ class WidgetContentForm extends StatelessWidget {
                   if (appController.userModels[0].urlAvatar?.isEmpty ?? true) {
                     AppDialog(context: context).avatarBottonSheet();
                   } else {
-                    AppDialog(context: context).realPostBottonSheet(collection: collection);
+                    AppDialog(context: context).realPostBottonSheet(collection: collection, docIdRoom: docId!);
                   }
                 }
               },

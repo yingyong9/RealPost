@@ -8,6 +8,7 @@ import 'package:realpost/states/display_album.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
+import 'package:realpost/widgets/widget_content_form.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_progress.dart';
@@ -22,6 +23,8 @@ class BodyDiscovery extends StatefulWidget {
 
 class _BodyDiscoveryState extends State<BodyDiscovery> {
   var user = FirebaseAuth.instance.currentUser;
+
+  TextEditingController textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -40,15 +43,18 @@ class _BodyDiscoveryState extends State<BodyDiscovery> {
                         mainContent(appController, index, boxConstraints),
                         lastUserLoginPost(boxConstraints, appController, index),
                         SizedBox(
-                          height: boxConstraints.maxHeight -
-                              boxConstraints.maxWidth * 0.5,
+                          height: (boxConstraints.maxHeight -
+                                  boxConstraints.maxWidth * 0.5),
                           child: listChatMessage(
                               appController, index, boxConstraints),
                         ),
-                        WidgetText(text: 'form Poat Here'),
-                        WidgetForm(
-                          textStyle: AppConstant().h3Style(color: Colors.white),
-                        ),
+
+                        // WidgetForm(),
+                       
+                        WidgetContentForm(
+                            boxConstraints: boxConstraints,
+                            appController: appController,
+                            textEditingController: textEditingController, docId: appController.docIdRooms[index],),
                       ],
                     ),
                   );
@@ -56,27 +62,32 @@ class _BodyDiscoveryState extends State<BodyDiscovery> {
     });
   }
 
-  Container lastUserLoginPost(BoxConstraints boxConstraints, AppController appController, int index) {
+  Container lastUserLoginPost(
+      BoxConstraints boxConstraints, AppController appController, int index) {
     return Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 10),
-                        width: boxConstraints.maxWidth,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 5),
-                        decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(5)),
-                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            WidgetText(
-                              text: appController
-                                  .lastChatModelLogins[index].message,
-                              textStyle: AppConstant()
-                                  .h3Style(color: AppConstant.bgColor),
-                            ),
-                            appController.lastChatModelLogins[index].urlRealPost.isEmpty ? const SizedBox() : WidgetImageInternet(urlImage: appController.lastChatModelLogins[index].urlRealPost, width: 50, height: 50,)
-                          ],
-                        ),
-                      );
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      width: boxConstraints.maxWidth,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      decoration: BoxDecoration(
+          color: Colors.grey, borderRadius: BorderRadius.circular(5)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          WidgetText(
+            text: appController.lastChatModelLogins[index].message,
+            textStyle: AppConstant().h3Style(color: AppConstant.bgColor),
+          ),
+          appController.lastChatModelLogins[index].urlRealPost.isEmpty
+              ? const SizedBox()
+              : WidgetImageInternet(
+                  urlImage:
+                      appController.lastChatModelLogins[index].urlRealPost,
+                  width: 50,
+                  height: 50,
+                )
+        ],
+      ),
+    );
   }
 
   ListView listChatMessage(

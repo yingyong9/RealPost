@@ -23,7 +23,7 @@ String? keyPage;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
   if (GetPlatform.isMacOS) {
   } else {
