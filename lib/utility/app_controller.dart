@@ -196,16 +196,16 @@ class AppController extends GetxController {
         var user = FirebaseAuth.instance.currentUser;
         bool check = true;
 
-        await FirebaseFirestore.instance
+        FirebaseFirestore.instance
             .collection('room')
             .doc(element.id)
             .collection('chat')
             .orderBy('timestamp', descending: true)
-            .get()
-            .then((value) {
-          if (value.docs.isEmpty) {
+            .snapshots()
+            .listen((event) {
+          if (event.docs.isEmpty) {
           } else {
-            for (var element2 in value.docs) {
+            for (var element2 in event.docs) {
               ChatModel chatModel = ChatModel.fromMap(element2.data());
               chatModels.add(chatModel);
 
