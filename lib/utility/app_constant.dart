@@ -55,11 +55,11 @@ class AppConstant {
     );
   }
 
-  TextStyle h3Style({Color? color, double? size}) {
+  TextStyle h3Style({Color? color, double? size, FontWeight? fontWeight}) {
     return TextStyle(
       fontSize: size ?? 14,
       color: color ?? dark,
-      fontWeight: FontWeight.normal,
+      fontWeight: fontWeight ?? FontWeight.normal,
       fontFamily: 'Sarabun',
     );
   }

@@ -53,6 +53,8 @@ class AppController extends GetxController {
 
   RxList<XFile> xFiles = <XFile>[].obs;
 
+  RxInt indexBodyMainPageView = 0.obs;
+
   Future<void> processFindDocIdPrivateChat(
       {required String uidLogin, required String uidFriend}) async {
     if (docIdPrivateChats.isNotEmpty) {
@@ -126,7 +128,7 @@ class AppController extends GetxController {
         .collection('room')
         .doc(docIdRoom)
         .collection('chat')
-        .orderBy('timestamp', descending: true)
+        .orderBy('timestamp', descending: false)
         .snapshots()
         .listen((event) async {
       load.value = false;
@@ -184,7 +186,12 @@ class AppController extends GetxController {
         .collection('room')
         .orderBy('timestamp', descending: true)
         .get()
-        .then((value) async {
+        .then((value) {
+          if (roomModels.isEmpty) {
+        roomModels.clear();
+        docIdRooms.clear();
+      }
+
       for (var element in value.docs) {
         RoomModel model = RoomModel.fromMap(element.data());
         roomModels.add(model);
@@ -219,6 +226,6 @@ class AppController extends GetxController {
           lastChatModelLogins.add(lateChatModel!);
         });
       }
-    });
+        });
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:realpost/states/main_home.dart';
+import 'package:realpost/states/main_page_view.dart';
 import 'package:realpost/states/phone_number.dart';
 import 'package:realpost/utility/app_constant.dart';
 
@@ -16,6 +17,7 @@ var getPages = <GetPage<dynamic>>[
     name: AppConstant.pageMainHome,
     page: () => const MainHome(),
   ),
+  GetPage(name: '/mainPageView', page: () => const MainPageView(),)
 ];
 
 String? keyPage;
@@ -33,7 +35,7 @@ Future<void> main() async {
           keyPage = AppConstant.pagePhoneNumber;
           runApp(const MyApp());
         } else {
-          keyPage = AppConstant.pageMainHome;
+          keyPage = '/mainPageView';
           runApp(const MyApp());
         }
       });

@@ -24,6 +24,34 @@ import 'package:realpost/widgets/widget_text_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppService {
+  void initialSetup({required BuildContext context}) {
+    AppController appController = Get.put(AppController());
+
+    appController.readAllRoom().then((value) {
+      print('##3jan docIdRoom[0] --> ${appController.docIdRooms[0]}');
+      appController.readAllChat(docIdRoom: appController.docIdRooms[0]);
+    });
+    appController.findUserModels();
+    appController.readAllStamp();
+
+    if (appController.urlAvatarChooses.isNotEmpty) {
+      appController.urlAvatarChooses.clear();
+    }
+
+    if (appController.urlRealPostChooses.isNotEmpty) {
+      appController.urlRealPostChooses.clear();
+    }
+
+    Future.delayed(Duration.zero, (() async {
+      Position? position =
+          await AppService().processFindPosition(context: context);
+      if (position != null) {
+        appController.positions.add(position);
+      }
+      print('##11dec current Position --> $position');
+    }));
+  }
+
   Future<void> insertPrivateChat(
       {required String uidLogin, required String uidFriend}) async {
     var uidChats = <String>[];
@@ -48,54 +76,52 @@ class AppService {
     if (appController.xFiles.isEmpty) {
       //ไม่มี album
       chatModel = ChatModel(
-        message: appController.messageChats.isEmpty
-            ? ''
-            : appController.messageChats[0],
-        timestamp: Timestamp.fromDate(DateTime.now()),
-        uidChat: FirebaseAuth.instance.currentUser!.uid,
-        urlRealPost: appController.urlRealPostChooses.isEmpty
-            ? ''
-            : appController.urlRealPostChooses[0],
-        disPlayName: appController.userModels[0].displayName,
-        urlAvatar: appController.userModels[0].urlAvatar!.isEmpty
-            ? appController.urlAvatarChooses[0]
-            : appController.userModels[0].urlAvatar!,
-        article: appController.articleControllers[0].text,
-        link: appController.links.isEmpty ? '' : appController.links.last,
-        geoPoint: appController.shareLocation.value
-            ? GeoPoint(appController.positions[0].latitude,
-                appController.positions[0].longitude)
-            : null,
-        albums: [],
-        urlBigImage: urlBigImage ?? ''
-      );
+          message: appController.messageChats.isEmpty
+              ? ''
+              : appController.messageChats[0],
+          timestamp: Timestamp.fromDate(DateTime.now()),
+          uidChat: FirebaseAuth.instance.currentUser!.uid,
+          urlRealPost: appController.urlRealPostChooses.isEmpty
+              ? ''
+              : appController.urlRealPostChooses[0],
+          disPlayName: appController.userModels[0].displayName,
+          urlAvatar: appController.userModels[0].urlAvatar!.isEmpty
+              ? appController.urlAvatarChooses[0]
+              : appController.userModels[0].urlAvatar!,
+          article: appController.articleControllers[0].text,
+          link: appController.links.isEmpty ? '' : appController.links.last,
+          geoPoint: appController.shareLocation.value
+              ? GeoPoint(appController.positions[0].latitude,
+                  appController.positions[0].longitude)
+              : null,
+          albums: [],
+          urlBigImage: urlBigImage ?? '');
     } else {
       //มี album
 
       var albums = await processUploadMultiPhoto();
 
       chatModel = ChatModel(
-        message: appController.messageChats.isEmpty
-            ? ''
-            : appController.messageChats[0],
-        timestamp: Timestamp.fromDate(DateTime.now()),
-        uidChat: FirebaseAuth.instance.currentUser!.uid,
-        urlRealPost: appController.urlRealPostChooses.isEmpty
-            ? ''
-            : appController.urlRealPostChooses[0],
-        disPlayName: appController.userModels[0].displayName,
-        urlAvatar: appController.userModels[0].urlAvatar!.isEmpty
-            ? appController.urlAvatarChooses[0]
-            : appController.userModels[0].urlAvatar!,
-        article: appController.articleControllers[0].text,
-        link: appController.links.isEmpty ? '' : appController.links.last,
-        geoPoint: appController.shareLocation.value
-            ? GeoPoint(appController.positions[0].latitude,
-                appController.positions[0].longitude)
-            : null,
-        albums: albums,
-        urlBigImage: urlBigImage ?? ''
-      );
+          message: appController.messageChats.isEmpty
+              ? ''
+              : appController.messageChats[0],
+          timestamp: Timestamp.fromDate(DateTime.now()),
+          uidChat: FirebaseAuth.instance.currentUser!.uid,
+          urlRealPost: appController.urlRealPostChooses.isEmpty
+              ? ''
+              : appController.urlRealPostChooses[0],
+          disPlayName: appController.userModels[0].displayName,
+          urlAvatar: appController.userModels[0].urlAvatar!.isEmpty
+              ? appController.urlAvatarChooses[0]
+              : appController.userModels[0].urlAvatar!,
+          article: appController.articleControllers[0].text,
+          link: appController.links.isEmpty ? '' : appController.links.last,
+          geoPoint: appController.shareLocation.value
+              ? GeoPoint(appController.positions[0].latitude,
+                  appController.positions[0].longitude)
+              : null,
+          albums: albums,
+          urlBigImage: urlBigImage ?? '');
     }
 
     print('##25dec chartModel ==> ${chatModel.toMap()}');
@@ -238,6 +264,7 @@ class AppService {
       if (appController.fileRealPosts.isNotEmpty) {
         appController.fileRealPosts.clear();
       }
+      appController.readAllRoom();
     });
   }
 

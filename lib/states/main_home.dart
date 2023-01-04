@@ -41,30 +41,7 @@ class _MainHomeState extends State<MainHome> {
   @override
   void initState() {
     super.initState();
-    initialSetup();
-  }
-
-  void initialSetup() {
-    appController.readAllRoom();
-    appController.findUserModels();
-    appController.readAllStamp();
-
-    if (appController.urlAvatarChooses.isNotEmpty) {
-      appController.urlAvatarChooses.clear();
-    }
-
-    if (appController.urlRealPostChooses.isNotEmpty) {
-      appController.urlRealPostChooses.clear();
-    }
-
-    Future.delayed(Duration.zero, (() async {
-      Position? position =
-          await AppService().processFindPosition(context: context);
-      if (position != null) {
-        appController.positions.add(position);
-      }
-      print('##11dec current Position --> $position');
-    }));
+    AppService().initialSetup(context: context);
   }
 
   @override
@@ -103,7 +80,8 @@ class _MainHomeState extends State<MainHome> {
               iconData: Icons.search_outlined,
               pressFunc: () {},
             ),
-            WidgetIconButton(iconData: Icons.add_box_outlined,
+            WidgetIconButton(
+              iconData: Icons.add_box_outlined,
               pressFunc: () {
                 Get.to(const AddRoom());
               },
