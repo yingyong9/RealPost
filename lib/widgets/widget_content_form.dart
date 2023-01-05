@@ -44,24 +44,26 @@ class WidgetContentForm extends StatelessWidget {
                 children: [
                   WidgetIconButton(
                     iconData: Icons.add_a_photo,
-                    pressFunc: () {},
+                    pressFunc: () {
+                      print('##5jan Click Camera at docIdRoom --> $docId');
+                    },
                   ),
                   WidgetIconButton(
                     iconData: Icons.add_photo_alternate,
                     pressFunc: () {},
                   ),
-                  WidgetIconButton(
-                    iconData: Icons.emoji_emotions,
-                    pressFunc: () {},
-                  ),
-                   WidgetIconButton(
-                    iconData: Icons.shopping_cart,
-                    pressFunc: () {},
-                  ),
-                   WidgetIconButton(
-                    iconData: Icons.shopping_basket,
-                    pressFunc: () {},
-                  ),
+                  // WidgetIconButton(
+                  //   iconData: Icons.emoji_emotions,
+                  //   pressFunc: () {},
+                  // ),
+                  //  WidgetIconButton(
+                  //   iconData: Icons.shopping_cart,
+                  //   pressFunc: () {},
+                  // ),
+                  //  WidgetIconButton(
+                  //   iconData: Icons.shopping_basket,
+                  //   pressFunc: () {},
+                  // ),
                 ],
               ),
             ),
@@ -73,7 +75,8 @@ class WidgetContentForm extends StatelessWidget {
 
                   if (appController.userModels[0].urlAvatar!.isNotEmpty) {
                     // การทำงานครั้งที่สอง
-                    AppDialog(context: context).realPostBottonSheet(collection: collection, docIdRoom: docId!);
+                    AppDialog(context: context).realPostBottonSheet(
+                        collection: collection, docIdRoom: docId!);
                   }
                 } else {
                   print('text = ${textEditingController.text}');
@@ -89,7 +92,8 @@ class WidgetContentForm extends StatelessWidget {
                   if (appController.userModels[0].urlAvatar?.isEmpty ?? true) {
                     AppDialog(context: context).avatarBottonSheet();
                   } else {
-                    AppDialog(context: context).realPostBottonSheet(collection: collection, docIdRoom: docId!);
+                    AppDialog(context: context).realPostBottonSheet(
+                        collection: collection, docIdRoom: docId!);
                   }
                 }
               },

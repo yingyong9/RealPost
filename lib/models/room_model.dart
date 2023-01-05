@@ -8,12 +8,14 @@ class RoomModel {
   final String room;
   final String urlRoom;
   final Timestamp timestamp;
+  final String? urlCamera;
 
   RoomModel({
     required this.uidCreate,
     required this.room,
     required this.urlRoom,
     required this.timestamp,
+    this.urlCamera,
   });
 
   Map<String, dynamic> toMap() {
@@ -22,6 +24,7 @@ class RoomModel {
       'room': room,
       'urlRoom': urlRoom,
       'timestamp': timestamp,
+      'urlCamera': urlCamera,
     };
   }
 
@@ -31,8 +34,12 @@ class RoomModel {
       room: (map['room'] ?? '') as String,
       urlRoom: (map['urlRoom'] ?? '') as String,
       timestamp: (map['timestamp']),
+      urlCamera: (map['urlCamera'] ?? ''),
     );
   }
+
+  // timestamp: (map['timestamp']),
+  // urlCamera: (map['urlCamera'] ?? ''),
 
   String toJson() => json.encode(toMap());
 

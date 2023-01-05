@@ -15,6 +15,8 @@ class AppConstant {
   static String pagePhoneNumber = '/phoneNumber';
   static String pageMainHome = '/mainHome';
 
+  BoxDecoration boxBlack() => BoxDecoration(color: Colors.black12);
+
   BoxDecoration boxChatLogin() {
     return BoxDecoration(
       color: lightColor,
