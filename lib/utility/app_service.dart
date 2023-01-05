@@ -313,6 +313,19 @@ class AppService {
     return file;
   }
 
+  Future<void> processUpdateRoom(
+      {required String docIdRoom, required Map<String, dynamic> data}) async {
+    AppController appController = Get.put(AppController());
+    await FirebaseFirestore.instance
+        .collection('room')
+        .doc(docIdRoom)
+        .update(data)
+        .then((value) {
+      print('##5jan update Room Success');
+      appController.readAllRoom();
+    });
+  }
+
   Future<void> processInsertRoom({required RoomModel roomModel}) async {
     await FirebaseFirestore.instance
         .collection('room')

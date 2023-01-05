@@ -15,7 +15,10 @@ class AppConstant {
   static String pagePhoneNumber = '/phoneNumber';
   static String pageMainHome = '/mainHome';
 
-  BoxDecoration boxBlack() => BoxDecoration(color: Colors.black12);
+  BoxDecoration borderBox() => BoxDecoration(
+      border: Border.all(width: 1), borderRadius: BorderRadius.circular(10));
+
+  BoxDecoration boxBlack() => const BoxDecoration(color: Colors.black12);
 
   BoxDecoration boxChatLogin() {
     return BoxDecoration(

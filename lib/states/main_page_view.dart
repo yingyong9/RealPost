@@ -64,10 +64,14 @@ class _MainPageViewState extends State<MainPageView> {
                                     Positioned(
                                       bottom: 0,
                                       child: WidgetContentForm(
-                                          boxConstraints: boxConstraints,
-                                          appController: appController,
-                                          textEditingController:
-                                              textEditingController, docId: appController.docIdRooms[appController.indexBodyMainPageView.value],),
+                                        boxConstraints: boxConstraints,
+                                        appController: appController,
+                                        textEditingController:
+                                            textEditingController,
+                                        docId: appController.docIdRooms[
+                                            appController
+                                                .indexBodyMainPageView.value],
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -98,26 +102,43 @@ class _MainPageViewState extends State<MainPageView> {
         displayImageRoom(element, boxConstraints),
         displayListMessage(boxConstraints, appController,
             top: boxConstraints.maxHeight * 0.6 * 0.5, status: false),
-        Row(
-          children: [
-            Container(
-              constraints:
-                  BoxConstraints(maxWidth: boxConstraints.maxWidth * 0.75),
-              decoration: AppConstant().boxBlack(),
-              child: Row(
-                children: [
-                  WidgetCircularImage(
-                      urlImage: appController.userModels.last.urlAvatar ??
-                          AppConstant.urlAvatar),
-                  WidgetText(
-                    text: appController.userModels.last.displayName,
-                    textStyle: AppConstant().h2Style(),
-                  )
-                ],
+        displayOwnerRoom(boxConstraints, appController),
+        Positioned(
+          right: 0,
+          child: element.urlCamera!.isEmpty
+              ? const SizedBox()
+              : Container(decoration: AppConstant().borderBox(),
+                child: WidgetImageInternet(
+                    urlImage: element.urlCamera!,
+                    width: boxConstraints.maxWidth * 0.3,
+                    height: boxConstraints.maxWidth * 0.3,
+                    boxFit: BoxFit.cover,
+                  ),
               ),
-            ),
-          ],
-        )
+        ),
+      ],
+    );
+  }
+
+  Row displayOwnerRoom(
+      BoxConstraints boxConstraints, AppController appController) {
+    return Row(
+      children: [
+        Container(
+          constraints: BoxConstraints(maxWidth: boxConstraints.maxWidth * 0.75),
+          decoration: AppConstant().boxBlack(),
+          child: Row(
+            children: [
+              WidgetCircularImage(
+                  urlImage: appController.userModels.last.urlAvatar ??
+                      AppConstant.urlAvatar),
+              WidgetText(
+                text: appController.userModels.last.displayName,
+                textStyle: AppConstant().h2Style(),
+              )
+            ],
+          ),
+        ),
       ],
     );
   }

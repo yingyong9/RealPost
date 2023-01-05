@@ -50,10 +50,11 @@ class AppController extends GetxController {
   RxList<ChatModel> privateChatModels = <ChatModel>[].obs;
 
   RxList<String> links = <String>[].obs;
-
   RxList<XFile> xFiles = <XFile>[].obs;
 
   RxInt indexBodyMainPageView = 0.obs;
+  RxList<File> cameraFiles = <File>[].obs;
+
 
   Future<void> processFindDocIdPrivateChat(
       {required String uidLogin, required String uidFriend}) async {

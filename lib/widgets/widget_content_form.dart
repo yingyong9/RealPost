@@ -1,9 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
+import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 
@@ -44,8 +46,38 @@ class WidgetContentForm extends StatelessWidget {
                 children: [
                   WidgetIconButton(
                     iconData: Icons.add_a_photo,
-                    pressFunc: () {
+                    pressFunc: () async {
+                      if (appController.cameraFiles.isNotEmpty) {
+                        appController.cameraFiles.clear();
+                      }
+
                       print('##5jan Click Camera at docIdRoom --> $docId');
+                      print(
+                          '##5jan cameraFiles ---> ${appController.cameraFiles.length}');
+
+                      var file = await AppService()
+                          .processTakePhoto(source: ImageSource.camera);
+
+                      if (file != null) {
+                        appController.cameraFiles.add(file);
+
+                        String? urlCamera = await AppService()
+                            .processUploadPhoto(file: file, path: 'photopost');
+                        print('##5jan urlCamera ---. $urlCamera');
+
+                        Map<String, dynamic> map = appController.roomModels[
+                                appController.indexBodyMainPageView.value]
+                            .toMap();
+                        print('##5jan map ----> $map');
+
+                        map['urlCamera'] = urlCamera;
+
+                        await AppService()
+                            .processUpdateRoom(docIdRoom: docId!, data: map);
+                      } // if
+
+                      print(
+                          '##5jan cameraFiles ต่อมา ---> ${appController.cameraFiles.length}');
                     },
                   ),
                   WidgetIconButton(
