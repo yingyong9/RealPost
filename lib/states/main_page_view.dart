@@ -9,6 +9,7 @@ import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_content_form.dart';
+import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
@@ -42,7 +43,7 @@ class _MainPageViewState extends State<MainPageView> {
               print('##4jan userModels --> ${appController.userModels.length}');
               return SafeArea(
                 child: (appController.roomModels.isEmpty) ||
-                        (appController.userModels.isEmpty)
+                        (appController.userModels.isEmpty) || (appController.userModelAtRooms.isEmpty)
                     ? const SizedBox()
                     : PageView(
                         children: appController.roomModels
@@ -61,6 +62,14 @@ class _MainPageViewState extends State<MainPageView> {
                                         height: (boxConstraints.maxHeight) -
                                             (boxConstraints.maxHeight * 0.6) -
                                             120),
+                                    Positioned(
+                                      right: 32,
+                                      bottom: 100,
+                                      child: WidgetImage(
+                                        path: 'images/addgreen.png',
+                                        size: 36,
+                                      ),
+                                    ),
                                     Positioned(
                                       bottom: 0,
                                       child: WidgetContentForm(
@@ -107,14 +116,15 @@ class _MainPageViewState extends State<MainPageView> {
           right: 0,
           child: element.urlCamera!.isEmpty
               ? const SizedBox()
-              : Container(decoration: AppConstant().borderBox(),
-                child: WidgetImageInternet(
+              : Container(
+                  decoration: AppConstant().borderBox(),
+                  child: WidgetImageInternet(
                     urlImage: element.urlCamera!,
                     width: boxConstraints.maxWidth * 0.3,
                     height: boxConstraints.maxWidth * 0.3,
                     boxFit: BoxFit.cover,
                   ),
-              ),
+                ),
         ),
       ],
     );
@@ -130,10 +140,10 @@ class _MainPageViewState extends State<MainPageView> {
           child: Row(
             children: [
               WidgetCircularImage(
-                  urlImage: appController.userModels.last.urlAvatar ??
+                  urlImage: appController.userModelAtRooms[appController.indexBodyMainPageView.value].urlAvatar ??
                       AppConstant.urlAvatar),
               WidgetText(
-                text: appController.userModels.last.displayName,
+                text: appController.userModelAtRooms[appController.indexBodyMainPageView.value].displayName,
                 textStyle: AppConstant().h2Style(),
               )
             ],
@@ -146,7 +156,7 @@ class _MainPageViewState extends State<MainPageView> {
   WidgetImageInternet displayImageRoom(
       RoomModel element, BoxConstraints boxConstraints) {
     return WidgetImageInternet(
-      urlImage: element.urlRoom,
+      urlImage: element.urlRooms[0],
       width: boxConstraints.maxWidth,
       height: boxConstraints.maxHeight * 0.6,
       boxFit: BoxFit.cover,

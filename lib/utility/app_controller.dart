@@ -21,6 +21,7 @@ class AppController extends GetxController {
   RxList<RoomModel> roomModels = <RoomModel>[].obs;
   RxList<String> docIdRooms = <String>[].obs;
   RxList<String> docIdRoomChooses = <String>[].obs;
+  RxList<UserModel> userModelAtRooms = <UserModel>[].obs;
 
   RxList<List<ChatModel>> listChatModels = <List<ChatModel>>[].obs;
   RxList<ChatModel> lastChatModelLogins = <ChatModel>[].obs;
@@ -54,7 +55,6 @@ class AppController extends GetxController {
 
   RxInt indexBodyMainPageView = 0.obs;
   RxList<File> cameraFiles = <File>[].obs;
-
 
   Future<void> processFindDocIdPrivateChat(
       {required String uidLogin, required String uidFriend}) async {
@@ -182,24 +182,30 @@ class AppController extends GetxController {
       roomModels.clear();
       docIdRooms.clear();
       listChatModels.clear();
+      userModelAtRooms.clear();
     }
     await FirebaseFirestore.instance
         .collection('room')
         .orderBy('timestamp', descending: true)
         .get()
-        .then((value) {
-          if (roomModels.isEmpty) {
-        roomModels.clear();
-        docIdRooms.clear();
-      }
+        .then((value) async {
+      //     if (roomModels.isEmpty) {
+      //   roomModels.clear();
+      //   docIdRooms.clear();
+      // }
 
       for (var element in value.docs) {
         RoomModel model = RoomModel.fromMap(element.data());
         roomModels.add(model);
         docIdRooms.add(element.id);
 
-        var chatModels = <ChatModel>[];
+        UserModel? userModel =
+            await AppService().findUserModel(uid: model.uidCreate);
+        if (userModel != null) {
+          userModelAtRooms.add(userModel);
+        }
 
+        var chatModels = <ChatModel>[];
         ChatModel? lateChatModel;
         var user = FirebaseAuth.instance.currentUser;
         bool check = true;
@@ -227,6 +233,6 @@ class AppController extends GetxController {
           lastChatModelLogins.add(lateChatModel!);
         });
       }
-        });
+    });
   }
 }

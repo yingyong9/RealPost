@@ -15,6 +15,7 @@ import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/private_chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/user_model.dart';
+import 'package:realpost/states/add_room.dart';
 import 'package:realpost/states/display_name.dart';
 import 'package:realpost/states/otp_check.dart';
 import 'package:realpost/utility/app_constant.dart';
@@ -28,7 +29,23 @@ class AppService {
     AppController appController = Get.put(AppController());
 
     appController.readAllRoom().then((value) {
-      print('##3jan docIdRoom[0] --> ${appController.docIdRooms[0]}');
+      print('##5jan docIdRoom.length --> ${appController.docIdRooms.length}');
+
+      var user = FirebaseAuth.instance.currentUser;
+      bool noRoom = true;
+
+      for (var element in appController.roomModels) {
+        if (user!.uid == element.uidCreate) {
+          noRoom = false;
+        }
+      }
+
+      if (noRoom) {
+        Get.to(AddRoom());
+      } else {
+        print('##5jan Have Room');
+      }
+
       appController.readAllChat(docIdRoom: appController.docIdRooms[0]);
     });
     appController.findUserModels();

@@ -43,8 +43,7 @@ class _AddRoomState extends State<AddRoom> {
     return Scaffold(
       backgroundColor: AppConstant.bgColor,
       appBar: AppBar(
-        title:
-            const WidgetText(text: 'ยินดีต้อนรับ สู่การสร้าง Real Post'),
+        title: const WidgetText(text: 'ยินดีต้อนรับ สู่การสร้าง Real Post'),
       ),
       body: LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
         return GetX(
@@ -163,6 +162,9 @@ class _AddRoomState extends State<AddRoom> {
                   room: room!,
                   urlRoom: urlPhoto ?? appController.stampModels[0].url,
                   timestamp: Timestamp.fromDate(DateTime.now()),
+                  urlRooms: [
+                    urlPhoto ?? appController.stampModels.last.url,
+                  ],
                 );
                 print('roomModel ==> ${roomModel.toMap()}');
                 await AppService()
