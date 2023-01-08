@@ -2,6 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:get/get.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/utility/app_constant.dart';
@@ -9,6 +10,7 @@ import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_content_form.dart';
+import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_text.dart';
@@ -43,7 +45,8 @@ class _MainPageViewState extends State<MainPageView> {
               print('##4jan userModels --> ${appController.userModels.length}');
               return SafeArea(
                 child: (appController.roomModels.isEmpty) ||
-                        (appController.userModels.isEmpty) || (appController.userModelAtRooms.isEmpty)
+                        (appController.userModels.isEmpty) ||
+                        (appController.userModelAtRooms.isEmpty)
                     ? const SizedBox()
                     : PageView(
                         children: appController.roomModels
@@ -65,9 +68,17 @@ class _MainPageViewState extends State<MainPageView> {
                                     Positioned(
                                       right: 32,
                                       bottom: 100,
-                                      child: WidgetImage(
-                                        path: 'images/addgreen.png',
-                                        size: 36,
+                                      child: Column(
+                                        children: [
+                                          WidgetIconButton(
+                                            iconData: Icons.chat,
+                                            pressFunc: () {},
+                                          ),
+                                          const WidgetImage(
+                                            path: 'images/addgreen.png',
+                                            size: 36,
+                                          ),
+                                        ],
                                       ),
                                     ),
                                     Positioned(
@@ -78,6 +89,9 @@ class _MainPageViewState extends State<MainPageView> {
                                         textEditingController:
                                             textEditingController,
                                         docId: appController.docIdRooms[
+                                            appController
+                                                .indexBodyMainPageView.value],
+                                        roomModel: appController.roomModels[
                                             appController
                                                 .indexBodyMainPageView.value],
                                       ),
@@ -112,27 +126,32 @@ class _MainPageViewState extends State<MainPageView> {
         displayListMessage(boxConstraints, appController,
             top: boxConstraints.maxHeight * 0.6 * 0.5, status: false),
         displayOwnerRoom(boxConstraints, appController),
-        Positioned(
-          right: 0,
-          child: element.urlCamera!.isEmpty
-              ? const SizedBox()
-              : Container(
-                  decoration: AppConstant().borderBox(),
-                  child: WidgetImageInternet(
-                    urlImage: element.urlCamera!,
-                    width: boxConstraints.maxWidth * 0.3,
-                    height: boxConstraints.maxWidth * 0.3,
-                    boxFit: BoxFit.cover,
-                  ),
-                ),
-        ),
+        // displayImageCamera(element, boxConstraints),
       ],
     );
   }
 
-  Row displayOwnerRoom(
+  Positioned displayImageCamera(
+      RoomModel element, BoxConstraints boxConstraints) {
+    return Positioned(
+      right: 0,
+      child: element.urlCamera!.isEmpty
+          ? const SizedBox()
+          : Container(
+              decoration: AppConstant().borderBox(),
+              child: WidgetImageInternet(
+                urlImage: element.urlCamera!,
+                width: boxConstraints.maxWidth * 0.3,
+                height: boxConstraints.maxWidth * 0.3,
+                boxFit: BoxFit.cover,
+              ),
+            ),
+    );
+  }
+
+  Widget displayOwnerRoom(
       BoxConstraints boxConstraints, AppController appController) {
-    return Row(
+    return appController.userModelAtRooms.isEmpty ? const SizedBox() : Row(
       children: [
         Container(
           constraints: BoxConstraints(maxWidth: boxConstraints.maxWidth * 0.75),
@@ -140,10 +159,15 @@ class _MainPageViewState extends State<MainPageView> {
           child: Row(
             children: [
               WidgetCircularImage(
-                  urlImage: appController.userModelAtRooms[appController.indexBodyMainPageView.value].urlAvatar ??
+                  urlImage: appController
+                          .userModelAtRooms[
+                              appController.indexBodyMainPageView.value]
+                          .urlAvatar ??
                       AppConstant.urlAvatar),
               WidgetText(
-                text: appController.userModelAtRooms[appController.indexBodyMainPageView.value].displayName,
+                text: appController
+                    .userModelAtRooms[appController.indexBodyMainPageView.value]
+                    .displayName,
                 textStyle: AppConstant().h2Style(),
               )
             ],
@@ -153,14 +177,28 @@ class _MainPageViewState extends State<MainPageView> {
     );
   }
 
-  WidgetImageInternet displayImageRoom(
-      RoomModel element, BoxConstraints boxConstraints) {
-    return WidgetImageInternet(
-      urlImage: element.urlRooms[0],
-      width: boxConstraints.maxWidth,
+  Widget displayImageRoom(RoomModel roomModel, BoxConstraints boxConstraints) {
+    return ImageSlideshow(
+      autoPlayInterval: roomModel.urlRooms.length == 1 ? 0 : 3000,
+      isLoop: true,
       height: boxConstraints.maxHeight * 0.6,
-      boxFit: BoxFit.cover,
+      children: roomModel.urlRooms
+          .map(
+            (e) => WidgetImageInternet(
+              urlImage: e,
+              width: boxConstraints.maxWidth,
+              boxFit: BoxFit.cover,
+            ),
+          )
+          .toList(),
     );
+
+    //  WidgetImageInternet(
+    //   urlImage: roomModel.urlRooms.last,
+    //   width: boxConstraints.maxWidth,
+    //   height: boxConstraints.maxHeight * 0.6,
+    //   boxFit: BoxFit.cover,
+    // );
   }
 
   Positioned displayListMessage(

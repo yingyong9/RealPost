@@ -160,7 +160,6 @@ class _AddRoomState extends State<AddRoom> {
                 RoomModel roomModel = RoomModel(
                   uidCreate: user!.uid,
                   room: room!,
-                  urlRoom: urlPhoto ?? appController.stampModels[0].url,
                   timestamp: Timestamp.fromDate(DateTime.now()),
                   urlRooms: [
                     urlPhoto ?? appController.stampModels.last.url,

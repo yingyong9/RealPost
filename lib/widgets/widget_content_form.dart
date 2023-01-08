@@ -1,7 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'package:realpost/models/room_model.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
@@ -9,7 +11,7 @@ import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 
-class WidgetContentForm extends StatelessWidget {
+class WidgetContentForm extends StatefulWidget {
   const WidgetContentForm({
     Key? key,
     required this.boxConstraints,
@@ -17,6 +19,7 @@ class WidgetContentForm extends StatelessWidget {
     required this.textEditingController,
     this.collection,
     this.docId,
+    this.roomModel,
   }) : super(key: key);
 
   final BoxConstraints boxConstraints;
@@ -24,6 +27,14 @@ class WidgetContentForm extends StatelessWidget {
   final TextEditingController textEditingController;
   final String? collection;
   final String? docId;
+  final RoomModel? roomModel;
+
+  @override
+  State<WidgetContentForm> createState() => _WidgetContentFormState();
+}
+
+class _WidgetContentFormState extends State<WidgetContentForm> {
+  var user = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
@@ -31,106 +42,141 @@ class WidgetContentForm extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         WidgetForm(
-          width: boxConstraints.maxWidth,
+          width: widget.boxConstraints.maxWidth,
           hintStyle: AppConstant().h3Style(color: AppConstant.grey),
           hint: 'พิมพ์ข้อความ...',
           textStyle: AppConstant().h3Style(),
-          controller: textEditingController,
+          controller: widget.textEditingController,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(
-              width: 250,
-              child: Row(
-                children: [
-                  WidgetIconButton(
-                    iconData: Icons.add_a_photo,
-                    pressFunc: () async {
-                      if (appController.cameraFiles.isNotEmpty) {
-                        appController.cameraFiles.clear();
-                      }
+        SizedBox(
+          width: widget.boxConstraints.maxWidth,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                width: 250,
+                child: Row(
+                  children: [
+                    user!.uid == widget.roomModel!.uidCreate
+                        ? Row(
+                            children: [
+                              WidgetIconButton(
+                                iconData: Icons.add_a_photo,
+                                pressFunc: () async {
+                                  if (widget
+                                      .appController.cameraFiles.isNotEmpty) {
+                                    widget.appController.cameraFiles.clear();
+                                  }
 
-                      print('##5jan Click Camera at docIdRoom --> $docId');
-                      print(
-                          '##5jan cameraFiles ---> ${appController.cameraFiles.length}');
+                                  var file = await AppService()
+                                      .processTakePhoto(
+                                          source: ImageSource.camera);
 
-                      var file = await AppService()
-                          .processTakePhoto(source: ImageSource.camera);
+                                  if (file != null) {
+                                    widget.appController.cameraFiles.add(file);
 
-                      if (file != null) {
-                        appController.cameraFiles.add(file);
+                                    String? urlCamera = await AppService()
+                                        .processUploadPhoto(
+                                            file: file, path: 'photopost');
+                                    // print('##5jan urlCamera ---. $urlCamera');
 
-                        String? urlCamera = await AppService()
-                            .processUploadPhoto(file: file, path: 'photopost');
-                        print('##5jan urlCamera ---. $urlCamera');
+                                    Map<String, dynamic> map = widget
+                                        .appController
+                                        .roomModels[widget.appController
+                                            .indexBodyMainPageView.value]
+                                        .toMap();
+                                    // print('##5jan map ----> $map');
 
-                        Map<String, dynamic> map = appController.roomModels[
-                                appController.indexBodyMainPageView.value]
-                            .toMap();
-                        print('##5jan map ----> $map');
+                                    List<String> urlRooms = <String>[];
+                                    urlRooms.add(urlCamera!);
 
-                        map['urlCamera'] = urlCamera;
+                                    map['urlRooms'] = urlRooms;
 
-                        await AppService()
-                            .processUpdateRoom(docIdRoom: docId!, data: map);
-                      } // if
+                                    await AppService().processUpdateRoom(
+                                        docIdRoom: widget.docId!, data: map);
+                                  } // if
+                                },
+                              ),
+                              WidgetIconButton(
+                                iconData: Icons.add_photo_alternate,
+                                pressFunc: () {
+                                  AppService()
+                                      .processChooseMultiImage()
+                                      .then((value) {
+                                    AppService()
+                                        .processUploadMultiPhoto()
+                                        .then((value) {
+                                      var urlImages = value;
+                                      List<String> urlRooms = <String>[];
+                                      urlRooms.addAll(urlImages);
 
-                      print(
-                          '##5jan cameraFiles ต่อมา ---> ${appController.cameraFiles.length}');
-                    },
-                  ),
-                  WidgetIconButton(
-                    iconData: Icons.add_photo_alternate,
-                    pressFunc: () {},
-                  ),
-                  // WidgetIconButton(
-                  //   iconData: Icons.emoji_emotions,
-                  //   pressFunc: () {},
-                  // ),
-                  //  WidgetIconButton(
-                  //   iconData: Icons.shopping_cart,
-                  //   pressFunc: () {},
-                  // ),
-                  //  WidgetIconButton(
-                  //   iconData: Icons.shopping_basket,
-                  //   pressFunc: () {},
-                  // ),
-                ],
+                                      Map<String, dynamic> map =
+                                          widget.roomModel!.toMap();
+                                      map['urlRooms'] = urlRooms;
+
+                                      AppService()
+                                          .processUpdateRoom(
+                                              docIdRoom: widget.docId!,
+                                              data: map)
+                                          .then((value) {
+                                        print('##6jan update Room Success');
+                                      });
+                                    });
+                                  });
+                                },
+                              ),
+                              WidgetIconButton(
+                                iconData: Icons.video_call,
+                                pressFunc: () {},
+                              ),
+                            ],
+                          )
+                        : WidgetIconButton(
+                            iconData: Icons.chat,
+                            pressFunc: () {},
+                          ),
+                  ],
+                ),
               ),
-            ),
-            WidgetIconButton(
-              iconData: Icons.send,
-              pressFunc: () async {
-                if (textEditingController.text.isEmpty) {
-                  print('No Text form');
+              WidgetIconButton(
+                iconData: Icons.send,
+                pressFunc: () async {
+                  if (widget.textEditingController.text.isEmpty) {
+                    print('No Text form');
 
-                  if (appController.userModels[0].urlAvatar!.isNotEmpty) {
-                    // การทำงานครั้งที่สอง
-                    AppDialog(context: context).realPostBottonSheet(
-                        collection: collection, docIdRoom: docId!);
-                  }
-                } else {
-                  print('text = ${textEditingController.text}');
-                  if (appController.messageChats.isNotEmpty) {
-                    appController.messageChats.clear();
-                  }
-                  appController.messageChats.add(textEditingController.text);
-
-                  textEditingController.text = '';
-
-                  print('userModel => ${appController.userModels[0].toMap()}');
-
-                  if (appController.userModels[0].urlAvatar?.isEmpty ?? true) {
-                    AppDialog(context: context).avatarBottonSheet();
+                    if (widget
+                        .appController.userModels[0].urlAvatar!.isNotEmpty) {
+                      // การทำงานครั้งที่สอง
+                      AppDialog(context: context).realPostBottonSheet(
+                          collection: widget.collection,
+                          docIdRoom: widget.docId!);
+                    }
                   } else {
-                    AppDialog(context: context).realPostBottonSheet(
-                        collection: collection, docIdRoom: docId!);
+                    print('text = ${widget.textEditingController.text}');
+                    if (widget.appController.messageChats.isNotEmpty) {
+                      widget.appController.messageChats.clear();
+                    }
+                    widget.appController.messageChats
+                        .add(widget.textEditingController.text);
+
+                    widget.textEditingController.text = '';
+
+                    print(
+                        'userModel => ${widget.appController.userModels[0].toMap()}');
+
+                    if (widget.appController.userModels[0].urlAvatar?.isEmpty ??
+                        true) {
+                      AppDialog(context: context).avatarBottonSheet();
+                    } else {
+                      AppDialog(context: context).realPostBottonSheet(
+                          collection: widget.collection,
+                          docIdRoom: widget.docId!);
+                    }
                   }
-                }
-              },
-            ),
-          ],
+                },
+              ),
+            ],
+          ),
         ),
       ],
     );

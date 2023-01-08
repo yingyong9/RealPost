@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class RoomModel {
   final String uidCreate;
   final String room;
-  final String urlRoom;
+
   final Timestamp timestamp;
   final String? urlCamera;
   final List<String> urlRooms;
@@ -14,7 +14,6 @@ class RoomModel {
   RoomModel({
     required this.uidCreate,
     required this.room,
-    required this.urlRoom,
     required this.timestamp,
     this.urlCamera,
     required this.urlRooms,
@@ -24,7 +23,6 @@ class RoomModel {
     return <String, dynamic>{
       'uidCreate': uidCreate,
       'room': room,
-      'urlRoom': urlRoom,
       'timestamp': timestamp,
       'urlCamera': urlCamera,
       'urlRooms': urlRooms,
@@ -35,7 +33,6 @@ class RoomModel {
     return RoomModel(
       uidCreate: (map['uidCreate'] ?? '') as String,
       room: (map['room'] ?? '') as String,
-      urlRoom: (map['urlRoom'] ?? '') as String,
       timestamp: (map['timestamp']),
       urlCamera: (map['urlCamera'] ?? ''),
       urlRooms: List<String>.from(map['urlRooms'] ?? []),

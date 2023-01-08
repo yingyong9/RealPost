@@ -166,7 +166,7 @@ class _BodyDiscoveryState extends State<BodyDiscovery> {
           WidgetImageInternet(
             width: boxConstraints.maxWidth,
             height: boxConstraints.maxWidth * 0.5,
-            urlImage: appController.roomModels[index].urlRoom,
+            urlImage: appController.roomModels[index].urlRooms[0],
             boxFit: BoxFit.cover,
             radius: 0,
           ),

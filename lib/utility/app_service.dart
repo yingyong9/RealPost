@@ -25,6 +25,8 @@ import 'package:realpost/widgets/widget_text_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppService {
+  
+
   void initialSetup({required BuildContext context}) {
     AppController appController = Get.put(AppController());
 
@@ -154,6 +156,9 @@ class AppService {
       maxHeight: 800,
     )
         .then((value) {
+      if (appController.xFiles.isNotEmpty) {
+        appController.xFiles.clear();
+      }
       appController.xFiles.addAll(value);
     });
   }
@@ -291,13 +296,14 @@ class AppService {
     return result;
   }
 
-  Future<List<String>> processUploadMultiPhoto() async {
+  Future<List<String>> processUploadMultiPhoto({String? path}) async {
     AppController appController = Get.put(AppController());
     var albums = <String>[];
 
     for (var element in appController.xFiles) {
       File file = File(element.path);
-      String? url = await processUploadPhoto(file: file, path: 'albums');
+      String? url =
+          await processUploadPhoto(file: file, path: path ?? 'albums');
       albums.add(url!);
     }
 

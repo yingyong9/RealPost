@@ -189,11 +189,7 @@ class AppController extends GetxController {
         .orderBy('timestamp', descending: true)
         .get()
         .then((value) async {
-      //     if (roomModels.isEmpty) {
-      //   roomModels.clear();
-      //   docIdRooms.clear();
-      // }
-
+      
       for (var element in value.docs) {
         RoomModel model = RoomModel.fromMap(element.data());
         roomModels.add(model);

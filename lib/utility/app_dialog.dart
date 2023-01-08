@@ -588,7 +588,7 @@ class AppDialog {
                           appController.xFiles.clear();
                         }
 
-                        // Get.back();
+                        Get.back();
                       },
                       iconData: GetPlatform.isAndroid
                           ? Icons.arrow_back
