@@ -529,14 +529,17 @@ class AppDialog {
                                               .add(value.toString());
 
                                           print(
-                                              '##19dec urlRealPostChoose[0] ----> ${appController.urlRealPostChooses[0]}');
+                                              '##8jan urlRealPostChoose[0] ----> ${appController.urlRealPostChooses[0]}');
 
                                           ChatModel chatModel =
                                               await AppService()
                                                   .createChatModel();
 
                                           print(
-                                              'chatModel ---> ${chatModel.toMap()}');
+                                              '##8jan chatModel ---> ${chatModel.toMap()}');
+
+                                              print(
+                                              '##8jan docIdRoomChoose ---> ${appController.docIdRoomChooses.length}');
 
                                           AppService()
                                               .processInsertChat(

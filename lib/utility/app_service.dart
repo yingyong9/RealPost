@@ -49,6 +49,16 @@ class AppService {
       }
 
       appController.readAllChat(docIdRoom: appController.docIdRooms[0]);
+
+       if (appController.docIdRoomChooses.isNotEmpty) {
+                            appController.docIdRoomChooses.clear();
+                          }
+                          appController.docIdRoomChooses.add(
+                              appController.docIdRooms[
+                                  appController.indexBodyMainPageView.value]);
+
+
+
     });
     appController.findUserModels();
     appController.readAllStamp();
@@ -143,7 +153,7 @@ class AppService {
           urlBigImage: urlBigImage ?? '');
     }
 
-    print('##25dec chartModel ==> ${chatModel.toMap()}');
+    print('##8jan at createModel app service chartModel ==> ${chatModel.toMap()}');
 
     return chatModel;
   }
@@ -270,7 +280,7 @@ class AppService {
     AppController appController = Get.put(AppController());
 
     print(
-        '##19dec @processInsertChat collection --> $collection, docId --> $docId');
+        '##8jan @processInsertChat collection --> $collection, docId --> $docId');
 
     await FirebaseFirestore.instance
         .collection(collection ?? 'room')

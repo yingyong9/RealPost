@@ -134,6 +134,7 @@ class AppController extends GetxController {
         .listen((event) async {
       load.value = false;
       if (event.docs.isNotEmpty) {
+        
         if (chatModels.isNotEmpty) {
           chatModels.clear();
           addressMaps.clear();
@@ -141,7 +142,7 @@ class AppController extends GetxController {
 
         for (var element in event.docs) {
           ChatModel model = ChatModel.fromMap(element.data());
-          print('chatModel ==> ${model.toMap()}');
+          print('##8jan chatModel ==> ${model.toMap()}');
           chatModels.add(model);
 
           if (model.geoPoint!.latitude != 0) {
@@ -210,7 +211,7 @@ class AppController extends GetxController {
             .collection('room')
             .doc(element.id)
             .collection('chat')
-            .orderBy('timestamp', descending: true)
+            .orderBy('timestamp', descending: false)
             .snapshots()
             .listen((event) {
           if (event.docs.isEmpty) {

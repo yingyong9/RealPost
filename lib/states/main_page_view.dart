@@ -42,7 +42,8 @@ class _MainPageViewState extends State<MainPageView> {
         return GetX(
             init: AppController(),
             builder: (AppController appController) {
-              print('##4jan userModels --> ${appController.userModels.length}');
+              print(
+                  '##8jan chatModels.length --> ${appController.chatModels.length}');
               return SafeArea(
                 child: (appController.roomModels.isEmpty) ||
                         (appController.userModels.isEmpty) ||
@@ -65,37 +66,8 @@ class _MainPageViewState extends State<MainPageView> {
                                         height: (boxConstraints.maxHeight) -
                                             (boxConstraints.maxHeight * 0.6) -
                                             120),
-                                    Positioned(
-                                      right: 32,
-                                      bottom: 100,
-                                      child: Column(
-                                        children: [
-                                          WidgetIconButton(
-                                            iconData: Icons.chat,
-                                            pressFunc: () {},
-                                          ),
-                                          const WidgetImage(
-                                            path: 'images/addgreen.png',
-                                            size: 36,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Positioned(
-                                      bottom: 0,
-                                      child: WidgetContentForm(
-                                        boxConstraints: boxConstraints,
-                                        appController: appController,
-                                        textEditingController:
-                                            textEditingController,
-                                        docId: appController.docIdRooms[
-                                            appController
-                                                .indexBodyMainPageView.value],
-                                        roomModel: appController.roomModels[
-                                            appController
-                                                .indexBodyMainPageView.value],
-                                      ),
-                                    ),
+                                    displayAddGroup(),
+                                    displayForm(boxConstraints, appController),
                                   ],
                                 ),
                               ),
@@ -110,6 +82,12 @@ class _MainPageViewState extends State<MainPageView> {
                           appController.readAllChat(
                               docIdRoom: appController.docIdRooms[
                                   appController.indexBodyMainPageView.value]);
+                          if (appController.docIdRoomChooses.isNotEmpty) {
+                            appController.docIdRoomChooses.clear();
+                          }
+                          appController.docIdRoomChooses.add(
+                              appController.docIdRooms[
+                                  appController.indexBodyMainPageView.value]);
                         },
                       ),
               );
@@ -118,87 +96,58 @@ class _MainPageViewState extends State<MainPageView> {
     );
   }
 
-  Stack contentTop(RoomModel element, BoxConstraints boxConstraints,
-      AppController appController) {
+  Positioned displayForm(
+      BoxConstraints boxConstraints, AppController appController) {
+    return Positioned(
+      bottom: 0,
+      child: WidgetContentForm(
+        boxConstraints: boxConstraints,
+        appController: appController,
+        textEditingController: textEditingController,
+        docId:
+            appController.docIdRooms[appController.indexBodyMainPageView.value],
+        roomModel:
+            appController.roomModels[appController.indexBodyMainPageView.value],
+      ),
+    );
+  }
+
+  Positioned displayAddGroup() {
+    return Positioned(
+      right: 32,
+      bottom: 100,
+      child: Column(
+        children: [
+          WidgetIconButton(
+            iconData: Icons.chat,
+            pressFunc: () {},
+          ),
+          const WidgetImage(
+            path: 'images/addgreen.png',
+            size: 36,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Stack contentTop(
+    RoomModel element,
+    BoxConstraints boxConstraints,
+    AppController appController,
+  ) {
     return Stack(
       children: [
         displayImageRoom(element, boxConstraints),
+        // WidgetText(text: 'text'),
         displayListMessage(boxConstraints, appController,
-            top: boxConstraints.maxHeight * 0.6 * 0.5, status: false),
+            top: boxConstraints.maxHeight * 0.3,
+            status: false,
+            height: boxConstraints.maxHeight * 0.25),
         displayOwnerRoom(boxConstraints, appController),
-        // displayImageCamera(element, boxConstraints),
+        displayImageCamera(element, boxConstraints),
       ],
     );
-  }
-
-  Positioned displayImageCamera(
-      RoomModel element, BoxConstraints boxConstraints) {
-    return Positioned(
-      right: 0,
-      child: element.urlCamera!.isEmpty
-          ? const SizedBox()
-          : Container(
-              decoration: AppConstant().borderBox(),
-              child: WidgetImageInternet(
-                urlImage: element.urlCamera!,
-                width: boxConstraints.maxWidth * 0.3,
-                height: boxConstraints.maxWidth * 0.3,
-                boxFit: BoxFit.cover,
-              ),
-            ),
-    );
-  }
-
-  Widget displayOwnerRoom(
-      BoxConstraints boxConstraints, AppController appController) {
-    return appController.userModelAtRooms.isEmpty ? const SizedBox() : Row(
-      children: [
-        Container(
-          constraints: BoxConstraints(maxWidth: boxConstraints.maxWidth * 0.75),
-          decoration: AppConstant().boxBlack(),
-          child: Row(
-            children: [
-              WidgetCircularImage(
-                  urlImage: appController
-                          .userModelAtRooms[
-                              appController.indexBodyMainPageView.value]
-                          .urlAvatar ??
-                      AppConstant.urlAvatar),
-              WidgetText(
-                text: appController
-                    .userModelAtRooms[appController.indexBodyMainPageView.value]
-                    .displayName,
-                textStyle: AppConstant().h2Style(),
-              )
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget displayImageRoom(RoomModel roomModel, BoxConstraints boxConstraints) {
-    return ImageSlideshow(
-      autoPlayInterval: roomModel.urlRooms.length == 1 ? 0 : 3000,
-      isLoop: true,
-      height: boxConstraints.maxHeight * 0.6,
-      children: roomModel.urlRooms
-          .map(
-            (e) => WidgetImageInternet(
-              urlImage: e,
-              width: boxConstraints.maxWidth,
-              boxFit: BoxFit.cover,
-            ),
-          )
-          .toList(),
-    );
-
-    //  WidgetImageInternet(
-    //   urlImage: roomModel.urlRooms.last,
-    //   width: boxConstraints.maxWidth,
-    //   height: boxConstraints.maxHeight * 0.6,
-    //   boxFit: BoxFit.cover,
-    // );
   }
 
   Positioned displayListMessage(
@@ -221,15 +170,24 @@ class _MainPageViewState extends State<MainPageView> {
           physics: const ScrollPhysics(),
           itemCount: appController.chatModels.length,
           itemBuilder: (context, index) {
-            bool? myCondition;
+            bool? myCondition;   // ต่้องเป็น false ถึงจะแสดงผล
             // status -> false PostLogin, true Geast
             if (status) {
+               //การทำงานแสดง Post ของคนที่ Guest
               myCondition =
-                  appController.chatModels[index].uidChat == user!.uid;
+                  appController.chatModels[index].uidChat == appController.roomModels[appController.indexBodyMainPageView.value].uidCreate;
             } else {
+              //การทำงานแสดง Post ของคนที่ login
               myCondition =
-                  appController.chatModels[index].uidChat != user!.uid;
+                  appController.chatModels[index].uidChat != appController.roomModels[appController.indexBodyMainPageView.value].uidCreate;
             }
+
+            // myCondition = status ||
+            //     (appController.chatModels[index].uidChat == user!.uid);
+
+            print('##9jan status, myCondition ==> $status , $myCondition');
+            print(
+                '##9jan uidLogin ==> ${user!.uid} ==== uidPost ==> ${appController.chatModels[index].uidChat}');
 
             return myCondition
                 ? const SizedBox()
@@ -275,5 +233,79 @@ class _MainPageViewState extends State<MainPageView> {
         ),
       ),
     );
+  }
+
+  Widget displayImageRoom(RoomModel roomModel, BoxConstraints boxConstraints) {
+    return ImageSlideshow(
+      autoPlayInterval: roomModel.urlRooms.length == 1 ? 0 : 3000,
+      isLoop: true,
+      height: boxConstraints.maxHeight * 0.6,
+      children: roomModel.urlRooms
+          .map(
+            (e) => WidgetImageInternet(
+              urlImage: e,
+              width: boxConstraints.maxWidth,
+              boxFit: BoxFit.cover,
+            ),
+          )
+          .toList(),
+    );
+
+    //  WidgetImageInternet(
+    //   urlImage: roomModel.urlRooms.last,
+    //   width: boxConstraints.maxWidth,
+    //   height: boxConstraints.maxHeight * 0.6,
+    //   boxFit: BoxFit.cover,
+    // );
+  }
+
+  Positioned displayImageCamera(
+      RoomModel element, BoxConstraints boxConstraints) {
+    return Positioned(
+      right: 0,
+      child: element.urlCamera!.isEmpty
+          ? const SizedBox()
+          : Container(
+              decoration: AppConstant().borderBox(),
+              child: WidgetImageInternet(
+                urlImage: element.urlCamera!,
+                width: boxConstraints.maxWidth * 0.3,
+                height: boxConstraints.maxWidth * 0.3,
+                boxFit: BoxFit.cover,
+              ),
+            ),
+    );
+  }
+
+  Widget displayOwnerRoom(
+      BoxConstraints boxConstraints, AppController appController) {
+    return appController.userModelAtRooms.isEmpty
+        ? const SizedBox()
+        : Row(
+            children: [
+              Container(
+                constraints:
+                    BoxConstraints(maxWidth: boxConstraints.maxWidth * 0.75),
+                decoration: AppConstant().boxBlack(),
+                child: Row(
+                  children: [
+                    WidgetCircularImage(
+                        urlImage: appController
+                                .userModelAtRooms[
+                                    appController.indexBodyMainPageView.value]
+                                .urlAvatar ??
+                            AppConstant.urlAvatar),
+                    WidgetText(
+                      text: appController
+                          .userModelAtRooms[
+                              appController.indexBodyMainPageView.value]
+                          .displayName,
+                      textStyle: AppConstant().h2Style(),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          );
   }
 }
