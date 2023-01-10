@@ -2,6 +2,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:realpost/models/chat_model.dart';
 
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/utility/app_constant.dart';
@@ -152,25 +153,37 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
                           docIdRoom: widget.docId!);
                     }
                   } else {
-                    print('text = ${widget.textEditingController.text}');
+                    print(
+                        '##9jan text ที่โพส = ${widget.textEditingController.text}');
+
                     if (widget.appController.messageChats.isNotEmpty) {
                       widget.appController.messageChats.clear();
                     }
+
                     widget.appController.messageChats
                         .add(widget.textEditingController.text);
 
                     widget.textEditingController.text = '';
 
                     print(
-                        'userModel => ${widget.appController.userModels[0].toMap()}');
+                        'userModel => ${widget.appController.userModels.last.toMap()}');
 
-                    if (widget.appController.userModels[0].urlAvatar?.isEmpty ??
+                    if (widget
+                            .appController.userModels.last.urlAvatar?.isEmpty ??
                         true) {
                       AppDialog(context: context).avatarBottonSheet();
                     } else {
-                      AppDialog(context: context).realPostBottonSheet(
-                          collection: widget.collection,
-                          docIdRoom: widget.docId!);
+                      ChatModel chatModel =
+                          await AppService().createChatModel();
+                      print('##9jan chatModel ---> ${chatModel.toMap()}');
+                      print('##9jan docIdRoom ---> ${widget.docId}');
+
+                      await AppService().processInsertChat(
+                          chatModel: chatModel, docId: widget.docId!);
+
+                      // AppDialog(context: context).realPostBottonSheet(
+                      //     collection: widget.collection,
+                      //     docIdRoom: widget.docId!);
                     }
                   }
                 },

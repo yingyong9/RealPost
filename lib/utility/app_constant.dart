@@ -33,7 +33,7 @@ class AppConstant {
 
   BoxDecoration boxChatGuest() {
     return BoxDecoration(
-      color: lightColor,
+      color: lightColor.withOpacity(0.15),
       borderRadius: const BorderRadius.only(
         topRight: Radius.circular(10),
         bottomLeft: Radius.circular(10),

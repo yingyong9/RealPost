@@ -49,46 +49,52 @@ class _MainPageViewState extends State<MainPageView> {
                         (appController.userModels.isEmpty) ||
                         (appController.userModelAtRooms.isEmpty)
                     ? const SizedBox()
-                    : PageView(
-                        children: appController.roomModels
-                            .map(
-                              (element) => SizedBox(
-                                width: boxConstraints.maxWidth,
-                                height: boxConstraints.maxHeight,
-                                child: Stack(
-                                  children: [
-                                    contentTop(
-                                        element, boxConstraints, appController),
-                                    displayListMessage(
-                                        boxConstraints, appController,
-                                        top: boxConstraints.maxHeight * 0.6,
-                                        status: true,
-                                        height: (boxConstraints.maxHeight) -
-                                            (boxConstraints.maxHeight * 0.6) -
-                                            120),
-                                    displayAddGroup(),
-                                    displayForm(boxConstraints, appController),
-                                  ],
+                    : GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => FocusScope.of(context)
+                            .requestFocus(FocusScopeNode()),
+                        child: PageView(
+                          children: appController.roomModels
+                              .map(
+                                (element) => SizedBox(
+                                  width: boxConstraints.maxWidth,
+                                  height: boxConstraints.maxHeight,
+                                  child: Stack(
+                                    children: [
+                                      contentTop(element, boxConstraints,
+                                          appController),
+                                      displayListMessage(
+                                          boxConstraints, appController,
+                                          top: boxConstraints.maxHeight * 0.6,
+                                          status: true,
+                                          height: (boxConstraints.maxHeight) -
+                                              (boxConstraints.maxHeight * 0.6) -
+                                              120),
+                                      displayAddGroup(),
+                                      displayForm(
+                                          boxConstraints, appController),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            )
-                            .toList(),
-                        controller: PageController(
-                            initialPage:
-                                appController.indexBodyMainPageView.value),
-                        scrollDirection: Axis.vertical,
-                        onPageChanged: (value) {
-                          appController.indexBodyMainPageView.value = value;
-                          appController.readAllChat(
-                              docIdRoom: appController.docIdRooms[
-                                  appController.indexBodyMainPageView.value]);
-                          if (appController.docIdRoomChooses.isNotEmpty) {
-                            appController.docIdRoomChooses.clear();
-                          }
-                          appController.docIdRoomChooses.add(
-                              appController.docIdRooms[
-                                  appController.indexBodyMainPageView.value]);
-                        },
+                              )
+                              .toList(),
+                          controller: PageController(
+                              initialPage:
+                                  appController.indexBodyMainPageView.value),
+                          scrollDirection: Axis.vertical,
+                          onPageChanged: (value) {
+                            appController.indexBodyMainPageView.value = value;
+                            appController.readAllChat(
+                                docIdRoom: appController.docIdRooms[
+                                    appController.indexBodyMainPageView.value]);
+                            if (appController.docIdRoomChooses.isNotEmpty) {
+                              appController.docIdRoomChooses.clear();
+                            }
+                            appController.docIdRoomChooses.add(
+                                appController.docIdRooms[
+                                    appController.indexBodyMainPageView.value]);
+                          },
+                        ),
                       ),
               );
             });
@@ -141,9 +147,9 @@ class _MainPageViewState extends State<MainPageView> {
         displayImageRoom(element, boxConstraints),
         // WidgetText(text: 'text'),
         displayListMessage(boxConstraints, appController,
-            top: boxConstraints.maxHeight * 0.3,
+            top: boxConstraints.maxHeight * 0.15,
             status: false,
-            height: boxConstraints.maxHeight * 0.25),
+            height: boxConstraints.maxHeight * 0.4),
         displayOwnerRoom(boxConstraints, appController),
         displayImageCamera(element, boxConstraints),
       ],
@@ -170,16 +176,20 @@ class _MainPageViewState extends State<MainPageView> {
           physics: const ScrollPhysics(),
           itemCount: appController.chatModels.length,
           itemBuilder: (context, index) {
-            bool? myCondition;   // ต่้องเป็น false ถึงจะแสดงผล
+            bool? myCondition; // ต่้องเป็น false ถึงจะแสดงผล
             // status -> false PostLogin, true Geast
             if (status) {
-               //การทำงานแสดง Post ของคนที่ Guest
-              myCondition =
-                  appController.chatModels[index].uidChat == appController.roomModels[appController.indexBodyMainPageView.value].uidCreate;
+              //การทำงานแสดง Post ของคนที่ Guest
+              myCondition = appController.chatModels[index].uidChat ==
+                  appController
+                      .roomModels[appController.indexBodyMainPageView.value]
+                      .uidCreate;
             } else {
               //การทำงานแสดง Post ของคนที่ login
-              myCondition =
-                  appController.chatModels[index].uidChat != appController.roomModels[appController.indexBodyMainPageView.value].uidCreate;
+              myCondition = appController.chatModels[index].uidChat !=
+                  appController
+                      .roomModels[appController.indexBodyMainPageView.value]
+                      .uidCreate;
             }
 
             // myCondition = status ||
@@ -192,17 +202,19 @@ class _MainPageViewState extends State<MainPageView> {
             return myCondition
                 ? const SizedBox()
                 : Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       status
                           ? Container(
                               margin: EdgeInsets.only(
                                 left: marginLeft ?? 16,
-                                right: 16,
+                                // right: 4,
                               ),
                               child: WidgetCircularImage(
-                                  urlImage: appController
-                                      .chatModels[index].urlAvatar),
+                                urlImage:
+                                    appController.chatModels[index].urlAvatar,
+                                radius: 14,
+                              ),
                             )
                           : const SizedBox(
                               width: 16,
