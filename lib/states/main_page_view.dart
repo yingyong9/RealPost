@@ -16,8 +16,8 @@ import 'package:realpost/widgets/widget_content_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
+import 'package:realpost/widgets/widget_list_message_login.dart';
 import 'package:realpost/widgets/widget_text.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class MainPageView extends StatefulWidget {
   const MainPageView({super.key});
@@ -36,8 +36,6 @@ class _MainPageViewState extends State<MainPageView> {
   void initState() {
     super.initState();
     AppService().initialSetup(context: context);
-    controller.createWebViewController();
-    // controller.createVideoPlayControllers();
   }
 
   @override
@@ -79,9 +77,6 @@ class _MainPageViewState extends State<MainPageView> {
                                       displayAddGroup(),
                                       displayForm(
                                           boxConstraints, appController),
-                                      SizedBox(width: 200,height: 150,
-                                        child: MainWebView(),
-                                      ),
                                     ],
                                   ),
                                 ),
@@ -155,21 +150,11 @@ class _MainPageViewState extends State<MainPageView> {
       children: [
         displayImageRoom(element, boxConstraints),
         displayListMessage(boxConstraints, appController,
-            top: boxConstraints.maxHeight * 0.15,
+            top: boxConstraints.maxHeight * 0.08,
             status: false,
             height: boxConstraints.maxHeight * 0.4),
         displayOwnerRoom(boxConstraints, appController),
         displayImageCamera(element, boxConstraints),
-        Positioned(
-          right: 16,
-          bottom: 16,
-          child: WidgetButton(
-            label: 'Live Video',
-            pressFunc: () {
-              Get.to(const MainWebView());
-            },
-          ),
-        ),
       ],
     );
   }
