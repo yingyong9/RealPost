@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:chewie/chewie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,6 +17,8 @@ import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/stamp_model.dart';
 import 'package:realpost/models/user_model.dart';
 import 'package:realpost/utility/app_service.dart';
+import 'package:video_player/video_player.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class AppController extends GetxController {
   RxList<RoomModel> roomModels = <RoomModel>[].obs;
@@ -55,6 +58,50 @@ class AppController extends GetxController {
 
   RxInt indexBodyMainPageView = 0.obs;
   RxList<File> cameraFiles = <File>[].obs;
+
+  RxList<WebViewController> webViewControllers = <WebViewController>[].obs;
+
+  RxList<VideoPlayerController> videoPlayControllers =
+      <VideoPlayerController>[].obs;
+  RxList<ChewieController> chewieControllers = <ChewieController>[].obs;
+
+  void createVideoPlayControllers() {
+    String urlVideo =
+        'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4';
+
+        //  String urlVideo =
+        // 'https://firebasestorage.googleapis.com/v0/b/sharetravelung.appspot.com/o/flutterLand.mp4?alt=media&token=4ec7e35f-d77d-4cbe-bd06-626c31bedabb';
+
+    VideoPlayerController videoPlayerController =
+        VideoPlayerController.network(urlVideo)..initialize();
+    ChewieController chewieController = ChewieController(
+      videoPlayerController: videoPlayerController,
+      autoPlay: true,
+      looping: true,
+    );
+    chewieControllers.add(chewieController);
+  }
+
+  void createWebViewController() {
+    WebViewController webViewController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(Colors.black)
+      ..setNavigationDelegate(NavigationDelegate(
+        onProgress: (progress) {},
+        onPageStarted: (url) {},
+        onPageFinished: (url) {},
+        onWebResourceError: (error) {},
+        onNavigationRequest: (request) {
+          if (request.url.startsWith('https://www.youtube.com')) {
+            return NavigationDecision.prevent;
+          }
+          return NavigationDecision.navigate;
+        },
+      ))
+      ..loadRequest(Uri.parse(
+          'https://webrtc.livestreaming.in.th/realpost/play.html?name=realpost001'));
+    webViewControllers.add(webViewController);
+  }
 
   Future<void> processFindDocIdPrivateChat(
       {required String uidLogin, required String uidFriend}) async {
@@ -134,7 +181,6 @@ class AppController extends GetxController {
         .listen((event) async {
       load.value = false;
       if (event.docs.isNotEmpty) {
-        
         if (chatModels.isNotEmpty) {
           chatModels.clear();
           addressMaps.clear();
@@ -190,7 +236,6 @@ class AppController extends GetxController {
         .orderBy('timestamp', descending: true)
         .get()
         .then((value) async {
-      
       for (var element in value.docs) {
         RoomModel model = RoomModel.fromMap(element.data());
         roomModels.add(model);

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:realpost/states/main_home.dart';
 import 'package:realpost/states/main_page_view.dart';
+import 'package:realpost/states/main_web_view.dart';
 import 'package:realpost/states/phone_number.dart';
 import 'package:realpost/utility/app_constant.dart';
 
@@ -19,6 +20,10 @@ var getPages = <GetPage<dynamic>>[
   GetPage(
     name: '/mainPageView',
     page: () => const MainPageView(),
+  ),
+  GetPage(
+    name: '/mainWebView',
+    page: () => const MainWebView(),
   )
 ];
 
@@ -28,8 +33,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-
- 
 
   if (GetPlatform.isMacOS) {
   } else {

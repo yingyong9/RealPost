@@ -1,19 +1,23 @@
 // ignore_for_file: avoid_print, sort_child_properties_last
 
+import 'package:chewie/chewie.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:get/get.dart';
 import 'package:realpost/models/room_model.dart';
+import 'package:realpost/states/main_web_view.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
+import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_content_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_text.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class MainPageView extends StatefulWidget {
   const MainPageView({super.key});
@@ -32,6 +36,8 @@ class _MainPageViewState extends State<MainPageView> {
   void initState() {
     super.initState();
     AppService().initialSetup(context: context);
+    controller.createWebViewController();
+    // controller.createVideoPlayControllers();
   }
 
   @override
@@ -43,7 +49,7 @@ class _MainPageViewState extends State<MainPageView> {
             init: AppController(),
             builder: (AppController appController) {
               print(
-                  '##8jan chatModels.length --> ${appController.chatModels.length}');
+                  '##10jan webViewControllers --> ${appController.webViewControllers.length}');
               return SafeArea(
                 child: (appController.roomModels.isEmpty) ||
                         (appController.userModels.isEmpty) ||
@@ -73,6 +79,9 @@ class _MainPageViewState extends State<MainPageView> {
                                       displayAddGroup(),
                                       displayForm(
                                           boxConstraints, appController),
+                                      SizedBox(width: 200,height: 150,
+                                        child: MainWebView(),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -145,13 +154,22 @@ class _MainPageViewState extends State<MainPageView> {
     return Stack(
       children: [
         displayImageRoom(element, boxConstraints),
-        // WidgetText(text: 'text'),
         displayListMessage(boxConstraints, appController,
             top: boxConstraints.maxHeight * 0.15,
             status: false,
             height: boxConstraints.maxHeight * 0.4),
         displayOwnerRoom(boxConstraints, appController),
         displayImageCamera(element, boxConstraints),
+        Positioned(
+          right: 16,
+          bottom: 16,
+          child: WidgetButton(
+            label: 'Live Video',
+            pressFunc: () {
+              Get.to(const MainWebView());
+            },
+          ),
+        ),
       ],
     );
   }
