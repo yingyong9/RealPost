@@ -65,12 +65,14 @@ class AppController extends GetxController {
       <VideoPlayerController>[].obs;
   RxList<ChewieController> chewieControllers = <ChewieController>[].obs;
 
+  RxBool salseProduct = false.obs;
+
   void createVideoPlayControllers() {
     String urlVideo =
         'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4';
 
-        //  String urlVideo =
-        // 'https://firebasestorage.googleapis.com/v0/b/sharetravelung.appspot.com/o/flutterLand.mp4?alt=media&token=4ec7e35f-d77d-4cbe-bd06-626c31bedabb';
+    //  String urlVideo =
+    // 'https://firebasestorage.googleapis.com/v0/b/sharetravelung.appspot.com/o/flutterLand.mp4?alt=media&token=4ec7e35f-d77d-4cbe-bd06-626c31bedabb';
 
     VideoPlayerController videoPlayerController =
         VideoPlayerController.network(urlVideo)..initialize();

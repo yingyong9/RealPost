@@ -1,22 +1,18 @@
 // ignore_for_file: avoid_print, sort_child_properties_last
 
-import 'package:chewie/chewie.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:get/get.dart';
 import 'package:realpost/models/room_model.dart';
-import 'package:realpost/states/main_web_view.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
-import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_content_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
-import 'package:realpost/widgets/widget_list_message_login.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
 class MainPageView extends StatefulWidget {
@@ -74,7 +70,7 @@ class _MainPageViewState extends State<MainPageView> {
                                           height: (boxConstraints.maxHeight) -
                                               (boxConstraints.maxHeight * 0.6) -
                                               120),
-                                      displayAddGroup(),
+                                      // displayAddGroup(),
                                       displayForm(
                                           boxConstraints, appController),
                                     ],
@@ -152,10 +148,20 @@ class _MainPageViewState extends State<MainPageView> {
         displayListMessage(boxConstraints, appController,
             top: boxConstraints.maxHeight * 0.08,
             status: false,
-            height: boxConstraints.maxHeight * 0.4),
+            height: boxConstraints.maxHeight * 0.3),
         displayOwnerRoom(boxConstraints, appController),
-        displayImageCamera(element, boxConstraints),
+        iconShare()
       ],
+    );
+  }
+
+  Positioned iconShare() {
+    return Positioned(
+      right: 0,
+      child: WidgetIconButton(
+        iconData: Icons.share,
+        pressFunc: () {},
+      ),
     );
   }
 
@@ -170,9 +176,9 @@ class _MainPageViewState extends State<MainPageView> {
     return Positioned(
       top: top,
       child: SizedBox(
-        width: boxConstraints.maxWidth,
+        width: boxConstraints.maxWidth*0.5,
         height: height ??
-            boxConstraints.maxHeight - (boxConstraints.maxHeight * 0.4),
+            boxConstraints.maxHeight - (boxConstraints.maxHeight * 0.2),
         child: ListView.builder(
           reverse: true,
           shrinkWrap: true,
@@ -254,7 +260,7 @@ class _MainPageViewState extends State<MainPageView> {
     return ImageSlideshow(
       autoPlayInterval: roomModel.urlRooms.length == 1 ? 0 : 3000,
       isLoop: true,
-      height: boxConstraints.maxHeight * 0.6,
+      height: boxConstraints.maxHeight * 0.4,
       children: roomModel.urlRooms
           .map(
             (e) => WidgetImageInternet(

@@ -1,16 +1,20 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:realpost/models/chat_model.dart';
 
 import 'package:realpost/models/room_model.dart';
+import 'package:realpost/states/add_room.dart';
+import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
+import 'package:realpost/widgets/widget_image.dart';
 
 class WidgetContentForm extends StatefulWidget {
   const WidgetContentForm({
@@ -55,7 +59,7 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
-                width: 250,
+                // width: 250,
                 child: Row(
                   children: [
                     user!.uid == widget.roomModel!.uidCreate
@@ -79,14 +83,12 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
                                     String? urlCamera = await AppService()
                                         .processUploadPhoto(
                                             file: file, path: 'photopost');
-                                    // print('##5jan urlCamera ---. $urlCamera');
 
                                     Map<String, dynamic> map = widget
                                         .appController
                                         .roomModels[widget.appController
                                             .indexBodyMainPageView.value]
                                         .toMap();
-                                    // print('##5jan map ----> $map');
 
                                     List<String> urlRooms = <String>[];
                                     urlRooms.add(urlCamera!);
@@ -126,10 +128,6 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
                                   });
                                 },
                               ),
-                              WidgetIconButton(
-                                iconData: Icons.video_call,
-                                pressFunc: () {},
-                              ),
                             ],
                           )
                         : WidgetIconButton(
@@ -137,6 +135,15 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
                             pressFunc: () {},
                           ),
                   ],
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Get.to(AddRoom());
+                },
+                child: const WidgetImage(
+                  path: 'images/addgreen.png',
+                  size: 24,
                 ),
               ),
               WidgetIconButton(

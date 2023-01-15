@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:realpost/models/room_model.dart';
+import 'package:realpost/states/main_page_view.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
@@ -43,7 +44,10 @@ class _AddRoomState extends State<AddRoom> {
     return Scaffold(
       backgroundColor: AppConstant.bgColor,
       appBar: AppBar(
-        title: const WidgetText(text: 'ยินดีต้อนรับ สู่การสร้าง Real Post'),
+        title: const WidgetText(text: 'ต้องการ ขายสินค้า ?'),
+        actions: [Switch(value: true, onChanged: (value) {
+          
+        },)],
       ),
       body: LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
         return GetX(
@@ -65,7 +69,7 @@ class _AddRoomState extends State<AddRoom> {
                           changeFunc: (p0) {
                             room = p0.trim();
                           },
-                          hint: 'กรอก ชื่อที่ คุณต้องการ',
+                          hint: 'กรอก ชื่อ หรือ ชื่อสินค้า',
                           hintStyle: AppConstant().h3Style(
                             color: AppConstant.grey,
                             size: 24,
@@ -169,8 +173,10 @@ class _AddRoomState extends State<AddRoom> {
                 await AppService()
                     .processInsertRoom(roomModel: roomModel)
                     .then((value) {
-                  appController.readAllRoom();
-                  Get.back();
+                  // appController.readAllRoom();
+                  // Get.back();
+
+                  Get.offAll(MainPageView());
                 });
               }
             },
