@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:realpost/models/chat_model.dart';
 
 import 'package:realpost/models/room_model.dart';
+import 'package:realpost/states/add_product.dart';
 import 'package:realpost/states/add_room.dart';
 import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
@@ -139,7 +140,7 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
               ),
               InkWell(
                 onTap: () {
-                  Get.to(AddRoom());
+                  Get.to(const AddProduct());
                 },
                 child: const WidgetImage(
                   path: 'images/addgreen.png',

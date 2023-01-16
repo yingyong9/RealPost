@@ -65,7 +65,7 @@ class AppController extends GetxController {
       <VideoPlayerController>[].obs;
   RxList<ChewieController> chewieControllers = <ChewieController>[].obs;
 
-  RxBool salseProduct = false.obs;
+ 
 
   void createVideoPlayControllers() {
     String urlVideo =

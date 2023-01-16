@@ -25,8 +25,6 @@ import 'package:realpost/widgets/widget_text_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppService {
-  
-
   void initialSetup({required BuildContext context}) {
     AppController appController = Get.put(AppController());
 
@@ -50,15 +48,11 @@ class AppService {
 
       appController.readAllChat(docIdRoom: appController.docIdRooms[0]);
 
-       if (appController.docIdRoomChooses.isNotEmpty) {
-                            appController.docIdRoomChooses.clear();
-                          }
-                          appController.docIdRoomChooses.add(
-                              appController.docIdRooms[
-                                  appController.indexBodyMainPageView.value]);
-
-
-
+      if (appController.docIdRoomChooses.isNotEmpty) {
+        appController.docIdRoomChooses.clear();
+      }
+      appController.docIdRoomChooses.add(
+          appController.docIdRooms[appController.indexBodyMainPageView.value]);
     });
     appController.findUserModels();
     appController.readAllStamp();
@@ -153,7 +147,8 @@ class AppService {
           urlBigImage: urlBigImage ?? '');
     }
 
-    print('##8jan at createModel app service chartModel ==> ${chatModel.toMap()}');
+    print(
+        '##8jan at createModel app service chartModel ==> ${chatModel.toMap()}');
 
     return chatModel;
   }
@@ -169,7 +164,9 @@ class AppService {
       if (appController.xFiles.isNotEmpty) {
         appController.xFiles.clear();
       }
-      appController.xFiles.addAll(value);
+      if (value.length <= 9) {
+  appController.xFiles.addAll(value);
+}
     });
   }
 

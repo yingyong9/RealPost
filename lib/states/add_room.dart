@@ -45,16 +45,12 @@ class _AddRoomState extends State<AddRoom> {
       backgroundColor: AppConstant.bgColor,
       appBar: AppBar(
         title: const WidgetText(text: 'ต้องการ ขายสินค้า ?'),
-        actions: [Switch(value: true, onChanged: (value) {
-          
-        },)],
+        actions: [],
       ),
       body: LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
         return GetX(
             init: AppController(),
             builder: (AppController appController) {
-              print(
-                  'emojiAddRoomChoose ==> ${appController.emojiAddRoomChooses}');
               return SizedBox(
                 width: boxConstraints.maxWidth,
                 height: boxConstraints.maxHeight,
@@ -74,7 +70,7 @@ class _AddRoomState extends State<AddRoom> {
                             color: AppConstant.grey,
                             size: 24,
                           ),
-                          width: 250,
+                          // width: 250,
                           textStyle: AppConstant().h3Style(size: 24),
                         ),
                         appController.emojiAddRoomChooses.isEmpty
