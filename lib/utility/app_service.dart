@@ -54,6 +54,7 @@ class AppService {
       appController.docIdRoomChooses.add(
           appController.docIdRooms[appController.indexBodyMainPageView.value]);
     });
+
     appController.findUserModels();
     appController.readAllStamp();
 
@@ -73,6 +74,8 @@ class AppService {
       }
       print('##11dec current Position --> $position');
     }));
+
+    appController.readGroupProduct();
   }
 
   Future<void> insertPrivateChat(
@@ -161,12 +164,15 @@ class AppService {
       maxHeight: 800,
     )
         .then((value) {
-      if (appController.xFiles.isNotEmpty) {
-        appController.xFiles.clear();
+      // if (appController.xFiles.isNotEmpty) {
+      //   appController.xFiles.clear();
+      // }
+      if (value.length <= (9 - appController.xFiles.length)) {
+        appController.xFiles.addAll(value);
+      } else {
+        Get.snackbar(
+            'คุณเลือกภาพเกินที่กำหนด', 'เราอนุญาติให้เลือกภาพไม่เกิน 9 รูป');
       }
-      if (value.length <= 9) {
-  appController.xFiles.addAll(value);
-}
     });
   }
 

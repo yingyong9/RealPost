@@ -12,6 +12,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:realpost/models/address_map_model.dart';
 import 'package:realpost/models/chat_model.dart';
+import 'package:realpost/models/group_product_model.dart';
 import 'package:realpost/models/private_chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/stamp_model.dart';
@@ -65,7 +66,22 @@ class AppController extends GetxController {
       <VideoPlayerController>[].obs;
   RxList<ChewieController> chewieControllers = <ChewieController>[].obs;
 
- 
+  RxBool safseProduct = false.obs;
+  RxList<GroupProductModel> groupProductModels = <GroupProductModel>[].obs;
+  RxList<String?> chooseGroupProducts = <String?>[null].obs;
+
+  Future<void> readGroupProduct() async {
+    await FirebaseFirestore.instance
+        .collection('groupProduct')
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        GroupProductModel groupProductModel =
+            GroupProductModel.fromMap(element.data());
+        groupProductModels.add(groupProductModel);
+      }
+    });
+  }
 
   void createVideoPlayControllers() {
     String urlVideo =

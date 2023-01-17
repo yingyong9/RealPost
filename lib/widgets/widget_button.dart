@@ -11,26 +11,29 @@ class WidgetButton extends StatelessWidget {
     required this.pressFunc,
     this.width,
     this.bgColor,
+    this.textColor,
   }) : super(key: key);
 
   final String label;
   final Function() pressFunc;
   final double? width;
   final Color? bgColor;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
       child: ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: bgColor,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: bgColor,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
           onPressed: pressFunc,
           child: WidgetText(
             text: label,
-            textStyle: AppConstant().h2Style(),
+            textStyle: AppConstant().h2Style(color: textColor),
           )),
     );
   }

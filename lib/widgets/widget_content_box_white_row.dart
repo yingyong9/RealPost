@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
-class WidgetContenBoxWhite extends StatelessWidget {
-  const WidgetContenBoxWhite({
+class WidgetContenBoxWhiteRow extends StatelessWidget {
+  const WidgetContenBoxWhiteRow({
     Key? key,
     required this.head,
     required this.width,
@@ -23,9 +23,10 @@ class WidgetContenBoxWhite extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
       width: width,
       decoration: const BoxDecoration(color: Colors.white),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        // mainAxisSize: MainAxisSize.min,
         children: [
           WidgetText(
             text: head,
