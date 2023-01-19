@@ -12,6 +12,7 @@ class WidgetButton extends StatelessWidget {
     this.width,
     this.bgColor,
     this.textColor,
+    this.circular,
   }) : super(key: key);
 
   final String label;
@@ -19,6 +20,7 @@ class WidgetButton extends StatelessWidget {
   final double? width;
   final Color? bgColor;
   final Color? textColor;
+  final double? circular;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class WidgetButton extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: bgColor,
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular( circular ?? 10)),
           ),
           onPressed: pressFunc,
           child: WidgetText(

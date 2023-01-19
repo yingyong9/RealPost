@@ -6,10 +6,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class RoomModel {
   final String uidCreate;
   final String room;
-
   final Timestamp timestamp;
   final String? urlCamera;
   final List<String> urlRooms;
+
+  final String? detail;
+  final bool? safeProduct;
+  final String? groupProduct;
+  final String? singlePrice;
+  final String? totalPrice;
+  final String? amountGroup;
+  final String? stock;
+  final String? timeGroup;
 
   RoomModel({
     required this.uidCreate,
@@ -17,6 +25,14 @@ class RoomModel {
     required this.timestamp,
     this.urlCamera,
     required this.urlRooms,
+    this.detail,
+    this.safeProduct,
+    this.groupProduct,
+    this.singlePrice,
+    this.totalPrice,
+    this.amountGroup,
+    this.stock,
+    this.timeGroup,
   });
 
   Map<String, dynamic> toMap() {
@@ -26,6 +42,14 @@ class RoomModel {
       'timestamp': timestamp,
       'urlCamera': urlCamera,
       'urlRooms': urlRooms,
+      'detail': detail,
+      'safeProduct': safeProduct,
+      'groupProduct': groupProduct,
+      'singlePrice': singlePrice,
+      'totalPrice': totalPrice,
+      'amountGroup': amountGroup,
+      'stock': stock,
+      'timeGroup': timeGroup,
     };
   }
 
@@ -36,12 +60,28 @@ class RoomModel {
       timestamp: (map['timestamp']),
       urlCamera: (map['urlCamera'] ?? ''),
       urlRooms: List<String>.from(map['urlRooms'] ?? []),
+      detail: map['detail'] ?? '',
+      safeProduct: map['safeProduct'] ?? false,
+      groupProduct: map['groupProduct'] ?? '',
+      singlePrice: map['singlePrice'] ?? '',
+      totalPrice: map['totalPrice'] ?? '',
+      amountGroup: map['amountGroup'] ?? '',
+      stock: map['stock'] ?? '',
+      timeGroup: map['timeGroup'] ?? '',
     );
   }
 
-  // timestamp: (map['timestamp']),
-  // urlCamera: (map['urlCamera'] ?? ''),
-  // urlRooms: List<String>.from(map['urlRooms'] ?? []),
+  //  timestamp: (map['timestamp']),
+  //     urlCamera: (map['urlCamera'] ?? ''),
+  //     urlRooms: List<String>.from(map['urlRooms'] ?? []),
+  //     detail: map['detail'] ?? '',
+  //     safeProduct: map['safeProduct'] ?? false,
+  //     groupProduct: map['groupProduct'] ?? '',
+  //     singlePrice: map['singlePrice'] ?? '',
+  //     totalPrice: map['totalPrice'] ?? '',
+  //     amountGroup: map['amountGroup'] ?? '',
+  //     stock: map['stock'] ?? '',
+  //     timeGroup: map['timeGroup'] ?? '',
 
   String toJson() => json.encode(toMap());
 

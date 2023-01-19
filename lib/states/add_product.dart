@@ -1,12 +1,16 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print, sort_child_properties_last
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:realpost/models/room_model.dart';
 
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
+import 'package:realpost/utility/app_snackbar.dart';
 import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_content_box_white.dart';
 import 'package:realpost/widgets/widget_content_box_white_row.dart';
@@ -22,6 +26,9 @@ class AddProduct extends StatefulWidget {
 }
 
 class _AddProductState extends State<AddProduct> {
+  String? name, detail, singlePrice, totalPrice, amountGroup, stock;
+  var user = FirebaseAuth.instance.currentUser;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,47 +42,204 @@ class _AddProductState extends State<AddProduct> {
             init: AppController(),
             builder: (AppController appController) {
               print(
-                  '##16jan groupProducts --> ${appController.groupProductModels.length}');
+                  '##16jan chooseTimeGrup --> ${appController.chooseTimeGroups.length}');
               return GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () =>
                     FocusScope.of(context).requestFocus(FocusScopeNode()),
-                child: ListView(
-                  children: [
-                    contentImage(boxConstraints, appController),
-                    contentName(boxConstraints),
-                    contentDetail(boxConstraints),
-                    bottonSalse(appController),
-                    appController.safseProduct.value
-                        ? WidgetContenBoxWhiteRow(
-                            head: 'หมวดหมู่',
-                            width: boxConstraints.maxWidth,
-                            contentWidget: DropdownButton(
-                              items: appController.groupProductModels
-                                  .map(
-                                    (element) => DropdownMenuItem(
-                                      child: WidgetText(
-                                        text: element.nameGroup,
-                                        textStyle: AppConstant()
-                                            .h3Style(color: Colors.black),
-                                      ),
-                                      value: element.nameGroup,
-                                    ),
-                                  )
-                                  .toList(),
-                              value: appController.chooseGroupProducts.last,
-                              hint: WidgetText(
-                                text: 'โปรดเลือกหมวดหมู่',
-                                textStyle:
-                                    AppConstant().h3Style(color: Colors.black),
-                              ),
-                              onChanged: (value) {
-                                appController.chooseGroupProducts.add(value);
-                              },
-                            ),
-                          )
-                        : const SizedBox(),
-                  ],
+                child: SizedBox(
+                  width: boxConstraints.maxWidth,
+                  height: boxConstraints.maxHeight,
+                  child: Stack(
+                    children: [
+                      SizedBox(
+                        width: boxConstraints.maxWidth,
+                        height: boxConstraints.maxHeight - 64,
+                        child: ListView(
+                          children: [
+                            contentImage(boxConstraints, appController),
+                            contentName(boxConstraints),
+                            contentDetail(boxConstraints),
+                            bottonSalse(appController),
+                            contentGroup(
+                                appController: appController,
+                                boxConstraints: boxConstraints),
+                            contentAddForm(
+                                appController: appController,
+                                boxConstraints: boxConstraints,
+                                title: 'ราคาซื้อคนเดียว',
+                                contentWidget: WidgetForm(
+                                  width: boxConstraints.maxWidth * 0.5,
+                                  textInputType: TextInputType.number,
+                                  textAlign: TextAlign.end,
+                                  changeFunc: (p0) {
+                                    singlePrice = p0.trim();
+                                  },
+                                )),
+                            contentAddForm(
+                                appController: appController,
+                                boxConstraints: boxConstraints,
+                                title: 'ราคารวมกันซื้อ',
+                                contentWidget: WidgetForm(
+                                  width: boxConstraints.maxWidth * 0.5,
+                                  textInputType: TextInputType.number,
+                                  textAlign: TextAlign.end,
+                                  changeFunc: (p0) {
+                                    totalPrice = p0.trim();
+                                  },
+                                )),
+                            contentAddForm(
+                                appController: appController,
+                                boxConstraints: boxConstraints,
+                                title: 'จำนวนคน/กลุ่ม',
+                                contentWidget: WidgetForm(
+                                  width: boxConstraints.maxWidth * 0.5,
+                                  textInputType: TextInputType.number,
+                                  textAlign: TextAlign.end,
+                                  changeFunc: (p0) {
+                                    amountGroup = p0.trim();
+                                  },
+                                )),
+                            contentAddForm(
+                                appController: appController,
+                                boxConstraints: boxConstraints,
+                                title: 'จำนวนสินค้าที่จะขาย',
+                                contentWidget: WidgetForm(
+                                  width: boxConstraints.maxWidth * 0.5,
+                                  textInputType: TextInputType.number,
+                                  textAlign: TextAlign.end,
+                                  changeFunc: (p0) {
+                                    stock = p0.trim();
+                                  },
+                                )),
+                            contentSetTime(
+                                appController: appController,
+                                boxConstraints: boxConstraints),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          width: boxConstraints.maxWidth,
+                          child: WidgetButton(
+                            label: 'เผยแพร่',
+                            pressFunc: () async {
+                              if (appController.xFiles.isEmpty) {
+                                print('##16jan No Image');
+                                AppSnackBar().normalSnackBar(
+                                    title: 'No Image',
+                                    message: 'Please Get Image');
+                              } else if (name?.isEmpty ?? true) {
+                                AppSnackBar().normalSnackBar(
+                                    title: 'ไม่มีชื่อ',
+                                    message: 'กรุณากรอกชื่อ');
+                              } else {
+                                if (appController.safseProduct.value) {
+                                  //สถานะของการขายของด้วย
+                                  print('##16jan ขายสินค้าด้วย');
+                                  if (appController.chooseGroupProducts.last ==
+                                      null) {
+                                    AppSnackBar().normalSnackBar(
+                                        title: 'ไม่ม่หมวดหมู่',
+                                        message: 'กรุณาเลือกหมวดหมู่');
+                                  } else if (singlePrice?.isEmpty ?? true) {
+                                    AppSnackBar().normalSnackBar(
+                                        title: 'ราคาซื้อคนเดียว ?',
+                                        message: 'กรุณากรอก ราคา');
+                                  } else if (totalPrice?.isEmpty ?? true) {
+                                    AppSnackBar().normalSnackBar(
+                                        title: 'ราคารวมกันซื้อ ?',
+                                        message: 'กรุณากรอก ราคา');
+                                  } else if (amountGroup?.isEmpty ?? true) {
+                                    AppSnackBar().normalSnackBar(
+                                        title: 'จำนวนคน/กลุ่ม ?',
+                                        message: 'กรุณากรอก จำนวนคน');
+                                  } else {
+                                    //ขายของ
+                                    var urlRooms = await AppService()
+                                        .processUploadMultiPhoto(
+                                            path: 'product');
+                                    print(
+                                        '##19jan urlRooms at ขายของ --> $urlRooms');
+
+                                    RoomModel roomModel = AppService()
+                                        .createRoomModel(
+                                            uidCreate: user!.uid,
+                                            room: name!,
+                                            timestamp: Timestamp.fromDate(
+                                                DateTime.now()),
+                                            urlCamera: '',
+                                            urlRooms: urlRooms,
+                                            detail: detail ?? '',
+                                            safeProduct: appController
+                                                .safseProduct.value,
+                                            groupProduct: appController
+                                                    .chooseGroupProducts.last ??
+                                                '',
+                                            singlePrice: singlePrice ?? '',
+                                            totalPrice: totalPrice ?? '',
+                                            amountGroup: amountGroup ?? '',
+                                            stock: stock ?? '',
+                                            timeGroup: appController
+                                                .chooseTimeGroups.last);
+
+                                    print(
+                                        '##19jan ขายของ roomModel --> ${roomModel.toMap()}');
+                                    await AppService()
+                                        .processInsertRoom(roomModel: roomModel)
+                                        .then((value) {
+                                      Get.back();
+                                    });
+                                  }
+                                } else {
+                                  //ไม่ได้ขายของ
+                                  print('##16jan ไม่ขายสินค้าด้วย');
+                                  var urlRooms = await AppService()
+                                      .processUploadMultiPhoto(path: 'product');
+                                  print(
+                                      '##19jan urlRooms at ไม่ขายของ --> $urlRooms');
+
+                                  RoomModel roomModel = AppService()
+                                      .createRoomModel(
+                                          uidCreate: user!.uid,
+                                          room: name!,
+                                          timestamp: Timestamp.fromDate(
+                                              DateTime.now()),
+                                          urlCamera: '',
+                                          urlRooms: urlRooms,
+                                          detail: detail ?? '',
+                                          safeProduct:
+                                              appController.safseProduct.value,
+                                          groupProduct: appController
+                                                  .chooseGroupProducts.last ??
+                                              '',
+                                          singlePrice: singlePrice ?? '',
+                                          totalPrice: totalPrice ?? '',
+                                          amountGroup: amountGroup ?? '',
+                                          stock: stock ?? '',
+                                          timeGroup: appController
+                                              .chooseTimeGroups.last);
+
+                                  print(
+                                      '##19jan ไม่ขายของ roomModel --> ${roomModel.toMap()}');
+                                  await AppService()
+                                      .processInsertRoom(roomModel: roomModel)
+                                      .then((value) {
+                                    AppService().initialSetup(context: context);
+                                    Get.back();
+                                  });
+                                }
+                              }
+                            },
+                            bgColor: const Color.fromARGB(255, 51, 67, 209),
+                            circular: 2,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               );
             });
@@ -83,34 +247,115 @@ class _AddProductState extends State<AddProduct> {
     );
   }
 
+  Widget contentAddForm(
+      {required AppController appController,
+      required BoxConstraints boxConstraints,
+      required String title,
+      required Widget contentWidget}) {
+    return appController.safseProduct.value
+        ? WidgetContenBoxWhiteRow(
+            head: title,
+            width: boxConstraints.maxWidth,
+            contentWidget: contentWidget,
+          )
+        : const SizedBox();
+  }
+
+  Widget contentGroup(
+      {required AppController appController,
+      required BoxConstraints boxConstraints}) {
+    return appController.safseProduct.value
+        ? WidgetContenBoxWhiteRow(
+            head: 'หมวดหมู่',
+            width: boxConstraints.maxWidth,
+            contentWidget: DropdownButton(
+              items: appController.groupProductModels
+                  .map(
+                    (element) => DropdownMenuItem(
+                      child: WidgetText(
+                        text: element.nameGroup,
+                        textStyle: AppConstant().h3Style(color: Colors.black),
+                      ),
+                      value: element.nameGroup,
+                    ),
+                  )
+                  .toList(),
+              value: appController.chooseGroupProducts.last,
+              hint: WidgetText(
+                text: 'โปรดเลือกหมวดหมู่',
+                textStyle: AppConstant().h3Style(color: Colors.black),
+              ),
+              onChanged: (value) {
+                appController.chooseGroupProducts.add(value);
+              },
+            ),
+          )
+        : const SizedBox();
+  }
+
+  Widget contentSetTime(
+      {required AppController appController,
+      required BoxConstraints boxConstraints}) {
+    return appController.safseProduct.value
+        ? WidgetContenBoxWhiteRow(
+            head: 'กำหนดเวลา',
+            width: boxConstraints.maxWidth,
+            contentWidget: DropdownButton(
+              items: appController.timeGroupModels
+                  .map(
+                    (element) => DropdownMenuItem(
+                      child: WidgetText(
+                        text: element.times,
+                        textStyle: AppConstant().h3Style(color: Colors.black),
+                      ),
+                      value: element.times,
+                    ),
+                  )
+                  .toList(),
+              value: appController.chooseTimeGroups.last,
+              hint: WidgetText(
+                text: 'โปรดเลือกกำหนดเวลา',
+                textStyle: AppConstant().h3Style(color: Colors.black),
+              ),
+              onChanged: (value) {
+                appController.chooseTimeGroups.add(value!);
+              },
+            ),
+          )
+        : const SizedBox();
+  }
+
   Row bottonSalse(AppController appController) {
     return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      WidgetButton(
-                        label: 'ขายสินค้า',
-                        pressFunc: () {
-                          appController.safseProduct.value =
-                              !appController.safseProduct.value;
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        WidgetButton(
+          label: 'ขายสินค้า',
+          pressFunc: () {
+            appController.safseProduct.value =
+                !appController.safseProduct.value;
 
-                          if (appController.chooseGroupProducts.isNotEmpty) {
-                            appController.chooseGroupProducts.clear();
-                            appController.chooseGroupProducts.add(null);
-                          }
-                        },
-                        bgColor: Colors.white,
-                        textColor: Colors.black,
-                      ),
-                    ],
-                  );
+            if (appController.chooseGroupProducts.isNotEmpty) {
+              appController.chooseGroupProducts.clear();
+              appController.chooseGroupProducts.add(null);
+            }
+          },
+          bgColor: Colors.white,
+          textColor: Colors.black,
+        ),
+      ],
+    );
   }
 
   WidgetContenBoxWhite contentDetail(BoxConstraints boxConstraints) {
     return WidgetContenBoxWhite(
       head: 'คำอธิบาย',
       width: boxConstraints.maxWidth,
-      contentWidget: const WidgetForm(
+      contentWidget: WidgetForm(
         hint: 'รายละเอียด',
+        changeFunc: (p0) {
+          detail = p0.trim();
+        },
       ),
     );
   }
@@ -119,8 +364,11 @@ class _AddProductState extends State<AddProduct> {
     return WidgetContenBoxWhite(
       head: 'ชื่อ',
       width: boxConstraints.maxWidth,
-      contentWidget: const WidgetForm(
+      contentWidget: WidgetForm(
         hint: 'กรอกชื่อ',
+        changeFunc: (p0) {
+          name = p0.trim();
+        },
       ),
     );
   }

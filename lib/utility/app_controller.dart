@@ -16,6 +16,7 @@ import 'package:realpost/models/group_product_model.dart';
 import 'package:realpost/models/private_chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/stamp_model.dart';
+import 'package:realpost/models/time_group_model.dart';
 import 'package:realpost/models/user_model.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:video_player/video_player.dart';
@@ -69,6 +70,23 @@ class AppController extends GetxController {
   RxBool safseProduct = false.obs;
   RxList<GroupProductModel> groupProductModels = <GroupProductModel>[].obs;
   RxList<String?> chooseGroupProducts = <String?>[null].obs;
+
+  RxList<TimeGroupModel> timeGroupModels = <TimeGroupModel>[].obs;
+  RxList<String> chooseTimeGroups = <String>[].obs;
+
+  Future<void> readTimeGroup() async {
+    await FirebaseFirestore.instance
+        .collection('timesGroup')
+        .orderBy('id')
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        TimeGroupModel timeGroupModel = TimeGroupModel.fromMap(element.data());
+        timeGroupModels.add(timeGroupModel);
+      }
+      chooseTimeGroups.add(timeGroupModels[0].times);
+    });
+  }
 
   Future<void> readGroupProduct() async {
     await FirebaseFirestore.instance

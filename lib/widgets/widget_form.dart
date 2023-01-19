@@ -22,6 +22,7 @@ class WidgetForm extends StatelessWidget {
     this.textInputType,
     this.labelWidget,
     this.inputBorder,
+    this.textAlign,
   }) : super(key: key);
 
   final String? hint;
@@ -39,6 +40,7 @@ class WidgetForm extends StatelessWidget {
   final TextInputType? textInputType;
   final Widget? labelWidget;
   final InputBorder? inputBorder;
+  final TextAlign? textAlign;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,7 @@ class WidgetForm extends StatelessWidget {
       margin: EdgeInsets.only(top: maginTop ?? 0.0, bottom: maginBottom ?? 0.0),
       width: width,
       height: height,
-      child: TextFormField(
+      child: TextFormField(textAlign: textAlign ?? TextAlign.start,
         controller: controller,
         keyboardType: textInputType,
         inputFormatters: textInputFormatters,

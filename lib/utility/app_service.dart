@@ -25,6 +25,39 @@ import 'package:realpost/widgets/widget_text_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppService {
+  RoomModel createRoomModel({
+    required String uidCreate,
+    required String room,
+    required Timestamp timestamp,
+    required String urlCamera,
+    required List<String> urlRooms,
+    required String detail,
+    required bool safeProduct,
+    required String groupProduct,
+    required String singlePrice,
+    required String totalPrice,
+    required String amountGroup,
+    required String stock,
+    required String timeGroup,
+  }) {
+    RoomModel roomModel = RoomModel(
+        uidCreate: uidCreate,
+        room: room,
+        timestamp: timestamp,
+        urlCamera: urlCamera,
+        urlRooms: urlRooms,
+        detail: detail,
+        safeProduct: safeProduct,
+        groupProduct: groupProduct,
+        singlePrice: singlePrice,
+        totalPrice: totalPrice,
+        amountGroup: amountGroup,
+        stock: stock,
+        timeGroup: timeGroup);
+
+    return roomModel;
+  }
+
   void initialSetup({required BuildContext context}) {
     AppController appController = Get.put(AppController());
 
@@ -76,6 +109,7 @@ class AppService {
     }));
 
     appController.readGroupProduct();
+    appController.readTimeGroup();
   }
 
   Future<void> insertPrivateChat(
