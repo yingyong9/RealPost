@@ -5,15 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:get/get.dart';
 import 'package:realpost/models/room_model.dart';
+import 'package:realpost/states/tab_price.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
+import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_content_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_text.dart';
+import 'package:realpost/widgets/widget_text_button.dart';
 
 class MainPageView extends StatefulWidget {
   const MainPageView({super.key});
@@ -63,14 +66,38 @@ class _MainPageViewState extends State<MainPageView> {
                                     children: [
                                       contentTop(element, boxConstraints,
                                           appController),
-                                      displayListMessage(
-                                          boxConstraints, appController,
-                                          top: boxConstraints.maxHeight * 0.6,
-                                          status: true,
-                                          height: (boxConstraints.maxHeight) -
-                                              (boxConstraints.maxHeight * 0.6) -
-                                              120),
-                                      // displayAddGroup(),
+                                      element.safeProduct!
+                                          ? Positioned(
+                                              top: boxConstraints.maxHeight *
+                                                  0.5,
+                                              child: Container(
+                                                color: Colors.white,
+                                                width: boxConstraints.maxWidth,
+                                                height:
+                                                    boxConstraints.maxHeight *
+                                                            0.5 -
+                                                        110,
+                                                child: Padding(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 16),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      SizedBox(
+                                                        width: boxConstraints
+                                                            .maxWidth,
+                                                        height: 180,
+                                                        child: TabPrice(roomModel: element,),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          : const SizedBox(),
                                       displayForm(
                                           boxConstraints, appController),
                                     ],
@@ -145,10 +172,18 @@ class _MainPageViewState extends State<MainPageView> {
     return Stack(
       children: [
         displayImageRoom(element, boxConstraints),
+        displayListMessage(
+          boxConstraints,
+          appController,
+          top: 48,
+          status: false,
+          height: boxConstraints.maxHeight * 0.15,
+        ),
         displayListMessage(boxConstraints, appController,
-            top: boxConstraints.maxHeight * 0.08,
-            status: false,
-            height: boxConstraints.maxHeight * 0.3),
+            top: element.safeProduct! ? 200 : 350,
+            status: true,
+            height: boxConstraints.maxHeight * 0.15,
+            reverse: true),
         displayOwnerRoom(boxConstraints, appController),
         iconShare()
       ],
@@ -172,15 +207,16 @@ class _MainPageViewState extends State<MainPageView> {
     double? marginLeft,
     required bool status,
     double? height,
+    bool? reverse,
   }) {
     return Positioned(
       top: top,
       child: SizedBox(
-        width: boxConstraints.maxWidth*0.5,
+        width: boxConstraints.maxWidth * 0.5,
         height: height ??
             boxConstraints.maxHeight - (boxConstraints.maxHeight * 0.2),
         child: ListView.builder(
-          reverse: true,
+          reverse: reverse ?? false,
           shrinkWrap: true,
           physics: const ScrollPhysics(),
           itemCount: appController.chatModels.length,
@@ -260,7 +296,9 @@ class _MainPageViewState extends State<MainPageView> {
     return ImageSlideshow(
       autoPlayInterval: roomModel.urlRooms.length == 1 ? 0 : 3000,
       isLoop: true,
-      height: boxConstraints.maxHeight * 0.4,
+      height: roomModel.safeProduct!
+          ? boxConstraints.maxHeight * 0.5
+          : boxConstraints.maxHeight - 110,
       children: roomModel.urlRooms
           .map(
             (e) => WidgetImageInternet(
