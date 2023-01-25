@@ -3,8 +3,10 @@ import 'package:get/get.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/states/add_product.dart';
 import 'package:realpost/utility/app_constant.dart';
+import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_button.dart';
+import 'package:realpost/widgets/widget_choose_amout_salse.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_text.dart';
@@ -14,6 +16,8 @@ class AppBottomSheet {
       {required RoomModel roomModel,
       required bool single,
       required BoxConstraints boxConstraints}) {
+    AppController appController = Get.put(AppController());
+    print('##25jan amountSalse --> ${appController.amountSalse}');
     Get.bottomSheet(
       Container(
         decoration: const BoxDecoration(
@@ -40,7 +44,7 @@ class AppBottomSheet {
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 10),
-                  height: 120,
+                  height: 200,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -68,22 +72,18 @@ class AppBottomSheet {
                           ],
                         ),
                       ),
-                      const Spacer(),
+                      // const Spacer(),
                       SizedBox(
                         width: boxConstraints.maxWidth - 100,
                         child: Row(
-                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             WidgetText(
                               text: '฿${roomModel.singlePrice!}',
                               textStyle: AppConstant()
                                   .h2Style(color: Colors.red.shade700),
                             ),
-                            WidgetText(
-                              text: 'จำนวน',
-                              textStyle: AppConstant()
-                                  .h3Style(color: Colors.grey.shade700),
-                            ),
+                            WidgetChooseAmountSalse(),
                           ],
                         ),
                       )

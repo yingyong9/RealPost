@@ -89,8 +89,13 @@ class _MainPageViewState extends State<MainPageView> {
                                                       SizedBox(
                                                         width: boxConstraints
                                                             .maxWidth,
-                                                        height: boxConstraints.maxHeight*0.5-110,
-                                                        child: TabPrice(roomModel: element,),
+                                                        height: boxConstraints
+                                                                    .maxHeight *
+                                                                0.5 -
+                                                            110,
+                                                        child: TabPrice(
+                                                          roomModel: element,
+                                                        ),
                                                       ),
                                                     ],
                                                   ),
@@ -110,6 +115,7 @@ class _MainPageViewState extends State<MainPageView> {
                                   appController.indexBodyMainPageView.value),
                           scrollDirection: Axis.vertical,
                           onPageChanged: (value) {
+                            appController.amountSalse.value = 1;
                             appController.indexBodyMainPageView.value = value;
                             appController.readAllChat(
                                 docIdRoom: appController.docIdRooms[

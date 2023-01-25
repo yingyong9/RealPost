@@ -85,10 +85,10 @@ class _TabPriceState extends State<TabPrice> {
               ),
               body: Stack(
                 children: [
-                  SizedBox(
-                    // height: 150,
-                    child: TabBarView(children: bodys),
-                  ),
+                  // SizedBox(
+                  //   // height: 150,
+                  //   child: TabBarView(children: bodys),
+                  // ),
                   Positioned(
                     bottom: 0,
                     child: SizedBox(

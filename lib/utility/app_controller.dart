@@ -27,54 +27,41 @@ class AppController extends GetxController {
   RxList<String> docIdRooms = <String>[].obs;
   RxList<String> docIdRoomChooses = <String>[].obs;
   RxList<UserModel> userModelAtRooms = <UserModel>[].obs;
-
   RxList<List<ChatModel>> listChatModels = <List<ChatModel>>[].obs;
   RxList<ChatModel> lastChatModelLogins = <ChatModel>[].obs;
-
   RxList<StampModel> stampModels = <StampModel>[].obs;
   RxList<String> emojiAddRoomChooses = <String>[].obs;
   RxList<ChatModel> chatModels = <ChatModel>[].obs;
   RxList<String> addressMaps = <String>[].obs;
-
   RxBool load = true.obs;
   RxBool shareLocation = false.obs;
-
   RxList<UserModel> userModels = <UserModel>[].obs;
   RxList<File> fileAvatars = <File>[].obs;
   RxList<String> urlAvatarChooses = <String>[].obs;
-
   RxList<File> fileRealPosts = <File>[].obs;
   RxList<String> urlRealPostChooses = <String>[].obs;
   RxList<String> messageChats = <String>[].obs;
-
   RxList<TextEditingController> articleControllers =
       <TextEditingController>[TextEditingController()].obs;
-
   RxList<Position> positions = <Position>[].obs;
-
   RxList<String> docIdPrivateChats = <String>[].obs;
   RxList<ChatModel> privateChatModels = <ChatModel>[].obs;
-
   RxList<String> links = <String>[].obs;
   RxList<XFile> xFiles = <XFile>[].obs;
-
   RxInt indexBodyMainPageView = 0.obs;
   RxList<File> cameraFiles = <File>[].obs;
-
   RxList<WebViewController> webViewControllers = <WebViewController>[].obs;
-
   RxList<VideoPlayerController> videoPlayControllers =
       <VideoPlayerController>[].obs;
   RxList<ChewieController> chewieControllers = <ChewieController>[].obs;
-
   RxBool safseProduct = false.obs;
   RxList<GroupProductModel> groupProductModels = <GroupProductModel>[].obs;
   RxList<String?> chooseGroupProducts = <String?>[null].obs;
-
   RxList<TimeGroupModel> timeGroupModels = <TimeGroupModel>[].obs;
   RxList<String> chooseTimeGroups = <String>[].obs;
-
   RxList<int> indexTabs = <int>[0].obs;
+
+  RxInt amountSalse = 1.obs;
 
   Future<void> readTimeGroup() async {
     await FirebaseFirestore.instance
