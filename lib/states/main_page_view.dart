@@ -89,7 +89,7 @@ class _MainPageViewState extends State<MainPageView> {
                                                       SizedBox(
                                                         width: boxConstraints
                                                             .maxWidth,
-                                                        height: 180,
+                                                        height: boxConstraints.maxHeight*0.5-110,
                                                         child: TabPrice(roomModel: element,),
                                                       ),
                                                     ],

@@ -25,6 +25,15 @@ import 'package:realpost/widgets/widget_text_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppService {
+  String cutWord({required String string, required int word}) {
+    String result = string;
+    if (result.length > word) {
+      result = result.substring(0, word);
+      result = '$result ...';
+    }
+    return result;
+  }
+
   RoomModel createRoomModel({
     required String uidCreate,
     required String room,

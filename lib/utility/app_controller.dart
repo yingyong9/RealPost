@@ -74,6 +74,8 @@ class AppController extends GetxController {
   RxList<TimeGroupModel> timeGroupModels = <TimeGroupModel>[].obs;
   RxList<String> chooseTimeGroups = <String>[].obs;
 
+  RxList<int> indexTabs = <int>[0].obs;
+
   Future<void> readTimeGroup() async {
     await FirebaseFirestore.instance
         .collection('timesGroup')
