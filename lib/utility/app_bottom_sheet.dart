@@ -66,7 +66,9 @@ class AppBottomSheet {
                             ),
                             WidgetButton(
                               label: 'ซื้อ',
-                              pressFunc: () {},
+                              pressFunc: () {
+                                print('ซื้อ');
+                              },
                               bgColor: Colors.red.shade700,
                             ),
                           ],

@@ -1,4 +1,5 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:realpost/bodys/body_single_price.dart';
 import 'package:realpost/bodys/body_total_price.dart';
@@ -33,6 +34,8 @@ class _TabPriceState extends State<TabPrice> {
     'ร่วมกันซื้อ',
   ];
 
+  var user = FirebaseAuth.instance.currentUser;
+
   @override
   void initState() {
     super.initState();
@@ -46,7 +49,8 @@ class _TabPriceState extends State<TabPrice> {
         return Stack(
           children: [
             SizedBox(
-              height: 180,width: boxConstraints.maxWidth,
+              height: boxConstraints.maxHeight,
+              width: boxConstraints.maxWidth,
               child: Text('Content'),
             ),
             Positioned(
@@ -68,11 +72,12 @@ class _TabPriceState extends State<TabPrice> {
                     ),
                     InkWell(
                       onTap: () {
-                        print('##24jan click tap');
-                        AppBottomSheet().salseBottomSheet(
-                            roomModel: roomModel!,
-                            single: true,
-                            boxConstraints: boxConstraints);
+                        if (user!.uid != roomModel!.uidCreate) {
+                          AppBottomSheet().salseBottomSheet(
+                              roomModel: roomModel!,
+                              single: true,
+                              boxConstraints: boxConstraints);
+                        }
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 3),
@@ -95,10 +100,10 @@ class _TabPriceState extends State<TabPrice> {
                     ),
                     InkWell(
                       onTap: () {
-                        AppBottomSheet().salseBottomSheet(
-                            roomModel: roomModel!,
-                            single: false,
-                            boxConstraints: boxConstraints);
+                        // AppBottomSheet().salseBottomSheet(
+                        //     roomModel: roomModel!,
+                        //     single: false,
+                        //     boxConstraints: boxConstraints);
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 3),
