@@ -12,6 +12,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:realpost/models/address_map_model.dart';
 import 'package:realpost/models/chat_model.dart';
+import 'package:realpost/models/comment_salse_model.dart';
 import 'package:realpost/models/group_product_model.dart';
 import 'package:realpost/models/private_chat_model.dart';
 import 'package:realpost/models/room_model.dart';
@@ -60,8 +61,26 @@ class AppController extends GetxController {
   RxList<TimeGroupModel> timeGroupModels = <TimeGroupModel>[].obs;
   RxList<String> chooseTimeGroups = <String>[].obs;
   RxList<int> indexTabs = <int>[0].obs;
-
   RxInt amountSalse = 1.obs;
+
+  RxList commentSalses = <CommentSalseModel>[].obs;
+
+  Future<void> processReadCommentSalses() async {
+    print('##26jan processReadCommentSalse Work at indexBody --> ${indexBodyMainPageView.value}');
+    FirebaseFirestore.instance
+        .collection('room')
+        .doc(docIdRooms[indexBodyMainPageView.value])
+        .collection('commentsalse')
+        .snapshots()
+        .listen((event) {
+      if (event.docs.isNotEmpty) {
+        for (var element in event.docs) {
+          CommentSalseModel model = CommentSalseModel.fromMap(element.data());
+          commentSalses.add(model);
+        }
+      }
+    });
+  }
 
   Future<void> readTimeGroup() async {
     await FirebaseFirestore.instance

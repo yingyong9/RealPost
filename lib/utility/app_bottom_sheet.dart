@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:realpost/models/comment_salse_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/states/add_product.dart';
 import 'package:realpost/utility/app_constant.dart';
@@ -12,10 +15,12 @@ import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
 class AppBottomSheet {
-  void salseBottomSheet(
-      {required RoomModel roomModel,
-      required bool single,
-      required BoxConstraints boxConstraints}) {
+  void salseBottomSheet({
+    required RoomModel roomModel,
+    required bool single,
+    required BoxConstraints boxConstraints,
+    required String docIdRoom,
+  }) {
     AppController appController = Get.put(AppController());
     print('##25jan amountSalse --> ${appController.amountSalse}');
     Get.bottomSheet(
@@ -64,13 +69,56 @@ class AppBottomSheet {
                               textStyle:
                                   AppConstant().h3Style(color: Colors.black),
                             ),
-                            WidgetButton(
-                              label: 'ซื้อ',
-                              pressFunc: () {
-                                print('ซื้อ');
-                              },
-                              bgColor: Colors.red.shade700,
-                            ),
+                            single
+                                ? WidgetButton(
+                                    label: 'ซื้อ',
+                                    pressFunc: () async {
+                                     
+
+                                      double priceDou =
+                                          double.parse(roomModel.singlePrice!);
+                                      double amountDou = double.parse(
+                                          appController.amountSalse.value
+                                              .toString());
+
+                                      double totalPriceDou =
+                                          priceDou * amountDou;
+
+                                      var user =
+                                          FirebaseAuth.instance.currentUser;
+
+                                      CommentSalseModel commentSalseModel =
+                                          CommentSalseModel(
+                                              amountSalse: appController
+                                                  .amountSalse.value
+                                                  .toString(),
+                                              name: appController
+                                                  .userModels.last.displayName,
+                                              timeComment: Timestamp.fromDate(
+                                                  DateTime.now()),
+                                              totalPrice:
+                                                  totalPriceDou.toString(),
+                                              uid: user!.uid,
+                                              urlAvatar: appController
+                                                  .userModels.last.urlAvatar!);                                 
+
+                                      AppService()
+                                          .processInsertCommentSalse(
+                                              commentSalseModel:
+                                                  commentSalseModel,
+                                              docIdRoom: docIdRoom)
+                                          .then((value) {
+                                        appController.amountSalse.value = 1;
+                                        Get.back();
+                                      });
+                                    },
+                                    bgColor: Colors.red.shade700,
+                                  )
+                                : WidgetButton(
+                                    label: 'สร้างกลุ่ม',
+                                    pressFunc: () {},
+                                    bgColor: Colors.red.shade700,
+                                  ),
                           ],
                         ),
                       ),
@@ -81,7 +129,7 @@ class AppBottomSheet {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             WidgetText(
-                              text: '฿${roomModel.singlePrice!}',
+                              text: single ? '฿${roomModel.singlePrice!}' : '฿${roomModel.totalPrice!}',
                               textStyle: AppConstant()
                                   .h2Style(color: Colors.red.shade700),
                             ),

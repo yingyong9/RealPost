@@ -9,14 +9,12 @@ import 'package:realpost/states/tab_price.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
-import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_content_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_text.dart';
-import 'package:realpost/widgets/widget_text_button.dart';
 
 class MainPageView extends StatefulWidget {
   const MainPageView({super.key});
@@ -46,7 +44,8 @@ class _MainPageViewState extends State<MainPageView> {
             init: AppController(),
             builder: (AppController appController) {
               print(
-                  '##10jan webViewControllers --> ${appController.webViewControllers.length}');
+                  '##26jan commentSalseModels --> ${appController.commentSalses.length} indexPage --> ${appController.indexBodyMainPageView}');
+
               return SafeArea(
                 child: (appController.roomModels.isEmpty) ||
                         (appController.userModels.isEmpty) ||
@@ -95,6 +94,11 @@ class _MainPageViewState extends State<MainPageView> {
                                                             110,
                                                         child: TabPrice(
                                                           roomModel: element,
+                                                          docIdRoom: appController
+                                                                  .docIdRooms[
+                                                              appController
+                                                                  .indexBodyMainPageView
+                                                                  .value],
                                                         ),
                                                       ),
                                                     ],
@@ -115,7 +119,8 @@ class _MainPageViewState extends State<MainPageView> {
                                   appController.indexBodyMainPageView.value),
                           scrollDirection: Axis.vertical,
                           onPageChanged: (value) {
-                            appController.amountSalse.value = 1;
+
+                            
                             appController.indexBodyMainPageView.value = value;
                             appController.readAllChat(
                                 docIdRoom: appController.docIdRooms[
@@ -126,6 +131,9 @@ class _MainPageViewState extends State<MainPageView> {
                             appController.docIdRoomChooses.add(
                                 appController.docIdRooms[
                                     appController.indexBodyMainPageView.value]);
+                                    appController.processReadCommentSalses();
+                            appController.amountSalse.value = 1;
+
                           },
                         ),
                       ),

@@ -12,6 +12,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:realpost/models/chat_model.dart';
+import 'package:realpost/models/comment_salse_model.dart';
 import 'package:realpost/models/private_chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/user_model.dart';
@@ -25,6 +26,17 @@ import 'package:realpost/widgets/widget_text_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppService {
+  Future<void> processInsertCommentSalse(
+      {required CommentSalseModel commentSalseModel,
+      required String docIdRoom}) async {
+    await FirebaseFirestore.instance
+        .collection('room')
+        .doc(docIdRoom)
+        .collection('commentsalse')
+        .doc()
+        .set(commentSalseModel.toMap());
+  }
+
   String cutWord({required String string, required int word}) {
     String result = string;
     if (result.length > word) {
@@ -119,6 +131,7 @@ class AppService {
 
     appController.readGroupProduct();
     appController.readTimeGroup();
+    appController.processReadCommentSalses();
   }
 
   Future<void> insertPrivateChat(
