@@ -14,6 +14,7 @@ import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_text.dart';
+import 'package:realpost/widgets/widget_text_button.dart';
 
 class TabPrice extends StatefulWidget {
   const TabPrice({
@@ -85,25 +86,49 @@ class _TabPriceState extends State<TabPrice> {
                                 const SizedBox(
                                   width: 8,
                                 ),
-                                WidgetText(
+                                appController.commentSalses[index].single ? WidgetText(
                                   text:
                                       '${appController.commentSalses[index].amountSalse} ชิ้น',
                                   textStyle: AppConstant().h3Style(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                ),
+                                ) : const SizedBox(),
                                 const SizedBox(
                                   width: 8,
                                 ),
-                                WidgetText(
-                                  text:
-                                      '${appController.commentSalses[index].totalPrice} บาท',
-                                  textStyle: AppConstant().h3Style(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                                const Spacer(),
+                                appController.commentSalses[index].single
+                                    ? WidgetText(
+                                        text:
+                                            '${appController.commentSalses[index].totalPrice} บาท',
+                                        textStyle: AppConstant().h3Style(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      )
+                                    : Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          WidgetText(
+                                            text:
+                                                'ขาด${appController.roomModels[appController.indexBodyMainPageView.value].amountGroup}คน\n2:30',
+                                            textStyle: AppConstant()
+                                                .h3Style(color: Colors.grey),
+                                          ),
+                                          const SizedBox(width: 16,),
+                                          WidgetButton(
+                                            label: 'เข้าร่วม',
+                                            pressFunc: () {
+                                              AppDialog(context: context)
+                                                  .commentDialog();
+                                            },
+                                            bgColor: Colors.red,
+                                            labelStyle: AppConstant().h3Style(),
+                                            circular: 2,
+                                          ),
+                                        ],
+                                      ),
                               ],
                             ),
                           ),

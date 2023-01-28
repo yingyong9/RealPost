@@ -27,6 +27,29 @@ class AppDialog {
     required this.context,
   });
 
+  void commentDialog() {
+    Get.dialog(
+      AlertDialog(
+        title: WidgetText(
+          text: 'Comment Dialog',
+          textStyle: AppConstant().h2Style(color: Colors.black),
+        ),content: Container(height: 250,child: Text('data'),),
+        actions: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              WidgetButton(
+                label: 'Comment',
+                pressFunc: () {},
+                bgColor: Colors.red.shade700,
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
   void normalDialog(
       {required String title,
       required Widget leadingWidget,
@@ -47,13 +70,13 @@ class AppDialog {
 
   void bigImageBottomSheet({
     required String urlImage,
-    
   }) {
     Get.bottomSheet(
       Container(
         height: 280,
         decoration: BoxDecoration(color: AppConstant.bgColor),
-        child: Column(mainAxisAlignment: MainAxisAlignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
@@ -62,7 +85,8 @@ class AppDialog {
                 height: 150,
               ),
             ),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 SizedBox(
                   width: 250,
@@ -253,7 +277,7 @@ class AppDialog {
     );
   }
 
-  void realPostBottonSheet({String? collection,  String? docIdRoom}) {
+  void realPostBottonSheet({String? collection, String? docIdRoom}) {
     Get.bottomSheet(
         GetX(
             init: AppController(),
@@ -538,7 +562,7 @@ class AppDialog {
                                           print(
                                               '##8jan chatModel ---> ${chatModel.toMap()}');
 
-                                              print(
+                                          print(
                                               '##8jan docIdRoomChoose ---> ${appController.docIdRoomChooses.length}');
 
                                           AppService()

@@ -66,7 +66,8 @@ class AppController extends GetxController {
   RxList commentSalses = <CommentSalseModel>[].obs;
 
   Future<void> processReadCommentSalses() async {
-    print('##26jan processReadCommentSalse Work at indexBody --> ${indexBodyMainPageView.value}');
+    print(
+        '##26jan processReadCommentSalse Work at indexBody --> ${indexBodyMainPageView.value}');
     FirebaseFirestore.instance
         .collection('room')
         .doc(docIdRooms[indexBodyMainPageView.value])
@@ -74,6 +75,11 @@ class AppController extends GetxController {
         .snapshots()
         .listen((event) {
       if (event.docs.isNotEmpty) {
+        
+        if (commentSalses.isNotEmpty) {
+          commentSalses.clear();
+        }
+
         for (var element in event.docs) {
           CommentSalseModel model = CommentSalseModel.fromMap(element.data());
           commentSalses.add(model);

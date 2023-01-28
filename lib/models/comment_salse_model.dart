@@ -10,6 +10,7 @@ class CommentSalseModel {
   final String totalPrice;
   final String uid;
   final String urlAvatar;
+  final bool single;
   CommentSalseModel({
     required this.amountSalse,
     required this.name,
@@ -17,6 +18,7 @@ class CommentSalseModel {
     required this.totalPrice,
     required this.uid,
     required this.urlAvatar,
+    required this.single,
   });
 
   Map<String, dynamic> toMap() {
@@ -27,6 +29,7 @@ class CommentSalseModel {
       'totalPrice': totalPrice,
       'uid': uid,
       'urlAvatar': urlAvatar,
+      'single': single,
     };
   }
 
@@ -38,10 +41,14 @@ class CommentSalseModel {
       totalPrice: (map['totalPrice'] ?? '') as String,
       uid: (map['uid'] ?? '') as String,
       urlAvatar: (map['urlAvatar'] ?? '') as String,
+      single: (map['single'] ?? true) as bool,
     );
   }
 
+  // timeComment: (map['timeComment'] ),
+
   String toJson() => json.encode(toMap());
 
-  factory CommentSalseModel.fromJson(String source) => CommentSalseModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory CommentSalseModel.fromJson(String source) =>
+      CommentSalseModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

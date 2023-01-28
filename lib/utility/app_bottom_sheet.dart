@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +34,7 @@ class AppBottomSheet {
               // topRight: Radius.circular(30),
               ),
         ),
-        height: 120,
+        height: 170,
         child: ListView(
           children: [
             Row(
@@ -73,50 +75,17 @@ class AppBottomSheet {
                                 ? WidgetButton(
                                     label: 'ซื้อ',
                                     pressFunc: () async {
-                                     
-
-                                      double priceDou =
-                                          double.parse(roomModel.singlePrice!);
-                                      double amountDou = double.parse(
-                                          appController.amountSalse.value
-                                              .toString());
-
-                                      double totalPriceDou =
-                                          priceDou * amountDou;
-
-                                      var user =
-                                          FirebaseAuth.instance.currentUser;
-
-                                      CommentSalseModel commentSalseModel =
-                                          CommentSalseModel(
-                                              amountSalse: appController
-                                                  .amountSalse.value
-                                                  .toString(),
-                                              name: appController
-                                                  .userModels.last.displayName,
-                                              timeComment: Timestamp.fromDate(
-                                                  DateTime.now()),
-                                              totalPrice:
-                                                  totalPriceDou.toString(),
-                                              uid: user!.uid,
-                                              urlAvatar: appController
-                                                  .userModels.last.urlAvatar!);                                 
-
-                                      AppService()
-                                          .processInsertCommentSalse(
-                                              commentSalseModel:
-                                                  commentSalseModel,
-                                              docIdRoom: docIdRoom)
-                                          .then((value) {
-                                        appController.amountSalse.value = 1;
-                                        Get.back();
-                                      });
+                                      processAddNewCommentSalse(roomModel,
+                                          appController, docIdRoom, single);
                                     },
                                     bgColor: Colors.red.shade700,
                                   )
                                 : WidgetButton(
                                     label: 'สร้างกลุ่ม',
-                                    pressFunc: () {},
+                                    pressFunc: () {
+                                      processAddNewCommentSalse(roomModel,
+                                          appController, docIdRoom, single);
+                                    },
                                     bgColor: Colors.red.shade700,
                                   ),
                           ],
@@ -129,7 +98,9 @@ class AppBottomSheet {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             WidgetText(
-                              text: single ? '฿${roomModel.singlePrice!}' : '฿${roomModel.totalPrice!}',
+                              text: single
+                                  ? '฿${roomModel.singlePrice!}'
+                                  : '฿${roomModel.totalPrice!}',
                               textStyle: AppConstant()
                                   .h2Style(color: Colors.red.shade700),
                             ),
@@ -147,6 +118,39 @@ class AppBottomSheet {
       ),
       isScrollControlled: true,
     );
+  }
+
+  void processAddNewCommentSalse(RoomModel roomModel,
+      AppController appController, String docIdRoom, bool single) {
+    double? priceDou;
+
+    if (single) {
+      priceDou = double.parse(roomModel.singlePrice!);
+    } else {
+      priceDou = double.parse(roomModel.totalPrice!);
+    }
+
+    double amountDou = double.parse(appController.amountSalse.value.toString());
+
+    double totalPriceDou = priceDou * amountDou;
+
+    var user = FirebaseAuth.instance.currentUser;
+
+    CommentSalseModel commentSalseModel = CommentSalseModel(
+        amountSalse: appController.amountSalse.value.toString(),
+        name: appController.userModels.last.displayName,
+        timeComment: Timestamp.fromDate(DateTime.now()),
+        totalPrice: totalPriceDou.toString(),
+        uid: user!.uid,
+        urlAvatar: appController.userModels.last.urlAvatar!, single: single);
+
+    AppService()
+        .processInsertCommentSalse(
+            commentSalseModel: commentSalseModel, docIdRoom: docIdRoom)
+        .then((value) {
+      appController.amountSalse.value = 1;
+      Get.back();
+    });
   }
 
   void productBottomSheet({required BoxConstraints boxConstraints}) {
