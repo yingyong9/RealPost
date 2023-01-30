@@ -16,6 +16,7 @@ import 'package:realpost/models/comment_salse_model.dart';
 import 'package:realpost/models/group_product_model.dart';
 import 'package:realpost/models/private_chat_model.dart';
 import 'package:realpost/models/room_model.dart';
+import 'package:realpost/models/salse_group_model.dart';
 import 'package:realpost/models/stamp_model.dart';
 import 'package:realpost/models/time_group_model.dart';
 import 'package:realpost/models/user_model.dart';
@@ -64,6 +65,29 @@ class AppController extends GetxController {
   RxInt amountSalse = 1.obs;
 
   RxList commentSalses = <CommentSalseModel>[].obs;
+  RxList docIdCommentSalses = <String>[].obs;
+
+  RxList salsegroups = <SalseGroupModel>[].obs;
+
+  Future<void> readSalseGroups({required String docIdCommentSalse}) async {
+    if (salsegroups.isNotEmpty) {
+      salsegroups.clear();
+    }
+
+    await FirebaseFirestore.instance
+        .collection('room')
+        .doc(docIdRooms[indexBodyMainPageView.value])
+        .collection('commentsalse')
+        .doc(docIdCommentSalse)
+        .collection('salsegroup')
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        SalseGroupModel model = SalseGroupModel.fromMap(element.data());
+        salsegroups.add(model);
+      }
+    });
+  }
 
   Future<void> processReadCommentSalses() async {
     print(
@@ -75,14 +99,15 @@ class AppController extends GetxController {
         .snapshots()
         .listen((event) {
       if (event.docs.isNotEmpty) {
-        
         if (commentSalses.isNotEmpty) {
           commentSalses.clear();
+          docIdCommentSalses.clear();
         }
 
         for (var element in event.docs) {
           CommentSalseModel model = CommentSalseModel.fromMap(element.data());
           commentSalses.add(model);
+          docIdCommentSalses.add(element.id);
         }
       }
     });

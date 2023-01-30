@@ -6,12 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:realpost/models/chat_model.dart';
+import 'package:realpost/models/room_model.dart';
+import 'package:realpost/models/salse_group_model.dart';
 import 'package:realpost/states/album_picture.dart';
 import 'package:realpost/states/emoji_page.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_button.dart';
+import 'package:realpost/widgets/widget_choose_amout_salse.dart';
+import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_google_map.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
@@ -27,25 +31,85 @@ class AppDialog {
     required this.context,
   });
 
-  void commentDialog() {
+  void salseDialog(
+      {required RoomModel roomModel,
+      required String docIdCommentSalse,
+      required List<SalseGroupModel> salseGroupModels}) {
+    Get.dialog(
+      AlertDialog(
+        title: WidgetText(
+          text: 'คุณต้องการเข้าร่วมซื้อสินค้า',
+          textStyle: AppConstant().h2Style(color: Colors.black),
+        ),
+        content: Container(
+          // height: 250,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              WidgetText(
+                text: roomModel.room,
+                textStyle: AppConstant().h3Style(color: Colors.black),
+              ),
+              WidgetChooseAmountSalse(),
+            ],
+          ),
+        ),
+        actions: [
+          WidgetButton(
+            label: 'Buy',
+            pressFunc: () {
+              Get.back();
+              commentDialog(
+                roomModel: roomModel,
+                docIdCommentSalse: docIdCommentSalse,
+                salseGroupModels: salseGroupModels,
+              );
+            },
+            bgColor: Colors.red.shade700,
+          )
+        ],
+      ),
+    );
+  }
+
+  void commentDialog(
+      {required RoomModel roomModel,
+      required String docIdCommentSalse,
+      required List<SalseGroupModel> salseGroupModels}) {
     Get.dialog(
       AlertDialog(
         title: WidgetText(
           text: 'Comment Dialog',
           textStyle: AppConstant().h2Style(color: Colors.black),
-        ),content: Container(height: 250,child: Text('data'),),
-        actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              WidgetButton(
-                label: 'Comment',
-                pressFunc: () {},
-                bgColor: Colors.red.shade700,
-              ),
-            ],
-          )
-        ],
+        ),
+        content: SizedBox(width: double.maxFinite,
+          child: ListView.builder(
+            shrinkWrap: true,
+            physics: const ScrollPhysics(),
+            itemCount: salseGroupModels.length,
+            itemBuilder: (context, index) => Row(
+              children: [
+                WidgetCircularImage(urlImage: salseGroupModels[index].map['urlAvatar']),
+                WidgetText(
+                  text: salseGroupModels[index].map['displayName'],
+                  textStyle: AppConstant().h3Style(color: Colors.black),
+                ),
+              ],
+            ),
+          ),
+        ),
+        // actions: [
+        //   Row(
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     children: [
+        //       WidgetButton(
+        //         label: 'Comment',
+        //         pressFunc: () {},
+        //         bgColor: Colors.red.shade700,
+        //       ),
+        //     ],
+        //   )
+        // ],
       ),
     );
   }

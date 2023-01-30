@@ -15,6 +15,7 @@ import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/comment_salse_model.dart';
 import 'package:realpost/models/private_chat_model.dart';
 import 'package:realpost/models/room_model.dart';
+import 'package:realpost/models/salse_group_model.dart';
 import 'package:realpost/models/user_model.dart';
 import 'package:realpost/states/add_room.dart';
 import 'package:realpost/states/display_name.dart';
@@ -26,15 +27,44 @@ import 'package:realpost/widgets/widget_text_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppService {
+  AppController appController = Get.put(AppController());
+
   Future<void> processInsertCommentSalse(
       {required CommentSalseModel commentSalseModel,
       required String docIdRoom}) async {
-    await FirebaseFirestore.instance
+    DocumentReference documentReference = FirebaseFirestore.instance
         .collection('room')
         .doc(docIdRoom)
         .collection('commentsalse')
-        .doc()
-        .set(commentSalseModel.toMap());
+        .doc();
+
+    await documentReference.set(commentSalseModel.toMap()).then((value) async {
+      String docIdcommentSalse = documentReference.id;
+      print('##28jan docIdcommentSalse ---> $docIdcommentSalse');
+
+      if (commentSalseModel.single) {
+        //ซื่อคนเดียว
+        print('##28jan single');
+      } else {
+        //ซืั้อกลุ่ม
+        print('##28jan buy Group');
+
+        Map<String, dynamic> map = appController.userModels.last.toMap();
+        SalseGroupModel salseGroupModel = SalseGroupModel(map: map);
+
+        await FirebaseFirestore.instance
+            .collection('room')
+            .doc(docIdRoom)
+            .collection('commentsalse')
+            .doc(docIdcommentSalse)
+            .collection('salsegroup')
+            .doc()
+            .set(salseGroupModel.toMap())
+            .then((value) {
+          print('##28jan insert salsegropu success');
+        });
+      }
+    });
   }
 
   String cutWord({required String string, required int word}) {

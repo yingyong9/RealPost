@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:realpost/bodys/body_single_price.dart';
 import 'package:realpost/bodys/body_total_price.dart';
 import 'package:realpost/models/room_model.dart';
+import 'package:realpost/models/salse_group_model.dart';
 import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
@@ -86,14 +87,16 @@ class _TabPriceState extends State<TabPrice> {
                                 const SizedBox(
                                   width: 8,
                                 ),
-                                appController.commentSalses[index].single ? WidgetText(
-                                  text:
-                                      '${appController.commentSalses[index].amountSalse} ชิ้น',
-                                  textStyle: AppConstant().h3Style(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ) : const SizedBox(),
+                                appController.commentSalses[index].single
+                                    ? WidgetText(
+                                        text:
+                                            '${appController.commentSalses[index].amountSalse} ชิ้น',
+                                        textStyle: AppConstant().h3Style(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      )
+                                    : const SizedBox(),
                                 const SizedBox(
                                   width: 8,
                                 ),
@@ -116,12 +119,44 @@ class _TabPriceState extends State<TabPrice> {
                                             textStyle: AppConstant()
                                                 .h3Style(color: Colors.grey),
                                           ),
-                                          const SizedBox(width: 16,),
+                                          const SizedBox(
+                                            width: 16,
+                                          ),
                                           WidgetButton(
                                             label: 'เข้าร่วม',
                                             pressFunc: () {
-                                              AppDialog(context: context)
-                                                  .commentDialog();
+                                              appController
+                                                  .readSalseGroups(
+                                                      docIdCommentSalse:
+                                                          appController
+                                                                  .docIdCommentSalses[
+                                                              index])
+                                                  .then((value) {
+                                                print(
+                                                    '##28jan salseGroups --> ${appController.salsegroups.length}');
+
+                                                var salseGrproups =
+                                                    <SalseGroupModel>[];
+                                                for (var element
+                                                    in appController
+                                                        .salsegroups) {
+                                                  salseGrproups.add(element);
+                                                }
+
+                                                AppDialog(context: context)
+                                                    .salseDialog(
+                                                  roomModel: appController
+                                                          .roomModels[
+                                                      appController
+                                                          .indexBodyMainPageView
+                                                          .value],
+                                                  docIdCommentSalse: appController
+                                                          .docIdCommentSalses[
+                                                      index],
+                                                  salseGroupModels:
+                                                      salseGrproups,
+                                                );
+                                              });
                                             },
                                             bgColor: Colors.red,
                                             labelStyle: AppConstant().h3Style(),
@@ -184,11 +219,13 @@ class _TabPriceState extends State<TabPrice> {
                           ),
                           InkWell(
                             onTap: () {
-                              AppBottomSheet().salseBottomSheet(
-                                  roomModel: roomModel!,
-                                  single: false,
-                                  boxConstraints: boxConstraints,
-                                  docIdRoom: widget.docIdRoom);
+                              if (user!.uid != roomModel!.uidCreate) {
+                                AppBottomSheet().salseBottomSheet(
+                                    roomModel: roomModel!,
+                                    single: false,
+                                    boxConstraints: boxConstraints,
+                                    docIdRoom: widget.docIdRoom);
+                              }
                             },
                             child: Container(
                               padding:

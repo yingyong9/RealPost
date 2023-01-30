@@ -40,6 +40,7 @@ class AppBottomSheet {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                //Picture
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: WidgetImageInternet(
@@ -49,9 +50,9 @@ class AppBottomSheet {
                     boxFit: BoxFit.cover,
                   ),
                 ),
+                //Content Right
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 10),
-                  height: 200,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -62,56 +63,49 @@ class AppBottomSheet {
                       ),
                       SizedBox(
                         width: boxConstraints.maxWidth - 90,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            WidgetText(
-                              text: AppService()
-                                  .cutWord(string: roomModel.detail!, word: 25),
-                              textStyle:
-                                  AppConstant().h3Style(color: Colors.black),
-                            ),
-                            single
-                                ? WidgetButton(
-                                    label: 'ซื้อ',
-                                    pressFunc: () async {
-                                      processAddNewCommentSalse(roomModel,
-                                          appController, docIdRoom, single);
-                                    },
-                                    bgColor: Colors.red.shade700,
-                                  )
-                                : WidgetButton(
-                                    label: 'สร้างกลุ่ม',
-                                    pressFunc: () {
-                                      processAddNewCommentSalse(roomModel,
-                                          appController, docIdRoom, single);
-                                    },
-                                    bgColor: Colors.red.shade700,
-                                  ),
-                          ],
+                        child: WidgetText(
+                          text: AppService()
+                              .cutWord(string: roomModel.detail!, word: 25),
+                          textStyle: AppConstant().h3Style(color: Colors.black),
                         ),
                       ),
-                      // const Spacer(),
-                      SizedBox(
-                        width: boxConstraints.maxWidth - 100,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            WidgetText(
-                              text: single
-                                  ? '฿${roomModel.singlePrice!}'
-                                  : '฿${roomModel.totalPrice!}',
-                              textStyle: AppConstant()
-                                  .h2Style(color: Colors.red.shade700),
-                            ),
-                            WidgetChooseAmountSalse(),
-                          ],
-                        ),
-                      )
                     ],
                   ),
                 ),
               ],
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  WidgetText(
+                    text: single
+                        ? '฿${roomModel.singlePrice!}'
+                        : '฿${roomModel.totalPrice!}',
+                    textStyle:
+                        AppConstant().h2Style(color: Colors.red.shade700),
+                  ),
+                  WidgetChooseAmountSalse(),
+                  single
+                      ? WidgetButton(
+                          label: 'ซื้อ',
+                          pressFunc: () async {
+                            processAddNewCommentSalse(
+                                roomModel, appController, docIdRoom, single);
+                          },
+                          bgColor: Colors.red.shade700,
+                        )
+                      : WidgetButton(
+                          label: 'สร้างกลุ่ม',
+                          pressFunc: () {
+                            processAddNewCommentSalse(
+                                roomModel, appController, docIdRoom, single);
+                          },
+                          bgColor: Colors.red.shade700,
+                        ),
+                ],
+              ),
             ),
           ],
         ),
@@ -142,7 +136,8 @@ class AppBottomSheet {
         timeComment: Timestamp.fromDate(DateTime.now()),
         totalPrice: totalPriceDou.toString(),
         uid: user!.uid,
-        urlAvatar: appController.userModels.last.urlAvatar!, single: single);
+        urlAvatar: appController.userModels.last.urlAvatar!,
+        single: single);
 
     AppService()
         .processInsertCommentSalse(
