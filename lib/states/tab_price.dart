@@ -69,19 +69,51 @@ class _TabPriceState extends State<TabPrice> {
                             itemCount: appController.commentSalses.length,
                             itemBuilder: (context, index) => Row(
                               children: [
-                                WidgetCircularImage(
-                                    urlImage: appController
-                                        .commentSalses[index].urlAvatar),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 4, horizontal: 8),
-                                  decoration: AppConstant().boxChatGuest(
-                                      bgColor: Colors.grey.shade300),
-                                  child: WidgetText(
-                                    text:
-                                        appController.commentSalses[index].name,
-                                    textStyle: AppConstant()
-                                        .h3Style(color: Colors.black),
+                                InkWell(
+                                  onTap: () {
+                                    appController
+                                        .readSalseGroups(
+                                            docIdCommentSalse: appController
+                                                .docIdCommentSalses[index])
+                                        .then((value) {
+                                      print(
+                                          '##28jan salseGroups --> ${appController.salsegroups.length}');
+
+                                      var salseGrproups = <SalseGroupModel>[];
+                                      for (var element
+                                          in appController.salsegroups) {
+                                        salseGrproups.add(element);
+                                      }
+
+                                      AppDialog(context: context).commentDialog(
+                                        roomModel: appController.roomModels[
+                                            appController
+                                                .indexBodyMainPageView.value],
+                                        docIdCommentSalse: appController
+                                            .docIdCommentSalses[index],
+                                        salseGroupModels: salseGrproups,
+                                      );
+                                    });
+                                  },
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      WidgetCircularImage(
+                                          urlImage: appController
+                                              .commentSalses[index].urlAvatar),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 4, horizontal: 8),
+                                        decoration: AppConstant().boxChatGuest(
+                                            bgColor: Colors.grey.shade300),
+                                        child: WidgetText(
+                                          text: appController
+                                              .commentSalses[index].name,
+                                          textStyle: AppConstant()
+                                              .h3Style(color: Colors.black),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 const SizedBox(
@@ -143,19 +175,44 @@ class _TabPriceState extends State<TabPrice> {
                                                   salseGrproups.add(element);
                                                 }
 
-                                                AppDialog(context: context)
-                                                    .salseDialog(
-                                                  roomModel: appController
-                                                          .roomModels[
-                                                      appController
-                                                          .indexBodyMainPageView
-                                                          .value],
-                                                  docIdCommentSalse: appController
-                                                          .docIdCommentSalses[
-                                                      index],
-                                                  salseGroupModels:
-                                                      salseGrproups,
-                                                );
+                                                print(
+                                                    '##28jan commentSalseGroup uid --> ${appController.commentSalses[index].uid}');
+
+                                                if (appController
+                                                        .commentSalses[index]
+                                                        .uid !=
+                                                    user!.uid) {
+                                                  AppDialog(context: context)
+                                                      .salseDialog(
+                                                    roomModel: appController
+                                                            .roomModels[
+                                                        appController
+                                                            .indexBodyMainPageView
+                                                            .value],
+                                                    docIdCommentSalse: appController
+                                                            .docIdCommentSalses[
+                                                        index],
+                                                    salseGroupModels:
+                                                        salseGrproups,
+                                                    userModel: appController
+                                                        .userModels.last,
+                                                    uidLogin: user!.uid,
+                                                  );
+                                                } else {
+                                                  AppDialog(context: context)
+                                                      .commentDialog(
+                                                    roomModel: appController
+                                                            .roomModels[
+                                                        appController
+                                                            .indexBodyMainPageView
+                                                            .value],
+                                                    docIdCommentSalse: appController
+                                                            .docIdCommentSalses[
+                                                        index],
+                                                    salseGroupModels:
+                                                        salseGrproups,
+                                                  );
+                                                }
                                               });
                                             },
                                             bgColor: Colors.red,

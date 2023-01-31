@@ -49,7 +49,10 @@ class AppService {
         //ซืั้อกลุ่ม
         print('##28jan buy Group');
 
+        var user = FirebaseAuth.instance.currentUser;
+
         Map<String, dynamic> map = appController.userModels.last.toMap();
+        map['uid'] = user!.uid;
         SalseGroupModel salseGroupModel = SalseGroupModel(map: map);
 
         await FirebaseFirestore.instance

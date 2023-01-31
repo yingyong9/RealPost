@@ -8,8 +8,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/salse_group_model.dart';
+import 'package:realpost/models/user_model.dart';
 import 'package:realpost/states/album_picture.dart';
 import 'package:realpost/states/emoji_page.dart';
+import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
@@ -31,10 +33,13 @@ class AppDialog {
     required this.context,
   });
 
-  void salseDialog(
-      {required RoomModel roomModel,
-      required String docIdCommentSalse,
-      required List<SalseGroupModel> salseGroupModels}) {
+  void salseDialog({
+    required RoomModel roomModel,
+    required String docIdCommentSalse,
+    required List<SalseGroupModel> salseGroupModels,
+    required UserModel userModel,
+    required uidLogin,
+  }) {
     Get.dialog(
       AlertDialog(
         title: WidgetText(
@@ -58,12 +63,20 @@ class AppDialog {
           WidgetButton(
             label: 'Buy',
             pressFunc: () {
-              Get.back();
-              commentDialog(
-                roomModel: roomModel,
-                docIdCommentSalse: docIdCommentSalse,
-                salseGroupModels: salseGroupModels,
-              );
+              print('##28jan docIdCommentSalse ---> $docIdCommentSalse');
+              Map<String, dynamic> map = userModel.toMap();
+              map['uid'] = uidLogin;
+
+              print('##28jan map ---> $map');
+
+              
+
+              // Get.back();
+              // commentDialog(
+              //   roomModel: roomModel,
+              //   docIdCommentSalse: docIdCommentSalse,
+              //   salseGroupModels: salseGroupModels,
+              // );
             },
             bgColor: Colors.red.shade700,
           )
@@ -76,24 +89,50 @@ class AppDialog {
       {required RoomModel roomModel,
       required String docIdCommentSalse,
       required List<SalseGroupModel> salseGroupModels}) {
+    int amountGroupInt = int.parse(roomModel.amountGroup ?? '0');
+    amountGroupInt = amountGroupInt - salseGroupModels.length;
+
     Get.dialog(
       AlertDialog(
-        title: WidgetText(
-          text: 'Comment Dialog',
-          textStyle: AppConstant().h2Style(color: Colors.black),
+        title: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            WidgetText(
+              text: roomModel.room,
+              textStyle: AppConstant().h2Style(color: Colors.black),
+            ),
+            const SizedBox(
+              width: 16,
+            ),
+            WidgetText(
+              text: 'ขาด $amountGroupInt คน',
+              textStyle: AppConstant().h3Style(
+                  color: Colors.grey, size: 16, fontWeight: FontWeight.w500),
+            )
+          ],
         ),
-        content: SizedBox(width: double.maxFinite,
+        content: SizedBox(
+          width: double.maxFinite,
           child: ListView.builder(
             shrinkWrap: true,
             physics: const ScrollPhysics(),
             itemCount: salseGroupModels.length,
             itemBuilder: (context, index) => Row(
               children: [
-                WidgetCircularImage(urlImage: salseGroupModels[index].map['urlAvatar']),
+                WidgetCircularImage(
+                    urlImage: salseGroupModels[index].map['urlAvatar']),
                 WidgetText(
                   text: salseGroupModels[index].map['displayName'],
                   textStyle: AppConstant().h3Style(color: Colors.black),
                 ),
+                const Spacer(),
+                WidgetButton(
+                  label: 'เข้าร่วม',
+                  pressFunc: () {},
+                  bgColor: Colors.red,
+                  labelStyle: AppConstant().h3Style(),
+                  circular: 2,
+                )
               ],
             ),
           ),
