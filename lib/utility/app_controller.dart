@@ -79,7 +79,7 @@ class AppController extends GetxController {
         .doc(docIdRooms[indexBodyMainPageView.value])
         .collection('commentsalse')
         .doc(docIdCommentSalse)
-        .collection('salsegroup')
+        .collection('salsegroup').orderBy('timestamp')
         .get()
         .then((value) {
       for (var element in value.docs) {

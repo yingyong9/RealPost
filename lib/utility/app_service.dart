@@ -29,6 +29,27 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
+  Future<bool> checkGuest({required String docIdcommentSalse}) async {
+    bool status = true;
+    var user = FirebaseAuth.instance.currentUser;
+    var result = await FirebaseFirestore.instance
+        .collection('room')
+        .doc(
+            appController.docIdRooms[appController.indexBodyMainPageView.value])
+        .collection('commentsalse')
+        .doc(docIdcommentSalse)
+        .collection('salsegroup')
+        .get();
+
+    for (var element in result.docs) {
+      SalseGroupModel salseGroupModel = SalseGroupModel.fromMap(element.data());
+      if (salseGroupModel.map['uid'] == user!.uid) {
+        status = false;
+      }
+    }
+    return status;
+  }
+
   Future<void> processInsertCommentSalse(
       {required CommentSalseModel commentSalseModel,
       required String docIdRoom}) async {
@@ -53,7 +74,8 @@ class AppService {
 
         Map<String, dynamic> map = appController.userModels.last.toMap();
         map['uid'] = user!.uid;
-        SalseGroupModel salseGroupModel = SalseGroupModel(map: map);
+        SalseGroupModel salseGroupModel = SalseGroupModel(
+            map: map, timestamp: Timestamp.fromDate(DateTime.now()));
 
         await FirebaseFirestore.instance
             .collection('room')

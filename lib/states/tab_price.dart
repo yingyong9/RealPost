@@ -11,6 +11,7 @@ import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
+import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
@@ -163,7 +164,7 @@ class _TabPriceState extends State<TabPrice> {
                                                           appController
                                                                   .docIdCommentSalses[
                                                               index])
-                                                  .then((value) {
+                                                  .then((value) async {
                                                 print(
                                                     '##28jan salseGroups --> ${appController.salsegroups.length}');
 
@@ -178,10 +179,19 @@ class _TabPriceState extends State<TabPrice> {
                                                 print(
                                                     '##28jan commentSalseGroup uid --> ${appController.commentSalses[index].uid}');
 
-                                                if (appController
-                                                        .commentSalses[index]
-                                                        .uid !=
-                                                    user!.uid) {
+                                                bool status = await AppService().checkGuest(
+                                                    docIdcommentSalse: appController
+                                                            .docIdCommentSalses[
+                                                        index]);
+
+                                                if ((appController
+                                                            .commentSalses[
+                                                                index]
+                                                            .uid !=
+                                                        user!.uid) &&
+                                                    (roomModel!.uidCreate !=
+                                                        user!.uid) &&
+                                                    status) {
                                                   AppDialog(context: context)
                                                       .salseDialog(
                                                     roomModel: appController
@@ -197,6 +207,11 @@ class _TabPriceState extends State<TabPrice> {
                                                     userModel: appController
                                                         .userModels.last,
                                                     uidLogin: user!.uid,
+                                                    docIdRoom: appController
+                                                            .docIdRooms[
+                                                        appController
+                                                            .indexBodyMainPageView
+                                                            .value],
                                                   );
                                                 } else {
                                                   AppDialog(context: context)

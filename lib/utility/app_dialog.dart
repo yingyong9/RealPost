@@ -39,6 +39,7 @@ class AppDialog {
     required List<SalseGroupModel> salseGroupModels,
     required UserModel userModel,
     required uidLogin,
+    required String docIdRoom,
   }) {
     Get.dialog(
       AlertDialog(
@@ -62,21 +63,39 @@ class AppDialog {
         actions: [
           WidgetButton(
             label: 'Buy',
-            pressFunc: () {
+            pressFunc: () async {
               print('##28jan docIdCommentSalse ---> $docIdCommentSalse');
               Map<String, dynamic> map = userModel.toMap();
               map['uid'] = uidLogin;
+              SalseGroupModel salseGroupModel = SalseGroupModel(map: map, timestamp: Timestamp.fromDate(DateTime.now()));
 
               print('##28jan map ---> $map');
+              print('##28jan docIdRoom ===> $docIdRoom');
 
-              
+              await FirebaseFirestore.instance
+                  .collection('room')
+                  .doc(docIdRoom)
+                  .collection('commentsalse')
+                  .doc(docIdCommentSalse)
+                  .collection('salsegroup')
+                  .doc()
+                  .set(salseGroupModel.toMap())
+                  .then((value) {
+                Get.back();
+                AppController appController = Get.put(AppController());
+                appController.readSalseGroups;
 
-              // Get.back();
-              // commentDialog(
-              //   roomModel: roomModel,
-              //   docIdCommentSalse: docIdCommentSalse,
-              //   salseGroupModels: salseGroupModels,
-              // );
+                var salseGroupModels = <SalseGroupModel>[];
+                for (var element in appController.salsegroups) {
+                  salseGroupModels.add(element);
+                }
+
+                commentDialog(
+                  roomModel: roomModel,
+                  docIdCommentSalse: docIdCommentSalse,
+                  salseGroupModels: salseGroupModels,
+                );
+              });
             },
             bgColor: Colors.red.shade700,
           )
