@@ -39,7 +39,7 @@ class _TabPriceState extends State<TabPrice> {
 
   var labels = <String>[
     'ซื้อคนเดียว',
-    'ร่วมกันซื้อ',
+    'ชวนเพื่อนมาร่วมกันซื้อ',
   ];
 
   var user = FirebaseAuth.instance.currentUser;
@@ -66,178 +66,210 @@ class _TabPriceState extends State<TabPrice> {
                     width: boxConstraints.maxWidth,
                     child: appController.commentSalses.isEmpty
                         ? const SizedBox()
-                        : ListView.builder(
-                            itemCount: appController.commentSalses.length,
-                            itemBuilder: (context, index) => Row(
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    appController
-                                        .readSalseGroups(
-                                            docIdCommentSalse: appController
-                                                .docIdCommentSalses[index])
-                                        .then((value) {
-                                      print(
-                                          '##28jan salseGroups --> ${appController.salsegroups.length}');
-
-                                      var salseGrproups = <SalseGroupModel>[];
-                                      for (var element
-                                          in appController.salsegroups) {
-                                        salseGrproups.add(element);
-                                      }
-
-                                      AppDialog(context: context).commentDialog(
-                                        roomModel: appController.roomModels[
-                                            appController
-                                                .indexBodyMainPageView.value],
-                                        docIdCommentSalse: appController
-                                            .docIdCommentSalses[index],
-                                        salseGroupModels: salseGrproups,
-                                      );
-                                    });
-                                  },
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
+                        : Column(
+                            children: [
+                              SizedBox(
+                                height: boxConstraints.maxHeight - 60,
+                                child: ListView.builder(
+                                  itemCount: appController.commentSalses.length,
+                                  itemBuilder: (context, index) => Row(
                                     children: [
-                                      WidgetCircularImage(
-                                          urlImage: appController
-                                              .commentSalses[index].urlAvatar),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 4, horizontal: 8),
-                                        decoration: AppConstant().boxChatGuest(
-                                            bgColor: Colors.grey.shade300),
-                                        child: WidgetText(
-                                          text: appController
-                                              .commentSalses[index].name,
-                                          textStyle: AppConstant()
-                                              .h3Style(color: Colors.black),
+                                      InkWell(
+                                        onTap: () {
+                                          appController
+                                              .readSalseGroups(
+                                                  docIdCommentSalse: appController
+                                                          .docIdCommentSalses[
+                                                      index])
+                                              .then((value) {
+                                            print(
+                                                '##28jan salseGroups --> ${appController.salsegroups.length}');
+
+                                            var salseGrproups =
+                                                <SalseGroupModel>[];
+                                            for (var element
+                                                in appController.salsegroups) {
+                                              salseGrproups.add(element);
+                                            }
+
+                                            AppDialog(context: context)
+                                                .commentDialog(
+                                              roomModel:
+                                                  appController.roomModels[
+                                                      appController
+                                                          .indexBodyMainPageView
+                                                          .value],
+                                              docIdCommentSalse: appController
+                                                  .docIdCommentSalses[index],
+                                              salseGroupModels: salseGrproups,
+                                            );
+                                          });
+                                        },
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            WidgetCircularImage(
+                                                urlImage: appController
+                                                    .commentSalses[index]
+                                                    .urlAvatar),
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 4,
+                                                      horizontal: 8),
+                                              decoration: AppConstant()
+                                                  .boxChatGuest(
+                                                      bgColor:
+                                                          Colors.grey.shade300),
+                                              child: WidgetText(
+                                                text: appController
+                                                    .commentSalses[index].name,
+                                                textStyle: AppConstant()
+                                                    .h3Style(
+                                                        color: Colors.black),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
+                                      const SizedBox(
+                                        width: 8,
+                                      ),
+                                      appController.commentSalses[index].single
+                                          ? WidgetText(
+                                              text:
+                                                  '${appController.commentSalses[index].amountSalse} ชิ้น',
+                                              textStyle: AppConstant().h3Style(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            )
+                                          : const SizedBox(),
+                                      const SizedBox(
+                                        width: 8,
+                                      ),
+                                      const Spacer(),
+                                      appController.commentSalses[index].single
+                                          ? WidgetText(
+                                              text:
+                                                  '${appController.commentSalses[index].totalPrice} บาท',
+                                              textStyle: AppConstant().h3Style(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            )
+                                          : Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                WidgetText(
+                                                  text:
+                                                      'ขาด${appController.roomModels[appController.indexBodyMainPageView.value].amountGroup}คน\n2:30',
+                                                  textStyle: AppConstant()
+                                                      .h3Style(
+                                                          color: Colors.grey),
+                                                ),
+                                                const SizedBox(
+                                                  width: 16,
+                                                ),
+                                                WidgetButton(
+                                                  label: 'เข้าร่วม',
+                                                  pressFunc: () {
+                                                    appController
+                                                        .readSalseGroups(
+                                                            docIdCommentSalse:
+                                                                appController
+                                                                        .docIdCommentSalses[
+                                                                    index])
+                                                        .then((value) async {
+                                                      print(
+                                                          '##28jan salseGroups --> ${appController.salsegroups.length}');
+
+                                                      var salseGrproups =
+                                                          <SalseGroupModel>[];
+                                                      for (var element
+                                                          in appController
+                                                              .salsegroups) {
+                                                        salseGrproups
+                                                            .add(element);
+                                                      }
+
+                                                      print(
+                                                          '##28jan commentSalseGroup uid --> ${appController.commentSalses[index].uid}');
+
+                                                      bool status = await AppService()
+                                                          .checkGuest(
+                                                              docIdcommentSalse:
+                                                                  appController
+                                                                          .docIdCommentSalses[
+                                                                      index]);
+
+                                                      if ((appController
+                                                                  .commentSalses[
+                                                                      index]
+                                                                  .uid !=
+                                                              user!.uid) &&
+                                                          (roomModel!
+                                                                  .uidCreate !=
+                                                              user!.uid) &&
+                                                          status) {
+                                                        AppDialog(
+                                                                context:
+                                                                    context)
+                                                            .salseDialog(
+                                                          roomModel: appController
+                                                                  .roomModels[
+                                                              appController
+                                                                  .indexBodyMainPageView
+                                                                  .value],
+                                                          docIdCommentSalse:
+                                                              appController
+                                                                      .docIdCommentSalses[
+                                                                  index],
+                                                          salseGroupModels:
+                                                              salseGrproups,
+                                                          userModel:
+                                                              appController
+                                                                  .userModels
+                                                                  .last,
+                                                          uidLogin: user!.uid,
+                                                          docIdRoom: appController
+                                                                  .docIdRooms[
+                                                              appController
+                                                                  .indexBodyMainPageView
+                                                                  .value],
+                                                        );
+                                                      } else {
+                                                        AppDialog(
+                                                                context:
+                                                                    context)
+                                                            .commentDialog(
+                                                          roomModel: appController
+                                                                  .roomModels[
+                                                              appController
+                                                                  .indexBodyMainPageView
+                                                                  .value],
+                                                          docIdCommentSalse:
+                                                              appController
+                                                                      .docIdCommentSalses[
+                                                                  index],
+                                                          salseGroupModels:
+                                                              salseGrproups,
+                                                        );
+                                                      }
+                                                    });
+                                                  },
+                                                  bgColor: Colors.red,
+                                                  labelStyle:
+                                                      AppConstant().h3Style(),
+                                                  circular: 2,
+                                                ),
+                                              ],
+                                            ),
                                     ],
                                   ),
                                 ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                appController.commentSalses[index].single
-                                    ? WidgetText(
-                                        text:
-                                            '${appController.commentSalses[index].amountSalse} ชิ้น',
-                                        textStyle: AppConstant().h3Style(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      )
-                                    : const SizedBox(),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                const Spacer(),
-                                appController.commentSalses[index].single
-                                    ? WidgetText(
-                                        text:
-                                            '${appController.commentSalses[index].totalPrice} บาท',
-                                        textStyle: AppConstant().h3Style(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      )
-                                    : Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          WidgetText(
-                                            text:
-                                                'ขาด${appController.roomModels[appController.indexBodyMainPageView.value].amountGroup}คน\n2:30',
-                                            textStyle: AppConstant()
-                                                .h3Style(color: Colors.grey),
-                                          ),
-                                          const SizedBox(
-                                            width: 16,
-                                          ),
-                                          WidgetButton(
-                                            label: 'เข้าร่วม',
-                                            pressFunc: () {
-                                              appController
-                                                  .readSalseGroups(
-                                                      docIdCommentSalse:
-                                                          appController
-                                                                  .docIdCommentSalses[
-                                                              index])
-                                                  .then((value) async {
-                                                print(
-                                                    '##28jan salseGroups --> ${appController.salsegroups.length}');
-
-                                                var salseGrproups =
-                                                    <SalseGroupModel>[];
-                                                for (var element
-                                                    in appController
-                                                        .salsegroups) {
-                                                  salseGrproups.add(element);
-                                                }
-
-                                                print(
-                                                    '##28jan commentSalseGroup uid --> ${appController.commentSalses[index].uid}');
-
-                                                bool status = await AppService().checkGuest(
-                                                    docIdcommentSalse: appController
-                                                            .docIdCommentSalses[
-                                                        index]);
-
-                                                if ((appController
-                                                            .commentSalses[
-                                                                index]
-                                                            .uid !=
-                                                        user!.uid) &&
-                                                    (roomModel!.uidCreate !=
-                                                        user!.uid) &&
-                                                    status) {
-                                                  AppDialog(context: context)
-                                                      .salseDialog(
-                                                    roomModel: appController
-                                                            .roomModels[
-                                                        appController
-                                                            .indexBodyMainPageView
-                                                            .value],
-                                                    docIdCommentSalse: appController
-                                                            .docIdCommentSalses[
-                                                        index],
-                                                    salseGroupModels:
-                                                        salseGrproups,
-                                                    userModel: appController
-                                                        .userModels.last,
-                                                    uidLogin: user!.uid,
-                                                    docIdRoom: appController
-                                                            .docIdRooms[
-                                                        appController
-                                                            .indexBodyMainPageView
-                                                            .value],
-                                                  );
-                                                } else {
-                                                  AppDialog(context: context)
-                                                      .commentDialog(
-                                                    roomModel: appController
-                                                            .roomModels[
-                                                        appController
-                                                            .indexBodyMainPageView
-                                                            .value],
-                                                    docIdCommentSalse: appController
-                                                            .docIdCommentSalses[
-                                                        index],
-                                                    salseGroupModels:
-                                                        salseGrproups,
-                                                  );
-                                                }
-                                              });
-                                            },
-                                            bgColor: Colors.red,
-                                            labelStyle: AppConstant().h3Style(),
-                                            circular: 2,
-                                          ),
-                                        ],
-                                      ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                   ),
                   Positioned(
@@ -245,18 +277,18 @@ class _TabPriceState extends State<TabPrice> {
                     child: SizedBox(
                       width: boxConstraints.maxWidth,
                       child: Row(
-                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          WidgetIconButton(
-                            iconData: Icons.filter_1,
-                            color: Colors.grey,
-                            pressFunc: () {},
-                          ),
-                          WidgetIconButton(
-                            iconData: Icons.filter_2,
-                            color: Colors.grey,
-                            pressFunc: () {},
-                          ),
+                          // WidgetIconButton(
+                          //   iconData: Icons.filter_1,
+                          //   color: Colors.grey,
+                          //   pressFunc: () {},
+                          // ),
+                          // WidgetIconButton(
+                          //   iconData: Icons.filter_2,
+                          //   color: Colors.grey,
+                          //   pressFunc: () {},
+                          // ),
                           InkWell(
                             onTap: () {
                               if (user!.uid != roomModel!.uidCreate) {
@@ -264,7 +296,7 @@ class _TabPriceState extends State<TabPrice> {
                                   roomModel: roomModel!,
                                   single: true,
                                   boxConstraints: boxConstraints,
-                                  docIdRoom: widget.docIdRoom,
+                                  docIdRoom: widget.docIdRoom, context: context,
                                 );
                               }
                             },
@@ -296,7 +328,7 @@ class _TabPriceState extends State<TabPrice> {
                                     roomModel: roomModel!,
                                     single: false,
                                     boxConstraints: boxConstraints,
-                                    docIdRoom: widget.docIdRoom);
+                                    docIdRoom: widget.docIdRoom, context: context);
                               }
                             },
                             child: Container(

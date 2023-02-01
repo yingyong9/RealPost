@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +23,7 @@ class AppBottomSheet {
     required RoomModel roomModel,
     required bool single,
     required BoxConstraints boxConstraints,
-    required String docIdRoom,
+    required String docIdRoom,required BuildContext context,
   }) {
     AppController appController = Get.put(AppController());
     print('##25jan amountSalse --> ${appController.amountSalse}');
@@ -92,7 +94,7 @@ class AppBottomSheet {
                           label: 'ซื้อ',
                           pressFunc: () async {
                             processAddNewCommentSalse(
-                                roomModel, appController, docIdRoom, single);
+                                roomModel, appController, docIdRoom, single, context);
                           },
                           bgColor: Colors.red.shade700,
                         )
@@ -100,7 +102,7 @@ class AppBottomSheet {
                           label: 'สร้างกลุ่ม',
                           pressFunc: () {
                             processAddNewCommentSalse(
-                                roomModel, appController, docIdRoom, single);
+                                roomModel, appController, docIdRoom, single, context);
                           },
                           bgColor: Colors.red.shade700,
                         ),
@@ -115,7 +117,7 @@ class AppBottomSheet {
   }
 
   void processAddNewCommentSalse(RoomModel roomModel,
-      AppController appController, String docIdRoom, bool single) {
+      AppController appController, String docIdRoom, bool single, BuildContext context) {
     double? priceDou;
 
     if (single) {
@@ -141,10 +143,10 @@ class AppBottomSheet {
 
     AppService()
         .processInsertCommentSalse(
-            commentSalseModel: commentSalseModel, docIdRoom: docIdRoom)
+            commentSalseModel: commentSalseModel, docIdRoom: docIdRoom, context: context)
         .then((value) {
       appController.amountSalse.value = 1;
-      Get.back();
+      // Get.back();
     });
   }
 

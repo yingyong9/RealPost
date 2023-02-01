@@ -33,6 +33,28 @@ class AppDialog {
     required this.context,
   });
 
+  void addressDialog() {
+    print('##28jan addressDialog Work');
+    Get.dialog(AlertDialog(
+      title: WidgetText(
+        text: 'ที่จัดส่ง',
+        textStyle: AppConstant().h2Style(color: Colors.black),
+      ),
+      content: Container(
+        height: 200,
+        child: Text('data'),
+      ),
+      actions: [
+        WidgetTextButton(
+          text: 'Save',
+          pressFunc: () {
+            Get.back();
+          },
+        )
+      ],
+    ));
+  }
+
   void salseDialog({
     required RoomModel roomModel,
     required String docIdCommentSalse,
@@ -67,7 +89,8 @@ class AppDialog {
               print('##28jan docIdCommentSalse ---> $docIdCommentSalse');
               Map<String, dynamic> map = userModel.toMap();
               map['uid'] = uidLogin;
-              SalseGroupModel salseGroupModel = SalseGroupModel(map: map, timestamp: Timestamp.fromDate(DateTime.now()));
+              SalseGroupModel salseGroupModel = SalseGroupModel(
+                  map: map, timestamp: Timestamp.fromDate(DateTime.now()));
 
               print('##28jan map ---> $map');
               print('##28jan docIdRoom ===> $docIdRoom');

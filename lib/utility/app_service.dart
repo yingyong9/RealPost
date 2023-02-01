@@ -52,7 +52,8 @@ class AppService {
 
   Future<void> processInsertCommentSalse(
       {required CommentSalseModel commentSalseModel,
-      required String docIdRoom}) async {
+      required String docIdRoom,
+      required BuildContext context}) async {
     DocumentReference documentReference = FirebaseFirestore.instance
         .collection('room')
         .doc(docIdRoom)
@@ -66,6 +67,9 @@ class AppService {
       if (commentSalseModel.single) {
         //ซื่อคนเดียว
         print('##28jan single');
+        Get.back();
+
+        AppDialog(context: context).addressDialog();
       } else {
         //ซืั้อกลุ่ม
         print('##28jan buy Group');
@@ -86,6 +90,7 @@ class AppService {
             .doc()
             .set(salseGroupModel.toMap())
             .then((value) {
+          Get.back();
           print('##28jan insert salsegropu success');
         });
       }
