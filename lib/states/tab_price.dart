@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
+// ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print, use_build_context_synchronously
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -71,6 +71,7 @@ class _TabPriceState extends State<TabPrice> {
                               SizedBox(
                                 height: boxConstraints.maxHeight - 60,
                                 child: ListView.builder(
+                                  reverse: true,
                                   itemCount: appController.commentSalses.length,
                                   itemBuilder: (context, index) => Row(
                                     children: [
@@ -279,16 +280,6 @@ class _TabPriceState extends State<TabPrice> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // WidgetIconButton(
-                          //   iconData: Icons.filter_1,
-                          //   color: Colors.grey,
-                          //   pressFunc: () {},
-                          // ),
-                          // WidgetIconButton(
-                          //   iconData: Icons.filter_2,
-                          //   color: Colors.grey,
-                          //   pressFunc: () {},
-                          // ),
                           InkWell(
                             onTap: () {
                               if (user!.uid != roomModel!.uidCreate) {
@@ -296,7 +287,8 @@ class _TabPriceState extends State<TabPrice> {
                                   roomModel: roomModel!,
                                   single: true,
                                   boxConstraints: boxConstraints,
-                                  docIdRoom: widget.docIdRoom, context: context,
+                                  docIdRoom: widget.docIdRoom,
+                                  context: context,
                                 );
                               }
                             },
@@ -328,7 +320,8 @@ class _TabPriceState extends State<TabPrice> {
                                     roomModel: roomModel!,
                                     single: false,
                                     boxConstraints: boxConstraints,
-                                    docIdRoom: widget.docIdRoom, context: context);
+                                    docIdRoom: widget.docIdRoom,
+                                    context: context);
                               }
                             },
                             child: Container(

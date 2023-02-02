@@ -79,7 +79,8 @@ class AppController extends GetxController {
         .doc(docIdRooms[indexBodyMainPageView.value])
         .collection('commentsalse')
         .doc(docIdCommentSalse)
-        .collection('salsegroup').orderBy('timestamp')
+        .collection('salsegroup')
+        .orderBy('timestamp')
         .get()
         .then((value) {
       for (var element in value.docs) {
@@ -96,6 +97,7 @@ class AppController extends GetxController {
         .collection('room')
         .doc(docIdRooms[indexBodyMainPageView.value])
         .collection('commentsalse')
+        .orderBy('timeComment', descending: true)
         .snapshots()
         .listen((event) {
       if (event.docs.isNotEmpty) {

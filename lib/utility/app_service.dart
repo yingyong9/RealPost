@@ -66,10 +66,10 @@ class AppService {
 
       if (commentSalseModel.single) {
         //ซื่อคนเดียว
-        print('##28jan single');
+        print('##28jan single Work');
         Get.back();
 
-        AppDialog(context: context).addressDialog();
+        // AppDialog(context: context).addressDialog();
       } else {
         //ซืั้อกลุ่ม
         print('##28jan buy Group');
