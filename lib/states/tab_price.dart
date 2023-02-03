@@ -7,6 +7,7 @@ import 'package:realpost/bodys/body_single_price.dart';
 import 'package:realpost/bodys/body_total_price.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/salse_group_model.dart';
+import 'package:realpost/states/private_chat.dart';
 import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
@@ -77,34 +78,52 @@ class _TabPriceState extends State<TabPrice> {
                                     children: [
                                       InkWell(
                                         onTap: () {
-                                          appController
-                                              .readSalseGroups(
-                                                  docIdCommentSalse: appController
-                                                          .docIdCommentSalses[
-                                                      index])
-                                              .then((value) {
-                                            print(
-                                                '##28jan salseGroups --> ${appController.salsegroups.length}');
+                                          String uidTap = appController
+                                              .commentSalses[index].uid;
+                                          print('##28jan uidTap ---> $uidTap');
 
-                                            var salseGrproups =
-                                                <SalseGroupModel>[];
-                                            for (var element
-                                                in appController.salsegroups) {
-                                              salseGrproups.add(element);
-                                            }
+                                          String uidWhoSalse = appController
+                                              .roomModels[appController
+                                                  .indexBodyMainPageView.value]
+                                              .uidCreate;
 
-                                            AppDialog(context: context)
-                                                .commentDialog(
-                                              roomModel:
-                                                  appController.roomModels[
-                                                      appController
-                                                          .indexBodyMainPageView
-                                                          .value],
-                                              docIdCommentSalse: appController
-                                                  .docIdCommentSalses[index],
-                                              salseGroupModels: salseGrproups,
-                                            );
-                                          });
+                                          print(
+                                              '##28jan uidWhoSalse --> $uidWhoSalse');
+
+                                          if (user!.uid == uidWhoSalse) {
+                                            print('##28jan Point Sent Chat');
+                                            Get.to(
+                                                PrivateChat(uidFriend: uidTap));
+                                          }
+
+                                          // appController
+                                          //     .readSalseGroups(
+                                          //         docIdCommentSalse: appController
+                                          //                 .docIdCommentSalses[
+                                          //             index])
+                                          //     .then((value) {
+                                          //   print(
+                                          //       '##28jan salseGroups --> ${appController.salsegroups.length}');
+
+                                          //   var salseGrproups =
+                                          //       <SalseGroupModel>[];
+                                          //   for (var element
+                                          //       in appController.salsegroups) {
+                                          //     salseGrproups.add(element);
+                                          //   }
+
+                                          //   AppDialog(context: context)
+                                          //       .commentDialog(
+                                          //     roomModel:
+                                          //         appController.roomModels[
+                                          //             appController
+                                          //                 .indexBodyMainPageView
+                                          //                 .value],
+                                          //     docIdCommentSalse: appController
+                                          //         .docIdCommentSalses[index],
+                                          //     salseGroupModels: salseGrproups,
+                                          //   );
+                                          // });
                                         },
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
@@ -313,39 +332,39 @@ class _TabPriceState extends State<TabPrice> {
                               ),
                             ),
                           ),
-                          InkWell(
-                            onTap: () {
-                              if (user!.uid != roomModel!.uidCreate) {
-                                AppBottomSheet().salseBottomSheet(
-                                    roomModel: roomModel!,
-                                    single: false,
-                                    boxConstraints: boxConstraints,
-                                    docIdRoom: widget.docIdRoom,
-                                    context: context);
-                              }
-                            },
-                            child: Container(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 3),
-                              decoration:
-                                  BoxDecoration(color: Colors.red.shade900),
-                              child: Column(
-                                children: [
-                                  WidgetText(
-                                    text: '${roomModel!.totalPrice!} THB',
-                                    textStyle: AppConstant().h3Style(
-                                        fontWeight: FontWeight.bold, size: 18),
-                                  ),
-                                  WidgetText(
-                                    text:
-                                        '${labels[1]} ${roomModel!.amountGroup} คน',
-                                    textStyle: AppConstant().h3Style(
-                                        fontWeight: FontWeight.bold, size: 18),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                          // InkWell(
+                          //   onTap: () {
+                          //     if (user!.uid != roomModel!.uidCreate) {
+                          //       AppBottomSheet().salseBottomSheet(
+                          //           roomModel: roomModel!,
+                          //           single: false,
+                          //           boxConstraints: boxConstraints,
+                          //           docIdRoom: widget.docIdRoom,
+                          //           context: context);
+                          //     }
+                          //   },
+                          //   child: Container(
+                          //     padding:
+                          //         const EdgeInsets.symmetric(horizontal: 3),
+                          //     decoration:
+                          //         BoxDecoration(color: Colors.red.shade900),
+                          //     child: Column(
+                          //       children: [
+                          //         WidgetText(
+                          //           text: '${roomModel!.totalPrice!} THB',
+                          //           textStyle: AppConstant().h3Style(
+                          //               fontWeight: FontWeight.bold, size: 18),
+                          //         ),
+                          //         WidgetText(
+                          //           text:
+                          //               '${labels[1]} ${roomModel!.amountGroup} คน',
+                          //           textStyle: AppConstant().h3Style(
+                          //               fontWeight: FontWeight.bold, size: 18),
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),

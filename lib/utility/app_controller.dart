@@ -196,7 +196,7 @@ class AppController extends GetxController {
         for (var element in value.docs) {
           PrivateChatModel privateChatModel =
               PrivateChatModel.fromMap(element.data());
-          print('##17dec privateChatModel ---> ${privateChatModel.toMap()}');
+          print('##28jan privateChatModel ---> ${privateChatModel.toMap()}');
 
           if ((privateChatModel.uidchats.contains(uidLogin)) &&
               (privateChatModel.uidchats.contains(uidFriend))) {

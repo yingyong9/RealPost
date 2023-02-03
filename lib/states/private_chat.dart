@@ -11,6 +11,7 @@ import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_content_form.dart';
+import 'package:realpost/widgets/widget_content_form_private_chat.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
@@ -57,8 +58,12 @@ class _PrivateChatState extends State<PrivateChat> {
             init: AppController(),
             builder: (AppController appController) {
               print(
-                  ' ##17dec docIdPrivateChats ---> ${appController.docIdPrivateChats}');
-              print('##17dec load ---> ${appController.load}');
+                  ' ##28jan docIdPrivateChats ---> ${appController.docIdPrivateChats.length}');
+              if (appController.docIdPrivateChats.isNotEmpty) {
+                print(
+                    '##28jan docIdPrivateChats ---> ${appController.docIdPrivateChats}');
+              }
+
               return GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () =>
@@ -69,7 +74,7 @@ class _PrivateChatState extends State<PrivateChat> {
                   child: Stack(
                     children: [
                       contentChat(appController, boxConstraints),
-                      WidgetContentForm(
+                      WidgetContentFormPrivateChat(
                         boxConstraints: boxConstraints,
                         appController: appController,
                         textEditingController: textEditingController,
@@ -86,33 +91,31 @@ class _PrivateChatState extends State<PrivateChat> {
 
   Widget contentChat(
       AppController appController, BoxConstraints boxConstraints) {
-    return appController.load.value
-        ? const WidgetProgress()
-        : appController.docIdPrivateChats.isEmpty
-            ? const SizedBox()
-            : SizedBox(
-                width: boxConstraints.maxWidth,
-                height: boxConstraints.maxHeight - 100,
-                child: ListView.builder(
-                  reverse: true,
-                  padding: const EdgeInsets.only(left: 16, right: 16),
-                  itemCount: appController.privateChatModels.length,
-                  itemBuilder: (context, index) => Container(
-                    margin: const EdgeInsets.only(top: 16),
-                    child: Row(
-                      children: [
-                        contentLeft(appController, index,
-                            boxConstraints: boxConstraints),
-                        const SizedBox(
-                          width: 16,
-                        ),
-                        contentRight(appController, index,
-                            boxConstraints: boxConstraints),
-                      ],
+    return appController.docIdPrivateChats.isEmpty
+        ? const SizedBox()
+        : SizedBox(
+            width: boxConstraints.maxWidth,
+            height: boxConstraints.maxHeight - 100,
+            child: ListView.builder(
+              reverse: true,
+              padding: const EdgeInsets.only(left: 16, right: 16),
+              itemCount: appController.privateChatModels.length,
+              itemBuilder: (context, index) => Container(
+                margin: const EdgeInsets.only(top: 16),
+                child: Row(
+                  children: [
+                    contentLeft(appController, index,
+                        boxConstraints: boxConstraints),
+                    const SizedBox(
+                      width: 16,
                     ),
-                  ),
+                    contentRight(appController, index,
+                        boxConstraints: boxConstraints),
+                  ],
                 ),
-              );
+              ),
+            ),
+          );
   }
 
   RenderObjectWidget contentRight(AppController appController, int index,
@@ -222,8 +225,9 @@ class _PrivateChatState extends State<PrivateChat> {
                     urlImage: appController.privateChatModels[index].albums[0],
                     width: boxConstraints.maxWidth * 0.4,
                     tapFunc: () {
-                      Get.to(DisplayAlbum(chatModel: appController.privateChatModels[index],
-                         ));
+                      Get.to(DisplayAlbum(
+                        chatModel: appController.privateChatModels[index],
+                      ));
                     },
                   )
                 : const SizedBox(),

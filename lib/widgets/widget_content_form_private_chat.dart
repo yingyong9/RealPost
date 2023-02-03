@@ -15,8 +15,8 @@ import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 
-class WidgetContentForm extends StatefulWidget {
-  const WidgetContentForm({
+class WidgetContentFormPrivateChat extends StatefulWidget {
+  const WidgetContentFormPrivateChat({
     Key? key,
     required this.boxConstraints,
     required this.appController,
@@ -34,10 +34,12 @@ class WidgetContentForm extends StatefulWidget {
   final RoomModel? roomModel;
 
   @override
-  State<WidgetContentForm> createState() => _WidgetContentFormState();
+  State<WidgetContentFormPrivateChat> createState() =>
+      _WidgetContentFormPrivateChatState();
 }
 
-class _WidgetContentFormState extends State<WidgetContentForm> {
+class _WidgetContentFormPrivateChatState
+    extends State<WidgetContentFormPrivateChat> {
   var user = FirebaseAuth.instance.currentUser;
 
   @override
@@ -66,75 +68,66 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
           SizedBox(
             child: Row(
               children: [
-                user!.uid == widget.roomModel!.uidCreate
-                    ? Row(
-                        children: [
-                          WidgetIconButton(
-                            iconData: Icons.add_a_photo,
-                            pressFunc: () async {
-                              if (widget.appController.cameraFiles.isNotEmpty) {
-                                widget.appController.cameraFiles.clear();
-                              }
+                Row(
+                  children: [
+                    WidgetIconButton(
+                      iconData: Icons.add_a_photo,
+                      pressFunc: () async {
+                        if (widget.appController.cameraFiles.isNotEmpty) {
+                          widget.appController.cameraFiles.clear();
+                        }
 
-                              var file = await AppService()
-                                  .processTakePhoto(source: ImageSource.camera);
+                        var file = await AppService()
+                            .processTakePhoto(source: ImageSource.camera);
 
-                              if (file != null) {
-                                widget.appController.cameraFiles.add(file);
+                        if (file != null) {
+                          widget.appController.cameraFiles.add(file);
 
-                                String? urlCamera = await AppService()
-                                    .processUploadPhoto(
-                                        file: file, path: 'photopost');
+                          String? urlCamera = await AppService()
+                              .processUploadPhoto(
+                                  file: file, path: 'photopost');
 
-                                Map<String, dynamic> map = widget
-                                    .appController
-                                    .roomModels[widget.appController
-                                        .indexBodyMainPageView.value]
-                                    .toMap();
+                          Map<String, dynamic> map = widget
+                              .appController
+                              .roomModels[widget
+                                  .appController.indexBodyMainPageView.value]
+                              .toMap();
 
-                                List<String> urlRooms = <String>[];
-                                urlRooms.add(urlCamera!);
+                          List<String> urlRooms = <String>[];
+                          urlRooms.add(urlCamera!);
 
-                                map['urlRooms'] = urlRooms;
+                          map['urlRooms'] = urlRooms;
 
-                                await AppService().processUpdateRoom(
-                                    docIdRoom: widget.docId!, data: map);
-                              } // if
-                            },
-                          ),
-                          WidgetIconButton(
-                            iconData: Icons.add_photo_alternate,
-                            pressFunc: () {
-                              AppService()
-                                  .processChooseMultiImage()
-                                  .then((value) {
-                                AppService()
-                                    .processUploadMultiPhoto()
-                                    .then((value) {
-                                  var urlImages = value;
-                                  List<String> urlRooms = <String>[];
-                                  urlRooms.addAll(urlImages);
+                          await AppService().processUpdateRoom(
+                              docIdRoom: widget.docId!, data: map);
+                        } // if
+                      },
+                    ),
+                    WidgetIconButton(
+                      iconData: Icons.add_photo_alternate,
+                      pressFunc: () {
+                        AppService().processChooseMultiImage().then((value) {
+                          AppService().processUploadMultiPhoto().then((value) {
+                            var urlImages = value;
+                            List<String> urlRooms = <String>[];
+                            urlRooms.addAll(urlImages);
 
-                                  Map<String, dynamic> map =
-                                      widget.roomModel!.toMap();
-                                  map['urlRooms'] = urlRooms;
+                            Map<String, dynamic> map =
+                                widget.roomModel!.toMap();
+                            map['urlRooms'] = urlRooms;
 
-                                  AppService()
-                                      .processUpdateRoom(
-                                          docIdRoom: widget.docId!, data: map)
-                                      .then((value) {
-                                    print('##6jan update Room Success');
-                                  });
-                                });
-                              });
-                            },
-                          ),
-                        ],
-                      )
-                    : WidgetIconButton(
-                        iconData: Icons.chat,
-                        pressFunc: () {},
-                      ),
+                            AppService()
+                                .processUpdateRoom(
+                                    docIdRoom: widget.docId!, data: map)
+                                .then((value) {
+                              print('##6jan update Room Success');
+                            });
+                          });
+                        });
+                      },
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
