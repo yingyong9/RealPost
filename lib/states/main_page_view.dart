@@ -120,20 +120,23 @@ class _MainPageViewState extends State<MainPageView> {
                           scrollDirection: Axis.vertical,
                           onPageChanged: (value) {
 
-                            
                             appController.indexBodyMainPageView.value = value;
+
                             appController.readAllChat(
                                 docIdRoom: appController.docIdRooms[
                                     appController.indexBodyMainPageView.value]);
+
                             if (appController.docIdRoomChooses.isNotEmpty) {
                               appController.docIdRoomChooses.clear();
                             }
+
                             appController.docIdRoomChooses.add(
                                 appController.docIdRooms[
                                     appController.indexBodyMainPageView.value]);
-                                    appController.processReadCommentSalses();
-                            appController.amountSalse.value = 1;
 
+                            appController.processReadCommentSalses();
+                            
+                            appController.amountSalse.value = 1;
                           },
                         ),
                       ),

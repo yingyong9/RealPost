@@ -69,6 +69,8 @@ class AppController extends GetxController {
 
   RxList salsegroups = <SalseGroupModel>[].obs;
 
+  RxBool haveUserLoginInComment = false.obs;
+
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
       salsegroups.clear();
@@ -93,6 +95,7 @@ class AppController extends GetxController {
   Future<void> processReadCommentSalses() async {
     print(
         '##26jan processReadCommentSalse Work at indexBody --> ${indexBodyMainPageView.value}');
+    var user = FirebaseAuth.instance.currentUser;
     FirebaseFirestore.instance
         .collection('room')
         .doc(docIdRooms[indexBodyMainPageView.value])
@@ -110,6 +113,9 @@ class AppController extends GetxController {
           CommentSalseModel model = CommentSalseModel.fromMap(element.data());
           commentSalses.add(model);
           docIdCommentSalses.add(element.id);
+
+          haveUserLoginInComment.value = (user!.uid == model.uid);
+          
         }
       }
     });

@@ -4,27 +4,27 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:realpost/states/display_album.dart';
 
+import 'package:realpost/states/display_album.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
-import 'package:realpost/widgets/widget_content_form.dart';
 import 'package:realpost/widgets/widget_content_form_private_chat.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
-import 'package:realpost/widgets/widget_progress.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
 class PrivateChat extends StatefulWidget {
   const PrivateChat({
     Key? key,
     required this.uidFriend,
+    this.firstContent,
   }) : super(key: key);
 
   final String uidFriend;
+  final String? firstContent;
 
   @override
   State<PrivateChat> createState() => _PrivateChatState();
@@ -46,6 +46,11 @@ class _PrivateChatState extends State<PrivateChat> {
     // controller.load = true;
     controller.processFindDocIdPrivateChat(
         uidLogin: uidLogin!, uidFriend: uidFriend!);
+
+    if (widget.firstContent != null) {
+      String firstContent = widget.firstContent!;
+      print('##4feb fistConetent --> $firstContent');
+    }
   }
 
   @override

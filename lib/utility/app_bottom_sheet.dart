@@ -1,14 +1,14 @@
 // ignore_for_file: avoid_print
 
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/comment_salse_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/states/add_product.dart';
+import 'package:realpost/states/private_chat.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
@@ -23,7 +23,8 @@ class AppBottomSheet {
     required RoomModel roomModel,
     required bool single,
     required BoxConstraints boxConstraints,
-    required String docIdRoom,required BuildContext context,
+    required String docIdRoom,
+    required BuildContext context,
   }) {
     AppController appController = Get.put(AppController());
     print('##25jan amountSalse --> ${appController.amountSalse}');
@@ -93,16 +94,48 @@ class AppBottomSheet {
                       ? WidgetButton(
                           label: 'ซื้อ',
                           pressFunc: () async {
-                            processAddNewCommentSalse(
-                                roomModel, appController, docIdRoom, single, context);
+                            String uidFriend = roomModel.uidCreate;
+                            String contentSend =
+                                'ต้องการซื้อ ${roomModel.room} จำนวน ';
+                            Get.to(PrivateChat(
+                              uidFriend: uidFriend,
+                            ));
+
+                            ChatModel chatModel =
+                                await AppService().createChatModel();
+
+                            Map<String, dynamic> map = chatModel.toMap();
+                            map['message'] = contentSend;
+                            chatModel = ChatModel.fromMap(map);
+
+                            print(
+                                '##4feb  chatModel ---> ${chatModel.toMap()}');
+
+                            var user = FirebaseAuth.instance.currentUser;
+
+                            appController
+                                .processFindDocIdPrivateChat(
+                                    uidLogin: user!.uid, uidFriend: uidFriend)
+                                .then((value) {
+                              print(
+                                  '##4feb docIdPrivateChat ----> ${appController.docIdPrivateChats.last}');
+
+                              AppService().processInsertPrivateChat(
+                                  docIdPrivateChat:
+                                      appController.docIdPrivateChats.last,
+                                  chatModel: chatModel);
+                            });
+
+                            // processAddNewCommentSalse(
+                            //     roomModel, appController, docIdRoom, single, context);
                           },
                           bgColor: Colors.red.shade700,
                         )
                       : WidgetButton(
                           label: 'สร้างกลุ่ม',
                           pressFunc: () {
-                            processAddNewCommentSalse(
-                                roomModel, appController, docIdRoom, single, context);
+                            processAddNewCommentSalse(roomModel, appController,
+                                docIdRoom, single, context);
                           },
                           bgColor: Colors.red.shade700,
                         ),
@@ -116,8 +149,12 @@ class AppBottomSheet {
     );
   }
 
-  void processAddNewCommentSalse(RoomModel roomModel,
-      AppController appController, String docIdRoom, bool single, BuildContext context) {
+  void processAddNewCommentSalse(
+      RoomModel roomModel,
+      AppController appController,
+      String docIdRoom,
+      bool single,
+      BuildContext context) {
     double? priceDou;
 
     if (single) {
@@ -143,7 +180,9 @@ class AppBottomSheet {
 
     AppService()
         .processInsertCommentSalse(
-            commentSalseModel: commentSalseModel, docIdRoom: docIdRoom, context: context)
+            commentSalseModel: commentSalseModel,
+            docIdRoom: docIdRoom,
+            context: context)
         .then((value) {
       appController.amountSalse.value = 1;
       // Get.back();

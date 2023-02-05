@@ -29,6 +29,32 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
+  Future<void> processInsertPrivateChat(
+      {required String docIdPrivateChat, required ChatModel chatModel}) async {
+    await FirebaseFirestore.instance
+        .collection('privatechat')
+        .doc(docIdPrivateChat)
+        .collection('chat')
+        .doc()
+        .set(chatModel.toMap())
+        .then((value) {
+      print('##4feb insert Private Success');
+    });
+  }
+
+  bool checkUserInCommentSalse() {
+    bool result = true; //true => user ที่ยังไม่ได้เข้าร่วมซื้อ
+    var user = FirebaseAuth.instance.currentUser;
+    if (appController.commentSalses.isNotEmpty) {
+      for (var element in appController.commentSalses) {
+        if (user!.uid == element.uid) {
+          result = false;
+        }
+      }
+    }
+    return result;
+  }
+
   Future<bool> checkGuest({required String docIdcommentSalse}) async {
     bool status = true;
     var user = FirebaseAuth.instance.currentUser;
