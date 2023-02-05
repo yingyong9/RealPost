@@ -237,7 +237,8 @@ class AppService {
     });
   }
 
-  Future<ChatModel> createChatModel({String? urlBigImage}) async {
+  Future<ChatModel> createChatModel(
+      {String? urlBigImage, String? urlRealPost}) async {
     AppController appController = Get.put(AppController());
     ChatModel chatModel;
 
@@ -246,17 +247,19 @@ class AppService {
       chatModel = ChatModel(
           message: appController.messageChats.isEmpty
               ? ''
-              : appController.messageChats[0],
+              : appController.messageChats.last,
           timestamp: Timestamp.fromDate(DateTime.now()),
           uidChat: FirebaseAuth.instance.currentUser!.uid,
-          urlRealPost: appController.urlRealPostChooses.isEmpty
-              ? ''
-              : appController.urlRealPostChooses[0],
-          disPlayName: appController.userModels[0].displayName,
-          urlAvatar: appController.userModels[0].urlAvatar!.isEmpty
-              ? appController.urlAvatarChooses[0]
-              : appController.userModels[0].urlAvatar!,
-          article: appController.articleControllers[0].text,
+          urlRealPost: urlRealPost != null
+              ? urlRealPost
+              : appController.urlRealPostChooses.isNotEmpty
+                  ? appController.urlAvatarChooses.last
+                  : '',
+          disPlayName: appController.userModels.last.displayName,
+          urlAvatar: appController.userModels.last.urlAvatar!.isEmpty
+              ? appController.urlAvatarChooses.last
+              : appController.userModels.last.urlAvatar!,
+          article: appController.articleControllers.last.text,
           link: appController.links.isEmpty ? '' : appController.links.last,
           geoPoint: appController.shareLocation.value
               ? GeoPoint(appController.positions[0].latitude,

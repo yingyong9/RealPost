@@ -94,15 +94,17 @@ class AppBottomSheet {
                       ? WidgetButton(
                           label: 'ซื้อ',
                           pressFunc: () async {
+                            Get.back();
                             String uidFriend = roomModel.uidCreate;
                             String contentSend =
-                                'ต้องการซื้อ ${roomModel.room} จำนวน ';
+                                'ต้องการซื้อ ${roomModel.room} จำนวน ${appController.amountSalse} ช้ิน';
                             Get.to(PrivateChat(
                               uidFriend: uidFriend,
                             ));
 
-                            ChatModel chatModel =
-                                await AppService().createChatModel();
+                            ChatModel chatModel = await AppService()
+                                .createChatModel(
+                                    urlRealPost: roomModel.urlRooms[0]);
 
                             Map<String, dynamic> map = chatModel.toMap();
                             map['message'] = contentSend;

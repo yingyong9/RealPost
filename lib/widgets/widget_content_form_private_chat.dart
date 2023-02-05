@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:realpost/models/chat_model.dart';
 
+import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/states/add_product.dart';
 import 'package:realpost/utility/app_constant.dart';
@@ -24,6 +24,7 @@ class WidgetContentFormPrivateChat extends StatefulWidget {
     this.collection,
     this.docId,
     this.roomModel,
+    this.docIdPrivateChat,
   }) : super(key: key);
 
   final BoxConstraints boxConstraints;
@@ -32,6 +33,7 @@ class WidgetContentFormPrivateChat extends StatefulWidget {
   final String? collection;
   final String? docId;
   final RoomModel? roomModel;
+  final String? docIdPrivateChat;
 
   @override
   State<WidgetContentFormPrivateChat> createState() =>
@@ -131,22 +133,23 @@ class _WidgetContentFormPrivateChatState
               ],
             ),
           ),
-          InkWell(
-            onTap: () {
-              Get.to(const AddProduct());
-            },
-            child: const WidgetImage(
-              path: 'images/addgreen.png',
-              size: 24,
-            ),
-          ),
+          // InkWell(
+          //   onTap: () {
+          //     Get.to(const AddProduct());
+          //   },
+          //   child: const WidgetImage(
+          //     path: 'images/addgreen.png',
+          //     size: 24,
+          //   ),
+          // ),
           WidgetIconButton(
             iconData: Icons.send,
             pressFunc: () async {
               if (widget.textEditingController.text.isEmpty) {
                 print('No Text form');
 
-                if (widget.appController.userModels[0].urlAvatar!.isNotEmpty) {
+                if (widget
+                    .appController.userModels.last.urlAvatar!.isNotEmpty) {
                   // การทำงานครั้งที่สอง
                   AppDialog(context: context).realPostBottonSheet(
                       collection: widget.collection, docIdRoom: widget.docId!);
@@ -172,11 +175,16 @@ class _WidgetContentFormPrivateChatState
                   AppDialog(context: context).avatarBottonSheet();
                 } else {
                   ChatModel chatModel = await AppService().createChatModel();
-                  print('##9jan chatModel ---> ${chatModel.toMap()}');
-                  print('##9jan docIdRoom ---> ${widget.docId}');
+                  print('##5feb chatModel ---> ${chatModel.toMap()}');
+                  print(
+                      '##5feb docIdPrivateChat ---> ${widget.docIdPrivateChat}');
 
-                  await AppService().processInsertChat(
-                      chatModel: chatModel, docId: widget.docId!);
+                  await AppService().processInsertPrivateChat(
+                      docIdPrivateChat: widget.docIdPrivateChat!,
+                      chatModel: chatModel);
+
+                  // await AppService().processInsertChat(
+                  //     chatModel: chatModel, docId: widget.docId!);
 
                   // AppDialog(context: context).realPostBottonSheet(
                   //     collection: widget.collection,

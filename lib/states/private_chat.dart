@@ -66,7 +66,7 @@ class _PrivateChatState extends State<PrivateChat> {
                   ' ##28jan docIdPrivateChats ---> ${appController.docIdPrivateChats.length}');
               if (appController.docIdPrivateChats.isNotEmpty) {
                 print(
-                    '##28jan docIdPrivateChats ---> ${appController.docIdPrivateChats}');
+                    '##5feb docIdPrivateChats ---> ${appController.docIdPrivateChats}');
               }
 
               return GestureDetector(
@@ -84,6 +84,7 @@ class _PrivateChatState extends State<PrivateChat> {
                         appController: appController,
                         textEditingController: textEditingController,
                         collection: 'privatechat',
+                        docIdPrivateChat: appController.docIdPrivateChats.last,
                       ),
                     ],
                   ),
