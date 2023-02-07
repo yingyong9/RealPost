@@ -38,8 +38,8 @@ class _TabPriceState extends State<TabPrice> {
   var bodys = <Widget>[const BodySinglePrice(), const BodyTotalPrice()];
 
   var labels = <String>[
-    'เข้าร่วมซื้อ',
-    'ชวนเพื่อนซื้อ',
+    'เข้าร่วมรับส่วนลด',
+    'ชวนเพื่อนเข้าร่วม',
   ];
 
   var user = FirebaseAuth.instance.currentUser;
@@ -125,7 +125,7 @@ class _TabPriceState extends State<TabPrice> {
                                       const SizedBox(
                                         width: 8,
                                       ),
-                                      CalculatePriceAndTime(),
+                                      CalculatePriceAndTime(roomModel: appController.roomModels[appController.indexBodyMainPageView.value],),
                                       const Spacer(),
                                       Text('End'),
                                     ],

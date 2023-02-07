@@ -7,6 +7,8 @@ import 'package:realpost/models/chat_model.dart';
 
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/states/add_product.dart';
+import 'package:realpost/states/list_friend.dart';
+import 'package:realpost/states/private_chat.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
@@ -131,21 +133,26 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
                           ),
                         ],
                       )
-                    : WidgetIconButton(
-                        iconData: Icons.chat,
-                        pressFunc: () {},
+                    : WidgetImage(
+                        path: 'images/icon2.png',
+                        size: 24,
+                        tapFunc: () {
+                          print('##6feb You tap');
+                          Get.to(PrivateChat(
+                              uidFriend: widget.roomModel!.uidCreate));
+                        },
                       ),
               ],
             ),
           ),
-          InkWell(
-            onTap: () {
-              Get.to(const AddProduct());
+          WidgetImage(
+            path: 'images/addgreen.png',
+            size: 24,
+            tapFunc: () {
+              Get.to(const AddProduct())!.then((value) {
+                AppService().initialSetup(context: context);
+              });
             },
-            child: const WidgetImage(
-              path: 'images/addgreen.png',
-              size: 24,
-            ),
           ),
           WidgetIconButton(
             iconData: Icons.send,

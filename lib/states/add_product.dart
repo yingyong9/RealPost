@@ -67,7 +67,7 @@ class _AddProductState extends State<AddProduct> {
                             contentAddForm(
                                 appController: appController,
                                 boxConstraints: boxConstraints,
-                                title: 'ราคาซื้อคนเดียว',
+                                title: 'ราคาขาย',subHead: 'ราคาตั้งก่อนลด',
                                 contentWidget: WidgetForm(
                                   width: boxConstraints.maxWidth * 0.5,
                                   textInputType: TextInputType.number,
@@ -79,7 +79,7 @@ class _AddProductState extends State<AddProduct> {
                             contentAddForm(
                                 appController: appController,
                                 boxConstraints: boxConstraints,
-                                title: 'ราคารวมกันซื้อ',
+                                title: 'ส่วนลด',subHead: 'ต่อผู้เข้าร่วมเข้าร่วม 5 คน',
                                 contentWidget: WidgetForm(
                                   width: boxConstraints.maxWidth * 0.5,
                                   textInputType: TextInputType.number,
@@ -88,18 +88,7 @@ class _AddProductState extends State<AddProduct> {
                                     totalPrice = p0.trim();
                                   },
                                 )),
-                            contentAddForm(
-                                appController: appController,
-                                boxConstraints: boxConstraints,
-                                title: 'จำนวนคน/กลุ่ม',
-                                contentWidget: WidgetForm(
-                                  width: boxConstraints.maxWidth * 0.5,
-                                  textInputType: TextInputType.number,
-                                  textAlign: TextAlign.end,
-                                  changeFunc: (p0) {
-                                    amountGroup = p0.trim();
-                                  },
-                                )),
+                          
                             contentAddForm(
                                 appController: appController,
                                 boxConstraints: boxConstraints,
@@ -146,17 +135,13 @@ class _AddProductState extends State<AddProduct> {
                                         message: 'กรุณาเลือกหมวดหมู่');
                                   } else if (singlePrice?.isEmpty ?? true) {
                                     AppSnackBar().normalSnackBar(
-                                        title: 'ราคาซื้อคนเดียว ?',
+                                        title: 'ราคาขาย ?',
                                         message: 'กรุณากรอก ราคา');
                                   } else if (totalPrice?.isEmpty ?? true) {
                                     AppSnackBar().normalSnackBar(
-                                        title: 'ราคารวมกันซื้อ ?',
+                                        title: 'ส่วนลด ?',
                                         message: 'กรุณากรอก ราคา');
-                                  } else if (amountGroup?.isEmpty ?? true) {
-                                    AppSnackBar().normalSnackBar(
-                                        title: 'จำนวนคน/กลุ่ม ?',
-                                        message: 'กรุณากรอก จำนวนคน');
-                                  } else {
+                                  } else  {
                                     //ขายของ
                                     var urlRooms = await AppService()
                                         .processUploadMultiPhoto(
@@ -186,7 +171,8 @@ class _AddProductState extends State<AddProduct> {
                                                 .chooseTimeGroups.last);
 
                                     print(
-                                        '##19jan ขายของ roomModel --> ${roomModel.toMap()}');
+                                        '##6feb ขายของ roomModel --> ${roomModel.toMap()}');
+
                                     await AppService()
                                         .processInsertRoom(roomModel: roomModel)
                                         .then((value) {
@@ -251,12 +237,14 @@ class _AddProductState extends State<AddProduct> {
       {required AppController appController,
       required BoxConstraints boxConstraints,
       required String title,
-      required Widget contentWidget}) {
+      required Widget contentWidget,
+      String? subHead}) {
     return appController.safseProduct.value
         ? WidgetContenBoxWhiteRow(
             head: title,
             width: boxConstraints.maxWidth,
             contentWidget: contentWidget,
+            subHead: subHead,
           )
         : const SizedBox();
   }

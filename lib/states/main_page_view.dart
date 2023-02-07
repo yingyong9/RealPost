@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:get/get.dart';
 import 'package:realpost/models/room_model.dart';
+import 'package:realpost/states/private_chat.dart';
 import 'package:realpost/states/tab_price.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
@@ -119,7 +120,6 @@ class _MainPageViewState extends State<MainPageView> {
                                   appController.indexBodyMainPageView.value),
                           scrollDirection: Axis.vertical,
                           onPageChanged: (value) {
-
                             appController.indexBodyMainPageView.value = value;
 
                             appController.readAllChat(
@@ -135,7 +135,7 @@ class _MainPageViewState extends State<MainPageView> {
                                     appController.indexBodyMainPageView.value]);
 
                             appController.processReadCommentSalses();
-                            
+
                             appController.amountSalse.value = 1;
                           },
                         ),
@@ -202,19 +202,36 @@ class _MainPageViewState extends State<MainPageView> {
             height: boxConstraints.maxHeight * 0.15,
             reverse: true),
         displayOwnerRoom(boxConstraints, appController),
-        iconShare()
+        chatPrivateImage(appController: appController),
+        Positioned(right: 16,top: 100,
+          child: WidgetText(
+            text: 'ราคา ${appController.roomModels[appController.indexBodyMainPageView.value].singlePrice!} thb'
+                ,
+            textStyle: AppConstant().h2Style(color: Colors.white),
+          ),
+        )
       ],
     );
   }
 
-  Positioned iconShare() {
-    return Positioned(
-      right: 0,
-      child: WidgetIconButton(
-        iconData: Icons.share,
-        pressFunc: () {},
-      ),
-    );
+  Widget chatPrivateImage({required AppController appController}) {
+    return user!.uid ==
+            appController
+                .roomModels[appController.indexBodyMainPageView.value].uidCreate
+        ? const SizedBox()
+        : Positioned(
+            right: 0,
+            child: WidgetImage(
+              path: 'images/icon2.png',
+              size: 48,
+              tapFunc: () {
+                Get.to(PrivateChat(
+                    uidFriend: appController
+                        .roomModels[appController.indexBodyMainPageView.value]
+                        .uidCreate));
+              },
+            ),
+          );
   }
 
   Positioned displayListMessage(

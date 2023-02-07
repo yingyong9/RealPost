@@ -10,11 +10,13 @@ class WidgetContenBoxWhiteRow extends StatelessWidget {
     required this.head,
     required this.width,
     required this.contentWidget,
+    this.subHead,
   }) : super(key: key);
 
   final String head;
   final double width;
   final Widget contentWidget;
+  final String? subHead;
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +30,19 @@ class WidgetContenBoxWhiteRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         // mainAxisSize: MainAxisSize.min,
         children: [
-          WidgetText(
-            text: head,
-            textStyle: AppConstant().h2Style(color: Colors.black, size: 16),
+          Column(
+            children: [
+              WidgetText(
+                text: head,
+                textStyle: AppConstant().h2Style(color: Colors.black, size: 16),
+              ),
+              subHead == null
+                  ? const SizedBox()
+                  : WidgetText(
+                      text: subHead!,
+                      textStyle: AppConstant().h3Style(color: Colors.grey),
+                    ),
+            ],
           ),
           contentWidget,
         ],
