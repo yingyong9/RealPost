@@ -93,6 +93,12 @@ class AppController extends GetxController {
   }
 
   Future<void> processReadCommentSalses() async {
+    if (commentSalses.isNotEmpty) {
+      commentSalses.clear();
+      docIdCommentSalses.clear();
+      
+    }
+
     print(
         '##26jan processReadCommentSalse Work at indexBody --> ${indexBodyMainPageView.value}');
     var user = FirebaseAuth.instance.currentUser;
@@ -115,7 +121,6 @@ class AppController extends GetxController {
           docIdCommentSalses.add(element.id);
 
           haveUserLoginInComment.value = (user!.uid == model.uid);
-          
         }
       }
     });

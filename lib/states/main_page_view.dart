@@ -122,6 +122,10 @@ class _MainPageViewState extends State<MainPageView> {
                           onPageChanged: (value) {
                             appController.indexBodyMainPageView.value = value;
 
+                             appController.amountSalse.value = 1;
+
+                            appController.haveUserLoginInComment.value = false;
+
                             appController.readAllChat(
                                 docIdRoom: appController.docIdRooms[
                                     appController.indexBodyMainPageView.value]);
@@ -136,7 +140,7 @@ class _MainPageViewState extends State<MainPageView> {
 
                             appController.processReadCommentSalses();
 
-                            appController.amountSalse.value = 1;
+                           
                           },
                         ),
                       ),
@@ -203,13 +207,78 @@ class _MainPageViewState extends State<MainPageView> {
             reverse: true),
         displayOwnerRoom(boxConstraints, appController),
         chatPrivateImage(appController: appController),
-        Positioned(right: 16,top: 100,
-          child: WidgetText(
-            text: 'ราคา ${appController.roomModels[appController.indexBodyMainPageView.value].singlePrice!} thb'
-                ,
-            textStyle: AppConstant().h2Style(color: Colors.white),
-          ),
-        )
+        appController.roomModels[appController.indexBodyMainPageView.value]
+                .safeProduct!
+            ? Positioned(
+                right: 16,
+                top: 100,
+                child: SizedBox(
+                  width: boxConstraints.maxWidth * 0.6,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 12),
+                        decoration:
+                            AppConstant().boxBlack(color: Colors.black54),
+                        child: WidgetText(
+                          text:
+                              'ราคา ${appController.roomModels[appController.indexBodyMainPageView.value].singlePrice!} thb',
+                          textStyle: AppConstant().h2Style(color: Colors.white),
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 16),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 12),
+                        decoration:
+                            AppConstant().boxCurve(color: Colors.white38),
+                        child: WidgetText(
+                          text:
+                              'ส่วนลด ${appController.roomModels[appController.indexBodyMainPageView.value].totalPrice} thb/ผู้เข้าร่วม 5 คน',
+                          textStyle: AppConstant().h3Style(color: Colors.black),
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 16),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 12),
+                        decoration:
+                            AppConstant().boxCurve(color: Colors.white38),
+                        child: WidgetText(
+                          text:
+                              'จำนวนผู้เข้าร่วม ${appController.commentSalses.length} คน ',
+                          textStyle: AppConstant().h3Style(color: Colors.black),
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 16),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 12),
+                        decoration:
+                            AppConstant().boxCurve(color: Colors.white38),
+                        child: WidgetText(
+                          text: 'ส่วนลด ',
+                          textStyle: AppConstant().h3Style(color: Colors.black),
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 16),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 12),
+                        decoration:
+                            AppConstant().boxCurve(color: Colors.black38),
+                        child: WidgetText(
+                          text: 'ส่วนลด ',
+                          textStyle: AppConstant().h3Style(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : const SizedBox(),
       ],
     );
   }

@@ -126,8 +126,7 @@ class _TabPriceState extends State<TabPrice> {
                                         width: 8,
                                       ),
                                       CalculatePriceAndTime(roomModel: appController.roomModels[appController.indexBodyMainPageView.value],),
-                                      const Spacer(),
-                                      Text('End'),
+                                      
                                     ],
                                   ),
                                 ),

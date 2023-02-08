@@ -20,21 +20,17 @@ class CalculatePriceAndTime extends StatefulWidget {
 class _CalculatePriceAndTimeState extends State<CalculatePriceAndTime> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        WidgetText(
-          text: 'ราคา ${widget.roomModel.singlePrice} บาท',
+    return LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
+      return Container(margin: const EdgeInsets.only(top: 8),
+        width: 150,
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        decoration: AppConstant().boxCurve(),
+        child: WidgetText(
+          text:
+              'ราคา ${widget.roomModel.singlePrice} บาท เหลือเวลา ${widget.roomModel.timeGroup}',
           textStyle: AppConstant().h3Style(color: Colors.black),
         ),
-         WidgetText(
-          text: 'เหลือเวลา ${widget.roomModel.timeGroup} ',
-          textStyle: AppConstant().h3Style(color: Colors.black),
-        ),
-        WidgetText(
-          text: 'ผู้ที่กดเข้าร่วม 1 ',
-          textStyle: AppConstant().h3Style(color: Colors.black),
-        ),
-      ],
-    );
+      );
+    });
   }
 }
