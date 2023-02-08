@@ -138,8 +138,8 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
                         size: 24,
                         tapFunc: () {
                           print('##6feb You tap');
-                          Get.to(PrivateChat(
-                              uidFriend: widget.roomModel!.uidCreate));
+                          // Get.to(PrivateChat(
+                          //     uidFriend: widget.roomModel!.uidCreate));
                         },
                       ),
               ],

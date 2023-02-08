@@ -1,15 +1,18 @@
 // ignore_for_file: avoid_print, sort_child_properties_last
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:get/get.dart';
+import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/states/private_chat.dart';
 import 'package:realpost/states/tab_price.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
+import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_content_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
@@ -122,7 +125,7 @@ class _MainPageViewState extends State<MainPageView> {
                           onPageChanged: (value) {
                             appController.indexBodyMainPageView.value = value;
 
-                             appController.amountSalse.value = 1;
+                            appController.amountSalse.value = 1;
 
                             appController.haveUserLoginInComment.value = false;
 
@@ -139,8 +142,6 @@ class _MainPageViewState extends State<MainPageView> {
                                     appController.indexBodyMainPageView.value]);
 
                             appController.processReadCommentSalses();
-
-                           
                           },
                         ),
                       ),
@@ -207,6 +208,7 @@ class _MainPageViewState extends State<MainPageView> {
             reverse: true),
         displayOwnerRoom(boxConstraints, appController),
         chatPrivateImage(appController: appController),
+        chatPrivateButton(appController: appController),
         appController.roomModels[appController.indexBodyMainPageView.value]
                 .safeProduct!
             ? Positioned(
@@ -294,10 +296,77 @@ class _MainPageViewState extends State<MainPageView> {
               path: 'images/icon2.png',
               size: 48,
               tapFunc: () {
-                Get.to(PrivateChat(
-                    uidFriend: appController
-                        .roomModels[appController.indexBodyMainPageView.value]
-                        .uidCreate));
+                appController
+                    .processFindDocIdPrivateChat(
+                        uidLogin: user!.uid,
+                        uidFriend: appController
+                            .roomModels[
+                                appController.indexBodyMainPageView.value]
+                            .uidCreate)
+                    .then((value) async {
+                  ChatModel chatModel = await AppService().createChatModel(
+                      urlRealPost: appController
+                          .roomModels[appController.indexBodyMainPageView.value]
+                          .urlRooms
+                          .last);
+
+                  await AppService()
+                      .processInsertPrivateChat(
+                          docIdPrivateChat:
+                              appController.docIdPrivateChats.last,
+                          chatModel: chatModel)
+                      .then((value) {
+                    Get.to(PrivateChat(
+                        uidFriend: appController
+                            .roomModels[
+                                appController.indexBodyMainPageView.value]
+                            .uidCreate));
+                  });
+                });
+              },
+            ),
+          );
+  }
+
+  Widget chatPrivateButton({required AppController appController}) {
+    return user!.uid ==
+            appController
+                .roomModels[appController.indexBodyMainPageView.value].uidCreate
+        ? const SizedBox()
+        : Positioned(
+            right: 16,
+            bottom: 0,
+            child: WidgetButton(
+              label: 'สอบถามหรือสั่ง',
+              bgColor: Colors.red,
+              pressFunc: () {
+                appController
+                    .processFindDocIdPrivateChat(
+                        uidLogin: user!.uid,
+                        uidFriend: appController
+                            .roomModels[
+                                appController.indexBodyMainPageView.value]
+                            .uidCreate)
+                    .then((value) async {
+                  ChatModel chatModel = await AppService().createChatModel(
+                      urlRealPost: appController
+                          .roomModels[appController.indexBodyMainPageView.value]
+                          .urlRooms
+                          .last);
+
+                  await AppService()
+                      .processInsertPrivateChat(
+                          docIdPrivateChat:
+                              appController.docIdPrivateChats.last,
+                          chatModel: chatModel)
+                      .then((value) {
+                    Get.to(PrivateChat(
+                        uidFriend: appController
+                            .roomModels[
+                                appController.indexBodyMainPageView.value]
+                            .uidCreate));
+                  });
+                });
               },
             ),
           );

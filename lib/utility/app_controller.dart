@@ -46,8 +46,10 @@ class AppController extends GetxController {
   RxList<TextEditingController> articleControllers =
       <TextEditingController>[TextEditingController()].obs;
   RxList<Position> positions = <Position>[].obs;
+
   RxList<String> docIdPrivateChats = <String>[].obs;
   RxList<ChatModel> privateChatModels = <ChatModel>[].obs;
+
   RxList<String> links = <String>[].obs;
   RxList<XFile> xFiles = <XFile>[].obs;
   RxInt indexBodyMainPageView = 0.obs;
@@ -96,7 +98,6 @@ class AppController extends GetxController {
     if (commentSalses.isNotEmpty) {
       commentSalses.clear();
       docIdCommentSalses.clear();
-      
     }
 
     print(
@@ -193,8 +194,8 @@ class AppController extends GetxController {
 
   Future<void> processFindDocIdPrivateChat(
       {required String uidLogin, required String uidFriend}) async {
-    if (docIdPrivateChats.isNotEmpty) {
-      docIdPrivateChats.clear();
+    if (privateChatModels.isNotEmpty) {
+      // docIdPrivateChats.clear();
       privateChatModels.clear();
     }
 
@@ -207,12 +208,15 @@ class AppController extends GetxController {
         for (var element in value.docs) {
           PrivateChatModel privateChatModel =
               PrivateChatModel.fromMap(element.data());
-          print('##28jan privateChatModel ---> ${privateChatModel.toMap()}');
+          print(
+              '##8feb $uidLogin, $uidFriend privateChatModel ---> ${privateChatModel.toMap()}');
 
           if ((privateChatModel.uidchats.contains(uidLogin)) &&
               (privateChatModel.uidchats.contains(uidFriend))) {
             createNewPrivate = false;
             docIdPrivateChats.add(element.id);
+
+            print('##8feb docIdPrivateChat ---> ${docIdPrivateChats.last}');
 
             await FirebaseFirestore.instance
                 .collection('privatechat')
