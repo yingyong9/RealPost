@@ -19,13 +19,13 @@ class AppConstant {
   BoxDecoration borderBox() => BoxDecoration(
       border: Border.all(width: 1), borderRadius: BorderRadius.circular(10));
 
-  BoxDecoration boxBlack({Color? color}) =>  BoxDecoration(color:   color ?? Colors.black12);
+  BoxDecoration boxBlack({Color? color}) =>
+      BoxDecoration(color: color ?? Colors.black12);
 
   BoxDecoration boxCurve({Color? color}) => BoxDecoration(
-        color: color ?? Colors.pink.shade300,
-        border: Border.all(),
-        borderRadius: BorderRadius.circular(10)
-      );
+      color: color ?? Colors.pink.shade300,
+      border: Border.all(),
+      borderRadius: BorderRadius.circular(10));
 
   BoxDecoration boxChatLogin() {
     return BoxDecoration(
