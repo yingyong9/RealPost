@@ -328,7 +328,9 @@ class AppController extends GetxController {
         .orderBy('timestamp', descending: true)
         .get()
         .then((value) async {
+
       for (var element in value.docs) {
+        
         RoomModel model = RoomModel.fromMap(element.data());
         roomModels.add(model);
         docIdRooms.add(element.id);

@@ -68,7 +68,7 @@ class _DisplayNameState extends State<DisplayName> {
                         .doc(widget.uidLogin)
                         .set(model.toMap())
                         .then((value) {
-                      Get.offAllNamed(AppConstant.pageMainHome);
+                      Get.offAllNamed('/mainPageView');
                     });
                   }
                 },

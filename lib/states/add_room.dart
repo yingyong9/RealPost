@@ -44,7 +44,7 @@ class _AddRoomState extends State<AddRoom> {
     return Scaffold(
       backgroundColor: AppConstant.bgColor,
       appBar: AppBar(
-        title: const WidgetText(text: 'ต้องการ ขายสินค้า ?'),
+        title: const WidgetText(text: 'รูปที่คุณต้องการ'),
         actions: [],
       ),
       body: LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {

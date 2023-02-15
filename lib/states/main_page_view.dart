@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_print, sort_child_properties_last
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
@@ -28,6 +27,7 @@ class MainPageView extends StatefulWidget {
 }
 
 class _MainPageViewState extends State<MainPageView> {
+  
   AppController controller = Get.put(AppController());
   var user = FirebaseAuth.instance.currentUser;
 
@@ -37,6 +37,10 @@ class _MainPageViewState extends State<MainPageView> {
   void initState() {
     super.initState();
     AppService().initialSetup(context: context);
+
+    // AppService()
+    //     .processSignOut()
+    //     .then((value) => Get.offAllNamed(AppConstant.pagePhoneNumber));
   }
 
   @override

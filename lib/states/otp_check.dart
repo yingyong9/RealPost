@@ -5,8 +5,6 @@ import 'package:otp_text_field/style.dart';
 
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_service.dart';
-import 'package:realpost/widgets/widget_button.dart';
-import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
 class OtpCheck extends StatefulWidget {
