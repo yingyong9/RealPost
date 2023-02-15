@@ -7,8 +7,7 @@ import 'package:realpost/models/chat_model.dart';
 
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/states/add_product.dart';
-import 'package:realpost/states/list_friend.dart';
-import 'package:realpost/states/private_chat.dart';
+import 'package:realpost/states/display_profile.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
@@ -145,15 +144,21 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
               ],
             ),
           ),
-          WidgetImage(
-            path: 'images/addgreen.png',
-            size: 24,
-            tapFunc: () {
-              Get.to(const AddProduct())!.then((value) {
-                AppService().initialSetup(context: context);
-              });
+          WidgetIconButton(
+            pressFunc: () {
+              Get.to(const DisplayProfile());
             },
+            iconData: Icons.home,
           ),
+          // WidgetImage(
+          //   path: 'images/addgreen.png',
+          //   size: 24,
+          //   tapFunc: () {
+          //     Get.to(const AddProduct())!.then((value) {
+          //       AppService().initialSetup(context: context);
+          //     });
+          //   },
+          // ),
           WidgetIconButton(
             iconData: Icons.send,
             pressFunc: () async {

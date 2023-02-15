@@ -17,10 +17,9 @@ import 'package:realpost/models/private_chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/salse_group_model.dart';
 import 'package:realpost/models/user_model.dart';
-import 'package:realpost/states/add_room.dart';
 import 'package:realpost/states/display_name.dart';
 import 'package:realpost/states/otp_check.dart';
-import 'package:realpost/utility/app_constant.dart';
+import 'package:realpost/states/take_photo_only.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/widgets/widget_text_button.dart';
@@ -28,6 +27,19 @@ import 'package:url_launcher/url_launcher.dart';
 
 class AppService {
   AppController appController = Get.put(AppController());
+
+  Future<void> processUpdateUserModel(
+      {required Map<String, dynamic> map}) async {
+    var user = FirebaseAuth.instance.currentUser;
+
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc(user!.uid)
+        .update(map)
+        .then((value) {
+      appController.findUserModels();
+    });
+  }
 
   Future<void> processInsertPrivateChat(
       {required String docIdPrivateChat, required ChatModel chatModel}) async {
@@ -181,7 +193,7 @@ class AppService {
       }
 
       if (noRoom) {
-        Get.to(AddRoom());
+        Get.to(const TakePhotoOnly());
       } else {
         print('##5jan Have Room');
       }
@@ -303,15 +315,14 @@ class AppService {
 
   Future<void> processChooseMultiImage() async {
     AppController appController = Get.put(AppController());
+
+    if (appController.xFiles.isNotEmpty) {
+      appController.xFiles.clear();
+    }
+
     await ImagePicker()
-        .pickMultiImage(
-      maxWidth: 800,
-      maxHeight: 800,
-    )
+        .pickMultiImage(maxWidth: 800, maxHeight: 800)
         .then((value) {
-      // if (appController.xFiles.isNotEmpty) {
-      //   appController.xFiles.clear();
-      // }
       if (value.length <= (9 - appController.xFiles.length)) {
         appController.xFiles.addAll(value);
       } else {
@@ -563,7 +574,7 @@ class AppService {
           Get.offAll(DisplayName(uidLogin: uid));
         } else {
           print('have Data user');
-          Get.offAllNamed(AppConstant.pageMainHome);
+          Get.offAllNamed('/mainPageView');
         }
       });
     }).catchError((onError) {
