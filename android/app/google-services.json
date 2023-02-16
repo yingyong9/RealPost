@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "81631311471-3ae05ats1bph8neas49b99javhhikmp5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.yingyong.realpost",
+            "certificate_hash": "398f0dca054a49da583633e17cc41e3e71349347"
+          }
+        },
+        {
           "client_id": "81631311471-4ai4ood5claohcbiovct0tm161jbdgv4.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -45,6 +53,13 @@
             {
               "client_id": "81631311471-tbj3st7l07667c7cqa2goj0closi7r0f.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "81631311471-7q3hvgtm0ufpoorsplb2hhu6rgerqigl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.yingyong.realpost"
+              }
             }
           ]
         }
