@@ -30,6 +30,14 @@
           }
         },
         {
+          "client_id": "81631311471-b5i4525gj9k1ncnlggme6ubushhes6ie.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.yingyong.realpost",
+            "certificate_hash": "0f400cf7075410065b7c646806937829bdd44cde"
+          }
+        },
+        {
           "client_id": "81631311471-q5kd4lot6m90egn7e6bcnhv3gktut77u.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

@@ -27,20 +27,17 @@ class MainPageView extends StatefulWidget {
 }
 
 class _MainPageViewState extends State<MainPageView> {
-  
   AppController controller = Get.put(AppController());
   var user = FirebaseAuth.instance.currentUser;
 
   TextEditingController textEditingController = TextEditingController();
 
+  var pageViewController = PageController(initialPage: 0);
+
   @override
   void initState() {
     super.initState();
     AppService().initialSetup(context: context);
-
-    // AppService()
-    //     .processSignOut()
-    //     .then((value) => Get.offAllNamed(AppConstant.pagePhoneNumber));
   }
 
   @override
@@ -122,9 +119,7 @@ class _MainPageViewState extends State<MainPageView> {
                                 ),
                               )
                               .toList(),
-                          controller: PageController(
-                              initialPage:
-                                  appController.indexBodyMainPageView.value),
+                          controller: pageViewController,
                           scrollDirection: Axis.vertical,
                           onPageChanged: (value) {
                             appController.indexBodyMainPageView.value = value;
@@ -213,6 +208,30 @@ class _MainPageViewState extends State<MainPageView> {
         displayOwnerRoom(boxConstraints, appController),
         chatPrivateImage(appController: appController),
         chatPrivateButton(appController: appController),
+        Positioned(
+          right: 16,
+          bottom: 64,
+          child: Container(
+            decoration: AppConstant().boxCurve(color: Colors.white),
+            child: WidgetIconButton(
+              iconData: Icons.home,
+              color: Colors.green,
+              size: 36,
+              pressFunc: () {
+                if (appController
+                        .roomModels[appController.indexBodyMainPageView.value]
+                        .uidCreate ==
+                    user!.uid) {
+                  // click on Home
+                  print('Click On Home');
+                } else {
+                  print('Outsite Home');
+                  pageViewController.animateToPage(3, duration: const Duration(seconds: 1), curve: Curves.linear);
+                }
+              },
+            ),
+          ),
+        ),
         appController.roomModels[appController.indexBodyMainPageView.value]
                 .safeProduct!
             ? Positioned(

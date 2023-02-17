@@ -22,6 +22,7 @@ import 'package:realpost/states/otp_check.dart';
 import 'package:realpost/states/take_photo_only.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
+import 'package:realpost/utility/app_snackbar.dart';
 import 'package:realpost/widgets/widget_text_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -534,23 +535,23 @@ class AppService {
   Future<void> processSentSMS({required String fullPhoneNumber}) async {
     // String phoneNumber = '+66 81 859 5309';
     String phoneNumber = '+66 ${fullPhoneNumber.substring(1)}';
-    print('##24nov phoneNumber = $phoneNumber');
+    print('##17feb phoneNumber = $phoneNumber');
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: phoneNumber,
       timeout: const Duration(seconds: 60),
       verificationCompleted: (PhoneAuthCredential credential) {
-        print('##24nov varificationComplete Work');
+        print('##17feb varificationComplete Work');
       },
       verificationFailed: (error) {
-        print('##24nov verificationFalie error ==> $error');
+        print('##17feb verificationFalie error ==> $error');
       },
       codeSent: (String verificationId, int? forceResendingToken) {
-        print('##24nov code Sent ==> $verificationId');
+        print('##17feb code Sent ==> $verificationId');
         // verifyPhone(verificationId: verificationId);
         Get.offAll(OtpCheck(verificationId: verificationId));
       },
       codeAutoRetrievalTimeout: (verificationId) {
-        print('##24nov TimeOut');
+        print('##17feb TimeOut');
       },
     );
   }
@@ -562,7 +563,7 @@ class AppService {
             verificationId: verificationId, smsCode: smsCode))
         .then((value) async {
       String uid = value.user!.uid;
-      print('##24nov uid ==> $uid');
+      print('##17feb uid ==> $uid');
 
       await FirebaseFirestore.instance
           .collection('user')
@@ -578,7 +579,14 @@ class AppService {
         }
       });
     }).catchError((onError) {
-      print('##24nov otp False ##############');
+      print('##17feb otp False ##############');
+      AppSnackBar().normalSnackBar(
+        title: 'OTP ผิด',
+        message: 'กรอก OTP ที่ส่งมาจาก sms',
+        second: 3,
+        bgColor: Colors.red.shade700,
+        textColor: Colors.white,
+      );
     });
   }
 }
