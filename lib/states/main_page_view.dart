@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print, sort_child_properties_last
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
@@ -49,7 +50,7 @@ class _MainPageViewState extends State<MainPageView> {
             init: AppController(),
             builder: (AppController appController) {
               print(
-                  '##26jan commentSalseModels --> ${appController.commentSalses.length} indexPage --> ${appController.indexBodyMainPageView}');
+                  '##17feb indexPage --> ${appController.indexBodyMainPageView}');
 
               return SafeArea(
                 child: (appController.roomModels.isEmpty) ||
@@ -217,17 +218,23 @@ class _MainPageViewState extends State<MainPageView> {
               iconData: Icons.home,
               color: Colors.green,
               size: 36,
-              pressFunc: () {
-                if (appController
-                        .roomModels[appController.indexBodyMainPageView.value]
-                        .uidCreate ==
-                    user!.uid) {
-                  // click on Home
-                  print('Click On Home');
-                } else {
-                  print('Outsite Home');
-                  pageViewController.animateToPage(3, duration: const Duration(seconds: 1), curve: Curves.linear);
-                }
+              pressFunc: () async {
+                print(
+                    '##17feb clickHome id --> ${appController.docIdRoomClickHome}');
+
+                Map<String, dynamic> map = appController
+                    .roomModels[appController.indexPageHome.value]
+                    .toMap();
+
+                map['timestamp'] = Timestamp.fromDate(DateTime.now());
+                await FirebaseFirestore.instance
+                    .collection('room')
+                    .doc(appController.docIdRoomClickHome.value)
+                    .update(map)
+                    .then((value) {
+                  // AppService().initialSetup(context: context);
+                  Get.offAll(MainPageView());
+                });
               },
             ),
           ),
@@ -360,7 +367,7 @@ class _MainPageViewState extends State<MainPageView> {
             right: 16,
             bottom: 0,
             child: WidgetButton(
-              label: 'สอบถามหรือสั่ง',
+              label: 'สอบถาม',
               bgColor: Colors.red,
               pressFunc: () {
                 appController

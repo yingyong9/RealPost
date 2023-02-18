@@ -179,6 +179,7 @@ class AppService {
   }
 
   void initialSetup({required BuildContext context}) {
+    
     AppController appController = Get.put(AppController());
 
     appController.readAllRoom().then((value) {
