@@ -73,6 +73,9 @@ class AppController extends GetxController {
 
   RxBool haveUserLoginInComment = false.obs;
 
+  RxString docIdRoomClickHome = ''.obs;
+  RxInt indexPageHome = 0.obs;
+
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
       salsegroups.clear();
@@ -328,12 +331,21 @@ class AppController extends GetxController {
         .orderBy('timestamp', descending: true)
         .get()
         .then((value) async {
+      int indexPage = 0;
+      var user = FirebaseAuth.instance.currentUser;
+      var uidLogin = user!.uid ?? '';
 
       for (var element in value.docs) {
-        
         RoomModel model = RoomModel.fromMap(element.data());
         roomModels.add(model);
         docIdRooms.add(element.id);
+
+        if (uidLogin == model.uidCreate) {
+          print('##17feb page ที่มี indexPage --> $indexPage');
+          print('##17feb page ที่มี docIdRoom --> ${element.id}');
+          docIdRoomClickHome.value = element.id;
+          indexPageHome.value = indexPage;
+        }
 
         UserModel? userModel =
             await AppService().findUserModel(uid: model.uidCreate);
@@ -368,6 +380,7 @@ class AppController extends GetxController {
           listChatModels.add(chatModels);
           lastChatModelLogins.add(lateChatModel!);
         });
+        indexPage++;
       }
     });
   }
