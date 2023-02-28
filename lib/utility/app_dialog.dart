@@ -298,7 +298,7 @@ class AppDialog {
                       urlRealPost: appController.urlRealPostChooses.isEmpty
                           ? ''
                           : appController.urlRealPostChooses[0],
-                      disPlayName: appController.userModels[0].displayName,
+                      disPlayName: appController.userModels[0].displayName!,
                       urlAvatar: appController.userModels[0].urlAvatar!.isEmpty
                           ? appController.urlAvatarChooses[0]
                           : appController.userModels[0].urlAvatar!,

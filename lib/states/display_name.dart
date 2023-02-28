@@ -2,8 +2,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:realpost/models/user_model.dart';
 
+import 'package:realpost/models/user_model.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_form.dart';
@@ -13,9 +13,15 @@ class DisplayName extends StatefulWidget {
   const DisplayName({
     Key? key,
     required this.uidLogin,
+    required this.phoneNumber,
+    required this.email,
+    required this.password,
   }) : super(key: key);
 
   final String uidLogin;
+  final String phoneNumber;
+  final String email;
+  final String password;
 
   @override
   State<DisplayName> createState() => _DisplayNameState();
@@ -23,6 +29,7 @@ class DisplayName extends StatefulWidget {
 
 class _DisplayNameState extends State<DisplayName> {
   String? displayName;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +69,14 @@ class _DisplayNameState extends State<DisplayName> {
                   if (displayName?.isEmpty ?? true) {
                     //Have Space
                   } else {
-                    UserModel model = UserModel(displayName: displayName!);
+                    UserModel model = UserModel(
+                      displayName: displayName!,
+                      urlAvatar: '',
+                      phoneNumber: widget.phoneNumber,
+                      uidUser: widget.uidLogin,
+                      email: widget.email,
+                      password: widget.password,
+                    );
                     await FirebaseFirestore.instance
                         .collection('user')
                         .doc(widget.uidLogin)

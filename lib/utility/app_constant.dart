@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
 class AppConstant {
+  static int timeCountsec = 30;
+
+  static String key = '1758532022818591';
+  static String secret = '6ee4cbc8611eaa7c3e4ed60b071badf7';
+
   static Color spColor = const Color(0xff512da8);
   static Color dark = Colors.white;
   static Color bgColor = const Color.fromARGB(255, 1, 50, 50);

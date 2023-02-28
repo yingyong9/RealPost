@@ -173,7 +173,7 @@ class AppBottomSheet {
 
     CommentSalseModel commentSalseModel = CommentSalseModel(
         amountSalse: appController.amountSalse.value.toString(),
-        name: appController.userModels.last.displayName,
+        name: appController.userModels.last.displayName!,
         timeComment: Timestamp.fromDate(DateTime.now()),
         totalPrice: totalPriceDou.toString(),
         uid: user!.uid,
