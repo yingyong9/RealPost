@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:realpost/states/otp_check.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_button.dart';
@@ -70,12 +72,20 @@ class _PhoneNumberState extends State<PhoneNumber> {
                 width: 250,
                 label: 'ไปต่อ',
                 pressFunc: () {
-                  // phonNumber = maskTextInputFormatter.getMaskedText();
+                  phonNumber = maskTextInputFormatter.getUnmaskedText();
 
                   if ((!(phonNumber?.isEmpty ?? true)) &&
-                      (phonNumber!.length == 12)) {
-                    print('phoneNumber ==> $phonNumber');
-                    AppService().processSentSMS(fullPhoneNumber: phonNumber!);
+                      (phonNumber!.length == 10)) {
+                    print('##22feb phoneNumber ==> $phonNumber');
+                    // AppService().processSentSMS(fullPhoneNumber: phonNumber!);
+
+                    AppService()
+                        .processSentSmsThaibulk(phoneNumber: phonNumber!)
+                        .then((value) {
+                      print('##22feb ค่าที่ได้รับกลับ --> ${value.token}');
+
+                      Get.offAll(OtpCheck(token: value.token, phoneNumber: phonNumber!,));
+                    });
                   }
                 },
               )

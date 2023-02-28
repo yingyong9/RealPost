@@ -9,7 +9,6 @@ import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_content_form.dart';
-import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_progress.dart';
 import 'package:realpost/widgets/widget_text.dart';
@@ -44,17 +43,19 @@ class _BodyDiscoveryState extends State<BodyDiscovery> {
                         lastUserLoginPost(boxConstraints, appController, index),
                         SizedBox(
                           height: (boxConstraints.maxHeight -
-                                  boxConstraints.maxWidth * 0.5),
+                              boxConstraints.maxWidth * 0.5),
                           child: listChatMessage(
                               appController, index, boxConstraints),
                         ),
 
                         // WidgetForm(),
-                       
+
                         WidgetContentForm(
-                            boxConstraints: boxConstraints,
-                            appController: appController,
-                            textEditingController: textEditingController, docId: appController.docIdRooms[index],),
+                          boxConstraints: boxConstraints,
+                          appController: appController,
+                          textEditingController: textEditingController,
+                          docId: appController.docIdRooms[index],
+                        ),
                       ],
                     ),
                   );

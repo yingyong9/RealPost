@@ -29,7 +29,7 @@ class MainPageView extends StatefulWidget {
 
 class _MainPageViewState extends State<MainPageView> {
   AppController controller = Get.put(AppController());
-  var user = FirebaseAuth.instance.currentUser;
+  
 
   TextEditingController textEditingController = TextEditingController();
 
@@ -39,6 +39,14 @@ class _MainPageViewState extends State<MainPageView> {
   void initState() {
     super.initState();
     AppService().initialSetup(context: context);
+
+   
+
+    // trySignOut();
+  }
+
+  Future<void> trySignOut() async {
+    await FirebaseAuth.instance.signOut();
   }
 
   @override
@@ -316,7 +324,7 @@ class _MainPageViewState extends State<MainPageView> {
   }
 
   Widget chatPrivateImage({required AppController appController}) {
-    return user!.uid ==
+    return appController.mainUid.value ==
             appController
                 .roomModels[appController.indexBodyMainPageView.value].uidCreate
         ? const SizedBox()
@@ -328,7 +336,7 @@ class _MainPageViewState extends State<MainPageView> {
               tapFunc: () {
                 appController
                     .processFindDocIdPrivateChat(
-                        uidLogin: user!.uid,
+                        uidLogin: appController.mainUid.value,
                         uidFriend: appController
                             .roomModels[
                                 appController.indexBodyMainPageView.value]
@@ -359,7 +367,7 @@ class _MainPageViewState extends State<MainPageView> {
   }
 
   Widget chatPrivateButton({required AppController appController}) {
-    return user!.uid ==
+    return appController.mainUid.value ==
             appController
                 .roomModels[appController.indexBodyMainPageView.value].uidCreate
         ? const SizedBox()
@@ -372,7 +380,7 @@ class _MainPageViewState extends State<MainPageView> {
               pressFunc: () {
                 appController
                     .processFindDocIdPrivateChat(
-                        uidLogin: user!.uid,
+                        uidLogin: appController.mainUid.value,
                         uidFriend: appController
                             .roomModels[
                                 appController.indexBodyMainPageView.value]
@@ -442,9 +450,7 @@ class _MainPageViewState extends State<MainPageView> {
             // myCondition = status ||
             //     (appController.chatModels[index].uidChat == user!.uid);
 
-            print('##9jan status, myCondition ==> $status , $myCondition');
-            print(
-                '##9jan uidLogin ==> ${user!.uid} ==== uidPost ==> ${appController.chatModels[index].uidChat}');
+            
 
             return myCondition
                 ? const SizedBox()
@@ -560,7 +566,7 @@ class _MainPageViewState extends State<MainPageView> {
                       text: appController
                           .userModelAtRooms[
                               appController.indexBodyMainPageView.value]
-                          .displayName,
+                          .displayName!,
                       textStyle: AppConstant().h2Style(),
                     )
                   ],

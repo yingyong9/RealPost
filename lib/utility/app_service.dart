@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -12,14 +13,16 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:realpost/models/chat_model.dart';
+import 'package:realpost/models/checkphone_model.dart';
 import 'package:realpost/models/comment_salse_model.dart';
+import 'package:realpost/models/otp_require_thaibulk.dart';
 import 'package:realpost/models/private_chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/salse_group_model.dart';
 import 'package:realpost/models/user_model.dart';
 import 'package:realpost/states/display_name.dart';
-import 'package:realpost/states/otp_check.dart';
 import 'package:realpost/states/take_photo_only.dart';
+import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/utility/app_snackbar.dart';
@@ -29,13 +32,152 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
+  Future<void> readAllUserModel() async {
+    if (appController.userModels.isNotEmpty) {
+      appController.userModels.clear();
+    }
+
+    await FirebaseFirestore.instance.collection('user').get().then((value) {
+      for (var element in value.docs) {
+        UserModel userModel = UserModel.fromMap(element.data());
+        appController.userModels.add(userModel);
+      }
+    });
+  }
+
+  Future<void> countTime() async {
+    await Future.delayed(
+      const Duration(seconds: 1),
+      () {
+        if (appController.timeOtp >= 0) {
+          appController.timeOtp--;
+          countTime();
+        }
+      },
+    );
+  }
+
+  Future<void> verifyOTPThaibulk(
+      {required String token,
+      required String pin,
+      required BuildContext context,
+      required String phoneNumber}) async {
+    print(
+        '##22feb token --> $token, pin --> $pin, phoneNumber --> $phoneNumber');
+
+    String urlApi = 'https://otp.thaibulksms.com/v2/otp/verify';
+    Map<String, dynamic> map = {};
+    map['key'] = AppConstant.key;
+    map['secret'] = AppConstant.secret;
+    map['token'] = token;
+    map['pin'] = pin;
+
+    Dio dio = Dio();
+    dio.options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    await dio.post(urlApi, data: map).then((value) async {
+      print('##22feb statusCode --> ${value.statusCode}');
+      if (value.statusCode == 200) {
+        //Everything OK
+        print('##28feb verifyOTP Success phone ที่กรอก ---> $phoneNumber');
+        UserModel? havePhoneUserModel;
+
+        bool havePhone = false;
+        for (var element in appController.userModels) {
+          if (element.phoneNumber == phoneNumber) {
+            havePhone = true;
+            havePhoneUserModel = element;
+          }
+        }
+        print('##28feb havePhone = $havePhone');
+
+        if (havePhone) {
+          print('##28feb เคยเอาเบอร์นี่ไปสมัครแล้ว');
+          print('##28feb havePhoneModel ---> ${havePhoneUserModel!.toMap()}');
+
+          await FirebaseAuth.instance
+              .signInWithEmailAndPassword(
+                  email: havePhoneUserModel.email!,
+                  password: havePhoneUserModel.password!)
+              .then((value) {
+            Get.offAllNamed('/mainPageView');
+          });
+        } else {
+          print('##28feb เบอร์ใหม่');
+
+          String email = 'phone$phoneNumber@realpost.com';
+          String password = '123456';
+
+          await FirebaseAuth.instance
+              .createUserWithEmailAndPassword(email: email, password: password)
+              .then((value) {
+            String uidUser = value.user!.uid;
+            print('##28feb uidUser ---> $uidUser');
+            Get.offAll(DisplayName(
+                uidLogin: uidUser,
+                phoneNumber: phoneNumber,
+                email: email,
+                password: password));
+          });
+        }
+      }
+    }).catchError((onError) {
+      print('##22feb errer code 400');
+      AppSnackBar().normalSnackBar(
+        title: 'OTP ผิด',
+        message: 'กรอกใหม่อีกครั้ง',
+        second: 3,
+        textColor: Colors.red,
+      );
+    });
+  }
+
+  // Future<void> createAnonymouns({required String phoneNumber}) async {
+  //   await FirebaseAuth.instance.signInAnonymously().then((value) async {
+  //     String uid = value.user!.uid;
+  //     print('##22feb uid from anonymouns --> $uid');
+
+  //     await value.user!.getIdTokenResult().then((value) async {
+  //       String? token = value.token;
+
+  //       Map<String, dynamic> map = {};
+  //       map['uid'] = uid;
+  //       // map['token'] = token;
+
+  //       print('##22feb map ---> $map');
+  //       await FirebaseFirestore.instance
+  //           .collection('checkphone')
+  //           .doc(phoneNumber)
+  //           .set(map)
+  //           .then((value) {
+  //         Get.offAll(DisplayName(uidLogin: uid));
+  //       });
+  //     });
+  //   });
+  // }
+
+  Future<OtpRequireThaibulk> processSentSmsThaibulk(
+      {required String phoneNumber}) async {
+    String urlApi = 'https://otp.thaibulksms.com/v2/otp/request';
+
+    Map<String, dynamic> map = {};
+    map['key'] = AppConstant.key;
+    map['secret'] = AppConstant.secret;
+    map['msisdn'] = phoneNumber;
+
+    Dio dio = Dio();
+    dio.options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+
+    var result = await dio.post(urlApi, data: map);
+    OtpRequireThaibulk otpRequireThaibulk =
+        OtpRequireThaibulk.fromMap(result.data);
+    return otpRequireThaibulk;
+  }
+
   Future<void> processUpdateUserModel(
       {required Map<String, dynamic> map}) async {
-    var user = FirebaseAuth.instance.currentUser;
-
     await FirebaseFirestore.instance
         .collection('user')
-        .doc(user!.uid)
+        .doc(appController.mainUid.value)
         .update(map)
         .then((value) {
       appController.findUserModels();
@@ -70,7 +212,7 @@ class AppService {
 
   Future<bool> checkGuest({required String docIdcommentSalse}) async {
     bool status = true;
-    var user = FirebaseAuth.instance.currentUser;
+
     var result = await FirebaseFirestore.instance
         .collection('room')
         .doc(
@@ -82,7 +224,7 @@ class AppService {
 
     for (var element in result.docs) {
       SalseGroupModel salseGroupModel = SalseGroupModel.fromMap(element.data());
-      if (salseGroupModel.map['uid'] == user!.uid) {
+      if (salseGroupModel.map['uid'] == appController.mainUid.value) {
         status = false;
       }
     }
@@ -179,17 +321,15 @@ class AppService {
   }
 
   void initialSetup({required BuildContext context}) {
-    
     AppController appController = Get.put(AppController());
 
     appController.readAllRoom().then((value) {
       print('##5jan docIdRoom.length --> ${appController.docIdRooms.length}');
 
-      var user = FirebaseAuth.instance.currentUser;
       bool noRoom = true;
 
       for (var element in appController.roomModels) {
-        if (user!.uid == element.uidCreate) {
+        if (appController.mainUid.value == element.uidCreate) {
           noRoom = false;
         }
       }
@@ -269,7 +409,7 @@ class AppService {
               : appController.urlRealPostChooses.isNotEmpty
                   ? appController.urlAvatarChooses.last
                   : '',
-          disPlayName: appController.userModels.last.displayName,
+          disPlayName: appController.userModels.last.displayName!,
           urlAvatar: appController.userModels.last.urlAvatar!.isEmpty
               ? appController.urlAvatarChooses.last
               : appController.userModels.last.urlAvatar!,
@@ -295,7 +435,7 @@ class AppService {
           urlRealPost: appController.urlRealPostChooses.isEmpty
               ? ''
               : appController.urlRealPostChooses[0],
-          disPlayName: appController.userModels[0].displayName,
+          disPlayName: appController.userModels[0].displayName!,
           urlAvatar: appController.userModels[0].urlAvatar!.isEmpty
               ? appController.urlAvatarChooses[0]
               : appController.userModels[0].urlAvatar!,
@@ -452,12 +592,6 @@ class AppService {
         .then((value) {
       print('##19dec Process Insert Chat Success');
       appController.shareLocation.value = false;
-      // appController.urlRealPostChooses.clear();
-      // appController.messageChats.clear();
-      // if (appController.fileRealPosts.isNotEmpty) {
-      //   appController.fileRealPosts.clear();
-      // }
-      // appController.readAllRoom();
     });
   }
 
@@ -549,7 +683,7 @@ class AppService {
       codeSent: (String verificationId, int? forceResendingToken) {
         print('##17feb code Sent ==> $verificationId');
         // verifyPhone(verificationId: verificationId);
-        Get.offAll(OtpCheck(verificationId: verificationId));
+        // Get.offAll(OtpCheck(verificationId: verificationId));
       },
       codeAutoRetrievalTimeout: (verificationId) {
         print('##17feb TimeOut');
@@ -573,7 +707,7 @@ class AppService {
           .then((value) {
         print('##24nov value ==> $value');
         if (value.data() == null) {
-          Get.offAll(DisplayName(uidLogin: uid));
+          // Get.offAll(DisplayName(uidLogin: uid));
         } else {
           print('have Data user');
           Get.offAllNamed('/mainPageView');

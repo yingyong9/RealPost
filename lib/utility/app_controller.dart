@@ -20,6 +20,7 @@ import 'package:realpost/models/salse_group_model.dart';
 import 'package:realpost/models/stamp_model.dart';
 import 'package:realpost/models/time_group_model.dart';
 import 'package:realpost/models/user_model.dart';
+import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:video_player/video_player.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -29,15 +30,19 @@ class AppController extends GetxController {
   RxList<String> docIdRooms = <String>[].obs;
   RxList<String> docIdRoomChooses = <String>[].obs;
   RxList<UserModel> userModelAtRooms = <UserModel>[].obs;
+
   RxList<List<ChatModel>> listChatModels = <List<ChatModel>>[].obs;
   RxList<ChatModel> lastChatModelLogins = <ChatModel>[].obs;
   RxList<StampModel> stampModels = <StampModel>[].obs;
   RxList<String> emojiAddRoomChooses = <String>[].obs;
   RxList<ChatModel> chatModels = <ChatModel>[].obs;
   RxList<String> addressMaps = <String>[].obs;
+
   RxBool load = true.obs;
   RxBool shareLocation = false.obs;
+
   RxList<UserModel> userModels = <UserModel>[].obs;
+
   RxList<File> fileAvatars = <File>[].obs;
   RxList<String> urlAvatarChooses = <String>[].obs;
   RxList<File> fileRealPosts = <File>[].obs;
@@ -75,6 +80,10 @@ class AppController extends GetxController {
 
   RxString docIdRoomClickHome = ''.obs;
   RxInt indexPageHome = 0.obs;
+
+  RxInt timeOtp = AppConstant.timeCountsec.obs;
+
+  RxString mainUid = ''.obs;
 
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
@@ -249,7 +258,10 @@ class AppController extends GetxController {
   }
 
   Future<void> findUserModels() async {
-    userModels.clear();
+    
+    if (userModels.isNotEmpty) {
+      userModels.clear();
+    }
     var user = FirebaseAuth.instance.currentUser;
     await FirebaseFirestore.instance
         .collection('user')
@@ -333,7 +345,7 @@ class AppController extends GetxController {
         .then((value) async {
       int indexPage = 0;
       var user = FirebaseAuth.instance.currentUser;
-      var uidLogin = user!.uid ?? '';
+      var uidLogin = user!.uid;
 
       for (var element in value.docs) {
         RoomModel model = RoomModel.fromMap(element.data());
