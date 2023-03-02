@@ -60,7 +60,7 @@ class _AddProductState extends State<AddProduct> {
                             contentImage(boxConstraints, appController),
                             contentName(boxConstraints),
                             contentDetail(boxConstraints),
-                            // bottonSalse(appController),
+                            bottonSalse(appController),
                             contentGroup(
                                 appController: appController,
                                 boxConstraints: boxConstraints),

@@ -7,6 +7,7 @@ import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:get/get.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/room_model.dart';
+import 'package:realpost/states/add_product.dart';
 import 'package:realpost/states/private_chat.dart';
 import 'package:realpost/states/tab_price.dart';
 import 'package:realpost/utility/app_constant.dart';
@@ -29,7 +30,6 @@ class MainPageView extends StatefulWidget {
 
 class _MainPageViewState extends State<MainPageView> {
   AppController controller = Get.put(AppController());
-  
 
   TextEditingController textEditingController = TextEditingController();
 
@@ -39,8 +39,6 @@ class _MainPageViewState extends State<MainPageView> {
   void initState() {
     super.initState();
     AppService().initialSetup(context: context);
-
-   
 
     // trySignOut();
   }
@@ -123,6 +121,7 @@ class _MainPageViewState extends State<MainPageView> {
                                           : const SizedBox(),
                                       displayForm(
                                           boxConstraints, appController),
+                                          backHomeAndAdd(appController),
                                     ],
                                   ),
                                 ),
@@ -199,7 +198,9 @@ class _MainPageViewState extends State<MainPageView> {
     BoxConstraints boxConstraints,
     AppController appController,
   ) {
+    
     return Stack(
+      
       children: [
         displayImageRoom(element, boxConstraints),
         displayListMessage(
@@ -209,45 +210,20 @@ class _MainPageViewState extends State<MainPageView> {
           status: false,
           height: boxConstraints.maxHeight * 0.15,
         ),
-        displayListMessage(boxConstraints, appController,
-            top: element.safeProduct! ? 200 : 350,
-            status: true,
-            height: boxConstraints.maxHeight * 0.15,
-            reverse: true),
+        displayListMessage(
+          boxConstraints,
+          appController,
+          top: element.safeProduct! ? 200 : 350,
+          status: true,
+          height: boxConstraints.maxHeight * 0.15,
+          reverse: true,
+        ),
         displayOwnerRoom(boxConstraints, appController),
         chatPrivateImage(appController: appController),
+        
         chatPrivateButton(appController: appController),
-        Positioned(
-          right: 16,
-          bottom: 64,
-          child: Container(
-            decoration: AppConstant().boxCurve(color: Colors.white),
-            child: WidgetIconButton(
-              iconData: Icons.home,
-              color: Colors.green,
-              size: 36,
-              pressFunc: () async {
-                print(
-                    '##17feb clickHome id --> ${appController.docIdRoomClickHome}');
-
-                Map<String, dynamic> map = appController
-                    .roomModels[appController.indexPageHome.value]
-                    .toMap();
-
-                map['timestamp'] = Timestamp.fromDate(DateTime.now());
-                await FirebaseFirestore.instance
-                    .collection('room')
-                    .doc(appController.docIdRoomClickHome.value)
-                    .update(map)
-                    .then((value) {
-                  // AppService().initialSetup(context: context);
-                  Get.offAll(MainPageView());
-                });
-              },
-            ),
-          ),
-        ),
-        appController.roomModels[appController.indexBodyMainPageView.value]
+        
+         appController.roomModels[appController.indexBodyMainPageView.value]
                 .safeProduct!
             ? Positioned(
                 right: 16,
@@ -320,6 +296,55 @@ class _MainPageViewState extends State<MainPageView> {
               )
             : const SizedBox(),
       ],
+    );
+  }
+
+  Positioned backHomeAndAdd(AppController appController) {
+    return Positioned(
+      right: 16,
+      bottom: 128,
+      child: Column(
+        children: [
+          Container(
+          decoration: AppConstant().boxCurve(color: Colors.white),
+          child: WidgetIconButton(
+            pressFunc: () {
+              Get.to(const AddProduct());
+            },
+            iconData: Icons.add_box,
+            color: Colors.green,
+            size: 36,
+          ),
+        ),
+        const SizedBox(height: 16,),
+          Container(
+            decoration: AppConstant().boxCurve(color: Colors.white),
+            child: WidgetIconButton(
+              iconData: Icons.home,
+              color: Colors.green,
+              size: 36,
+              pressFunc: () async {
+                print(
+                    '##17feb clickHome id --> ${appController.docIdRoomClickHome}');
+
+                Map<String, dynamic> map = appController
+                    .roomModels[appController.indexPageHome.value]
+                    .toMap();
+
+                map['timestamp'] = Timestamp.fromDate(DateTime.now());
+                await FirebaseFirestore.instance
+                    .collection('room')
+                    .doc(appController.docIdRoomClickHome.value)
+                    .update(map)
+                    .then((value) {
+                  // AppService().initialSetup(context: context);
+                  Get.offAll(const MainPageView());
+                });
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -450,8 +475,6 @@ class _MainPageViewState extends State<MainPageView> {
             // myCondition = status ||
             //     (appController.chatModels[index].uidChat == user!.uid);
 
-            
-
             return myCondition
                 ? const SizedBox()
                 : Row(
@@ -482,13 +505,17 @@ class _MainPageViewState extends State<MainPageView> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            WidgetText(
-                              text: appController.chatModels[index].disPlayName,
-                              textStyle: AppConstant()
-                                  .h3Style(fontWeight: FontWeight.bold),
+                            SizedBox(width: boxConstraints.maxWidth * 0.5 - 80,
+                              child: WidgetText(
+                                text: appController.chatModels[index].disPlayName,
+                                textStyle: AppConstant()
+                                    .h3Style(fontWeight: FontWeight.bold),
+                              ),
                             ),
-                            WidgetText(
-                                text: appController.chatModels[index].message),
+                            SizedBox(width: boxConstraints.maxWidth * 0.5 - 80,
+                              child: WidgetText(
+                                  text: appController.chatModels[index].message),
+                            ),
                           ],
                         ),
                       ),
