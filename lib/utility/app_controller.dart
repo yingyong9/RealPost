@@ -353,8 +353,8 @@ class AppController extends GetxController {
         docIdRooms.add(element.id);
 
         if (uidLogin == model.uidCreate) {
-          print('##17feb page ที่มี indexPage --> $indexPage');
-          print('##17feb page ที่มี docIdRoom --> ${element.id}');
+          print('##3mar page ที่มี indexPage --> $indexPage');
+          print('##3mar page ที่มี docIdRoom --> ${element.id}');
           docIdRoomClickHome.value = element.id;
           indexPageHome.value = indexPage;
         }
