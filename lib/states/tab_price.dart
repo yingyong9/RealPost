@@ -63,12 +63,16 @@ class _TabPriceState extends State<TabPrice> {
                   SizedBox(
                     height: boxConstraints.maxHeight,
                     width: boxConstraints.maxWidth,
-                    child: appController.commentSalses.isEmpty 
+                    child: appController.commentSalses.isEmpty
                         ? const SizedBox()
-                        : Column(
-                            children: [
-                              SizedBox(
-                                height: boxConstraints.maxHeight - 60,
+                        : Column(crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                              const SizedBox(height: 8,),
+                            WidgetText(text: appController.roomModels[appController.indexBodyMainPageView.value].room, textStyle: AppConstant().h2Style(color: Colors.red),),
+                             WidgetText(text: appController.roomModels[appController.indexBodyMainPageView.value].detail ?? '', textStyle: AppConstant().h3Style(color: Colors.red),),
+                             const SizedBox(height: 8,),
+                            SizedBox(
+                                height: boxConstraints.maxHeight - 100,
                                 child: ListView.builder(
                                   reverse: true,
                                   itemCount: appController.commentSalses.length,
@@ -90,8 +94,7 @@ class _TabPriceState extends State<TabPrice> {
 
                                           if (user!.uid == uidWhoSalse) {
                                             print('##28jan Point Sent Chat');
-                                            Get.to(
-                                                PrivateChat(uidFriend: uidTap));
+                                            Get.to(PrivateChat(uidFriend: uidTap));
                                           }
                                         },
                                         child: Row(
@@ -102,10 +105,8 @@ class _TabPriceState extends State<TabPrice> {
                                                     .commentSalses[index]
                                                     .urlAvatar),
                                             Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 4,
-                                                      horizontal: 8),
+                                              padding: const EdgeInsets.symmetric(
+                                                  vertical: 4, horizontal: 8),
                                               decoration: AppConstant()
                                                   .boxChatGuest(
                                                       bgColor:
@@ -114,8 +115,7 @@ class _TabPriceState extends State<TabPrice> {
                                                 text: appController
                                                     .commentSalses[index].name,
                                                 textStyle: AppConstant()
-                                                    .h3Style(
-                                                        color: Colors.black),
+                                                    .h3Style(color: Colors.black),
                                               ),
                                             ),
                                           ],
@@ -124,16 +124,18 @@ class _TabPriceState extends State<TabPrice> {
                                       const SizedBox(
                                         width: 8,
                                       ),
-                                      CalculatePriceAndTime(roomModel: appController.roomModels[appController.indexBodyMainPageView.value],),
-                                      
+                                      CalculatePriceAndTime(
+                                        roomModel: appController.roomModels[
+                                            appController
+                                                .indexBodyMainPageView.value],
+                                      ),
                                     ],
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                          ],
+                        ),
                   ),
-                 
                   contentButton(boxConstraints, context,
                       appController: appController),
                 ],
@@ -158,13 +160,13 @@ class _TabPriceState extends State<TabPrice> {
               onTap: () {
                 if (user!.uid != roomModel!.uidCreate) {
                   appController.haveUserLoginInComment.value
-                      ?  AppBottomSheet().salseBottomSheet(
-                            roomModel: roomModel!,
-                            single: true,
-                            boxConstraints: boxConstraints,
-                            docIdRoom: widget.docIdRoom,
-                            context: context,
-                          )
+                      ? AppBottomSheet().salseBottomSheet(
+                          roomModel: roomModel!,
+                          single: true,
+                          boxConstraints: boxConstraints,
+                          docIdRoom: widget.docIdRoom,
+                          context: context,
+                        )
                       : AppDialog(context: context).normalDialog(
                           title: 'ยินดีต้อนรับสู่ความสนุก',
                           leadingWidget:

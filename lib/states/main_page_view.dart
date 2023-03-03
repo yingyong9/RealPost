@@ -102,7 +102,7 @@ class _MainPageViewState extends State<MainPageView> {
                                                         height: boxConstraints
                                                                     .maxHeight *
                                                                 0.5 -
-                                                            110,
+                                                            25,
                                                         child: TabPrice(
                                                           roomModel: element,
                                                           docIdRoom: appController
@@ -298,49 +298,16 @@ class _MainPageViewState extends State<MainPageView> {
     return Positioned(
       right: 16,
       bottom: 128,
-      child: Column(
-        children: [
-          Container(
-            decoration: AppConstant().boxCurve(color: Colors.white),
-            child: WidgetIconButton(
-              pressFunc: () {
-                Get.to(const AddProduct());
-              },
-              iconData: Icons.add_box,
-              color: Colors.green,
-              size: 36,
-            ),
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          Container(
-            decoration: AppConstant().boxCurve(color: Colors.white),
-            child: WidgetIconButton(
-              iconData: Icons.home,
-              color: Colors.green,
-              size: 36,
-              pressFunc: () async {
-                print(
-                    '##17feb clickHome id --> ${appController.docIdRoomClickHome}');
-
-                Map<String, dynamic> map = appController
-                    .roomModels[appController.indexPageHome.value]
-                    .toMap();
-
-                map['timestamp'] = Timestamp.fromDate(DateTime.now());
-                await FirebaseFirestore.instance
-                    .collection('room')
-                    .doc(appController.docIdRoomClickHome.value)
-                    .update(map)
-                    .then((value) {
-                  // AppService().initialSetup(context: context);
-                  Get.offAll(const MainPageView());
-                });
-              },
-            ),
-          ),
-        ],
+      child: Container(
+        decoration: AppConstant().boxCurve(color: Colors.white),
+        child: WidgetIconButton(
+          pressFunc: () {
+            Get.to(const AddProduct());
+          },
+          iconData: Icons.add_box,
+          color: Colors.green,
+          size: 36,
+        ),
       ),
     );
   }
