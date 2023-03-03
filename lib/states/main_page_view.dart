@@ -86,8 +86,7 @@ class _MainPageViewState extends State<MainPageView> {
                                                 width: boxConstraints.maxWidth,
                                                 height:
                                                     boxConstraints.maxHeight *
-                                                            0.5 -
-                                                        110,
+                                                        0.5,
                                                 child: Padding(
                                                   padding: const EdgeInsets
                                                           .symmetric(
@@ -119,9 +118,14 @@ class _MainPageViewState extends State<MainPageView> {
                                               ),
                                             )
                                           : const SizedBox(),
-                                      displayForm(
-                                          boxConstraints, appController),
-                                          backHomeAndAdd(appController),
+                                      appController
+                                              .roomModels[appController
+                                                  .indexBodyMainPageView.value]
+                                              .safeProduct!
+                                          ? const SizedBox()
+                                          : displayForm(
+                                              boxConstraints, appController),
+                                      backHomeAndAdd(appController),
                                     ],
                                   ),
                                 ),
@@ -198,32 +202,23 @@ class _MainPageViewState extends State<MainPageView> {
     BoxConstraints boxConstraints,
     AppController appController,
   ) {
-    
     return Stack(
-      
       children: [
         displayImageRoom(element, boxConstraints),
-        displayListMessage(
-          boxConstraints,
-          appController,
-          top: 48,
-          status: false,
-          height: boxConstraints.maxHeight * 0.15,
-        ),
-        displayListMessage(
-          boxConstraints,
-          appController,
-          top: element.safeProduct! ? 200 : 350,
-          status: true,
-          height: boxConstraints.maxHeight * 0.15,
-          reverse: true,
-        ),
+        appController.roomModels[appController.indexBodyMainPageView.value]
+                .safeProduct!
+            ? const SizedBox()
+            : displayListMessage(
+                boxConstraints,
+                appController,
+                top: 300,
+                height: boxConstraints.maxHeight * 0.30,
+                reverse: true,
+              ),
         displayOwnerRoom(boxConstraints, appController),
         chatPrivateImage(appController: appController),
-        
         chatPrivateButton(appController: appController),
-        
-         appController.roomModels[appController.indexBodyMainPageView.value]
+        appController.roomModels[appController.indexBodyMainPageView.value]
                 .safeProduct!
             ? Positioned(
                 right: 16,
@@ -306,17 +301,19 @@ class _MainPageViewState extends State<MainPageView> {
       child: Column(
         children: [
           Container(
-          decoration: AppConstant().boxCurve(color: Colors.white),
-          child: WidgetIconButton(
-            pressFunc: () {
-              Get.to(const AddProduct());
-            },
-            iconData: Icons.add_box,
-            color: Colors.green,
-            size: 36,
+            decoration: AppConstant().boxCurve(color: Colors.white),
+            child: WidgetIconButton(
+              pressFunc: () {
+                Get.to(const AddProduct());
+              },
+              iconData: Icons.add_box,
+              color: Colors.green,
+              size: 36,
+            ),
           ),
-        ),
-        const SizedBox(height: 16,),
+          const SizedBox(
+            height: 16,
+          ),
           Container(
             decoration: AppConstant().boxCurve(color: Colors.white),
             child: WidgetIconButton(
@@ -440,7 +437,7 @@ class _MainPageViewState extends State<MainPageView> {
     AppController appController, {
     required double top,
     double? marginLeft,
-    required bool status,
+    // required bool status,
     double? height,
     bool? reverse,
   }) {
@@ -456,71 +453,47 @@ class _MainPageViewState extends State<MainPageView> {
           physics: const ScrollPhysics(),
           itemCount: appController.chatModels.length,
           itemBuilder: (context, index) {
-            bool? myCondition; // ต่้องเป็น false ถึงจะแสดงผล
-            // status -> false PostLogin, true Geast
-            if (status) {
-              //การทำงานแสดง Post ของคนที่ Guest
-              myCondition = appController.chatModels[index].uidChat ==
-                  appController
-                      .roomModels[appController.indexBodyMainPageView.value]
-                      .uidCreate;
-            } else {
-              //การทำงานแสดง Post ของคนที่ login
-              myCondition = appController.chatModels[index].uidChat !=
-                  appController
-                      .roomModels[appController.indexBodyMainPageView.value]
-                      .uidCreate;
-            }
-
-            // myCondition = status ||
-            //     (appController.chatModels[index].uidChat == user!.uid);
-
-            return myCondition
-                ? const SizedBox()
-                : Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(
+                    left: marginLeft ?? 16,
+                    // right: 4,
+                  ),
+                  child: WidgetCircularImage(
+                    urlImage: appController.chatModels[index].urlAvatar,
+                    radius: 14,
+                  ),
+                ),
+                Container(
+                  constraints:
+                      BoxConstraints(maxWidth: boxConstraints.maxWidth * 0.5),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                  margin: const EdgeInsets.only(top: 4),
+                  decoration: AppConstant().boxChatGuest(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      status
-                          ? Container(
-                              margin: EdgeInsets.only(
-                                left: marginLeft ?? 16,
-                                // right: 4,
-                              ),
-                              child: WidgetCircularImage(
-                                urlImage:
-                                    appController.chatModels[index].urlAvatar,
-                                radius: 14,
-                              ),
-                            )
-                          : const SizedBox(
-                              width: 16,
-                            ),
-                      Container(
-                        constraints: BoxConstraints(
-                            maxWidth: boxConstraints.maxWidth * 0.5),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 4, horizontal: 12),
-                        margin: const EdgeInsets.only(top: 4),
-                        decoration: AppConstant().boxChatGuest(),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(width: boxConstraints.maxWidth * 0.5 - 80,
-                              child: WidgetText(
-                                text: appController.chatModels[index].disPlayName,
-                                textStyle: AppConstant()
-                                    .h3Style(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            SizedBox(width: boxConstraints.maxWidth * 0.5 - 80,
-                              child: WidgetText(
-                                  text: appController.chatModels[index].message),
-                            ),
-                          ],
+                      SizedBox(
+                        width: boxConstraints.maxWidth * 0.5 - 80,
+                        child: WidgetText(
+                          text: appController.chatModels[index].disPlayName,
+                          textStyle: AppConstant()
+                              .h3Style(fontWeight: FontWeight.bold),
                         ),
                       ),
+                      SizedBox(
+                        width: boxConstraints.maxWidth * 0.5 - 80,
+                        child: WidgetText(
+                            text: appController.chatModels[index].message),
+                      ),
                     ],
-                  );
+                  ),
+                ),
+              ],
+            );
           },
         ),
       ),

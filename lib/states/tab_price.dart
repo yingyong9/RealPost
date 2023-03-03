@@ -11,7 +11,6 @@ import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
-import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/calculate_price_and_time.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_image.dart';
@@ -64,7 +63,7 @@ class _TabPriceState extends State<TabPrice> {
                   SizedBox(
                     height: boxConstraints.maxHeight,
                     width: boxConstraints.maxWidth,
-                    child: appController.commentSalses.isEmpty
+                    child: appController.commentSalses.isEmpty 
                         ? const SizedBox()
                         : Column(
                             children: [
@@ -134,6 +133,7 @@ class _TabPriceState extends State<TabPrice> {
                             ],
                           ),
                   ),
+                 
                   contentButton(boxConstraints, context,
                       appController: appController),
                 ],
