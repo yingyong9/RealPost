@@ -9,11 +9,11 @@ class RoomModel {
   final Timestamp timestamp;
   final String? urlCamera;
   final List<String> urlRooms;
-
   final String? detail;
   final bool? safeProduct;
   final String? groupProduct;
   final String? singlePrice;
+  final String? minPrice;
   final String? totalPrice;
   final String? amountGroup;
   final String? stock;
@@ -29,6 +29,7 @@ class RoomModel {
     this.safeProduct,
     this.groupProduct,
     this.singlePrice,
+    this.minPrice,
     this.totalPrice,
     this.amountGroup,
     this.stock,
@@ -46,6 +47,7 @@ class RoomModel {
       'safeProduct': safeProduct,
       'groupProduct': groupProduct,
       'singlePrice': singlePrice,
+      'minPrice': singlePrice,
       'totalPrice': totalPrice,
       'amountGroup': amountGroup,
       'stock': stock,
@@ -64,6 +66,7 @@ class RoomModel {
       safeProduct: map['safeProduct'] ?? false,
       groupProduct: map['groupProduct'] ?? '',
       singlePrice: map['singlePrice'] ?? '',
+      minPrice: map['minPrice'] ?? '',
       totalPrice: map['totalPrice'] ?? '',
       amountGroup: map['amountGroup'] ?? '',
       stock: map['stock'] ?? '',
@@ -71,7 +74,7 @@ class RoomModel {
     );
   }
 
-  //  timestamp: (map['timestamp']),
+  //     timestamp: (map['timestamp']),
   //     urlCamera: (map['urlCamera'] ?? ''),
   //     urlRooms: List<String>.from(map['urlRooms'] ?? []),
   //     detail: map['detail'] ?? '',

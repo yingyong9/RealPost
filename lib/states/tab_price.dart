@@ -13,6 +13,7 @@ import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/widgets/calculate_price_and_time.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
+import 'package:realpost/widgets/widget_display_price.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_text.dart';
 import 'package:realpost/widgets/widget_text_button.dart';
@@ -65,14 +66,41 @@ class _TabPriceState extends State<TabPrice> {
                     width: boxConstraints.maxWidth,
                     child: appController.commentSalses.isEmpty
                         ? const SizedBox()
-                        : Column(crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                              const SizedBox(height: 8,),
-                            WidgetText(text: appController.roomModels[appController.indexBodyMainPageView.value].room, textStyle: AppConstant().h2Style(color: Colors.red),),
-                             WidgetText(text: appController.roomModels[appController.indexBodyMainPageView.value].detail ?? '', textStyle: AppConstant().h3Style(color: Colors.red),),
-                             const SizedBox(height: 8,),
-                            SizedBox(
-                                height: boxConstraints.maxHeight - 100,
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: WidgetText(
+                                  text: appController
+                                      .roomModels[appController
+                                          .indexBodyMainPageView.value]
+                                      .room,
+                                  textStyle:
+                                      AppConstant().h2Style(color: Colors.red),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: WidgetText(
+                                  text: appController
+                                          .roomModels[appController
+                                              .indexBodyMainPageView.value]
+                                          .detail ??
+                                      '',
+                                  textStyle:
+                                      AppConstant().h3Style(color: Colors.red),
+                                ),
+                              ),
+                              const WidgetDisplayPrice(),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              SizedBox(
+                                height: boxConstraints.maxHeight - 140,
                                 child: ListView.builder(
                                   reverse: true,
                                   itemCount: appController.commentSalses.length,
@@ -94,7 +122,8 @@ class _TabPriceState extends State<TabPrice> {
 
                                           if (user!.uid == uidWhoSalse) {
                                             print('##28jan Point Sent Chat');
-                                            Get.to(PrivateChat(uidFriend: uidTap));
+                                            Get.to(
+                                                PrivateChat(uidFriend: uidTap));
                                           }
                                         },
                                         child: Row(
@@ -105,8 +134,10 @@ class _TabPriceState extends State<TabPrice> {
                                                     .commentSalses[index]
                                                     .urlAvatar),
                                             Container(
-                                              padding: const EdgeInsets.symmetric(
-                                                  vertical: 4, horizontal: 8),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 4,
+                                                      horizontal: 8),
                                               decoration: AppConstant()
                                                   .boxChatGuest(
                                                       bgColor:
@@ -115,7 +146,8 @@ class _TabPriceState extends State<TabPrice> {
                                                 text: appController
                                                     .commentSalses[index].name,
                                                 textStyle: AppConstant()
-                                                    .h3Style(color: Colors.black),
+                                                    .h3Style(
+                                                        color: Colors.black),
                                               ),
                                             ),
                                           ],
@@ -133,8 +165,8 @@ class _TabPriceState extends State<TabPrice> {
                                   ),
                                 ),
                               ),
-                          ],
-                        ),
+                            ],
+                          ),
                   ),
                   contentButton(boxConstraints, context,
                       appController: appController),
@@ -153,86 +185,88 @@ class _TabPriceState extends State<TabPrice> {
       bottom: 0,
       child: SizedBox(
         width: boxConstraints.maxWidth,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            InkWell(
-              onTap: () {
-                if (user!.uid != roomModel!.uidCreate) {
-                  appController.haveUserLoginInComment.value
-                      ? AppBottomSheet().salseBottomSheet(
-                          roomModel: roomModel!,
-                          single: true,
-                          boxConstraints: boxConstraints,
-                          docIdRoom: widget.docIdRoom,
-                          context: context,
-                        )
-                      : AppDialog(context: context).normalDialog(
-                          title: 'ยินดีต้อนรับสู่ความสนุก',
-                          leadingWidget:
-                              const WidgetImage(path: 'images/avatar.png'),
-                          actions: [
-                            WidgetTextButton(
-                              text: 'เข้าร่วม',
-                              pressFunc: () {
-                                Get.back();
-
-                                AppBottomSheet().processAddNewCommentSalse(
-                                    appController.roomModels[appController
-                                        .indexBodyMainPageView.value],
-                                    appController,
-                                    appController.docIdRooms[appController
-                                        .indexBodyMainPageView.value],
-                                    true,
-                                    context);
-                              },
-                            ),
-                            WidgetTextButton(
-                              text: 'ยกเลิก',
-                              pressFunc: () {
-                                Get.back();
-                              },
-                            )
-                          ],
-                        );
-                }
-              },
-              child: appController.haveUserLoginInComment.value
-                  ? Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 4),
-                      decoration: const BoxDecoration(color: Colors.red),
-                      child: WidgetText(
-                        text: 'ซื้อเลย',
-                        textStyle: AppConstant()
-                            .h3Style(fontWeight: FontWeight.bold, size: 18),
+        child: Container(decoration: AppConstant().boxBlack(color: Colors.grey.shade300),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              InkWell(
+                onTap: () {
+                  if (user!.uid != roomModel!.uidCreate) {
+                    appController.haveUserLoginInComment.value
+                        ? AppBottomSheet().salseBottomSheet(
+                            roomModel: roomModel!,
+                            single: true,
+                            boxConstraints: boxConstraints,
+                            docIdRoom: widget.docIdRoom,
+                            context: context,
+                          )
+                        : AppDialog(context: context).normalDialog(
+                            title: 'ยินดีต้อนรับสู่ความสนุก',
+                            leadingWidget:
+                                const WidgetImage(path: 'images/avatar.png'),
+                            actions: [
+                              WidgetTextButton(
+                                text: 'เข้าร่วม',
+                                pressFunc: () {
+                                  Get.back();
+        
+                                  AppBottomSheet().processAddNewCommentSalse(
+                                      appController.roomModels[appController
+                                          .indexBodyMainPageView.value],
+                                      appController,
+                                      appController.docIdRooms[appController
+                                          .indexBodyMainPageView.value],
+                                      true,
+                                      context);
+                                },
+                              ),
+                              WidgetTextButton(
+                                text: 'ยกเลิก',
+                                pressFunc: () {
+                                  Get.back();
+                                },
+                              )
+                            ],
+                          );
+                  }
+                },
+                child: appController.haveUserLoginInComment.value
+                    ? Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 4),
+                        decoration: const BoxDecoration(color: Colors.red),
+                        child: WidgetText(
+                          text: 'ซื้อเลย',
+                          textStyle: AppConstant()
+                              .h3Style(fontWeight: FontWeight.bold, size: 18),
+                        ),
+                      )
+                    : Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 4),
+                        decoration: const BoxDecoration(color: Colors.red),
+                        child: WidgetText(
+                          text: labels[0],
+                          textStyle: AppConstant()
+                              .h3Style(fontWeight: FontWeight.bold, size: 18),
+                        ),
                       ),
-                    )
-                  : Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 4),
-                      decoration: const BoxDecoration(color: Colors.red),
-                      child: WidgetText(
-                        text: labels[0],
-                        textStyle: AppConstant()
-                            .h3Style(fontWeight: FontWeight.bold, size: 18),
-                      ),
-                    ),
-            ),
-            InkWell(
-              onTap: () {},
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                decoration: BoxDecoration(color: Colors.green.shade600),
-                child: WidgetText(
-                  text: labels[1],
-                  textStyle: AppConstant()
-                      .h3Style(fontWeight: FontWeight.bold, size: 18),
-                ),
               ),
-            ),
-          ],
+              // InkWell(
+              //   onTap: () {},
+              //   child: Container(
+              //     padding:
+              //         const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              //     decoration: BoxDecoration(color: Colors.green.shade600),
+              //     child: WidgetText(
+              //       text: labels[1],
+              //       textStyle: AppConstant()
+              //           .h3Style(fontWeight: FontWeight.bold, size: 18),
+              //     ),
+              //   ),
+              // ),
+            ],
+          ),
         ),
       ),
     );

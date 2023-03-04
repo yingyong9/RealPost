@@ -54,8 +54,8 @@ def keystoreProperties = new Properties()
         applicationId "com.yingyong.realpost"
         minSdkVersion 22
         targetSdkVersion 33
-        versionCode 8
-        versionName '1.0.8'
+        versionCode 9
+        versionName '1.0.9'
     }
 
        signingConfigs {
