@@ -77,47 +77,8 @@ class _MainPageViewState extends State<MainPageView> {
                                     children: [
                                       contentTop(element, boxConstraints,
                                           appController),
-                                      element.safeProduct!
-                                          ? Positioned(
-                                              top: boxConstraints.maxHeight *
-                                                  0.5,
-                                              child: Container(
-                                                color: Colors.white,
-                                                width: boxConstraints.maxWidth,
-                                                height:
-                                                    boxConstraints.maxHeight *
-                                                        0.5,
-                                                child: Padding(
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      horizontal: 16),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      SizedBox(
-                                                        width: boxConstraints
-                                                            .maxWidth,
-                                                        height: boxConstraints
-                                                                    .maxHeight *
-                                                                0.5 -
-                                                            25,
-                                                        child: TabPrice(
-                                                          roomModel: element,
-                                                          docIdRoom: appController
-                                                                  .docIdRooms[
-                                                              appController
-                                                                  .indexBodyMainPageView
-                                                                  .value],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          : const SizedBox(),
+                                      contentMidforSalse(element,
+                                          boxConstraints, appController),
                                       appController
                                               .roomModels[appController
                                                   .indexBodyMainPageView.value]
@@ -160,6 +121,34 @@ class _MainPageViewState extends State<MainPageView> {
             });
       }),
     );
+  }
+
+  Widget contentMidforSalse(RoomModel element, BoxConstraints boxConstraints,
+      AppController appController) {
+    return element.safeProduct!
+        ? Positioned(
+            top: boxConstraints.maxHeight * 0.5,
+            child: Container(
+              color: Colors.white,
+              width: boxConstraints.maxWidth,
+              height: boxConstraints.maxHeight * 0.5,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: boxConstraints.maxWidth,
+                    height: boxConstraints.maxHeight * 0.5 - 25,
+                    child: TabPrice(
+                      roomModel: element,
+                      docIdRoom: appController.docIdRooms[
+                          appController.indexBodyMainPageView.value],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        : const SizedBox();
   }
 
   Positioned displayForm(
@@ -205,99 +194,35 @@ class _MainPageViewState extends State<MainPageView> {
     return Stack(
       children: [
         displayImageRoom(element, boxConstraints),
-        appController.roomModels[appController.indexBodyMainPageView.value]
-                .safeProduct!
-            ? const SizedBox()
-            : displayListMessage(
-                boxConstraints,
-                appController,
-                top: 300,
-                height: boxConstraints.maxHeight * 0.30,
-                reverse: true,
-              ),
+        displayListChat(appController, boxConstraints),
         displayOwnerRoom(boxConstraints, appController),
         chatPrivateImage(appController: appController),
-        chatPrivateButton(appController: appController),
-        appController.roomModels[appController.indexBodyMainPageView.value]
-                .safeProduct!
-            ? Positioned(
-                right: 16,
-                top: 100,
-                child: SizedBox(
-                  width: boxConstraints.maxWidth * 0.6,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 12),
-                        decoration:
-                            AppConstant().boxBlack(color: Colors.black54),
-                        child: WidgetText(
-                          text:
-                              'ราคา ${appController.roomModels[appController.indexBodyMainPageView.value].singlePrice!} thb',
-                          textStyle: AppConstant().h2Style(color: Colors.white),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 16),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 12),
-                        decoration:
-                            AppConstant().boxCurve(color: Colors.white38),
-                        child: WidgetText(
-                          text:
-                              'ส่วนลด ${appController.roomModels[appController.indexBodyMainPageView.value].totalPrice} thb/ผู้เข้าร่วม 5 คน',
-                          textStyle: AppConstant().h3Style(color: Colors.black),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 16),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 12),
-                        decoration:
-                            AppConstant().boxCurve(color: Colors.white38),
-                        child: WidgetText(
-                          text:
-                              'จำนวนผู้เข้าร่วม ${appController.commentSalses.length} คน ',
-                          textStyle: AppConstant().h3Style(color: Colors.black),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 16),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 12),
-                        decoration:
-                            AppConstant().boxCurve(color: Colors.white38),
-                        child: WidgetText(
-                          text: 'ส่วนลด ',
-                          textStyle: AppConstant().h3Style(color: Colors.black),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 16),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 12),
-                        decoration:
-                            AppConstant().boxCurve(color: Colors.black38),
-                        child: WidgetText(
-                          text: 'ส่วนลด ',
-                          textStyle: AppConstant().h3Style(color: Colors.white),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            : const SizedBox(),
+        // chatPrivateButton(appController: appController),
+        // const WidgetDisplayPrice(),
       ],
     );
+  }
+
+  
+
+  Widget displayListChat(
+      AppController appController, BoxConstraints boxConstraints) {
+    return appController
+            .roomModels[appController.indexBodyMainPageView.value].safeProduct!
+        ? const SizedBox()
+        : displayListMessage(
+            boxConstraints,
+            appController,
+            top: 300,
+            height: boxConstraints.maxHeight * 0.30,
+            reverse: true,
+          );
   }
 
   Positioned backHomeAndAdd(AppController appController) {
     return Positioned(
       right: 16,
-      bottom: 128,
+      bottom: appController.roomModels[appController.indexBodyMainPageView.value].safeProduct! ? 300 : 128,
       child: Container(
         decoration: AppConstant().boxCurve(color: Colors.white),
         child: WidgetIconButton(
