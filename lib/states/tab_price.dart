@@ -64,109 +64,112 @@ class _TabPriceState extends State<TabPrice> {
                   SizedBox(
                     height: boxConstraints.maxHeight,
                     width: boxConstraints.maxWidth,
-                    child: appController.commentSalses.isEmpty
-                        ? const SizedBox()
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
-                                child: WidgetText(
-                                  text: appController
-                                      .roomModels[appController
-                                          .indexBodyMainPageView.value]
-                                      .room,
-                                  textStyle:
-                                      AppConstant().h2Style(color: Colors.red),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
-                                child: WidgetText(
-                                  text: appController
-                                          .roomModels[appController
-                                              .indexBodyMainPageView.value]
-                                          .detail ??
-                                      '',
-                                  textStyle:
-                                      AppConstant().h3Style(color: Colors.red),
-                                ),
-                              ),
-                              const WidgetDisplayPrice(),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              SizedBox(
-                                height: boxConstraints.maxHeight - 140,
-                                child: ListView.builder(
-                                  reverse: true,
-                                  itemCount: appController.commentSalses.length,
-                                  itemBuilder: (context, index) => Row(
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                          String uidTap = appController
-                                              .commentSalses[index].uid;
-                                          print('##28jan uidTap ---> $uidTap');
-
-                                          String uidWhoSalse = appController
-                                              .roomModels[appController
-                                                  .indexBodyMainPageView.value]
-                                              .uidCreate;
-
-                                          print(
-                                              '##28jan uidWhoSalse --> $uidWhoSalse');
-
-                                          if (user!.uid == uidWhoSalse) {
-                                            print('##28jan Point Sent Chat');
-                                            Get.to(
-                                                PrivateChat(uidFriend: uidTap));
-                                          }
-                                        },
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            WidgetCircularImage(
-                                                urlImage: appController
-                                                    .commentSalses[index]
-                                                    .urlAvatar),
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 4,
-                                                      horizontal: 8),
-                                              decoration: AppConstant()
-                                                  .boxChatGuest(
-                                                      bgColor:
-                                                          Colors.grey.shade300),
-                                              child: WidgetText(
-                                                text: appController
-                                                    .commentSalses[index].name,
-                                                textStyle: AppConstant()
-                                                    .h3Style(
-                                                        color: Colors.black),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      CalculatePriceAndTime(
-                                        roomModel: appController.roomModels[
-                                            appController
-                                                .indexBodyMainPageView.value],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                    child: ListView(
+                      children: [
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: WidgetText(
+                            text: appController
+                                .roomModels[
+                                    appController.indexBodyMainPageView.value]
+                                .room,
+                            textStyle: AppConstant().h2Style(color: Colors.red),
                           ),
+                        ),
+                        const WidgetDisplayPrice(),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        appController.commentSalses.isEmpty
+                            ? const SizedBox()
+                            : ListView.builder(
+                                shrinkWrap: true,
+                                physics: const ScrollPhysics(),
+                                reverse: true,
+                                // itemCount: appController.commentSalses.length,
+                                itemCount:
+                                    appController.commentSalses.length > 2
+                                        ? 2
+                                        : appController.commentSalses.length,
+                                itemBuilder: (context, index) => Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        String uidTap = appController
+                                            .commentSalses[index].uid;
+                                        print('##28jan uidTap ---> $uidTap');
+
+                                        String uidWhoSalse = appController
+                                            .roomModels[appController
+                                                .indexBodyMainPageView.value]
+                                            .uidCreate;
+
+                                        print(
+                                            '##28jan uidWhoSalse --> $uidWhoSalse');
+
+                                        if (user!.uid == uidWhoSalse) {
+                                          print('##28jan Point Sent Chat');
+                                          Get.to(
+                                              PrivateChat(uidFriend: uidTap));
+                                        }
+                                      },
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          WidgetCircularImage(
+                                              urlImage: appController
+                                                  .commentSalses[index]
+                                                  .urlAvatar),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 4, horizontal: 8),
+                                            decoration: AppConstant()
+                                                .boxChatGuest(
+                                                    bgColor:
+                                                        Colors.grey.shade300),
+                                            child: WidgetText(
+                                              text: appController
+                                                  .commentSalses[index].name,
+                                              textStyle: AppConstant()
+                                                  .h3Style(color: Colors.black),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 8,
+                                    ),
+                                    CalculatePriceAndTime(
+                                      roomModel: appController.roomModels[
+                                          appController
+                                              .indexBodyMainPageView.value],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                        const Divider(
+                          color: Colors.black,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: WidgetText(
+                            text: appController
+                                    .roomModels[appController
+                                        .indexBodyMainPageView.value]
+                                    .detail ??
+                                '',
+                            textStyle: AppConstant().h3Style(color: Colors.black),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 100,
+                        ),
+                      ],
+                    ),
                   ),
                   contentButton(boxConstraints, context,
                       appController: appController),
@@ -185,7 +188,8 @@ class _TabPriceState extends State<TabPrice> {
       bottom: 0,
       child: SizedBox(
         width: boxConstraints.maxWidth,
-        child: Container(decoration: AppConstant().boxBlack(color: Colors.grey.shade300),
+        child: Container(
+          decoration: AppConstant().boxBlack(color: Colors.grey.shade300),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -209,7 +213,7 @@ class _TabPriceState extends State<TabPrice> {
                                 text: 'เข้าร่วม',
                                 pressFunc: () {
                                   Get.back();
-        
+
                                   AppBottomSheet().processAddNewCommentSalse(
                                       appController.roomModels[appController
                                           .indexBodyMainPageView.value],
