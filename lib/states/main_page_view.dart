@@ -131,21 +131,12 @@ class _MainPageViewState extends State<MainPageView> {
             child: Container(
               color: Colors.white,
               width: boxConstraints.maxWidth,
-              height: boxConstraints.maxHeight * 0.5,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: boxConstraints.maxWidth,
-                    height: boxConstraints.maxHeight * 0.5 - 25,
-                    child: TabPrice(
+              height: boxConstraints.maxHeight * 0.5 -50,
+              child: TabPrice(
                       roomModel: element,
                       docIdRoom: appController.docIdRooms[
                           appController.indexBodyMainPageView.value],
                     ),
-                  ),
-                ],
-              ),
             ),
           )
         : const SizedBox();
