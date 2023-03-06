@@ -321,10 +321,11 @@ class AppService {
   }
 
   void initialSetup({required BuildContext context}) {
-    AppController appController = Get.put(AppController());
 
+    appController.processReadCommentSalses();
+   
     appController.readAllRoom().then((value) {
-      print('##5jan docIdRoom.length --> ${appController.docIdRooms.length}');
+      print('##6mar docIdRoom.length --> ${appController.docIdRooms.length}');
 
       bool noRoom = true;
 
@@ -371,7 +372,7 @@ class AppService {
 
     appController.readGroupProduct();
     appController.readTimeGroup();
-    appController.processReadCommentSalses();
+    
   }
 
   Future<void> insertPrivateChat(

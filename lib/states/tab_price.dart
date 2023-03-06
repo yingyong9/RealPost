@@ -38,7 +38,7 @@ class _TabPriceState extends State<TabPrice> {
   var bodys = <Widget>[const BodySinglePrice(), const BodyTotalPrice()];
 
   var labels = <String>[
-    'เข้าร่วมรับส่วนลด',
+    'Pin',
     'ชวนเพื่อนเข้าร่วม',
   ];
 
@@ -58,7 +58,7 @@ class _TabPriceState extends State<TabPrice> {
             init: AppController(),
             builder: (AppController appController) {
               print(
-                  '##26jan at TabPriceState ----> ${appController.commentSalses.length}');
+                  '##6mar at commentSalses ----> ${appController.commentSalses.length}');
               return Stack(
                 children: [
                   SizedBox(

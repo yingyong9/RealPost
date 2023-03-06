@@ -113,7 +113,7 @@ class AppController extends GetxController {
     }
 
     print(
-        '##26jan processReadCommentSalse Work at indexBody --> ${indexBodyMainPageView.value}');
+        '##6mar processReadCommentSalse Work at indexBody --> ${indexBodyMainPageView.value}');
     var user = FirebaseAuth.instance.currentUser;
     FirebaseFirestore.instance
         .collection('room')
