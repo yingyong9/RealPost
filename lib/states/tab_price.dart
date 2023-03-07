@@ -162,7 +162,8 @@ class _TabPriceState extends State<TabPrice> {
                                         .indexBodyMainPageView.value]
                                     .detail ??
                                 '',
-                            textStyle: AppConstant().h3Style(color: Colors.black),
+                            textStyle:
+                                AppConstant().h3Style(color: Colors.black),
                           ),
                         ),
                         const SizedBox(
@@ -236,6 +237,8 @@ class _TabPriceState extends State<TabPrice> {
                 },
                 child: appController.haveUserLoginInComment.value
                     ? Container(
+                      alignment: Alignment.center,
+                        width: boxConstraints.maxWidth * 0.5,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 4),
                         decoration: const BoxDecoration(color: Colors.red),
@@ -246,6 +249,8 @@ class _TabPriceState extends State<TabPrice> {
                         ),
                       )
                     : Container(
+                        alignment: Alignment.center,
+                        width: boxConstraints.maxWidth * 0.5,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 4),
                         decoration: const BoxDecoration(color: Colors.red),

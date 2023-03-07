@@ -65,7 +65,7 @@ class AppBottomSheet {
                         textStyle: AppConstant().h2Style(color: Colors.black),
                       ),
                       SizedBox(
-                        width: boxConstraints.maxWidth - 90,
+                        width: boxConstraints.maxWidth - 120,
                         child: WidgetText(
                           text: AppService()
                               .cutWord(string: roomModel.detail!, word: 25),

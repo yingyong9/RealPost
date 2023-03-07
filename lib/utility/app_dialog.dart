@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:realpost/models/chat_model.dart';
+import 'package:realpost/models/comment_salse_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/salse_group_model.dart';
 import 'package:realpost/models/user_model.dart';
 import 'package:realpost/states/album_picture.dart';
 import 'package:realpost/states/emoji_page.dart';
-import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
@@ -33,7 +33,68 @@ class AppDialog {
     required this.context,
   });
 
-  
+  void dialogCommentSalse(
+      {required List<CommentSalseModel> commentSalseModels}) {
+    print(
+        '##6mar ขนาดของ commentSalseModels ---> ${commentSalseModels.length}');
+    Get.dialog(
+      AlertDialog(
+        title: Column(
+          children: [
+            WidgetText(
+              text: 'ผู้เข้าร่วมทั้งหมด',
+              textStyle: AppConstant().h2Style(color: Colors.black),
+            ),
+            const Divider(
+              color: Colors.black,
+            )
+          ],
+        ),
+        content: ListView.builder(
+          shrinkWrap: true,
+          physics: const ScrollPhysics(),
+          itemCount: commentSalseModels.length,
+          itemBuilder: (context, index) => Column(
+            children: [
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      WidgetCircularImage(
+                          urlImage: commentSalseModels[index].urlAvatar),
+                          const SizedBox(width: 8,),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          WidgetText(
+                            text: commentSalseModels[index].name,
+                            textStyle: AppConstant().h3Style(color: Colors.black),
+                          ),
+                          WidgetText(
+                            text: AppService().timeStampToString(
+                                timestamp: commentSalseModels[index].timeComment,
+                                newPattern: 'dd/MM HH:mm'),
+                            textStyle: AppConstant().h3Style(color: Colors.black),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  WidgetButton(
+                    label: 'Pin',
+                    pressFunc: () {},bgColor: Colors.red.shade700,
+                  )
+                ],
+              ),
+              const Divider(
+                color: Colors.black,
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   void addressDialog() {
     print('##28jan addressDialog Work');
