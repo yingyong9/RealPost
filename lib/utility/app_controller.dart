@@ -113,7 +113,7 @@ class AppController extends GetxController {
     }
 
     print(
-        '##26jan processReadCommentSalse Work at indexBody --> ${indexBodyMainPageView.value}');
+        '##6mar processReadCommentSalse Work at indexBody --> ${indexBodyMainPageView.value}');
     var user = FirebaseAuth.instance.currentUser;
     FirebaseFirestore.instance
         .collection('room')
@@ -133,8 +133,17 @@ class AppController extends GetxController {
           commentSalses.add(model);
           docIdCommentSalses.add(element.id);
 
-          haveUserLoginInComment.value = (user!.uid == model.uid);
+          print('##6mar uidComment ---> ${model.uid}');
+
+          if (user!.uid == model.uid) {
+            haveUserLoginInComment.value = true;
+          }
+
+          
         }
+        print(
+            '##6mar haveUserLoginInCommenent ---> ${haveUserLoginInComment.value} ');
+        print('##6mar uidLogin อยู่ --> ${user!.uid}');
       }
     });
   }
@@ -258,7 +267,6 @@ class AppController extends GetxController {
   }
 
   Future<void> findUserModels() async {
-    
     if (userModels.isNotEmpty) {
       userModels.clear();
     }

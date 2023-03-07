@@ -38,7 +38,7 @@ class _TabPriceState extends State<TabPrice> {
   var bodys = <Widget>[const BodySinglePrice(), const BodyTotalPrice()];
 
   var labels = <String>[
-    'เข้าร่วมรับส่วนลด',
+    'Pin',
     'ชวนเพื่อนเข้าร่วม',
   ];
 
@@ -58,7 +58,7 @@ class _TabPriceState extends State<TabPrice> {
             init: AppController(),
             builder: (AppController appController) {
               print(
-                  '##26jan at TabPriceState ----> ${appController.commentSalses.length}');
+                  '##6mar at commentSalses ----> ${appController.commentSalses.length}');
               return Stack(
                 children: [
                   SizedBox(
@@ -162,7 +162,8 @@ class _TabPriceState extends State<TabPrice> {
                                         .indexBodyMainPageView.value]
                                     .detail ??
                                 '',
-                            textStyle: AppConstant().h3Style(color: Colors.black),
+                            textStyle:
+                                AppConstant().h3Style(color: Colors.black),
                           ),
                         ),
                         const SizedBox(
@@ -236,6 +237,8 @@ class _TabPriceState extends State<TabPrice> {
                 },
                 child: appController.haveUserLoginInComment.value
                     ? Container(
+                      alignment: Alignment.center,
+                        width: boxConstraints.maxWidth * 0.5,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 4),
                         decoration: const BoxDecoration(color: Colors.red),
@@ -246,6 +249,8 @@ class _TabPriceState extends State<TabPrice> {
                         ),
                       )
                     : Container(
+                        alignment: Alignment.center,
+                        width: boxConstraints.maxWidth * 0.5,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 4),
                         decoration: const BoxDecoration(color: Colors.red),

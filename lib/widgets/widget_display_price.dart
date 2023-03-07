@@ -1,7 +1,11 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:realpost/models/comment_salse_model.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
+import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
@@ -55,9 +59,25 @@ class WidgetDisplayPrice extends StatelessWidget {
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                SizedBox(width: 30,height: 30,
+                                SizedBox(
+                                  width: 30,
+                                  height: 30,
                                   child: WidgetIconButton(
-                                    pressFunc: () {},iconData: Icons.person, padding: 1, color: Colors.black,
+                                    pressFunc: () {
+                                      var commentSalses = <CommentSalseModel>[];
+                                      for (var element
+                                          in appController.commentSalses) {
+                                        commentSalses.add(element);
+                                      }
+
+                                      AppDialog(context: context)
+                                          .dialogCommentSalse(
+                                              commentSalseModels:
+                                                  commentSalses);
+                                    },
+                                    iconData: Icons.person,
+                                    // padding: 1,
+                                    color: Colors.black,
                                   ),
                                 ),
                                 WidgetText(

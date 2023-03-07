@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/utility/app_constant.dart';
-import 'package:realpost/widgets/widget_icon_button.dart';
+import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
 class CalculatePriceAndTime extends StatefulWidget {
@@ -24,21 +24,36 @@ class _CalculatePriceAndTimeState extends State<CalculatePriceAndTime> {
     return LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
       return Container(
         margin: const EdgeInsets.only(top: 8),
-        // width: 150,
+        width: 200,
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
 
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
+        child: Column(
           children: [
-            WidgetText(
-                text: 'รวม ',
-                textStyle: AppConstant().h3Style(color: Colors.black)),
-            const Icon(Icons.person),
-            WidgetText(
-              text: 'ลด 1 thb',
-              textStyle: AppConstant().h3Style(color: Colors.black),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    WidgetText(
+                        text: 'Pin แล้ว ',
+                        textStyle: AppConstant().h3Style(color: Colors.black)),
+                    // const Icon(Icons.person),
+                    WidgetText(
+                      text: 'ลด 1 thb',
+                      textStyle: AppConstant().h3Style(color: Colors.black),
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                WidgetButton(
+                  label: 'Pin',
+                  pressFunc: () {},
+                  bgColor: Colors.red.shade700,
+                )
+              ],
             ),
-           
+            // const Divider(color: Colors.black,),
           ],
         ),
       );

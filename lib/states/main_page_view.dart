@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_print, sort_child_properties_last
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
@@ -55,13 +54,12 @@ class _MainPageViewState extends State<MainPageView> {
         return GetX(
             init: AppController(),
             builder: (AppController appController) {
-              print(
-                  '##17feb indexPage --> ${appController.indexBodyMainPageView}');
+              print('indexPage --> ${appController.indexBodyMainPageView}');
 
               return SafeArea(
-                child: (appController.roomModels.isEmpty) ||
-                        (appController.userModels.isEmpty) ||
-                        (appController.userModelAtRooms.isEmpty)
+                child: ((appController.roomModels.isEmpty) &&
+                        (appController.userModels.isEmpty) &&
+                        (appController.userModelAtRooms.isEmpty))
                     ? const SizedBox()
                     : GestureDetector(
                         behavior: HitTestBehavior.opaque,
@@ -131,12 +129,12 @@ class _MainPageViewState extends State<MainPageView> {
             child: Container(
               color: Colors.white,
               width: boxConstraints.maxWidth,
-              height: boxConstraints.maxHeight * 0.5 -50,
+              height: boxConstraints.maxHeight * 0.5 - 50,
               child: TabPrice(
-                      roomModel: element,
-                      docIdRoom: appController.docIdRooms[
-                          appController.indexBodyMainPageView.value],
-                    ),
+                roomModel: element,
+                docIdRoom: appController
+                    .docIdRooms[appController.indexBodyMainPageView.value],
+              ),
             ),
           )
         : const SizedBox();
@@ -194,8 +192,6 @@ class _MainPageViewState extends State<MainPageView> {
     );
   }
 
-  
-
   Widget displayListChat(
       AppController appController, BoxConstraints boxConstraints) {
     return appController
@@ -213,7 +209,11 @@ class _MainPageViewState extends State<MainPageView> {
   Positioned backHomeAndAdd(AppController appController) {
     return Positioned(
       right: 16,
-      bottom: appController.roomModels[appController.indexBodyMainPageView.value].safeProduct! ? 300 : 128,
+      bottom: appController
+              .roomModels[appController.indexBodyMainPageView.value]
+              .safeProduct!
+          ? 300
+          : 128,
       child: Container(
         decoration: AppConstant().boxCurve(color: Colors.white),
         child: WidgetIconButton(
