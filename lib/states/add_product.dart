@@ -26,7 +26,7 @@ class AddProduct extends StatefulWidget {
 }
 
 class _AddProductState extends State<AddProduct> {
-  String? name, detail, singlePrice, totalPrice, amountGroup, stock;
+  String? name, detail, singlePrice, amountGroup, stock;
   var user = FirebaseAuth.instance.currentUser;
 
   @override
@@ -67,7 +67,8 @@ class _AddProductState extends State<AddProduct> {
                             contentAddForm(
                                 appController: appController,
                                 boxConstraints: boxConstraints,
-                                title: 'ราคาขาย',subHead: 'ราคาตั้งก่อนลด',
+                                title: 'ราคาขาย',
+                                // subHead: 'ราคาตั้งก่อนลด',
                                 contentWidget: WidgetForm(
                                   width: boxConstraints.maxWidth * 0.5,
                                   textInputType: TextInputType.number,
@@ -79,16 +80,15 @@ class _AddProductState extends State<AddProduct> {
                             contentAddForm(
                                 appController: appController,
                                 boxConstraints: boxConstraints,
-                                title: 'ส่วนลด',subHead: 'ต่อผู้เข้าร่วมเข้าร่วม 5 คน',
+                                title: 'กำหนดจำนวนคน Pin',
                                 contentWidget: WidgetForm(
                                   width: boxConstraints.maxWidth * 0.5,
                                   textInputType: TextInputType.number,
                                   textAlign: TextAlign.end,
                                   changeFunc: (p0) {
-                                    totalPrice = p0.trim();
+                                    amountGroup = p0.trim();
                                   },
                                 )),
-                          
                             contentAddForm(
                                 appController: appController,
                                 boxConstraints: boxConstraints,
@@ -137,11 +137,11 @@ class _AddProductState extends State<AddProduct> {
                                     AppSnackBar().normalSnackBar(
                                         title: 'ราคาขาย ?',
                                         message: 'กรุณากรอก ราคา');
-                                  } else if (totalPrice?.isEmpty ?? true) {
+                                  } else if (amountGroup?.isEmpty ?? true) {
                                     AppSnackBar().normalSnackBar(
-                                        title: 'ส่วนลด ?',
-                                        message: 'กรุณากรอก ราคา');
-                                  } else  {
+                                        title: 'กำหนดจำนวนคน Pin ?',
+                                        message: 'กรุณากรอก กำหนดจำนวนคน Pin');
+                                  } else {
                                     //ขายของ
                                     var urlRooms = await AppService()
                                         .processUploadMultiPhoto(
@@ -164,18 +164,23 @@ class _AddProductState extends State<AddProduct> {
                                                     .chooseGroupProducts.last ??
                                                 '',
                                             singlePrice: singlePrice ?? '',
-                                            totalPrice: totalPrice ?? '',
+                                            totalPrice: '',
                                             amountGroup: amountGroup ?? '',
                                             stock: stock ?? '',
                                             timeGroup: appController
                                                 .chooseTimeGroups.last);
 
                                     print(
-                                        '##6feb ขายของ roomModel --> ${roomModel.toMap()}');
+                                        '##6mar ขายของ roomModel --> ${roomModel.toMap()}');
 
                                     await AppService()
                                         .processInsertRoom(roomModel: roomModel)
                                         .then((value) {
+                                      // Get.offAllNamed('/mainPageView');
+
+                                      AppService()
+                                          .initialSetup(context: context);
+
                                       Get.back();
                                     });
                                   }
@@ -202,7 +207,7 @@ class _AddProductState extends State<AddProduct> {
                                                   .chooseGroupProducts.last ??
                                               '',
                                           singlePrice: singlePrice ?? '',
-                                          totalPrice: totalPrice ?? '',
+                                          totalPrice: '',
                                           amountGroup: amountGroup ?? '',
                                           stock: stock ?? '',
                                           timeGroup: appController

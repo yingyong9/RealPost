@@ -89,7 +89,6 @@ class _TabPriceState extends State<TabPrice> {
                                 shrinkWrap: true,
                                 physics: const ScrollPhysics(),
                                 reverse: true,
-                                // itemCount: appController.commentSalses.length,
                                 itemCount:
                                     appController.commentSalses.length > 2
                                         ? 2
@@ -147,6 +146,8 @@ class _TabPriceState extends State<TabPrice> {
                                       roomModel: appController.roomModels[
                                           appController
                                               .indexBodyMainPageView.value],
+                                      amountPin:
+                                          appController.commentSalses.length,
                                     ),
                                   ],
                                 ),
@@ -235,9 +236,14 @@ class _TabPriceState extends State<TabPrice> {
                           );
                   }
                 },
-                child: appController.haveUserLoginInComment.value
+                child: ((appController.haveUserLoginInComment.value) &&
+                        (int.parse(appController
+                                .roomModels[
+                                    appController.indexBodyMainPageView.value]
+                                .amountGroup!) ==
+                            appController.salsegroups.length))
                     ? Container(
-                      alignment: Alignment.center,
+                        alignment: Alignment.center,
                         width: boxConstraints.maxWidth * 0.5,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 4),
@@ -255,25 +261,12 @@ class _TabPriceState extends State<TabPrice> {
                             horizontal: 16, vertical: 4),
                         decoration: const BoxDecoration(color: Colors.red),
                         child: WidgetText(
-                          text: labels[0],
+                          text: 'Pin',
                           textStyle: AppConstant()
                               .h3Style(fontWeight: FontWeight.bold, size: 18),
                         ),
                       ),
               ),
-              // InkWell(
-              //   onTap: () {},
-              //   child: Container(
-              //     padding:
-              //         const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              //     decoration: BoxDecoration(color: Colors.green.shade600),
-              //     child: WidgetText(
-              //       text: labels[1],
-              //       textStyle: AppConstant()
-              //           .h3Style(fontWeight: FontWeight.bold, size: 18),
-              //     ),
-              //   ),
-              // ),
             ],
           ),
         ),

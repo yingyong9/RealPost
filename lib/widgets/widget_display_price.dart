@@ -27,26 +27,11 @@ class WidgetDisplayPrice extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          children: [
-                            WidgetText(
-                              text:
-                                  'ราคา ${appController.roomModels[appController.indexBodyMainPageView.value].singlePrice!}',
-                              textStyle:
-                                  AppConstant().h2Style(color: Colors.red),
-                            ),
-                            WidgetText(
-                              text: appController
-                                      .roomModels[appController
-                                          .indexBodyMainPageView.value]
-                                      .minPrice!
-                                      .isEmpty
-                                  ? ' thb'
-                                  : ' - ${appController.roomModels[appController.indexBodyMainPageView.value].minPrice} thb',
-                              textStyle:
-                                  AppConstant().h2Style(color: Colors.red),
-                            ),
-                          ],
+                        child: WidgetText(
+                          text:
+                              'ราคา ${appController.roomModels[appController.indexBodyMainPageView.value].singlePrice!} thb     เหลือเวลา 24.00.00',
+                          textStyle:
+                              AppConstant().h2Style(color: Colors.red),
                         ),
                       ),
                       Container(
@@ -89,7 +74,7 @@ class WidgetDisplayPrice extends StatelessWidget {
                               ],
                             ),
                             WidgetText(
-                              text: '890thb',
+                              text: 'Pin ${appController.roomModels[appController.indexBodyMainPageView.value].amountGroup}',
                               textStyle:
                                   AppConstant().h3Style(color: Colors.black),
                             ),
