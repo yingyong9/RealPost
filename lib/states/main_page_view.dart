@@ -218,7 +218,9 @@ class _MainPageViewState extends State<MainPageView> {
         decoration: AppConstant().boxCurve(color: Colors.white),
         child: WidgetIconButton(
           pressFunc: () {
-            Get.to(const AddProduct());
+            Get.to(const AddProduct())!.then((value) {
+              
+            });
           },
           iconData: Icons.add_box,
           color: Colors.green,

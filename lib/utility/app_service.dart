@@ -322,7 +322,7 @@ class AppService {
 
   void initialSetup({required BuildContext context}) {
 
-    appController.processReadCommentSalses();
+    
    
     appController.readAllRoom().then((value) {
       print('##6mar docIdRoom.length --> ${appController.docIdRooms.length}');
@@ -334,6 +334,8 @@ class AppService {
           noRoom = false;
         }
       }
+
+      appController.processReadCommentSalses();
 
       if (noRoom) {
         Get.to(const TakePhotoOnly());

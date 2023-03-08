@@ -10,9 +10,11 @@ class CalculatePriceAndTime extends StatefulWidget {
   const CalculatePriceAndTime({
     Key? key,
     required this.roomModel,
+    required this.amountPin,
   }) : super(key: key);
 
   final RoomModel roomModel;
+  final int amountPin;
 
   @override
   State<CalculatePriceAndTime> createState() => _CalculatePriceAndTimeState();
@@ -26,28 +28,18 @@ class _CalculatePriceAndTimeState extends State<CalculatePriceAndTime> {
         margin: const EdgeInsets.only(top: 8),
         width: 200,
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-
         child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               // mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  children: [
-                    WidgetText(
-                        text: 'Pin แล้ว ',
-                        textStyle: AppConstant().h3Style(color: Colors.black)),
-                    // const Icon(Icons.person),
-                    WidgetText(
-                      text: 'ลด 1 thb',
-                      textStyle: AppConstant().h3Style(color: Colors.black),
-                    ),
-                  ],
-                ),
+                WidgetText(
+                    text: 'ขาดอีก ${int.parse(widget.roomModel.amountGroup!) - widget.amountPin} คน',
+                    textStyle: AppConstant().h3Style(color: Colors.black)),
                 const Spacer(),
                 WidgetButton(
-                  label: 'Pin',
+                  label: widget.amountPin == int.parse(widget.roomModel.amountGroup!) ? 'ซื้อเลย' :'Pin',
                   pressFunc: () {},
                   bgColor: Colors.red.shade700,
                 )
