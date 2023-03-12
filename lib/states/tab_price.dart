@@ -93,7 +93,7 @@ class _TabPriceState extends State<TabPrice> {
                                     appController.commentSalses.length > 2
                                         ? 2
                                         : appController.commentSalses.length,
-                                itemBuilder: (context, index) => Row(
+                                itemBuilder: (context, index) => Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     InkWell(
                                       onTap: () {
@@ -139,15 +139,13 @@ class _TabPriceState extends State<TabPrice> {
                                         ],
                                       ),
                                     ),
-                                    const SizedBox(
-                                      width: 8,
-                                    ),
+                                   
                                     CalculatePriceAndTime(
                                       roomModel: appController.roomModels[
                                           appController
                                               .indexBodyMainPageView.value],
                                       amountPin:
-                                          appController.commentSalses.length,
+                                          appController.commentSalses.length, maxWidth: boxConstraints.maxWidth,
                                     ),
                                   ],
                                 ),
@@ -182,10 +180,16 @@ class _TabPriceState extends State<TabPrice> {
     );
   }
 
-  Positioned contentButton(BoxConstraints boxConstraints, BuildContext context,
-      {required AppController appController}) {
+  Positioned contentButton(
+    BoxConstraints boxConstraints,
+    BuildContext context, {
+    required AppController appController,
+
+  }) {
     print(
-        '##28jan haveUserLoginComment ===> ${appController.haveUserLoginInComment}');
+        '##9mar จำนวนของ Pin ===> ${appController.roomModels[appController.indexBodyMainPageView.value].amountGroup}');
+         print(
+        '##9mar จำนวนคนที่ช่วย Pin ===> ${appController.commentSalses.length}');
     return Positioned(
       bottom: 0,
       child: SizedBox(
@@ -240,9 +244,9 @@ class _TabPriceState extends State<TabPrice> {
                         (int.parse(appController
                                 .roomModels[
                                     appController.indexBodyMainPageView.value]
-                                .amountGroup!) ==
-                            appController.salsegroups.length))
-                    ? Container(
+                                .amountGroup!) <=
+                            appController.commentSalses.length))
+                    ? Container(  
                         alignment: Alignment.center,
                         width: boxConstraints.maxWidth * 0.5,
                         padding: const EdgeInsets.symmetric(

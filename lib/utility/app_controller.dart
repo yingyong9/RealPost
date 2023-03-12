@@ -85,6 +85,8 @@ class AppController extends GetxController {
 
   RxString mainUid = ''.obs;
 
+  RxList<bool> tabChooses = <bool>[].obs;
+
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
       salsegroups.clear();
