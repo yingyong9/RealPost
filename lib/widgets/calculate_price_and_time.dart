@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:realpost/models/room_model.dart';
+import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_text.dart';
@@ -12,17 +13,24 @@ class CalculatePriceAndTime extends StatefulWidget {
     required this.roomModel,
     required this.amountPin,
     required this.maxWidth,
+    required this.docIdRoom,
   }) : super(key: key);
 
   final RoomModel roomModel;
   final int amountPin;
   final double maxWidth;
+  final String docIdRoom;
 
   @override
   State<CalculatePriceAndTime> createState() => _CalculatePriceAndTimeState();
 }
 
 class _CalculatePriceAndTimeState extends State<CalculatePriceAndTime> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
@@ -46,9 +54,19 @@ class _CalculatePriceAndTimeState extends State<CalculatePriceAndTime> {
                       textStyle: AppConstant().h3Style(color: Colors.black)),
                   const Spacer(),
                   WidgetButton(
-                   label: 'ซื้อเลย',
+                    label: 'ซื้อเลย',
                     pressFunc: () {
-                      
+                      print('docIdRoom =====> ${widget.docIdRoom}');
+                      print('boxConstaint ---> ${boxConstraints.maxWidth}');
+
+                      AppBottomSheet().salseBottomSheet(
+                        roomModel: widget.roomModel,
+                        single: true,
+                        boxConstraints:
+                            BoxConstraints(maxWidth: widget.maxWidth),
+                        docIdRoom: widget.docIdRoom,
+                        context: context,
+                      );
                     },
                     bgColor: Colors.red.shade700,
                   )
