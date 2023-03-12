@@ -144,6 +144,18 @@ class AppBottomSheet {
                           label: 'ซื้อ',
                           pressFunc: () async {
                             Get.back();
+
+                            if (!(appController.haveUserLoginInComment.value)) {
+                               AppBottomSheet().processAddNewCommentSalse(
+                                      appController.roomModels[appController
+                                          .indexBodyMainPageView.value],
+                                      appController,
+                                      appController.docIdRooms[appController
+                                          .indexBodyMainPageView.value],
+                                      true,
+                                      context);
+                            }
+
                             String uidFriend = roomModel.uidCreate;
                             String contentSend =
                                 'ต้องการซื้อ ${roomModel.room} จำนวน ${appController.amountSalse} ช้ิน ราคา ${roomModel.singlePrice} thb';
@@ -160,7 +172,7 @@ class AppBottomSheet {
                             chatModel = ChatModel.fromMap(map);
 
                             print(
-                                '##4feb  chatModel ---> ${chatModel.toMap()}');
+                                '##12mar  chatModel ---> ${chatModel.toMap()}');
 
                             var user = FirebaseAuth.instance.currentUser;
 
@@ -169,7 +181,7 @@ class AppBottomSheet {
                                     uidLogin: user!.uid, uidFriend: uidFriend)
                                 .then((value) {
                               print(
-                                  '##4feb docIdPrivateChat ----> ${appController.docIdPrivateChats.last}');
+                                  '##12mar docIdPrivateChat ----> ${appController.docIdPrivateChats.last}');
 
                               AppService().processInsertPrivateChat(
                                   docIdPrivateChat:

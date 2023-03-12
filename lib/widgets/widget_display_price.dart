@@ -1,7 +1,9 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import 'package:realpost/models/comment_salse_model.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
@@ -10,7 +12,12 @@ import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
 class WidgetDisplayPrice extends StatelessWidget {
-  const WidgetDisplayPrice({super.key});
+  const WidgetDisplayPrice({
+    Key? key,
+    required this.maxWidth,
+  }) : super(key: key);
+
+  final double maxWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +37,7 @@ class WidgetDisplayPrice extends StatelessWidget {
                         child: WidgetText(
                           text:
                               'ราคา ${appController.roomModels[appController.indexBodyMainPageView.value].singlePrice!} thb     เหลือเวลา 24.00.00',
-                          textStyle:
-                              AppConstant().h2Style(color: Colors.red),
+                          textStyle: AppConstant().h2Style(color: Colors.red),
                         ),
                       ),
                       Container(
@@ -57,8 +63,12 @@ class WidgetDisplayPrice extends StatelessWidget {
 
                                       AppDialog(context: context)
                                           .dialogCommentSalse(
-                                              commentSalseModels:
-                                                  commentSalses);
+                                              commentSalseModels: commentSalses,
+                                              roomModel:
+                                                  appController.roomModels[
+                                                      appController
+                                                          .indexBodyMainPageView
+                                                          .value], maxWidth: maxWidth, docIdRoom: appController.docIdRooms[appController.indexBodyMainPageView.value]);
                                     },
                                     iconData: Icons.person,
                                     // padding: 1,
@@ -74,7 +84,8 @@ class WidgetDisplayPrice extends StatelessWidget {
                               ],
                             ),
                             WidgetText(
-                              text: 'Pin ${appController.roomModels[appController.indexBodyMainPageView.value].amountGroup}',
+                              text:
+                                  'Pin ${appController.roomModels[appController.indexBodyMainPageView.value].amountGroup}',
                               textStyle:
                                   AppConstant().h3Style(color: Colors.black),
                             ),

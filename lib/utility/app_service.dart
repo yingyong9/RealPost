@@ -248,7 +248,7 @@ class AppService {
       if (commentSalseModel.single) {
         //ซื่อคนเดียว
         print('##28jan single Work');
-        Get.back();
+        // Get.back();
 
         // AppDialog(context: context).addressDialog();
       } else {

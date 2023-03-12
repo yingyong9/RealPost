@@ -79,7 +79,7 @@ class _TabPriceState extends State<TabPrice> {
                             textStyle: AppConstant().h2Style(color: Colors.red),
                           ),
                         ),
-                        const WidgetDisplayPrice(),
+                         WidgetDisplayPrice(maxWidth: boxConstraints.maxWidth,),
                         const SizedBox(
                           height: 8,
                         ),
@@ -204,7 +204,8 @@ class _TabPriceState extends State<TabPrice> {
               InkWell(
                 onTap: () {
                   if (user!.uid != roomModel!.uidCreate) {
-                    appController.haveUserLoginInComment.value
+                    // appController.haveUserLoginInComment.value
+                    true
                         ? AppBottomSheet().salseBottomSheet(
                             roomModel: roomModel!,
                             single: true,
