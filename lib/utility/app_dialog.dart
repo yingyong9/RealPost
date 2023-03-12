@@ -12,6 +12,7 @@ import 'package:realpost/models/salse_group_model.dart';
 import 'package:realpost/models/user_model.dart';
 import 'package:realpost/states/album_picture.dart';
 import 'package:realpost/states/emoji_page.dart';
+import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
@@ -34,7 +35,7 @@ class AppDialog {
   });
 
   void dialogCommentSalse(
-      {required List<CommentSalseModel> commentSalseModels}) {
+      {required List<CommentSalseModel> commentSalseModels, required RoomModel roomModel, required double maxWidth, required String docIdRoom,}) {
     print(
         '##6mar ขนาดของ commentSalseModels ---> ${commentSalseModels.length}');
     Get.dialog(
@@ -56,33 +57,53 @@ class AppDialog {
           itemCount: commentSalseModels.length,
           itemBuilder: (context, index) => Column(
             children: [
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
                       WidgetCircularImage(
                           urlImage: commentSalseModels[index].urlAvatar),
-                          const SizedBox(width: 8,),
+                      const SizedBox(
+                        width: 8,
+                      ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           WidgetText(
                             text: commentSalseModels[index].name,
-                            textStyle: AppConstant().h3Style(color: Colors.black),
+                            textStyle:
+                                AppConstant().h3Style(color: Colors.black),
                           ),
                           WidgetText(
                             text: AppService().timeStampToString(
-                                timestamp: commentSalseModels[index].timeComment,
+                                timestamp:
+                                    commentSalseModels[index].timeComment,
                                 newPattern: 'dd/MM HH:mm'),
-                            textStyle: AppConstant().h3Style(color: Colors.black),
+                            textStyle:
+                                AppConstant().h3Style(color: Colors.black),
                           ),
                         ],
                       ),
                     ],
                   ),
                   WidgetButton(
-                    label: 'Pin',
-                    pressFunc: () {},bgColor: Colors.red.shade700,
+                    label: 'ซื้อเลย',
+                    pressFunc: () {
+                      Get.back();
+
+                      AppBottomSheet().salseBottomSheet(
+                        roomModel: roomModel,
+                        single: true,
+                        boxConstraints:
+                            BoxConstraints(maxWidth: maxWidth),
+                        docIdRoom: docIdRoom,
+                        context: context,
+                      );
+
+
+                    },
+                    bgColor: Colors.red.shade700,
                   )
                 ],
               ),

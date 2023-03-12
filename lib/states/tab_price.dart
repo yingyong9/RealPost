@@ -79,7 +79,7 @@ class _TabPriceState extends State<TabPrice> {
                             textStyle: AppConstant().h2Style(color: Colors.red),
                           ),
                         ),
-                        const WidgetDisplayPrice(),
+                         WidgetDisplayPrice(maxWidth: boxConstraints.maxWidth,),
                         const SizedBox(
                           height: 8,
                         ),
@@ -94,6 +94,8 @@ class _TabPriceState extends State<TabPrice> {
                                         ? 2
                                         : appController.commentSalses.length,
                                 itemBuilder: (context, index) => Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     InkWell(
                                       onTap: () {
@@ -139,15 +141,14 @@ class _TabPriceState extends State<TabPrice> {
                                         ],
                                       ),
                                     ),
-                                    const SizedBox(
-                                      width: 8,
-                                    ),
                                     CalculatePriceAndTime(
                                       roomModel: appController.roomModels[
                                           appController
                                               .indexBodyMainPageView.value],
                                       amountPin:
                                           appController.commentSalses.length,
+                                      maxWidth: boxConstraints.maxWidth,
+                                      docIdRoom: appController.docIdRooms[appController.indexBodyMainPageView.value],
                                     ),
                                   ],
                                 ),
@@ -182,10 +183,15 @@ class _TabPriceState extends State<TabPrice> {
     );
   }
 
-  Positioned contentButton(BoxConstraints boxConstraints, BuildContext context,
-      {required AppController appController}) {
+  Positioned contentButton(
+    BoxConstraints boxConstraints,
+    BuildContext context, {
+    required AppController appController,
+  }) {
     print(
-        '##28jan haveUserLoginComment ===> ${appController.haveUserLoginInComment}');
+        '##9mar จำนวนของ Pin ===> ${appController.roomModels[appController.indexBodyMainPageView.value].amountGroup}');
+    print(
+        '##9mar จำนวนคนที่ช่วย Pin ===> ${appController.commentSalses.length}');
     return Positioned(
       bottom: 0,
       child: SizedBox(
@@ -198,7 +204,8 @@ class _TabPriceState extends State<TabPrice> {
               InkWell(
                 onTap: () {
                   if (user!.uid != roomModel!.uidCreate) {
-                    appController.haveUserLoginInComment.value
+                    // appController.haveUserLoginInComment.value
+                    true
                         ? AppBottomSheet().salseBottomSheet(
                             roomModel: roomModel!,
                             single: true,
@@ -240,8 +247,8 @@ class _TabPriceState extends State<TabPrice> {
                         (int.parse(appController
                                 .roomModels[
                                     appController.indexBodyMainPageView.value]
-                                .amountGroup!) ==
-                            appController.salsegroups.length))
+                                .amountGroup!) <=
+                            appController.commentSalses.length))
                     ? Container(
                         alignment: Alignment.center,
                         width: boxConstraints.maxWidth * 0.5,

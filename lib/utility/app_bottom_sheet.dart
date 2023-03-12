@@ -12,13 +12,65 @@ import 'package:realpost/states/private_chat.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
+import 'package:realpost/utility/app_snackbar.dart';
 import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_choose_amout_salse.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
+import 'package:realpost/widgets/widget_listview_hoizontal.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
 class AppBottomSheet {
+  AppController appController = Get.put(AppController());
+
+  void orderButtonSheet({
+    required RoomModel roomModel,
+  }) {
+    Get.bottomSheet(
+      Container(
+        decoration: const BoxDecoration(color: Colors.white),
+        height: 200,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            WidgetText(
+              text: 'กรุณาเลือกสินค้า',
+              textStyle: AppConstant().h2Style(color: Colors.black),
+            ),
+            WidgetListViewHorizontal(roomModel: roomModel),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                const WidgetChooseAmountSalse(),
+                WidgetButton(
+                  label: 'OK',
+                  pressFunc: () async {
+                    int? indexChoose;
+                    int i = 0;
+                    for (var element in appController.tabChooses) {
+                      if (element) {
+                        indexChoose = i;
+                      }
+                      i++;
+                    }
+
+                    print('indexChoose =-----> $indexChoose');
+                    if (indexChoose == null) {
+                      AppSnackBar().normalSnackBar(
+                          title: 'ยังไม่ได้เลือกสินค้่า',
+                          message: 'กรุณาเลือกสินค่า', bgColor: Colors.red, textColor: Colors.white);
+                    } else {}
+                  },
+                  bgColor: Colors.red.shade700,
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void salseBottomSheet({
     required RoomModel roomModel,
     required bool single,
@@ -32,10 +84,7 @@ class AppBottomSheet {
       Container(
         decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.only(
-              // topLeft: Radius.circular(30),
-              // topRight: Radius.circular(30),
-              ),
+          borderRadius: BorderRadius.only(),
         ),
         height: 170,
         child: ListView(
@@ -89,15 +138,27 @@ class AppBottomSheet {
                     textStyle:
                         AppConstant().h2Style(color: Colors.red.shade700),
                   ),
-                  WidgetChooseAmountSalse(),
+                  const WidgetChooseAmountSalse(),
                   single
                       ? WidgetButton(
                           label: 'ซื้อ',
                           pressFunc: () async {
                             Get.back();
+
+                            if (!(appController.haveUserLoginInComment.value)) {
+                               AppBottomSheet().processAddNewCommentSalse(
+                                      appController.roomModels[appController
+                                          .indexBodyMainPageView.value],
+                                      appController,
+                                      appController.docIdRooms[appController
+                                          .indexBodyMainPageView.value],
+                                      true,
+                                      context);
+                            }
+
                             String uidFriend = roomModel.uidCreate;
                             String contentSend =
-                                'ต้องการซื้อ ${roomModel.room} จำนวน ${appController.amountSalse} ช้ิน';
+                                'ต้องการซื้อ ${roomModel.room} จำนวน ${appController.amountSalse} ช้ิน ราคา ${roomModel.singlePrice} thb';
                             Get.to(PrivateChat(
                               uidFriend: uidFriend,
                             ));
@@ -111,7 +172,7 @@ class AppBottomSheet {
                             chatModel = ChatModel.fromMap(map);
 
                             print(
-                                '##4feb  chatModel ---> ${chatModel.toMap()}');
+                                '##12mar  chatModel ---> ${chatModel.toMap()}');
 
                             var user = FirebaseAuth.instance.currentUser;
 
@@ -120,16 +181,13 @@ class AppBottomSheet {
                                     uidLogin: user!.uid, uidFriend: uidFriend)
                                 .then((value) {
                               print(
-                                  '##4feb docIdPrivateChat ----> ${appController.docIdPrivateChats.last}');
+                                  '##12mar docIdPrivateChat ----> ${appController.docIdPrivateChats.last}');
 
                               AppService().processInsertPrivateChat(
                                   docIdPrivateChat:
                                       appController.docIdPrivateChats.last,
                                   chatModel: chatModel);
                             });
-
-                            // processAddNewCommentSalse(
-                            //     roomModel, appController, docIdRoom, single, context);
                           },
                           bgColor: Colors.red.shade700,
                         )

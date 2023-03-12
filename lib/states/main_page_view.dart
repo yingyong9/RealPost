@@ -9,6 +9,7 @@ import 'package:realpost/models/room_model.dart';
 import 'package:realpost/states/add_product.dart';
 import 'package:realpost/states/private_chat.dart';
 import 'package:realpost/states/tab_price.dart';
+import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
@@ -84,7 +85,8 @@ class _MainPageViewState extends State<MainPageView> {
                                           ? const SizedBox()
                                           : displayForm(
                                               boxConstraints, appController),
-                                      backHomeAndAdd(appController),
+                                      backHomeAndAdd(appController,
+                                          boxConstraints: boxConstraints),
                                     ],
                                   ),
                                 ),
@@ -129,7 +131,8 @@ class _MainPageViewState extends State<MainPageView> {
             child: Container(
               color: Colors.white,
               width: boxConstraints.maxWidth,
-              height: boxConstraints.maxHeight * 0.5 - 50,
+              // height: boxConstraints.maxHeight * 0.5 - 50,
+              height: boxConstraints.maxHeight * 0.5 - 30,
               child: TabPrice(
                 roomModel: element,
                 docIdRoom: appController
@@ -206,26 +209,40 @@ class _MainPageViewState extends State<MainPageView> {
           );
   }
 
-  Positioned backHomeAndAdd(AppController appController) {
+  Positioned backHomeAndAdd(AppController appController,
+      {required BoxConstraints boxConstraints}) {
     return Positioned(
       right: 16,
-      bottom: appController
-              .roomModels[appController.indexBodyMainPageView.value]
+      top: appController.roomModels[appController.indexBodyMainPageView.value]
               .safeProduct!
-          ? 300
-          : 128,
-      child: Container(
-        decoration: AppConstant().boxCurve(color: Colors.white),
-        child: WidgetIconButton(
-          pressFunc: () {
-            Get.to(const AddProduct())!.then((value) {
-              
-            });
-          },
-          iconData: Icons.add_box,
-          color: Colors.green,
-          size: 36,
-        ),
+          ? boxConstraints.maxHeight * 0.4 - 50
+          : boxConstraints.maxHeight * 0.7 - 50,
+      child: Column(
+        children: [
+          Container(
+            decoration: AppConstant().boxCurve(color: Colors.white),
+            child: WidgetIconButton(
+              pressFunc: () {
+                Get.to(const AddProduct())!.then((value) {});
+              },
+              iconData: Icons.add_box,
+              color: Colors.green,
+              size: 36,
+            ),
+          ),
+          appController.roomModels[appController.indexBodyMainPageView.value]
+                  .safeProduct!
+              ? const SizedBox()
+              : WidgetButton(
+                  label: 'สั่งสินค้า',
+                  pressFunc: () {
+                    AppBottomSheet().orderButtonSheet(
+                        roomModel: appController.roomModels[
+                            appController.indexBodyMainPageView.value]);
+                  },
+                  bgColor: Colors.red.shade700,
+                )
+        ],
       ),
     );
   }
@@ -402,13 +419,6 @@ class _MainPageViewState extends State<MainPageView> {
           )
           .toList(),
     );
-
-    //  WidgetImageInternet(
-    //   urlImage: roomModel.urlRooms.last,
-    //   width: boxConstraints.maxWidth,
-    //   height: boxConstraints.maxHeight * 0.6,
-    //   boxFit: BoxFit.cover,
-    // );
   }
 
   Positioned displayImageCamera(
