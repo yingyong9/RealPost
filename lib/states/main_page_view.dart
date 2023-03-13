@@ -223,6 +223,10 @@ class _MainPageViewState extends State<MainPageView> {
             decoration: AppConstant().boxCurve(color: Colors.white),
             child: WidgetIconButton(
               pressFunc: () {
+                if (appController.xFiles.isNotEmpty) {
+                  appController.xFiles.clear();
+                }
+
                 Get.to(const AddProduct())!.then((value) {});
               },
               iconData: Icons.add_box,

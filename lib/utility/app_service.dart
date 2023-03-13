@@ -461,9 +461,7 @@ class AppService {
   Future<void> processChooseMultiImage() async {
     AppController appController = Get.put(AppController());
 
-    if (appController.xFiles.isNotEmpty) {
-      appController.xFiles.clear();
-    }
+   
 
     await ImagePicker()
         .pickMultiImage(maxWidth: 800, maxHeight: 800)
