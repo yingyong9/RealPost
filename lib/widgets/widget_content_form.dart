@@ -191,8 +191,8 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
                   AppDialog(context: context).avatarBottonSheet();
                 } else {
                   ChatModel chatModel = await AppService().createChatModel();
-                  print('##9jan chatModel ---> ${chatModel.toMap()}');
-                  print('##9jan docIdRoom ---> ${widget.docId}');
+                  print('##13mar chatModel ---> ${chatModel.toMap()}');
+                  print('##13mar docIdRoom ---> ${widget.docId}');
 
                   await AppService().processInsertChat(
                       chatModel: chatModel, docId: widget.docId!);

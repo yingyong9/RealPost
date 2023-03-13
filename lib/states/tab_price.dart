@@ -14,6 +14,7 @@ import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/widgets/calculate_price_and_time.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_display_price.dart';
+import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_text.dart';
 import 'package:realpost/widgets/widget_text_button.dart';
@@ -79,7 +80,9 @@ class _TabPriceState extends State<TabPrice> {
                             textStyle: AppConstant().h2Style(color: Colors.red),
                           ),
                         ),
-                         WidgetDisplayPrice(maxWidth: boxConstraints.maxWidth,),
+                        WidgetDisplayPrice(
+                          maxWidth: boxConstraints.maxWidth,
+                        ),
                         const SizedBox(
                           height: 8,
                         ),
@@ -148,7 +151,9 @@ class _TabPriceState extends State<TabPrice> {
                                       amountPin:
                                           appController.commentSalses.length,
                                       maxWidth: boxConstraints.maxWidth,
-                                      docIdRoom: appController.docIdRooms[appController.indexBodyMainPageView.value],
+                                      docIdRoom: appController.docIdRooms[
+                                          appController
+                                              .indexBodyMainPageView.value],
                                     ),
                                   ],
                                 ),
@@ -201,6 +206,13 @@ class _TabPriceState extends State<TabPrice> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              Container(alignment: Alignment.topLeft,
+                width: boxConstraints.maxWidth * 0.5,
+                child: WidgetImage(
+                  path: 'images/icon2.png',
+                  size: 36,
+                ),
+              ),
               InkWell(
                 onTap: () {
                   if (user!.uid != roomModel!.uidCreate) {
