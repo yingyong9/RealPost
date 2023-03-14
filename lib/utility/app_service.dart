@@ -321,9 +321,7 @@ class AppService {
   }
 
   void initialSetup({required BuildContext context}) {
-
     
-   
     appController.readAllRoom().then((value) {
       print('##6mar docIdRoom.length --> ${appController.docIdRooms.length}');
 
@@ -374,7 +372,6 @@ class AppService {
 
     appController.readGroupProduct();
     appController.readTimeGroup();
-    
   }
 
   Future<void> insertPrivateChat(
@@ -460,8 +457,6 @@ class AppService {
 
   Future<void> processChooseMultiImage() async {
     AppController appController = Get.put(AppController());
-
-   
 
     await ImagePicker()
         .pickMultiImage(maxWidth: 800, maxHeight: 800)

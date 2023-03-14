@@ -34,16 +34,16 @@ class AppBottomSheet {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             WidgetText(
-              text: 'กรุณาเลือกสินค้า',
+              text: 'กรุณาเลือก',
               textStyle: AppConstant().h2Style(color: Colors.black),
             ),
             WidgetListViewHorizontal(roomModel: roomModel),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                const WidgetChooseAmountSalse(),
+                // const WidgetChooseAmountSalse(),
                 WidgetButton(
-                  label: 'OK',
+                  label: 'Pin',
                   pressFunc: () async {
                     int? indexChoose;
                     int i = 0;
@@ -54,12 +54,50 @@ class AppBottomSheet {
                       i++;
                     }
 
-                    print('indexChoose =-----> $indexChoose');
+                    print('##13mar indexChoose =-----> $indexChoose');
                     if (indexChoose == null) {
                       AppSnackBar().normalSnackBar(
                           title: 'ยังไม่ได้เลือกสินค้่า',
-                          message: 'กรุณาเลือกสินค่า', bgColor: Colors.red, textColor: Colors.white);
-                    } else {}
+                          message: 'กรุณาเลือกสินค่า',
+                          bgColor: Colors.red,
+                          textColor: Colors.white);
+                    } else {
+                      print(
+                          '##13mar นี่คือภาพที่เลือก url ---> ${roomModel.urlRooms[indexChoose]}');
+
+                      String uidFriend = roomModel.uidCreate;
+                      // String contentSend =
+                      //     'ต้องการซื้อ ${roomModel.room} จำนวน ${appController.amountSalse} ช้ิน ราคา ${roomModel.singlePrice} thb';
+                       String contentSend =  '...';
+                         
+                      Get.to(PrivateChat(
+                        uidFriend: uidFriend,
+                      ));
+
+                      ChatModel chatModel = await AppService().createChatModel(
+                          urlRealPost: roomModel.urlRooms[indexChoose]);
+
+                      Map<String, dynamic> map = chatModel.toMap();
+                      map['message'] = contentSend;
+                      chatModel = ChatModel.fromMap(map);
+
+                      print('##13mar  chatModel ---> ${chatModel.toMap()}');
+
+                      var user = FirebaseAuth.instance.currentUser;
+
+                      appController
+                          .processFindDocIdPrivateChat(
+                              uidLogin: user!.uid, uidFriend: uidFriend)
+                          .then((value) {
+                        print(
+                            '##12mar docIdPrivateChat ----> ${appController.docIdPrivateChats.last}');
+
+                        AppService().processInsertPrivateChat(
+                            docIdPrivateChat:
+                                appController.docIdPrivateChats.last,
+                            chatModel: chatModel);
+                      });
+                    }
                   },
                   bgColor: Colors.red.shade700,
                 )
@@ -141,19 +179,19 @@ class AppBottomSheet {
                   const WidgetChooseAmountSalse(),
                   single
                       ? WidgetButton(
-                          label: 'ซื้อ',
+                          label: 'Pin',
                           pressFunc: () async {
                             Get.back();
 
                             if (!(appController.haveUserLoginInComment.value)) {
-                               AppBottomSheet().processAddNewCommentSalse(
-                                      appController.roomModels[appController
-                                          .indexBodyMainPageView.value],
-                                      appController,
-                                      appController.docIdRooms[appController
-                                          .indexBodyMainPageView.value],
-                                      true,
-                                      context);
+                              AppBottomSheet().processAddNewCommentSalse(
+                                  appController.roomModels[appController
+                                      .indexBodyMainPageView.value],
+                                  appController,
+                                  appController.docIdRooms[appController
+                                      .indexBodyMainPageView.value],
+                                  true,
+                                  context);
                             }
 
                             String uidFriend = roomModel.uidCreate;

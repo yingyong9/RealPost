@@ -14,7 +14,6 @@ import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/widgets/calculate_price_and_time.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_display_price.dart';
-import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_text.dart';
 import 'package:realpost/widgets/widget_text_button.dart';
@@ -268,7 +267,7 @@ class _TabPriceState extends State<TabPrice> {
                             horizontal: 16, vertical: 4),
                         decoration: const BoxDecoration(color: Colors.red),
                         child: WidgetText(
-                          text: 'ซื้อเลย',
+                          text: 'Pin',
                           textStyle: AppConstant()
                               .h3Style(fontWeight: FontWeight.bold, size: 18),
                         ),
