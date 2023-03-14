@@ -54,7 +54,7 @@ class _CalculatePriceAndTimeState extends State<CalculatePriceAndTime> {
                       textStyle: AppConstant().h3Style(color: Colors.black)),
                   const Spacer(),
                   WidgetButton(
-                    label: 'ซื้อเลย',
+                    label: 'Pin',
                     pressFunc: () {
                       print('docIdRoom =====> ${widget.docIdRoom}');
                       print('boxConstaint ---> ${boxConstraints.maxWidth}');

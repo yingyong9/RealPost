@@ -88,7 +88,7 @@ class AppDialog {
                     ],
                   ),
                   WidgetButton(
-                    label: 'ซื้อเลย',
+                    label: 'Pin',
                     pressFunc: () {
                       Get.back();
 

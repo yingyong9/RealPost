@@ -123,8 +123,11 @@ class _MainPageViewState extends State<MainPageView> {
     );
   }
 
-  Widget contentMidforSalse(RoomModel element, BoxConstraints boxConstraints,
-      AppController appController) {
+  Widget contentMidforSalse(
+    RoomModel element,
+    BoxConstraints boxConstraints,
+    AppController appController,
+  ) {
     return element.safeProduct!
         ? Positioned(
             top: boxConstraints.maxHeight * 0.5,
@@ -238,7 +241,7 @@ class _MainPageViewState extends State<MainPageView> {
                   .safeProduct!
               ? const SizedBox()
               : WidgetButton(
-                  label: 'สั่งสินค้า',
+                  label: 'Pin',
                   pressFunc: () {
                     AppBottomSheet().orderButtonSheet(
                         roomModel: appController.roomModels[

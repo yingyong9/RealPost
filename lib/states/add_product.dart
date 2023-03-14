@@ -26,7 +26,7 @@ class AddProduct extends StatefulWidget {
 }
 
 class _AddProductState extends State<AddProduct> {
-  String? name, detail, singlePrice, amountGroup, stock;
+  String? name, detail, singlePrice, minPrice, amountGroup, stock;
   var user = FirebaseAuth.instance.currentUser;
 
   @override
@@ -67,7 +67,7 @@ class _AddProductState extends State<AddProduct> {
                             contentAddForm(
                                 appController: appController,
                                 boxConstraints: boxConstraints,
-                                title: 'ราคาขาย',
+                                title: 'ราคาขาย ที่ 1',
                                 // subHead: 'ราคาตั้งก่อนลด',
                                 contentWidget: WidgetForm(
                                   width: boxConstraints.maxWidth * 0.5,
@@ -75,6 +75,19 @@ class _AddProductState extends State<AddProduct> {
                                   textAlign: TextAlign.end,
                                   changeFunc: (p0) {
                                     singlePrice = p0.trim();
+                                  },
+                                )),
+                            contentAddForm(
+                                appController: appController,
+                                boxConstraints: boxConstraints,
+                                title: 'ราคาขาย ที่ 2',
+                                // subHead: 'ราคาตั้งก่อนลด',
+                                contentWidget: WidgetForm(
+                                  width: boxConstraints.maxWidth * 0.5,
+                                  textInputType: TextInputType.number,
+                                  textAlign: TextAlign.end,
+                                  changeFunc: (p0) {
+                                    minPrice = p0.trim();
                                   },
                                 )),
                             contentAddForm(
@@ -135,7 +148,11 @@ class _AddProductState extends State<AddProduct> {
                                         message: 'กรุณาเลือกหมวดหมู่');
                                   } else if (singlePrice?.isEmpty ?? true) {
                                     AppSnackBar().normalSnackBar(
-                                        title: 'ราคาขาย ?',
+                                        title: 'ราคาขาย ที่ 1 ?',
+                                        message: 'กรุณากรอก ราคา');
+                                  } else if (minPrice?.isEmpty ?? true) {
+                                    AppSnackBar().normalSnackBar(
+                                        title: 'ราคาขาย ที่ 2 ?',
                                         message: 'กรุณากรอก ราคา');
                                   } else if (amountGroup?.isEmpty ?? true) {
                                     AppSnackBar().normalSnackBar(
