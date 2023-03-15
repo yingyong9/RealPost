@@ -87,6 +87,8 @@ class AppController extends GetxController {
 
   RxList<bool> tabChooses = <bool>[].obs;
 
+  RxBool noRoom = true.obs;
+
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
       salsegroups.clear();
@@ -140,8 +142,6 @@ class AppController extends GetxController {
           if (user!.uid == model.uid) {
             haveUserLoginInComment.value = true;
           }
-
-          
         }
         print(
             '##6mar haveUserLoginInCommenent ---> ${haveUserLoginInComment.value} ');

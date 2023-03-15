@@ -43,7 +43,7 @@ class _PhoneNumberState extends State<PhoneNumber> {
           child: Column(
             children: [
               WidgetText(
-                text: 'เบอร์โทรศัพท์ ของคุณ',
+                text: 'กรอกเบอร์โทรศัพท์ เริ่มใช้งาน',
                 textStyle: AppConstant().h2Style(size: 18),
               ),
               WidgetForm(
