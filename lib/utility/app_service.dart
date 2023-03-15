@@ -99,6 +99,7 @@ class AppService {
                   email: havePhoneUserModel.email!,
                   password: havePhoneUserModel.password!)
               .then((value) {
+            appController.mainUid.value = value.user!.uid;
             Get.offAllNamed('/mainPageView');
           });
         } else {
@@ -111,6 +112,7 @@ class AppService {
               .createUserWithEmailAndPassword(email: email, password: password)
               .then((value) {
             String uidUser = value.user!.uid;
+            appController.mainUid.value = uidUser;
             print('##28feb uidUser ---> $uidUser');
             Get.offAll(DisplayName(
                 uidLogin: uidUser,
@@ -321,21 +323,20 @@ class AppService {
   }
 
   void initialSetup({required BuildContext context}) {
-    
     appController.readAllRoom().then((value) {
-      print('##6mar docIdRoom.length --> ${appController.docIdRooms.length}');
+      print('##15mar docIdRoom.length --> ${appController.docIdRooms.length}');
 
-      bool noRoom = true;
+      
 
       for (var element in appController.roomModels) {
         if (appController.mainUid.value == element.uidCreate) {
-          noRoom = false;
+          appController.noRoom.value = false;
         }
       }
 
       appController.processReadCommentSalses();
 
-      if (noRoom) {
+      if (appController.noRoom.value) {
         Get.to(const TakePhotoOnly());
       } else {
         print('##5jan Have Room');

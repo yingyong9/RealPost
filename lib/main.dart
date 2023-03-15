@@ -43,9 +43,10 @@ Future<void> main() async {
   // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
   await Firebase.initializeApp().then((value) {
+    
     AppController appController = Get.put(AppController());
     AppService().readAllUserModel().then((value) {
-      print('##28feb userModels ---> ${appController.userModels.length}');
+      print('##15mar userModels ---> ${appController.userModels.length}');
     });
 
     FirebaseAuth.instance.authStateChanges().listen((event) async {

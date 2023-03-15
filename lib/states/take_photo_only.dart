@@ -11,7 +11,6 @@ import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
-import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
 class TakePhotoOnly extends StatelessWidget {

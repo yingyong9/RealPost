@@ -19,6 +19,7 @@ import 'package:realpost/widgets/widget_content_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
+import 'package:realpost/widgets/widget_progress.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
 class MainPageView extends StatefulWidget {
@@ -58,65 +59,71 @@ class _MainPageViewState extends State<MainPageView> {
               print('indexPage --> ${appController.indexBodyMainPageView}');
 
               return SafeArea(
-                child: ((appController.roomModels.isEmpty) &&
-                        (appController.userModels.isEmpty) &&
-                        (appController.userModelAtRooms.isEmpty))
-                    ? const SizedBox()
-                    : GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () => FocusScope.of(context)
-                            .requestFocus(FocusScopeNode()),
-                        child: PageView(
-                          children: appController.roomModels
-                              .map(
-                                (element) => SizedBox(
-                                  width: boxConstraints.maxWidth,
-                                  height: boxConstraints.maxHeight,
-                                  child: Stack(
-                                    children: [
-                                      contentTop(element, boxConstraints,
-                                          appController),
-                                      contentMidforSalse(element,
-                                          boxConstraints, appController),
-                                      appController
-                                              .roomModels[appController
-                                                  .indexBodyMainPageView.value]
-                                              .safeProduct!
-                                          ? const SizedBox()
-                                          : displayForm(
+                child: appController.noRoom.value
+                    ? const WidgetProgress()
+                    : ((appController.roomModels.isEmpty) &&
+                            (appController.userModels.isEmpty) &&
+                            (appController.userModelAtRooms.isEmpty))
+                        ? const SizedBox()
+                        : GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () => FocusScope.of(context)
+                                .requestFocus(FocusScopeNode()),
+                            child: PageView(
+                              children: appController.roomModels
+                                  .map(
+                                    (element) => SizedBox(
+                                      width: boxConstraints.maxWidth,
+                                      height: boxConstraints.maxHeight,
+                                      child: Stack(
+                                        children: [
+                                          contentTop(element, boxConstraints,
+                                              appController),
+                                          contentMidforSalse(element,
                                               boxConstraints, appController),
-                                      backHomeAndAdd(appController,
-                                          boxConstraints: boxConstraints),
-                                    ],
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                          controller: pageViewController,
-                          scrollDirection: Axis.vertical,
-                          onPageChanged: (value) {
-                            appController.indexBodyMainPageView.value = value;
+                                          appController
+                                                  .roomModels[appController
+                                                      .indexBodyMainPageView
+                                                      .value]
+                                                  .safeProduct!
+                                              ? const SizedBox()
+                                              : displayForm(boxConstraints,
+                                                  appController),
+                                          backHomeAndAdd(appController,
+                                              boxConstraints: boxConstraints),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
+                              controller: pageViewController,
+                              scrollDirection: Axis.vertical,
+                              onPageChanged: (value) {
+                                appController.indexBodyMainPageView.value =
+                                    value;
 
-                            appController.amountSalse.value = 1;
+                                appController.amountSalse.value = 1;
 
-                            appController.haveUserLoginInComment.value = false;
+                                appController.haveUserLoginInComment.value =
+                                    false;
 
-                            appController.readAllChat(
-                                docIdRoom: appController.docIdRooms[
+                                appController.readAllChat(
+                                    docIdRoom: appController.docIdRooms[
+                                        appController
+                                            .indexBodyMainPageView.value]);
+
+                                if (appController.docIdRoomChooses.isNotEmpty) {
+                                  appController.docIdRoomChooses.clear();
+                                }
+
+                                appController.docIdRoomChooses.add(appController
+                                        .docIdRooms[
                                     appController.indexBodyMainPageView.value]);
 
-                            if (appController.docIdRoomChooses.isNotEmpty) {
-                              appController.docIdRoomChooses.clear();
-                            }
-
-                            appController.docIdRoomChooses.add(
-                                appController.docIdRooms[
-                                    appController.indexBodyMainPageView.value]);
-
-                            appController.processReadCommentSalses();
-                          },
-                        ),
-                      ),
+                                appController.processReadCommentSalses();
+                              },
+                            ),
+                          ),
               );
             });
       }),
@@ -207,7 +214,7 @@ class _MainPageViewState extends State<MainPageView> {
             boxConstraints,
             appController,
             top: 300,
-            height: boxConstraints.maxHeight * 0.30,
+            height: boxConstraints.maxHeight * 0.3,
             reverse: true,
           );
   }
