@@ -72,7 +72,8 @@ class _OtpCheckState extends State<OtpCheck> {
                       width: 300,
                       fieldWidth: 40,
                       onCompleted: (value) async {
-                        if ((widget.phoneNumber == '0819999999')&&(value == '123456')) {
+                        if ((widget.phoneNumber == '0819999999') &&
+                            (value == '123456')) {
                           await FirebaseAuth.instance
                               .signInWithEmailAndPassword(
                                   email: 'phone0819999999@realpost.com',
@@ -81,19 +82,28 @@ class _OtpCheckState extends State<OtpCheck> {
                             Get.offAllNamed('/mainPageView');
                           });
                         } else {
-                           AppService().verifyOTPThaibulk(
-                          token: token!,
-                          pin: value,
-                          context: context,
-                          phoneNumber: widget.phoneNumber,
-                        );
+                          AppService().verifyOTPThaibulk(
+                            token: token!,
+                            pin: value,
+                            context: context,
+                            phoneNumber: widget.phoneNumber,
+                          );
                         }
-
-                       
                       },
                     ),
+                   
                   ],
                 ),
+                const SizedBox(height: 32,),
+                 Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        appController.showFalseOTP.value ? WidgetText(
+                          text: 'OTP ผิด กรุณากรอกใหม่',
+                          textStyle: AppConstant().h3Style(color: Colors.red, fontWeight: FontWeight.bold),
+                        ) : const SizedBox(),
+                      ],
+                    ),
                 const Spacer(),
                 WidgetTextButton(
                   text: 'Change Your Phone Number',

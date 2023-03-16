@@ -89,6 +89,8 @@ class AppController extends GetxController {
 
   RxBool noRoom = true.obs;
 
+  RxBool showFalseOTP = false.obs;
+
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
       salsegroups.clear();
