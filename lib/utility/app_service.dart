@@ -121,15 +121,27 @@ class AppService {
                 password: password));
           });
         }
+      } else {
+        appController.showFalseOTP.value = true;
+
+        // AppSnackBar().normalSnackBar(
+        //   title: 'OTP ผิด',
+        //   message: 'กรอกใหม่อีกครั้ง',
+        //   second: 3,
+        //   textColor: Colors.red,
+        // );
       }
     }).catchError((onError) {
       print('##22feb errer code 400');
-      AppSnackBar().normalSnackBar(
-        title: 'OTP ผิด',
-        message: 'กรอกใหม่อีกครั้ง',
-        second: 3,
-        textColor: Colors.red,
-      );
+
+      appController.showFalseOTP.value = true;
+
+      // AppSnackBar().normalSnackBar(
+      //   title: 'OTP ผิด',
+      //   message: 'กรอกใหม่อีกครั้ง',
+      //   second: 3,
+      //   textColor: Colors.red,
+      // );
     });
   }
 
@@ -325,8 +337,6 @@ class AppService {
   void initialSetup({required BuildContext context}) {
     appController.readAllRoom().then((value) {
       print('##15mar docIdRoom.length --> ${appController.docIdRooms.length}');
-
-      
 
       for (var element in appController.roomModels) {
         if (appController.mainUid.value == element.uidCreate) {
