@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/states/add_product.dart';
+import 'package:realpost/states/display_profile.dart';
 import 'package:realpost/states/private_chat.dart';
 import 'package:realpost/states/tab_price.dart';
 import 'package:realpost/utility/app_bottom_sheet.dart';
@@ -56,7 +57,7 @@ class _MainPageViewState extends State<MainPageView> {
         return GetX(
             init: AppController(),
             builder: (AppController appController) {
-              print('indexPage --> ${appController.indexBodyMainPageView}');
+              print('##17mar mainUid ---> ${appController.mainUid}');
 
               return SafeArea(
                 child: appController.noRoom.value
@@ -198,7 +199,7 @@ class _MainPageViewState extends State<MainPageView> {
         displayImageRoom(element, boxConstraints),
         displayListChat(appController, boxConstraints),
         displayOwnerRoom(boxConstraints, appController),
-        chatPrivateImage(appController: appController),
+        // chatPrivateImage(appController: appController),
         // chatPrivateButton(appController: appController),
         // const WidgetDisplayPrice(),
       ],
@@ -226,9 +227,27 @@ class _MainPageViewState extends State<MainPageView> {
       top: appController.roomModels[appController.indexBodyMainPageView.value]
               .safeProduct!
           ? boxConstraints.maxHeight * 0.4 - 50
-          : boxConstraints.maxHeight * 0.7 - 50,
+          : boxConstraints.maxHeight * 0.7 - 150,
       child: Column(
         children: [
+          const WidgetImage(
+            path: 'images/icon2.png',
+            size: 60,
+          ),
+          Container(
+            decoration: AppConstant().boxCurve(color: Colors.green.shade900),
+            child: WidgetIconButton(
+              color: Colors.grey.shade300,
+              size: 36,
+              pressFunc: () {
+                Get.to(const DisplayProfile());
+              },
+              iconData: Icons.home,
+            ),
+          ),
+          const SizedBox(
+            height: 8,
+          ),
           Container(
             decoration: AppConstant().boxCurve(color: Colors.white),
             child: WidgetIconButton(
@@ -244,8 +263,13 @@ class _MainPageViewState extends State<MainPageView> {
               size: 36,
             ),
           ),
-          appController.roomModels[appController.indexBodyMainPageView.value]
-                  .safeProduct!
+          const SizedBox(
+            height: 8,
+          ),
+          (appController.roomModels[appController.indexBodyMainPageView.value]
+                      .uidCreate
+                      .toString() ==
+                  appController.mainUid.toString())
               ? const SizedBox()
               : WidgetButton(
                   label: 'Pin',
@@ -422,7 +446,7 @@ class _MainPageViewState extends State<MainPageView> {
       isLoop: true,
       height: roomModel.safeProduct!
           ? boxConstraints.maxHeight * 0.5
-          : boxConstraints.maxHeight - 110,
+          : boxConstraints.maxHeight - 70,
       children: roomModel.urlRooms
           .map(
             (e) => WidgetImageInternet(
@@ -471,12 +495,28 @@ class _MainPageViewState extends State<MainPageView> {
                                     appController.indexBodyMainPageView.value]
                                 .urlAvatar ??
                             AppConstant.urlAvatar),
-                    WidgetText(
-                      text: appController
-                          .userModelAtRooms[
-                              appController.indexBodyMainPageView.value]
-                          .displayName!,
-                      textStyle: AppConstant().h2Style(),
+                    const SizedBox(
+                      width: 16,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        WidgetText(
+                          text: appController
+                              .userModelAtRooms[
+                                  appController.indexBodyMainPageView.value]
+                              .displayName!,
+                          textStyle: AppConstant().h2Style(),
+                        ),
+                        WidgetText(
+                            text: AppService().timeStampToString(
+                                timestamp: appController
+                                    .roomModels[appController
+                                        .indexBodyMainPageView.value]
+                                    .timestamp,
+                                newPattern: 'dd MMM yyyy'))
+                      ],
                     )
                   ],
                 ),

@@ -52,8 +52,53 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
           hint: 'พิมพ์ข้อความ...',
           textStyle: AppConstant().h3Style(),
           controller: widget.textEditingController,
+          suffixIcon:  WidgetIconButton(
+            iconData: Icons.send,
+            pressFunc: () async {
+              if (widget.textEditingController.text.isEmpty) {
+                print('No Text form');
+
+                if (widget.appController.userModels[0].urlAvatar!.isNotEmpty) {
+                  // การทำงานครั้งที่สอง
+                  AppDialog(context: context).realPostBottonSheet(
+                      collection: widget.collection, docIdRoom: widget.docId!);
+                }
+              } else {
+                print(
+                    '##9jan text ที่โพส = ${widget.textEditingController.text}');
+
+                if (widget.appController.messageChats.isNotEmpty) {
+                  widget.appController.messageChats.clear();
+                }
+
+                widget.appController.messageChats
+                    .add(widget.textEditingController.text);
+
+                widget.textEditingController.text = '';
+
+                print(
+                    'userModel => ${widget.appController.userModels.last.toMap()}');
+
+                if (widget.appController.userModels.last.urlAvatar?.isEmpty ??
+                    true) {
+                  AppDialog(context: context).avatarBottonSheet();
+                } else {
+                  ChatModel chatModel = await AppService().createChatModel();
+                  print('##13mar chatModel ---> ${chatModel.toMap()}');
+                  print('##13mar docIdRoom ---> ${widget.docId}');
+
+                  await AppService().processInsertChat(
+                      chatModel: chatModel, docId: widget.docId!);
+
+                  // AppDialog(context: context).realPostBottonSheet(
+                  //     collection: widget.collection,
+                  //     docIdRoom: widget.docId!);
+                }
+              }
+            },
+          ),
         ),
-        contentSizebox(context),
+        // contentSizebox(context),
       ],
     );
   }
@@ -144,12 +189,7 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
               ],
             ),
           ),
-          WidgetIconButton(
-            pressFunc: () {
-              Get.to(const DisplayProfile());
-            },
-            iconData: Icons.home,
-          ),
+          
           // WidgetImage(
           //   path: 'images/addgreen.png',
           //   size: 24,
@@ -159,51 +199,7 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
           //     });
           //   },
           // ),
-          WidgetIconButton(
-            iconData: Icons.send,
-            pressFunc: () async {
-              if (widget.textEditingController.text.isEmpty) {
-                print('No Text form');
-
-                if (widget.appController.userModels[0].urlAvatar!.isNotEmpty) {
-                  // การทำงานครั้งที่สอง
-                  AppDialog(context: context).realPostBottonSheet(
-                      collection: widget.collection, docIdRoom: widget.docId!);
-                }
-              } else {
-                print(
-                    '##9jan text ที่โพส = ${widget.textEditingController.text}');
-
-                if (widget.appController.messageChats.isNotEmpty) {
-                  widget.appController.messageChats.clear();
-                }
-
-                widget.appController.messageChats
-                    .add(widget.textEditingController.text);
-
-                widget.textEditingController.text = '';
-
-                print(
-                    'userModel => ${widget.appController.userModels.last.toMap()}');
-
-                if (widget.appController.userModels.last.urlAvatar?.isEmpty ??
-                    true) {
-                  AppDialog(context: context).avatarBottonSheet();
-                } else {
-                  ChatModel chatModel = await AppService().createChatModel();
-                  print('##13mar chatModel ---> ${chatModel.toMap()}');
-                  print('##13mar docIdRoom ---> ${widget.docId}');
-
-                  await AppService().processInsertChat(
-                      chatModel: chatModel, docId: widget.docId!);
-
-                  // AppDialog(context: context).realPostBottonSheet(
-                  //     collection: widget.collection,
-                  //     docIdRoom: widget.docId!);
-                }
-              }
-            },
-          ),
+         
         ],
       ),
     );

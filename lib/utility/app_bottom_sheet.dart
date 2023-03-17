@@ -68,11 +68,7 @@ class AppBottomSheet {
                       String uidFriend = roomModel.uidCreate;
                       // String contentSend =
                       //     'ต้องการซื้อ ${roomModel.room} จำนวน ${appController.amountSalse} ช้ิน ราคา ${roomModel.singlePrice} thb';
-                       String contentSend =  '...';
-                         
-                      Get.to(PrivateChat(
-                        uidFriend: uidFriend,
-                      ));
+                      String contentSend = '...';
 
                       ChatModel chatModel = await AppService().createChatModel(
                           urlRealPost: roomModel.urlRooms[indexChoose]);
@@ -81,7 +77,7 @@ class AppBottomSheet {
                       map['message'] = contentSend;
                       chatModel = ChatModel.fromMap(map);
 
-                      print('##13mar  chatModel ---> ${chatModel.toMap()}');
+                      print('##17mar  chatModel ---> ${chatModel.toMap()}');
 
                       var user = FirebaseAuth.instance.currentUser;
 
@@ -90,12 +86,34 @@ class AppBottomSheet {
                               uidLogin: user!.uid, uidFriend: uidFriend)
                           .then((value) {
                         print(
-                            '##12mar docIdPrivateChat ----> ${appController.docIdPrivateChats.last}');
+                            '##17mar docIdPrivateChat ----> ${appController.docIdPrivateChats.last}');
 
-                        AppService().processInsertPrivateChat(
-                            docIdPrivateChat:
-                                appController.docIdPrivateChats.last,
-                            chatModel: chatModel);
+                        AppService()
+                            .processInsertPrivateChat(
+                                docIdPrivateChat:
+                                    appController.docIdPrivateChats.last,
+                                chatModel: chatModel)
+                            .then((value) {
+                          Get.to(PrivateChat(
+                            uidFriend: uidFriend,
+                          ));
+                        });
+                      }).catchError((onError) {
+                        appController
+                            .processFindDocIdPrivateChat(
+                                uidLogin: user.uid, uidFriend: uidFriend)
+                            .then((value) {
+                               AppService()
+                            .processInsertPrivateChat(
+                                docIdPrivateChat:
+                                    appController.docIdPrivateChats.last,
+                                chatModel: chatModel)
+                            .then((value) {
+                          Get.to(PrivateChat(
+                            uidFriend: uidFriend,
+                          ));
+                        });
+                            });
                       });
                     }
                   },

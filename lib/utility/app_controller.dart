@@ -228,8 +228,10 @@ class AppController extends GetxController {
         .collection('privatechat')
         .get()
         .then((value) async {
+      print('##17mar value.docs privatechat ---> ${value.docs}');
+       bool createNewPrivate = true;
       if (value.docs.isNotEmpty) {
-        bool createNewPrivate = true;
+       
         for (var element in value.docs) {
           PrivateChatModel privateChatModel =
               PrivateChatModel.fromMap(element.data());
@@ -261,11 +263,12 @@ class AppController extends GetxController {
           }
         }
 
-        if (createNewPrivate) {
+       
+      } 
+       if (createNewPrivate) {
           AppService()
               .insertPrivateChat(uidLogin: uidLogin, uidFriend: uidFriend);
         }
-      }
       load.value = false;
     });
   }
