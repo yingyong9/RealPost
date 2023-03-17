@@ -23,6 +23,7 @@ class WidgetForm extends StatelessWidget {
     this.labelWidget,
     this.inputBorder,
     this.textAlign,
+    this.suffixIcon,
   }) : super(key: key);
 
   final String? hint;
@@ -41,6 +42,7 @@ class WidgetForm extends StatelessWidget {
   final Widget? labelWidget;
   final InputBorder? inputBorder;
   final TextAlign? textAlign;
+  final Widget? suffixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +63,7 @@ class WidgetForm extends StatelessWidget {
               : null,
           label: labelWidget,
           hintStyle: hintStyle,
+          suffixIcon: suffixIcon,
           hintText: hint,
           filled: true,
           fillColor: fillColor,

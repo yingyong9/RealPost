@@ -59,8 +59,8 @@ class _AddProductState extends State<AddProduct> {
                           children: [
                             contentImage(boxConstraints, appController),
                             contentName(boxConstraints),
-                            contentDetail(boxConstraints),
-                            bottonSalse(appController),
+                            // contentDetail(boxConstraints),
+                            // bottonSalse(appController),
                             contentGroup(
                                 appController: appController,
                                 boxConstraints: boxConstraints),
