@@ -26,6 +26,10 @@ class AppBottomSheet {
   void orderButtonSheet({
     required RoomModel roomModel,
   }) {
+    appController.displayPin.value = false;
+    print('uid of room ---> ${roomModel.uidCreate}');
+    print('uid of login ---> ${appController.mainUid}');
+    print('displayPin ---> ${appController.displayPin}');
     Get.bottomSheet(
       Container(
         decoration: const BoxDecoration(color: Colors.white),
@@ -33,92 +37,102 @@ class AppBottomSheet {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            WidgetText(
-              text: 'กรุณาเลือก',
-              textStyle: AppConstant().h2Style(color: Colors.black),
-            ),
+            ((roomModel.uidCreate.toString()) ==
+                    (appController.mainUid.toString()))
+                ? const SizedBox()
+                : WidgetText(
+                    text: 'กรุณาเลือก',
+                    textStyle: AppConstant().h2Style(color: Colors.black),
+                  ),
             WidgetListViewHorizontal(roomModel: roomModel),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                // const WidgetChooseAmountSalse(),
-                WidgetButton(
-                  label: 'Pin',
-                  pressFunc: () async {
-                    int? indexChoose;
-                    int i = 0;
-                    for (var element in appController.tabChooses) {
-                      if (element) {
-                        indexChoose = i;
-                      }
-                      i++;
-                    }
+                const SizedBox(width: 16,),
+                ((roomModel.uidCreate.toString()) ==
+                        (appController.mainUid.toString()))
+                    ? const SizedBox()
+                    : WidgetButton(
+                        label: 'Pin',
+                        pressFunc: () async {
+                          int? indexChoose;
+                          int i = 0;
+                          for (var element in appController.tabChooses) {
+                            if (element) {
+                              indexChoose = i;
+                            }
+                            i++;
+                          }
 
-                    print('##13mar indexChoose =-----> $indexChoose');
-                    if (indexChoose == null) {
-                      AppSnackBar().normalSnackBar(
-                          title: 'ยังไม่ได้เลือกสินค้่า',
-                          message: 'กรุณาเลือกสินค่า',
-                          bgColor: Colors.red,
-                          textColor: Colors.white);
-                    } else {
-                      print(
-                          '##13mar นี่คือภาพที่เลือก url ---> ${roomModel.urlRooms[indexChoose]}');
+                          print('##13mar indexChoose =-----> $indexChoose');
 
-                      String uidFriend = roomModel.uidCreate;
-                      // String contentSend =
-                      //     'ต้องการซื้อ ${roomModel.room} จำนวน ${appController.amountSalse} ช้ิน ราคา ${roomModel.singlePrice} thb';
-                      String contentSend = '...';
+                          if (indexChoose == null) {
+                            AppSnackBar().normalSnackBar(
+                                title: 'ยังไม่ได้เลือกสินค้่า',
+                                message: 'กรุณาเลือกสินค่า',
+                                bgColor: Colors.red,
+                                textColor: Colors.white);
+                          } else {
+                            print(
+                                '##13mar นี่คือภาพที่เลือก url ---> ${roomModel.urlRooms[indexChoose]}');
 
-                      ChatModel chatModel = await AppService().createChatModel(
-                          urlRealPost: roomModel.urlRooms[indexChoose]);
+                            String uidFriend = roomModel.uidCreate;
+                            // String contentSend =
+                            //     'ต้องการซื้อ ${roomModel.room} จำนวน ${appController.amountSalse} ช้ิน ราคา ${roomModel.singlePrice} thb';
+                            String contentSend = '...';
 
-                      Map<String, dynamic> map = chatModel.toMap();
-                      map['message'] = contentSend;
-                      chatModel = ChatModel.fromMap(map);
+                            ChatModel chatModel = await AppService()
+                                .createChatModel(
+                                    urlRealPost:
+                                        roomModel.urlRooms[indexChoose]);
 
-                      print('##17mar  chatModel ---> ${chatModel.toMap()}');
+                            Map<String, dynamic> map = chatModel.toMap();
+                            map['message'] = contentSend;
+                            chatModel = ChatModel.fromMap(map);
 
-                      var user = FirebaseAuth.instance.currentUser;
+                            print(
+                                '##17mar  chatModel ---> ${chatModel.toMap()}');
 
-                      appController
-                          .processFindDocIdPrivateChat(
-                              uidLogin: user!.uid, uidFriend: uidFriend)
-                          .then((value) {
-                        print(
-                            '##17mar docIdPrivateChat ----> ${appController.docIdPrivateChats.last}');
+                            var user = FirebaseAuth.instance.currentUser;
 
-                        AppService()
-                            .processInsertPrivateChat(
-                                docIdPrivateChat:
-                                    appController.docIdPrivateChats.last,
-                                chatModel: chatModel)
-                            .then((value) {
-                          Get.to(PrivateChat(
-                            uidFriend: uidFriend,
-                          ));
-                        });
-                      }).catchError((onError) {
-                        appController
-                            .processFindDocIdPrivateChat(
-                                uidLogin: user.uid, uidFriend: uidFriend)
-                            .then((value) {
-                               AppService()
-                            .processInsertPrivateChat(
-                                docIdPrivateChat:
-                                    appController.docIdPrivateChats.last,
-                                chatModel: chatModel)
-                            .then((value) {
-                          Get.to(PrivateChat(
-                            uidFriend: uidFriend,
-                          ));
-                        });
+                            appController
+                                .processFindDocIdPrivateChat(
+                                    uidLogin: user!.uid, uidFriend: uidFriend)
+                                .then((value) {
+                              print(
+                                  '##17mar docIdPrivateChat ----> ${appController.docIdPrivateChats.last}');
+
+                              AppService()
+                                  .processInsertPrivateChat(
+                                      docIdPrivateChat:
+                                          appController.docIdPrivateChats.last,
+                                      chatModel: chatModel)
+                                  .then((value) {
+                                Get.to(PrivateChat(
+                                  uidFriend: uidFriend,
+                                ));
+                              });
+                            }).catchError((onError) {
+                              appController
+                                  .processFindDocIdPrivateChat(
+                                      uidLogin: user.uid, uidFriend: uidFriend)
+                                  .then((value) {
+                                AppService()
+                                    .processInsertPrivateChat(
+                                        docIdPrivateChat: appController
+                                            .docIdPrivateChats.last,
+                                        chatModel: chatModel)
+                                    .then((value) {
+                                  Get.to(PrivateChat(
+                                    uidFriend: uidFriend,
+                                  ));
+                                });
+                              });
                             });
-                      });
-                    }
-                  },
-                  bgColor: Colors.red.shade700,
-                )
+                          }
+                        },
+                        bgColor: Colors.red.shade700,
+                      ),
               ],
             ),
           ],

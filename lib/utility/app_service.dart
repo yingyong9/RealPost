@@ -32,6 +32,21 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
+  bool compareCurrentTime({required DateTime otherDatetime}) {
+    DateTime currentDateTime = DateTime.now();
+    DateTime curOnlyDate = DateTime(
+        currentDateTime.year, currentDateTime.month, currentDateTime.day);
+    DateTime otherOnlyDate =
+        DateTime(otherDatetime.year, otherDatetime.month, otherDatetime.day);
+
+    bool result = false; // false วันไม่ตรงกัน
+    if (curOnlyDate.compareTo(otherOnlyDate) == 0) {
+      result = true;
+    }
+
+    return result;
+  }
+
   Future<void> readAllUserModel() async {
     if (appController.userModels.isNotEmpty) {
       appController.userModels.clear();

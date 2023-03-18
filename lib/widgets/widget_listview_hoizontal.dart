@@ -60,7 +60,11 @@ class _WidgetListViewHorizontalState extends State<WidgetListViewHorizontal> {
                   height: 100,
                   boxFit: BoxFit.cover,
                   tapFunc: () {
-                    print('You tap index ---> $index');
+                    
+
+                    appController.displayPin.value = true;
+
+                    print('You tap index ---> $index  displayPin --> ${appController.displayPin}');
 
                     int i = 0;
                     for (var element in appController.tabChooses) {
