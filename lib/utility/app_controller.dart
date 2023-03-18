@@ -91,6 +91,8 @@ class AppController extends GetxController {
 
   RxBool showFalseOTP = false.obs;
 
+  RxBool displayPin = false.obs;
+
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
       salsegroups.clear();
@@ -229,9 +231,8 @@ class AppController extends GetxController {
         .get()
         .then((value) async {
       print('##17mar value.docs privatechat ---> ${value.docs}');
-       bool createNewPrivate = true;
+      bool createNewPrivate = true;
       if (value.docs.isNotEmpty) {
-       
         for (var element in value.docs) {
           PrivateChatModel privateChatModel =
               PrivateChatModel.fromMap(element.data());
@@ -262,13 +263,11 @@ class AppController extends GetxController {
             });
           }
         }
-
-       
-      } 
-       if (createNewPrivate) {
-          AppService()
-              .insertPrivateChat(uidLogin: uidLogin, uidFriend: uidFriend);
-        }
+      }
+      if (createNewPrivate) {
+        AppService()
+            .insertPrivateChat(uidLogin: uidLogin, uidFriend: uidFriend);
+      }
       load.value = false;
     });
   }

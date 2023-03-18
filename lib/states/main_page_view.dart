@@ -199,7 +199,7 @@ class _MainPageViewState extends State<MainPageView> {
         displayImageRoom(element, boxConstraints),
         displayListChat(appController, boxConstraints),
         displayOwnerRoom(boxConstraints, appController),
-        // chatPrivateImage(appController: appController),
+        displayRealText(appController: appController),
         // chatPrivateButton(appController: appController),
         // const WidgetDisplayPrice(),
       ],
@@ -266,66 +266,46 @@ class _MainPageViewState extends State<MainPageView> {
           const SizedBox(
             height: 8,
           ),
-          (appController.roomModels[appController.indexBodyMainPageView.value]
-                      .uidCreate
-                      .toString() ==
-                  appController.mainUid.toString())
-              ? const SizedBox()
-              : WidgetButton(
-                  label: 'Pin',
-                  pressFunc: () {
-                    AppBottomSheet().orderButtonSheet(
-                        roomModel: appController.roomModels[
-                            appController.indexBodyMainPageView.value]);
-                  },
-                  bgColor: Colors.red.shade700,
-                )
+          // (appController.roomModels[appController.indexBodyMainPageView.value]
+          //             .uidCreate
+          //             .toString() ==
+          //         appController.mainUid.toString())
+          //     ? const SizedBox()
+          //     :
+
+          Container(
+            decoration: AppConstant().boxCurve(color: Colors.white),
+            child: InkWell(
+              child: const WidgetImage(
+                path: 'images/basket.png',
+                size: 48,
+              ),
+              onTap: () {
+                AppBottomSheet().orderButtonSheet(
+                    roomModel: appController
+                        .roomModels[appController.indexBodyMainPageView.value]);
+              },
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget chatPrivateImage({required AppController appController}) {
-    return appController.mainUid.value ==
-            appController
-                .roomModels[appController.indexBodyMainPageView.value].uidCreate
-        ? const SizedBox()
-        : Positioned(
-            right: 0,
-            child: WidgetImage(
-              path: 'images/icon2.png',
-              size: 48,
-              tapFunc: () {
-                appController
-                    .processFindDocIdPrivateChat(
-                        uidLogin: appController.mainUid.value,
-                        uidFriend: appController
-                            .roomModels[
-                                appController.indexBodyMainPageView.value]
-                            .uidCreate)
-                    .then((value) async {
-                  ChatModel chatModel = await AppService().createChatModel(
-                      urlRealPost: appController
-                          .roomModels[appController.indexBodyMainPageView.value]
-                          .urlRooms
-                          .last);
-
-                  await AppService()
-                      .processInsertPrivateChat(
-                          docIdPrivateChat:
-                              appController.docIdPrivateChats.last,
-                          chatModel: chatModel)
-                      .then((value) {
-                    Get.to(PrivateChat(
-                        uidFriend: appController
-                            .roomModels[
-                                appController.indexBodyMainPageView.value]
-                            .uidCreate));
-                  });
-                });
-              },
-            ),
-          );
+  Widget displayRealText({required AppController appController}) {
+    return Positioned(
+      right: 8,
+      child: AppService().compareCurrentTime(
+              otherDatetime: appController
+                  .roomModels[appController.indexBodyMainPageView.value]
+                  .timestamp
+                  .toDate())
+          ? WidgetText(
+              text: 'Real',
+              textStyle: AppConstant().h2Style(color: Colors.red.shade700),
+            )
+          : const SizedBox(),
+    );
   }
 
   Widget chatPrivateButton({required AppController appController}) {
@@ -412,7 +392,12 @@ class _MainPageViewState extends State<MainPageView> {
                   padding:
                       const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
                   margin: const EdgeInsets.only(top: 4),
-                  decoration: AppConstant().boxChatGuest(),
+                  decoration: AppConstant().boxChatGuest(
+                      bgColor:
+                          (appController.chatModels[index].uidChat.toString() ==
+                                  appController.mainUid.toString())
+                              ? Colors.yellow.shade900
+                              : Colors.red),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
