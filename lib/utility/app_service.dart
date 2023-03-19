@@ -32,6 +32,33 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
+  Future<void> findArrayFriendUid() async {
+    if (appController.uidFriends.isNotEmpty) {
+      appController.uidFriends.clear();
+      appController.userModelPrivateChats.clear();
+    }
+    var result =
+        await FirebaseFirestore.instance.collection('privatechat').get();
+    if (result.docs.isNotEmpty) {
+      for (var element in result.docs) {
+        PrivateChatModel privateChatModel =
+            PrivateChatModel.fromMap(element.data());
+
+        if (privateChatModel.uidchats.contains(appController.mainUid.value)) {
+          print('##19mar uidChats ---> ${privateChatModel.uidchats}');
+          for (var element in privateChatModel.uidchats) {
+            if (element != appController.mainUid.value) {
+              appController.uidFriends.add(element);
+              await findUserModel(uid: element).then((value) {
+                appController.userModelPrivateChats.add(value!);
+              });
+            }
+          }
+        }
+      }
+    }
+  }
+
   bool compareCurrentTime({required DateTime otherDatetime}) {
     DateTime currentDateTime = DateTime.now();
     DateTime curOnlyDate = DateTime(

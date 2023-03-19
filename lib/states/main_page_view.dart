@@ -8,6 +8,7 @@ import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/states/add_product.dart';
 import 'package:realpost/states/display_profile.dart';
+import 'package:realpost/states/list_friend.dart';
 import 'package:realpost/states/private_chat.dart';
 import 'package:realpost/states/tab_price.dart';
 import 'package:realpost/utility/app_bottom_sheet.dart';
@@ -230,9 +231,12 @@ class _MainPageViewState extends State<MainPageView> {
           : boxConstraints.maxHeight * 0.7 - 150,
       child: Column(
         children: [
-          const WidgetImage(
+          WidgetImage(
             path: 'images/icon2.png',
             size: 60,
+            tapFunc: () {
+              Get.to(const ListFriend());
+            },
           ),
           Container(
             decoration: AppConstant().boxCurve(color: Colors.green.shade900),
