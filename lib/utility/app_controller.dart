@@ -93,6 +93,9 @@ class AppController extends GetxController {
 
   RxBool displayPin = false.obs;
 
+  RxList<String> uidFriends = <String>[].obs;
+  RxList<UserModel> userModelPrivateChats = <UserModel>[].obs;
+
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
       salsegroups.clear();
