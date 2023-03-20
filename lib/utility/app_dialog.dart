@@ -34,8 +34,12 @@ class AppDialog {
     required this.context,
   });
 
-  void dialogCommentSalse(
-      {required List<CommentSalseModel> commentSalseModels, required RoomModel roomModel, required double maxWidth, required String docIdRoom,}) {
+  void dialogCommentSalse({
+    required List<CommentSalseModel> commentSalseModels,
+    required RoomModel roomModel,
+    required double maxWidth,
+    required String docIdRoom,
+  }) {
     print(
         '##6mar ขนาดของ commentSalseModels ---> ${commentSalseModels.length}');
     Get.dialog(
@@ -95,13 +99,10 @@ class AppDialog {
                       AppBottomSheet().salseBottomSheet(
                         roomModel: roomModel,
                         single: true,
-                        boxConstraints:
-                            BoxConstraints(maxWidth: maxWidth),
+                        boxConstraints: BoxConstraints(maxWidth: maxWidth),
                         docIdRoom: docIdRoom,
                         context: context,
                       );
-
-
                     },
                     bgColor: Colors.red.shade700,
                   )
@@ -523,6 +524,8 @@ class AppDialog {
             builder: (AppController appController) {
               print(
                   '##9dec at realPostBottonSheet urlRealPostChoose ==> ${appController.urlRealPostChooses}');
+              print(
+                  '##20mar @realPostBoottonSheet collection --> $collection, docIdRoom ---> $docIdRoom');
               return Container(
                 decoration: BoxDecoration(color: AppConstant.bgColor),
                 height: 306,
@@ -534,7 +537,7 @@ class AppDialog {
                           height: 16,
                         ),
                         WidgetText(
-                          text: 'Real Post Stamp',
+                          text: 'Real Post Picture',
                           textStyle: AppConstant().h2Style(),
                         ),
                         appController.urlRealPostChooses.isNotEmpty
@@ -544,10 +547,7 @@ class AppDialog {
                                 height: 200,
                               )
                             : appController.fileRealPosts.isEmpty
-                                ? const WidgetImage(
-                                    path: 'images/funny1.png',
-                                    size: 200,
-                                  )
+                                ? const SizedBox(height: 200)
                                 : Image.file(
                                     appController.fileRealPosts[0],
                                     width: 200,
@@ -560,11 +560,7 @@ class AppDialog {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            (appController.fileRealPosts.isNotEmpty) ||
-                                    (appController
-                                        .urlRealPostChooses.isNotEmpty)
-                                ? const SizedBox()
-                                : WidgetIconButton(
+                            WidgetIconButton(
                                     iconData: Icons.add_a_photo,
                                     pressFunc: () async {
                                       if (appController
@@ -586,144 +582,32 @@ class AppDialog {
                                       }
                                     },
                                   ),
-                            (appController.fileRealPosts.isNotEmpty) ||
-                                    (appController
-                                        .urlRealPostChooses.isNotEmpty)
-                                ? const SizedBox()
-                                : WidgetIconButton(
-                                    iconData: Icons.emoji_emotions,
-                                    pressFunc: () {
-                                      Get.to(const EmojiPage(
-                                        avatarBol: false,
-                                      ))!
-                                          .then((value) {});
+                             WidgetIconButton(
+                                    iconData: Icons.add_photo_alternate,
+                                    pressFunc: () async {
+
+                                       if (appController
+                                          .fileRealPosts.isNotEmpty) {
+                                        appController.fileRealPosts.clear();
+                                      }
+
+                                      if (appController
+                                          .urlRealPostChooses.isNotEmpty) {
+                                        appController.urlRealPostChooses
+                                            .clear();
+                                      }
+
+                                      var result = await AppService()
+                                          .processTakePhoto(
+                                              source: ImageSource.gallery);
+                                      if (result != null) {
+                                        appController.fileRealPosts.add(result);
+                                      }
+                                     
                                     },
                                   ),
-                            (appController.fileRealPosts.isNotEmpty) ||
-                                    (appController
-                                        .urlRealPostChooses.isNotEmpty)
-                                ? SizedBox(
-                                    child: Row(
-                                      children: [
-                                        WidgetIconButton(
-                                          iconData: Icons.map,
-                                          color:
-                                              appController.shareLocation.value
-                                                  ? AppConstant.lightColor
-                                                  : Colors.white,
-                                          pressFunc: () {
-                                            if (appController
-                                                .shareLocation.value) {
-                                              appController
-                                                  .shareLocation.value = false;
-                                            } else {
-                                              AppDialog(context: context)
-                                                  .normalDialog(
-                                                title:
-                                                    'ต้องการแชร์ พิกัด กด OK',
-                                                leadingWidget:
-                                                    const WidgetImage(
-                                                  path: 'images/map.png',
-                                                  size: 80,
-                                                ),
-                                                actions: <Widget>[
-                                                  WidgetTextButton(
-                                                    text: 'OK',
-                                                    pressFunc: () {
-                                                      appController
-                                                          .shareLocation
-                                                          .value = true;
-                                                      Get.back();
-                                                    },
-                                                  ),
-                                                  WidgetTextButton(
-                                                    text: 'Cancel',
-                                                    pressFunc: () {
-                                                      Get.back();
-                                                    },
-                                                  ),
-                                                ],
-                                              );
-                                            }
-                                          },
-                                        ),
-                                        WidgetIconButton(
-                                          color: appController.links.isEmpty
-                                              ? null
-                                              : AppConstant.lightColor,
-                                          iconData: Icons.link,
-                                          pressFunc: () {
-                                            if (appController.links.isEmpty) {
-                                              AppDialog(context: context)
-                                                  .normalDialog(
-                                                title: 'แชร์ ลิ้งค์',
-                                                leadingWidget: const Icon(
-                                                  Icons.link,
-                                                  size: 64,
-                                                ),
-                                                contentWidget: WidgetForm(
-                                                  fillColor:
-                                                      Colors.grey.shade200,
-                                                  labelWidget: WidgetText(
-                                                    text: 'วางลิ้งค์ ที่นี่',
-                                                    textStyle: AppConstant()
-                                                        .h3Style(
-                                                            color:
-                                                                Colors.black),
-                                                  ),
-                                                  changeFunc: (p0) {
-                                                    appController.links.add(p0);
-                                                  },
-                                                ),
-                                                actions: <Widget>[
-                                                  WidgetTextButton(
-                                                    text: 'OK',
-                                                    pressFunc: () {
-                                                      if (appController
-                                                          .links.isNotEmpty) {
-                                                        print(
-                                                            '##23dec link --> ${appController.links.last}');
-                                                      }
-                                                      Get.back();
-                                                    },
-                                                  )
-                                                ],
-                                              );
-                                            } else {
-                                              appController.links.clear();
-                                            }
-                                          },
-                                        ),
-                                        WidgetIconButton(
-                                          iconData:
-                                              Icons.photo_library_outlined,
-                                          color: appController.xFiles.isNotEmpty
-                                              ? AppConstant.lightColor
-                                              : null,
-                                          pressFunc: () {
-                                            if (appController.xFiles.isEmpty) {
-                                              Get.to(const AlbumPicture());
-                                            } else {
-                                              appController.xFiles.clear();
-                                            }
-                                          },
-                                        ),
-                                        WidgetIconButton(
-                                          iconData: Icons.filter_4,
-                                          pressFunc: () {},
-                                        ),
-                                        WidgetIconButton(
-                                          iconData: Icons.filter_5,
-                                          pressFunc: () {},
-                                        ),
-                                        WidgetIconButton(
-                                          iconData: Icons.filter_6,
-                                          pressFunc: () {},
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                : WidgetIconButton(
+                           
+                                 WidgetIconButton(
                                     iconData: Icons.pin_drop,
                                     pressFunc: () {
                                       print(
@@ -742,64 +626,65 @@ class AppDialog {
                                     iconData: Icons.send,
                                     pressFunc: () async {
                                       //About Avatar
-                                      if (appController
-                                          .fileAvatars.isNotEmpty) {
-                                        //Have file Avatar
-                                        await AppService()
-                                            .processUploadPhoto(
-                                                file: appController
-                                                    .fileAvatars[0],
-                                                path: 'avatar')
-                                            .then((value) {
-                                          print(
-                                              'value upload avatar ==> $value');
+                                      // if (appController
+                                      //     .fileAvatars.isNotEmpty) {
+                                      //   //Have file Avatar
+                                      //   await AppService()
+                                      //       .processUploadPhoto(
+                                      //           file: appController
+                                      //               .fileAvatars[0],
+                                      //           path: 'avatar')
+                                      //       .then((value) {
+                                      //     print(
+                                      //         'value upload avatar ==> $value');
 
-                                          appController.urlAvatarChooses
-                                              .clear();
-                                          appController.urlAvatarChooses
-                                              .add(value.toString());
-                                          AppService().editUrlAvatar();
-                                        });
-                                      } else {
-                                        if (appController
-                                            .urlAvatarChooses.isNotEmpty) {
-                                          AppService().editUrlAvatar();
-                                        }
-                                      }
+                                      //     appController.urlAvatarChooses
+                                      //         .clear();
+                                      //     appController.urlAvatarChooses
+                                      //         .add(value.toString());
+                                      //     AppService().editUrlAvatar();
+                                      //   });
+                                      // } else {
+                                      //   if (appController
+                                      //       .urlAvatarChooses.isNotEmpty) {
+                                      //     AppService().editUrlAvatar();
+                                      //   }
+                                      // }
 
                                       //About RealPost
                                       if (appController
                                           .fileRealPosts.isNotEmpty) {
                                         print(
-                                            '##19dec แบบถ่ายภาพ  ${appController.fileRealPosts.length}');
+                                            '##20mar แบบถ่ายภาพ  ${appController.fileRealPosts.length}');
 
                                         //upload
                                         await AppService()
                                             .processUploadPhoto(
                                                 file: appController
-                                                    .fileRealPosts[0],
+                                                    .fileRealPosts.last,
                                                 path: 'realpost')
                                             .then((value) async {
                                           print(
-                                              '##19dec url ของภาพที่ อัพโหลดไป ---> $value');
+                                              '##20mar url ของภาพที่ อัพโหลดไป ---> $value');
 
                                           if (appController
                                               .urlRealPostChooses.isNotEmpty) {
                                             appController.urlRealPostChooses
                                                 .clear();
                                           }
+
                                           appController.urlRealPostChooses
                                               .add(value.toString());
 
                                           print(
-                                              '##8jan urlRealPostChoose[0] ----> ${appController.urlRealPostChooses[0]}');
+                                              '##20mar urlRealPostChoose[0] ----> ${appController.urlRealPostChooses.last}');
 
                                           ChatModel chatModel =
                                               await AppService()
-                                                  .createChatModel();
+                                                  .createChatModel(urlRealPost: appController.urlRealPostChooses.last);
 
                                           print(
-                                              '##8jan chatModel ---> ${chatModel.toMap()}');
+                                              '##20mar chatModel ---> ${chatModel.toMap()}');
 
                                           print(
                                               '##8jan docIdRoomChoose ---> ${appController.docIdRoomChooses.length}');

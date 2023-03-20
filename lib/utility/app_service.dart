@@ -451,23 +451,21 @@ class AppService {
 
     if (appController.xFiles.isEmpty) {
       //ไม่มี album
+
+      print('##20mar WorkHere');
+
       chatModel = ChatModel(
           message: appController.messageChats.isEmpty
               ? ''
               : appController.messageChats.last,
           timestamp: Timestamp.fromDate(DateTime.now()),
-          uidChat: FirebaseAuth.instance.currentUser!.uid,
-          urlRealPost: urlRealPost != null
-              ? urlRealPost
-              : appController.urlRealPostChooses.isNotEmpty
-                  ? appController.urlAvatarChooses.last
-                  : '',
+          uidChat: appController.mainUid.value,
+          urlRealPost: urlRealPost ?? '',
           disPlayName: appController.userModels.last.displayName!,
-          urlAvatar: appController.userModels.last.urlAvatar!.isEmpty
-              ? appController.urlAvatarChooses.last
-              : appController.userModels.last.urlAvatar!,
-          article: appController.articleControllers.last.text,
-          link: appController.links.isEmpty ? '' : appController.links.last,
+          urlAvatar:
+              appController.userModels.last.urlAvatar ?? AppConstant.urlAvatar,
+          article: '',
+          link: '',
           geoPoint: appController.shareLocation.value
               ? GeoPoint(appController.positions[0].latitude,
                   appController.positions[0].longitude)
@@ -482,7 +480,7 @@ class AppService {
       chatModel = ChatModel(
           message: appController.messageChats.isEmpty
               ? ''
-              : appController.messageChats[0],
+              : appController.messageChats.last,
           timestamp: Timestamp.fromDate(DateTime.now()),
           uidChat: FirebaseAuth.instance.currentUser!.uid,
           urlRealPost: appController.urlRealPostChooses.isEmpty
@@ -630,7 +628,7 @@ class AppService {
     AppController appController = Get.put(AppController());
 
     print(
-        '##8jan @processInsertChat collection --> $collection, docId --> $docId');
+        '##20mar @processInsertChat collection --> $collection, docId --> $docId');
 
     await FirebaseFirestore.instance
         .collection(collection ?? 'room')
@@ -639,8 +637,11 @@ class AppService {
         .doc()
         .set(chatModel.toMap())
         .then((value) {
-      print('##19dec Process Insert Chat Success');
+      print('##20mar Process Insert Chat Success');
       appController.shareLocation.value = false;
+      appController.messageChats.clear();
+      appController.fileRealPosts.clear();
+      
     });
   }
 
