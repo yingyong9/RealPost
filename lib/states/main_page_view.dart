@@ -378,7 +378,7 @@ class _MainPageViewState extends State<MainPageView> {
           itemCount: appController.chatModels.length,
           itemBuilder: (context, index) {
             return Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
                   margin: EdgeInsets.only(
@@ -396,12 +396,13 @@ class _MainPageViewState extends State<MainPageView> {
                   padding:
                       const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
                   margin: const EdgeInsets.only(top: 4),
-                  decoration: AppConstant().boxChatGuest(
-                      bgColor:
-                          (appController.chatModels[index].uidChat.toString() ==
-                                  appController.mainUid.toString())
-                              ? Colors.yellow.shade900
-                              : Colors.red),
+                  // decoration: AppConstant().boxChatGuest(
+                  //     bgColor:
+                  //         (appController.chatModels[index].uidChat.toString() ==
+                  //                 appController.mainUid.toString())
+                  //             ? Color(0xff133c29)
+                  //             : Color(0xffadd500)),
+                  decoration: AppConstant().boxChatGuest(bgColor: Colors.black.withOpacity(0.5)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -417,6 +418,10 @@ class _MainPageViewState extends State<MainPageView> {
                         width: boxConstraints.maxWidth * 0.5 - 80,
                         child: WidgetText(
                             text: appController.chatModels[index].message),
+                      ),
+                      appController.chatModels[index].urlRealPost.isEmpty ? const SizedBox() :  SizedBox(
+                        width: boxConstraints.maxWidth * 0.5 - 80,
+                        child: WidgetImageInternet(urlImage: appController.chatModels[index].urlRealPost),
                       ),
                     ],
                   ),

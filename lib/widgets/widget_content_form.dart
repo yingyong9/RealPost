@@ -52,14 +52,13 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
           hint: 'พิมพ์ข้อความ...',
           textStyle: AppConstant().h3Style(),
           controller: widget.textEditingController,
-          suffixIcon:  WidgetIconButton(
+          suffixIcon: WidgetIconButton(
             iconData: Icons.send,
             pressFunc: () async {
               if (widget.textEditingController.text.isEmpty) {
                 print('No Text form');
 
-                if (widget.appController.userModels[0].urlAvatar!.isNotEmpty) {
-                  // การทำงานครั้งที่สอง
+                if (widget.roomModel!.uidCreate == user!.uid) {
                   AppDialog(context: context).realPostBottonSheet(
                       collection: widget.collection, docIdRoom: widget.docId!);
                 }
@@ -189,7 +188,7 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
               ],
             ),
           ),
-          
+
           // WidgetImage(
           //   path: 'images/addgreen.png',
           //   size: 24,
@@ -199,7 +198,6 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
           //     });
           //   },
           // ),
-         
         ],
       ),
     );
