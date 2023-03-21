@@ -10,7 +10,6 @@ import 'package:realpost/models/comment_salse_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/salse_group_model.dart';
 import 'package:realpost/models/user_model.dart';
-import 'package:realpost/states/album_picture.dart';
 import 'package:realpost/states/emoji_page.dart';
 import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
@@ -295,17 +294,20 @@ class AppDialog {
       required Widget leadingWidget,
       Widget? contentWidget,
       List<Widget>? actions}) {
-    Get.dialog(AlertDialog(
-      title: WidgetMenu(
-        leadingWiget: leadingWidget,
-        titleWidget: WidgetText(
-          text: title,
-          textStyle: AppConstant().h2Style(color: AppConstant.bgColor),
+    Get.dialog(
+      AlertDialog(
+        title: WidgetMenu(
+          leadingWiget: leadingWidget,
+          titleWidget: WidgetText(
+            text: title,
+            textStyle: AppConstant().h2Style(color: AppConstant.bgColor),
+          ),
         ),
+        content: contentWidget,
+        actions: actions,
       ),
-      content: contentWidget,
-      actions: actions,
-    ));
+      barrierDismissible: false,
+    );
   }
 
   void bigImageBottomSheet({
@@ -561,61 +563,54 @@ class AppDialog {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             WidgetIconButton(
-                                    iconData: Icons.add_a_photo,
-                                    pressFunc: () async {
-                                      if (appController
-                                          .fileRealPosts.isNotEmpty) {
-                                        appController.fileRealPosts.clear();
-                                      }
+                              iconData: Icons.add_a_photo,
+                              pressFunc: () async {
+                                if (appController.fileRealPosts.isNotEmpty) {
+                                  appController.fileRealPosts.clear();
+                                }
 
-                                      if (appController
-                                          .urlRealPostChooses.isNotEmpty) {
-                                        appController.urlRealPostChooses
-                                            .clear();
-                                      }
+                                if (appController
+                                    .urlRealPostChooses.isNotEmpty) {
+                                  appController.urlRealPostChooses.clear();
+                                }
 
-                                      var result = await AppService()
-                                          .processTakePhoto(
-                                              source: ImageSource.camera);
-                                      if (result != null) {
-                                        appController.fileRealPosts.add(result);
-                                      }
-                                    },
-                                  ),
-                             WidgetIconButton(
-                                    iconData: Icons.add_photo_alternate,
-                                    pressFunc: () async {
+                                var result = await AppService()
+                                    .processTakePhoto(
+                                        source: ImageSource.camera);
+                                if (result != null) {
+                                  appController.fileRealPosts.add(result);
+                                }
+                              },
+                            ),
+                            WidgetIconButton(
+                              iconData: Icons.add_photo_alternate,
+                              pressFunc: () async {
+                                if (appController.fileRealPosts.isNotEmpty) {
+                                  appController.fileRealPosts.clear();
+                                }
 
-                                       if (appController
-                                          .fileRealPosts.isNotEmpty) {
-                                        appController.fileRealPosts.clear();
-                                      }
+                                if (appController
+                                    .urlRealPostChooses.isNotEmpty) {
+                                  appController.urlRealPostChooses.clear();
+                                }
 
-                                      if (appController
-                                          .urlRealPostChooses.isNotEmpty) {
-                                        appController.urlRealPostChooses
-                                            .clear();
-                                      }
-
-                                      var result = await AppService()
-                                          .processTakePhoto(
-                                              source: ImageSource.gallery);
-                                      if (result != null) {
-                                        appController.fileRealPosts.add(result);
-                                      }
-                                     
-                                    },
-                                  ),
-                           
-                                 WidgetIconButton(
-                                    iconData: Icons.pin_drop,
-                                    pressFunc: () {
-                                      print(
-                                          'You tap pin ===> ${appController.positions[0]}');
-                                      Get.back();
-                                      mapBottomSheet(collection: collection);
-                                    },
-                                  ),
+                                var result = await AppService()
+                                    .processTakePhoto(
+                                        source: ImageSource.gallery);
+                                if (result != null) {
+                                  appController.fileRealPosts.add(result);
+                                }
+                              },
+                            ),
+                            WidgetIconButton(
+                              iconData: Icons.pin_drop,
+                              pressFunc: () {
+                                print(
+                                    'You tap pin ===> ${appController.positions[0]}');
+                                Get.back();
+                                mapBottomSheet(collection: collection);
+                              },
+                            ),
                             const Spacer(),
                             ((appController.fileRealPosts.isNotEmpty) ||
                                     (appController
@@ -625,33 +620,7 @@ class AppDialog {
                                 ? WidgetIconButton(
                                     iconData: Icons.send,
                                     pressFunc: () async {
-                                      //About Avatar
-                                      // if (appController
-                                      //     .fileAvatars.isNotEmpty) {
-                                      //   //Have file Avatar
-                                      //   await AppService()
-                                      //       .processUploadPhoto(
-                                      //           file: appController
-                                      //               .fileAvatars[0],
-                                      //           path: 'avatar')
-                                      //       .then((value) {
-                                      //     print(
-                                      //         'value upload avatar ==> $value');
-
-                                      //     appController.urlAvatarChooses
-                                      //         .clear();
-                                      //     appController.urlAvatarChooses
-                                      //         .add(value.toString());
-                                      //     AppService().editUrlAvatar();
-                                      //   });
-                                      // } else {
-                                      //   if (appController
-                                      //       .urlAvatarChooses.isNotEmpty) {
-                                      //     AppService().editUrlAvatar();
-                                      //   }
-                                      // }
-
-                                      //About RealPost
+                                     
                                       if (appController
                                           .fileRealPosts.isNotEmpty) {
                                         print(
@@ -681,7 +650,10 @@ class AppDialog {
 
                                           ChatModel chatModel =
                                               await AppService()
-                                                  .createChatModel(urlRealPost: appController.urlRealPostChooses.last);
+                                                  .createChatModel(
+                                                      urlRealPost: appController
+                                                          .urlRealPostChooses
+                                                          .last);
 
                                           print(
                                               '##20mar chatModel ---> ${chatModel.toMap()}');

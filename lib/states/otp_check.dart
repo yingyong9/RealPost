@@ -72,6 +72,7 @@ class _OtpCheckState extends State<OtpCheck> {
                       width: 300,
                       fieldWidth: 40,
                       onCompleted: (value) async {
+                        //สำหรับ ทดสอบ
                         if ((widget.phoneNumber == '0819999999') &&
                             (value == '123456')) {
                           await FirebaseAuth.instance
