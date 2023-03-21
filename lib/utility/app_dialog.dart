@@ -10,7 +10,6 @@ import 'package:realpost/models/comment_salse_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/salse_group_model.dart';
 import 'package:realpost/models/user_model.dart';
-import 'package:realpost/states/album_picture.dart';
 import 'package:realpost/states/emoji_page.dart';
 import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
@@ -295,17 +294,20 @@ class AppDialog {
       required Widget leadingWidget,
       Widget? contentWidget,
       List<Widget>? actions}) {
-    Get.dialog(AlertDialog(
-      title: WidgetMenu(
-        leadingWiget: leadingWidget,
-        titleWidget: WidgetText(
-          text: title,
-          textStyle: AppConstant().h2Style(color: AppConstant.bgColor),
+    Get.dialog(
+      AlertDialog(
+        title: WidgetMenu(
+          leadingWiget: leadingWidget,
+          titleWidget: WidgetText(
+            text: title,
+            textStyle: AppConstant().h2Style(color: AppConstant.bgColor),
+          ),
         ),
+        content: contentWidget,
+        actions: actions,
       ),
-      content: contentWidget,
-      actions: actions,
-    ));
+      barrierDismissible: false,
+    );
   }
 
   void bigImageBottomSheet({
@@ -519,237 +521,200 @@ class AppDialog {
 
   void realPostBottonSheet({String? collection, String? docIdRoom}) {
     Get.bottomSheet(
-        GetX(
-            init: AppController(),
-            builder: (AppController appController) {
-              print(
-                  '##9dec at realPostBottonSheet urlRealPostChoose ==> ${appController.urlRealPostChooses}');
-              print(
-                  '##20mar @realPostBoottonSheet collection --> $collection, docIdRoom ---> $docIdRoom');
-              return Container(
-                decoration: BoxDecoration(color: AppConstant.bgColor),
-                height: 306,
-                child: Stack(
-                  children: [
-                    Column(
-                      children: [
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        WidgetText(
-                          text: 'Real Post Picture',
-                          textStyle: AppConstant().h2Style(),
-                        ),
-                        appController.urlRealPostChooses.isNotEmpty
-                            ? WidgetImageInternet(
-                                urlImage: appController.urlRealPostChooses[0],
-                                width: 200,
-                                height: 200,
-                              )
-                            : appController.fileRealPosts.isEmpty
-                                ? const SizedBox(height: 200)
-                                : Image.file(
-                                    appController.fileRealPosts[0],
-                                    width: 200,
-                                    height: 200,
-                                  ),
-                        Divider(
-                          color: AppConstant.dark,
-                          thickness: 1,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            WidgetIconButton(
-                                    iconData: Icons.add_a_photo,
-                                    pressFunc: () async {
-                                      if (appController
-                                          .fileRealPosts.isNotEmpty) {
-                                        appController.fileRealPosts.clear();
-                                      }
+      GetX(
+          init: AppController(),
+          builder: (AppController appController) {
+            print(
+                '##9dec at realPostBottonSheet urlRealPostChoose ==> ${appController.urlRealPostChooses}');
+            print(
+                '##20mar @realPostBoottonSheet collection --> $collection, docIdRoom ---> $docIdRoom');
+            return Container(
+              decoration: BoxDecoration(color: AppConstant.bgColor),
+              height: 306,
+              child: Stack(
+                children: [
+                  Column(
+                    children: [
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      WidgetText(
+                        text: 'Real Post Picture',
+                        textStyle: AppConstant().h2Style(),
+                      ),
+                      appController.urlRealPostChooses.isNotEmpty
+                          ? WidgetImageInternet(
+                              urlImage: appController.urlRealPostChooses[0],
+                              width: 200,
+                              height: 200,
+                            )
+                          : appController.fileRealPosts.isEmpty
+                              ? const SizedBox(height: 200)
+                              : Image.file(
+                                  appController.fileRealPosts[0],
+                                  width: 200,
+                                  height: 200,
+                                ),
+                      Divider(
+                        color: AppConstant.dark,
+                        thickness: 1,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          WidgetIconButton(
+                            iconData: Icons.add_a_photo,
+                            pressFunc: () async {
+                              if (appController.fileRealPosts.isNotEmpty) {
+                                appController.fileRealPosts.clear();
+                              }
 
-                                      if (appController
-                                          .urlRealPostChooses.isNotEmpty) {
-                                        appController.urlRealPostChooses
-                                            .clear();
-                                      }
+                              if (appController.urlRealPostChooses.isNotEmpty) {
+                                appController.urlRealPostChooses.clear();
+                              }
 
-                                      var result = await AppService()
-                                          .processTakePhoto(
-                                              source: ImageSource.camera);
-                                      if (result != null) {
-                                        appController.fileRealPosts.add(result);
-                                      }
-                                    },
-                                  ),
-                             WidgetIconButton(
-                                    iconData: Icons.add_photo_alternate,
-                                    pressFunc: () async {
+                              var result = await AppService()
+                                  .processTakePhoto(source: ImageSource.camera);
+                              if (result != null) {
+                                appController.fileRealPosts.add(result);
+                              }
+                            },
+                          ),
+                          WidgetIconButton(
+                            iconData: Icons.add_photo_alternate,
+                            pressFunc: () async {
+                              if (appController.fileRealPosts.isNotEmpty) {
+                                appController.fileRealPosts.clear();
+                              }
 
-                                       if (appController
-                                          .fileRealPosts.isNotEmpty) {
-                                        appController.fileRealPosts.clear();
-                                      }
+                              if (appController.urlRealPostChooses.isNotEmpty) {
+                                appController.urlRealPostChooses.clear();
+                              }
 
-                                      if (appController
-                                          .urlRealPostChooses.isNotEmpty) {
-                                        appController.urlRealPostChooses
-                                            .clear();
-                                      }
+                              var result = await AppService().processTakePhoto(
+                                  source: ImageSource.gallery);
+                              if (result != null) {
+                                appController.fileRealPosts.add(result);
+                              }
+                            },
+                          ),
+                          WidgetIconButton(
+                            iconData: Icons.pin_drop,
+                            pressFunc: () {
+                              print(
+                                  'You tap pin ===> ${appController.positions[0]}');
+                              Get.back();
+                              mapBottomSheet(collection: collection);
+                            },
+                          ),
+                          // const Spacer(),
+                          Expanded(
+                              child: WidgetForm(
+                            fillColor: Colors.grey.shade300,
+                            maginBottom: 4,
+                            height: 40,
+                            changeFunc: (p0) {
+                              appController.messageChats.add(p0.trim());
+                            },
+                          )),
+                          WidgetIconButton(
+                            iconData: Icons.send,
+                            pressFunc: () async {
+                              if (appController.fileRealPosts.isNotEmpty) {
+                                print(
+                                    '##20mar แบบถ่ายภาพ  ${appController.fileRealPosts.length}');
 
-                                      var result = await AppService()
-                                          .processTakePhoto(
-                                              source: ImageSource.gallery);
-                                      if (result != null) {
-                                        appController.fileRealPosts.add(result);
-                                      }
-                                     
-                                    },
-                                  ),
-                           
-                                 WidgetIconButton(
-                                    iconData: Icons.pin_drop,
-                                    pressFunc: () {
-                                      print(
-                                          'You tap pin ===> ${appController.positions[0]}');
-                                      Get.back();
-                                      mapBottomSheet(collection: collection);
-                                    },
-                                  ),
-                            const Spacer(),
-                            ((appController.fileRealPosts.isNotEmpty) ||
-                                    (appController
-                                        .urlRealPostChooses.isNotEmpty) ||
-                                    appController
-                                        .userModels[0].urlAvatar!.isNotEmpty)
-                                ? WidgetIconButton(
-                                    iconData: Icons.send,
-                                    pressFunc: () async {
-                                      //About Avatar
-                                      // if (appController
-                                      //     .fileAvatars.isNotEmpty) {
-                                      //   //Have file Avatar
-                                      //   await AppService()
-                                      //       .processUploadPhoto(
-                                      //           file: appController
-                                      //               .fileAvatars[0],
-                                      //           path: 'avatar')
-                                      //       .then((value) {
-                                      //     print(
-                                      //         'value upload avatar ==> $value');
+                                //upload
+                                await AppService()
+                                    .processUploadPhoto(
+                                        file: appController.fileRealPosts.last,
+                                        path: 'realpost')
+                                    .then((value) async {
+                                  print(
+                                      '##20mar url ของภาพที่ อัพโหลดไป ---> $value');
 
-                                      //     appController.urlAvatarChooses
-                                      //         .clear();
-                                      //     appController.urlAvatarChooses
-                                      //         .add(value.toString());
-                                      //     AppService().editUrlAvatar();
-                                      //   });
-                                      // } else {
-                                      //   if (appController
-                                      //       .urlAvatarChooses.isNotEmpty) {
-                                      //     AppService().editUrlAvatar();
-                                      //   }
-                                      // }
+                                  if (appController
+                                      .urlRealPostChooses.isNotEmpty) {
+                                    appController.urlRealPostChooses.clear();
+                                  }
 
-                                      //About RealPost
-                                      if (appController
-                                          .fileRealPosts.isNotEmpty) {
-                                        print(
-                                            '##20mar แบบถ่ายภาพ  ${appController.fileRealPosts.length}');
+                                  appController.urlRealPostChooses
+                                      .add(value.toString());
 
-                                        //upload
-                                        await AppService()
-                                            .processUploadPhoto(
-                                                file: appController
-                                                    .fileRealPosts.last,
-                                                path: 'realpost')
-                                            .then((value) async {
-                                          print(
-                                              '##20mar url ของภาพที่ อัพโหลดไป ---> $value');
+                                  print(
+                                      '##20mar urlRealPostChoose[0] ----> ${appController.urlRealPostChooses.last}');
 
-                                          if (appController
-                                              .urlRealPostChooses.isNotEmpty) {
-                                            appController.urlRealPostChooses
-                                                .clear();
-                                          }
+                                  ChatModel chatModel = await AppService()
+                                      .createChatModel(
+                                          urlRealPost: appController
+                                              .urlRealPostChooses.last);
 
-                                          appController.urlRealPostChooses
-                                              .add(value.toString());
+                                  print(
+                                      '##20mar chatModel ---> ${chatModel.toMap()}');
 
-                                          print(
-                                              '##20mar urlRealPostChoose[0] ----> ${appController.urlRealPostChooses.last}');
+                                  print(
+                                      '##8jan docIdRoomChoose ---> ${appController.docIdRoomChooses.length}');
 
-                                          ChatModel chatModel =
-                                              await AppService()
-                                                  .createChatModel(urlRealPost: appController.urlRealPostChooses.last);
-
-                                          print(
-                                              '##20mar chatModel ---> ${chatModel.toMap()}');
-
-                                          print(
-                                              '##8jan docIdRoomChoose ---> ${appController.docIdRoomChooses.length}');
-
-                                          AppService()
-                                              .processInsertChat(
-                                            chatModel: chatModel,
-                                            docId: collection != null
-                                                ? appController
-                                                    .docIdPrivateChats[0]
-                                                : appController
-                                                    .docIdRoomChooses[0],
-                                            collection: collection,
-                                          )
-                                              .then((value) async {
-                                            Get.back();
-                                          });
-                                        });
-                                      } else {
-                                        print('##19dec ไม่ได้ถ่ายภาพ');
-
-                                        ChatModel chatModel = await AppService()
-                                            .createChatModel();
-                                        AppService()
-                                            .processInsertChat(
-                                          chatModel: chatModel,
-                                          docId: docIdRoom ?? '',
-                                          collection: collection,
-                                        )
-                                            .then((value) {
-                                          Get.back();
-                                        });
-                                      }
-                                    },
+                                  AppService()
+                                      .processInsertChat(
+                                    chatModel: chatModel,
+                                    docId: collection != null
+                                        ? appController.docIdPrivateChats[0]
+                                        : appController.docIdRoomChooses[0],
+                                    collection: collection,
                                   )
-                                : const SizedBox(),
-                          ],
-                        ),
-                      ],
-                    ),
-                    WidgetIconButton(
-                      pressFunc: () {
-                        if (appController.fileRealPosts.isNotEmpty) {
-                          appController.fileRealPosts.clear();
-                        }
+                                      .then((value) async {
+                                    Get.back();
+                                  });
+                                });
+                              } else {
+                                print('##19dec ไม่ได้ถ่ายภาพ');
 
-                        if (appController.urlRealPostChooses.isNotEmpty) {
-                          appController.urlRealPostChooses.clear();
-                        }
+                                ChatModel chatModel =
+                                    await AppService().createChatModel();
+                                AppService()
+                                    .processInsertChat(
+                                  chatModel: chatModel,
+                                  docId: docIdRoom ?? '',
+                                  collection: collection,
+                                )
+                                    .then((value) {
+                                  Get.back();
+                                });
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  WidgetIconButton(
+                    pressFunc: () {
+                      if (appController.fileRealPosts.isNotEmpty) {
+                        appController.fileRealPosts.clear();
+                      }
 
-                        if (appController.xFiles.isNotEmpty) {
-                          appController.xFiles.clear();
-                        }
+                      if (appController.urlRealPostChooses.isNotEmpty) {
+                        appController.urlRealPostChooses.clear();
+                      }
 
-                        Get.back();
-                      },
-                      iconData: GetPlatform.isAndroid
-                          ? Icons.arrow_back
-                          : Icons.arrow_back_ios,
-                    )
-                  ],
-                ),
-              );
-            }),
-        isDismissible: true);
+                      if (appController.xFiles.isNotEmpty) {
+                        appController.xFiles.clear();
+                      }
+
+                      Get.back();
+                    },
+                    iconData: GetPlatform.isAndroid
+                        ? Icons.arrow_back
+                        : Icons.arrow_back_ios,
+                  )
+                ],
+              ),
+            );
+          }),
+      isDismissible: true,
+      isScrollControlled: true,
+    );
   }
 
   void myBottonSheet({required Function() tapFunc}) {

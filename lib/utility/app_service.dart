@@ -26,6 +26,8 @@ import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/utility/app_snackbar.dart';
+import 'package:realpost/widgets/widget_image.dart';
+import 'package:realpost/widgets/widget_text.dart';
 import 'package:realpost/widgets/widget_text_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -131,7 +133,7 @@ class AppService {
           }
         }
         print('##28feb havePhone = $havePhone');
-
+       
         if (havePhone) {
           print('##28feb เคยเอาเบอร์นี่ไปสมัครแล้ว');
           print('##28feb havePhoneModel ---> ${havePhoneUserModel!.toMap()}');
@@ -145,23 +147,56 @@ class AppService {
             Get.offAllNamed('/mainPageView');
           });
         } else {
-          print('##28feb เบอร์ใหม่');
+          print('##21mar เบอร์ใหม่');
 
-          String email = 'phone$phoneNumber@realpost.com';
-          String password = '123456';
+          AppDialog(context: context).normalDialog(
+            title: 'Terms and Conditions',
+            leadingWidget: const WidgetImage(
+              path: 'images/icon2.png',
+              size: 80,
+            ),
+            contentWidget: ListView(
+              children: [
+                WidgetText(
+                  text: AppConstant.conditionTh,
+                  textStyle: AppConstant().h3Style(color: Colors.black),
+                ),
+                WidgetText(
+                  text: AppConstant.conditionEn,
+                  textStyle: AppConstant().h3Style(color: Colors.black),
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              WidgetTextButton(
+                text: 'OK',
+                pressFunc: () async {
+                  String email = 'phone$phoneNumber@realpost.com';
+                  String password = '123456';
 
-          await FirebaseAuth.instance
-              .createUserWithEmailAndPassword(email: email, password: password)
-              .then((value) {
-            String uidUser = value.user!.uid;
-            appController.mainUid.value = uidUser;
-            print('##28feb uidUser ---> $uidUser');
-            Get.offAll(DisplayName(
-                uidLogin: uidUser,
-                phoneNumber: phoneNumber,
-                email: email,
-                password: password));
-          });
+                  await FirebaseAuth.instance
+                      .createUserWithEmailAndPassword(
+                          email: email, password: password)
+                      .then((value) {
+                    String uidUser = value.user!.uid;
+                    appController.mainUid.value = uidUser;
+                    print('##28feb uidUser ---> $uidUser');
+                    Get.offAll(DisplayName(
+                        uidLogin: uidUser,
+                        phoneNumber: phoneNumber,
+                        email: email,
+                        password: password));
+                  });
+                },
+              ),
+              WidgetTextButton(
+                text: 'Cancel',
+                pressFunc: () {
+                  exit(0);
+                },
+              ),
+            ],
+          );
         }
       } else {
         appController.showFalseOTP.value = true;
@@ -641,7 +676,6 @@ class AppService {
       appController.shareLocation.value = false;
       appController.messageChats.clear();
       appController.fileRealPosts.clear();
-      
     });
   }
 
