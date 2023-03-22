@@ -133,7 +133,7 @@ class AppService {
           }
         }
         print('##28feb havePhone = $havePhone');
-       
+
         if (havePhone) {
           print('##28feb เคยเอาเบอร์นี่ไปสมัครแล้ว');
           print('##28feb havePhoneModel ---> ${havePhoneUserModel!.toMap()}');
@@ -171,6 +171,8 @@ class AppService {
               WidgetTextButton(
                 text: 'OK',
                 pressFunc: () async {
+                  print('##22mar ต่อไปก็ไป สมัครสมาชิกใหม่');
+
                   String email = 'phone$phoneNumber@realpost.com';
                   String password = '123456';
 
@@ -411,7 +413,7 @@ class AppService {
     return roomModel;
   }
 
-  void initialSetup({required BuildContext context}) {
+  Future<void> initialSetup({required BuildContext context}) async {
     appController.readAllRoom().then((value) {
       print('##15mar docIdRoom.length --> ${appController.docIdRooms.length}');
 

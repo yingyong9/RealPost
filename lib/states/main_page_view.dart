@@ -304,9 +304,14 @@ class _MainPageViewState extends State<MainPageView> {
                   .roomModels[appController.indexBodyMainPageView.value]
                   .timestamp
                   .toDate())
-          ? WidgetText(
-              text: 'Real',
-              textStyle: AppConstant().h2Style(color: Colors.red.shade700),
+          ? Container(
+              padding: const EdgeInsets.all(8),
+              decoration: AppConstant().boxCurve(
+                  color: Color.fromARGB(255, 198, 27, 52), radius: 20),
+              child: WidgetText(
+                text: '  สด  ',
+                textStyle: AppConstant().h2Style(color: Colors.white),
+              ),
             )
           : const SizedBox(),
     );
@@ -402,7 +407,8 @@ class _MainPageViewState extends State<MainPageView> {
                   //                 appController.mainUid.toString())
                   //             ? Color(0xff133c29)
                   //             : Color(0xffadd500)),
-                  decoration: AppConstant().boxChatGuest(bgColor: Colors.black.withOpacity(0.5)),
+                  decoration: AppConstant()
+                      .boxChatGuest(bgColor: Colors.black.withOpacity(0.5)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -419,10 +425,14 @@ class _MainPageViewState extends State<MainPageView> {
                         child: WidgetText(
                             text: appController.chatModels[index].message),
                       ),
-                      appController.chatModels[index].urlRealPost.isEmpty ? const SizedBox() :  SizedBox(
-                        width: boxConstraints.maxWidth * 0.5 - 80,
-                        child: WidgetImageInternet(urlImage: appController.chatModels[index].urlRealPost),
-                      ),
+                      appController.chatModels[index].urlRealPost.isEmpty
+                          ? const SizedBox()
+                          : SizedBox(
+                              width: boxConstraints.maxWidth * 0.5 - 80,
+                              child: WidgetImageInternet(
+                                  urlImage: appController
+                                      .chatModels[index].urlRealPost),
+                            ),
                     ],
                   ),
                 ),
@@ -503,13 +513,20 @@ class _MainPageViewState extends State<MainPageView> {
                               .displayName!,
                           textStyle: AppConstant().h2Style(),
                         ),
-                        WidgetText(
-                            text: AppService().timeStampToString(
-                                timestamp: appController
+                        AppService().compareCurrentTime(
+                                otherDatetime: appController
                                     .roomModels[appController
                                         .indexBodyMainPageView.value]
-                                    .timestamp,
-                                newPattern: 'dd MMM yyyy'))
+                                    .timestamp
+                                    .toDate())
+                            ? const SizedBox()
+                            : WidgetText(
+                                text: AppService().timeStampToString(
+                                    timestamp: appController
+                                        .roomModels[appController
+                                            .indexBodyMainPageView.value]
+                                        .timestamp,
+                                    newPattern: 'dd MMM yyyy'))
                       ],
                     )
                   ],

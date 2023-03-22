@@ -196,9 +196,11 @@ class _AddProductState extends State<AddProduct> {
                                       // Get.offAllNamed('/mainPageView');
 
                                       AppService()
-                                          .initialSetup(context: context);
+                                          .initialSetup(context: context).then((value) {
+                                            Get.back();
+                                          });
 
-                                      Get.back();
+                                      
                                     });
                                   }
                                 } else {

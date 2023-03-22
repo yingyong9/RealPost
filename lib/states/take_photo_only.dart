@@ -22,7 +22,7 @@ class TakePhotoOnly extends StatelessWidget {
       backgroundColor: AppConstant.bgColor,
       appBar: AppBar(
         title: WidgetText(
-          text: 'เลือกรูปของคุณ',
+          text: 'เลือกรูปอาหารที่คุณชื่นชอบ',
           textStyle: AppConstant().h2Style(),
         ),
       ),
