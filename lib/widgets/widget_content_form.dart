@@ -59,6 +59,7 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
                 print('No Text form');
 
                 if (widget.roomModel!.uidCreate == user!.uid) {
+
                   AppDialog(context: context).realPostBottonSheet(
                       collection: widget.collection, docIdRoom: widget.docId!);
                 }

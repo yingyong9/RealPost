@@ -369,6 +369,7 @@ class AppController extends GetxController {
         roomModels.add(model);
         docIdRooms.add(element.id);
 
+        //ทำเพื่อ คลิกไปที่ room ตัวเอง
         if (uidLogin == model.uidCreate) {
           print('##3mar page ที่มี indexPage --> $indexPage');
           print('##3mar page ที่มี docIdRoom --> ${element.id}');

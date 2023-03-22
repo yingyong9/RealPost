@@ -520,14 +520,21 @@ class AppDialog {
   }
 
   void realPostBottonSheet({String? collection, String? docIdRoom}) {
+    AppController controller = Get.put(AppController());
+    if ((controller.fileRealPosts.isNotEmpty) ||
+        (controller.urlRealPostChooses.isNotEmpty)) {
+      controller.fileRealPosts.clear();
+      controller.urlRealPostChooses.clear();
+    }
+
     Get.bottomSheet(
       GetX(
           init: AppController(),
           builder: (AppController appController) {
             print(
-                '##9dec at realPostBottonSheet urlRealPostChoose ==> ${appController.urlRealPostChooses}');
+                '##22mar at realPostBottonSheet urlRealPostChoose ==> ${appController.urlRealPostChooses.length}');
             print(
-                '##20mar @realPostBoottonSheet collection --> $collection, docIdRoom ---> $docIdRoom');
+                '##22mar @realPostBoottonSheet fileRealPosts --> ${appController.fileRealPosts.length}');
             return Container(
               decoration: BoxDecoration(color: AppConstant.bgColor),
               height: 306,
@@ -670,7 +677,10 @@ class AppDialog {
                               } else {
                                 print('##19dec ไม่ได้ถ่ายภาพ');
 
-                                ChatModel chatModel =
+                                if (appController.messageChats.isEmpty) {
+                                  Get.back();
+                                } else {
+                                   ChatModel chatModel =
                                     await AppService().createChatModel();
                                 AppService()
                                     .processInsertChat(
@@ -681,6 +691,7 @@ class AppDialog {
                                     .then((value) {
                                   Get.back();
                                 });
+                                }
                               }
                             },
                           ),
