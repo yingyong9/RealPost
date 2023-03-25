@@ -79,7 +79,7 @@ class _DisplayBigImageState extends State<DisplayBigImage> {
                 .then((value) async {
               await AppService()
                   .processInsertChat(
-                      chatModel: value, docId: controller.docIdRoomChooses.last)
+                      chatModel: value, docIdRoom: controller.docIdRoomChooses.last)
                   .then((value) {
                 Get.offAll(
                     ChatPage(docIdRoom: controller.docIdRoomChooses.last));

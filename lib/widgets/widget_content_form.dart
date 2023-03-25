@@ -6,8 +6,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:realpost/models/chat_model.dart';
 
 import 'package:realpost/models/room_model.dart';
-import 'package:realpost/states/add_product.dart';
-import 'package:realpost/states/display_profile.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
@@ -88,7 +86,7 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
                   print('##13mar docIdRoom ---> ${widget.docId}');
 
                   await AppService().processInsertChat(
-                      chatModel: chatModel, docId: widget.docId!);
+                      chatModel: chatModel, docIdRoom: widget.docId!);
 
                   // AppDialog(context: context).realPostBottonSheet(
                   //     collection: widget.collection,

@@ -36,13 +36,16 @@ class _MainPageViewState extends State<MainPageView> {
 
   TextEditingController textEditingController = TextEditingController();
 
-  var pageViewController = PageController(initialPage: 0);
+  var pageViewController;
 
   @override
   void initState() {
     super.initState();
+    // pageViewController =
+    //     PageController(initialPage: controller.indexBodyMainPageView.value);
+    controller.pageControllers.add(PageController(initialPage: controller.indexBodyMainPageView.value));
     AppService().initialSetup(context: context);
-
+    AppService().aboutNoti();
     // trySignOut();
   }
 
@@ -98,7 +101,8 @@ class _MainPageViewState extends State<MainPageView> {
                                     ),
                                   )
                                   .toList(),
-                              controller: pageViewController,
+                              // controller: pageViewController,
+                              controller: appController.pageControllers.last,
                               scrollDirection: Axis.vertical,
                               onPageChanged: (value) {
                                 appController.indexBodyMainPageView.value =
@@ -401,12 +405,6 @@ class _MainPageViewState extends State<MainPageView> {
                   padding:
                       const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
                   margin: const EdgeInsets.only(top: 4),
-                  // decoration: AppConstant().boxChatGuest(
-                  //     bgColor:
-                  //         (appController.chatModels[index].uidChat.toString() ==
-                  //                 appController.mainUid.toString())
-                  //             ? Color(0xff133c29)
-                  //             : Color(0xffadd500)),
                   decoration: AppConstant()
                       .boxChatGuest(bgColor: Colors.black.withOpacity(0.5)),
                   child: Column(

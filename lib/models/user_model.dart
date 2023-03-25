@@ -8,6 +8,7 @@ class UserModel {
   final String? uidUser;
   final String? email;
   final String? password;
+  final String? token;
 
   UserModel({
     this.displayName,
@@ -16,6 +17,7 @@ class UserModel {
     this.uidUser,
     this.email,
     this.password,
+    this.token,
   });
 
   Map<String, dynamic> toMap() {
@@ -26,17 +28,19 @@ class UserModel {
       'uidUser': uidUser,
       'email': email,
       'password': password,
+      'token': token,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      displayName: map['displayName'] != null ? map['displayName'] as String : null,
-      urlAvatar: map['urlAvatar'] != null ? map['urlAvatar'] as String : null,
-      phoneNumber: map['phoneNumber'] != null ? map['phoneNumber'] as String : null,
-      uidUser: map['uidUser'] != null ? map['uidUser'] as String : null,
-      email: map['email'] != null ? map['email'] as String : null,
-      password: map['password'] != null ? map['password'] as String : null,
+      displayName: map['displayName'] ?? '',
+      urlAvatar: map['urlAvatar']?? '',
+      phoneNumber: map['phoneNumber'] ?? '',
+      uidUser: map['uidUser'] ?? '',
+      email: map['email']?? '',
+      password: map['password'] ?? '',
+      token: map['token']?? '',
     );
   }
 
