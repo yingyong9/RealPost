@@ -396,7 +396,7 @@ class AppDialog {
                     AppService()
                         .processInsertChat(
                             chatModel: chatModel,
-                            docId: collection != null
+                            docIdRoom: collection != null
                                 ? appController.docIdPrivateChats[0]
                                 : appController.docIdRoomChooses[0],
                             collection: collection)
@@ -665,7 +665,7 @@ class AppDialog {
                                   AppService()
                                       .processInsertChat(
                                     chatModel: chatModel,
-                                    docId: collection != null
+                                    docIdRoom: collection != null
                                         ? appController.docIdPrivateChats[0]
                                         : appController.docIdRoomChooses[0],
                                     collection: collection,
@@ -685,7 +685,7 @@ class AppDialog {
                                 AppService()
                                     .processInsertChat(
                                   chatModel: chatModel,
-                                  docId: docIdRoom ?? '',
+                                  docIdRoom: docIdRoom ?? '',
                                   collection: collection,
                                 )
                                     .then((value) {

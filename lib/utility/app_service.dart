@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -13,7 +14,6 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:realpost/models/chat_model.dart';
-import 'package:realpost/models/checkphone_model.dart';
 import 'package:realpost/models/comment_salse_model.dart';
 import 'package:realpost/models/otp_require_thaibulk.dart';
 import 'package:realpost/models/private_chat_model.dart';
@@ -33,6 +33,50 @@ import 'package:url_launcher/url_launcher.dart';
 
 class AppService {
   AppController appController = Get.put(AppController());
+
+  Future<void> aboutNoti() async {
+    FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+    String? token = await firebaseMessaging.getToken();
+    if (token != null) {
+      print('##24mar token ----> $token');
+      print('##24mar uidLogin ---> ${appController.mainUid}');
+
+      await FirebaseFirestore.instance
+          .collection('user')
+          .doc(appController.mainUid.value)
+          .get()
+          .then((value) async {
+        UserModel userModel = UserModel.fromMap(value.data()!);
+        Map<String, dynamic> map = userModel.toMap();
+        print('##24mar map before ==> $map');
+
+        map['token'] = token;
+        await FirebaseFirestore.instance
+            .collection('user')
+            .doc(appController.mainUid.value)
+            .update(map);
+      });
+    }
+
+    FirebaseMessaging.onMessage.listen((event) {
+      activeReceiveNoti(
+          title: event.notification!.title!, body: event.notification!.body!);
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      activeReceiveNoti(
+          title: event.notification!.title!, body: event.notification!.body!);
+    });
+  }
+
+  void activeReceiveNoti({required String title, required String body}) {
+    print('##24mar title --> $title, body --> $body');
+    var bodys = body.split('#');
+    print('##24mar bodys index --> ${bodys.last}');
+    appController.indexBodyMainPageView.value = int.parse(bodys.last.trim());
+    appController.pageControllers.last
+        .jumpToPage(appController.indexBodyMainPageView.value);
+  }
 
   Future<void> findArrayFriendUid() async {
     if (appController.uidFriends.isNotEmpty) {
@@ -660,24 +704,51 @@ class AppService {
 
   Future<void> processInsertChat(
       {required ChatModel chatModel,
-      required String docId,
+      required String docIdRoom,
       String? collection}) async {
     AppController appController = Get.put(AppController());
 
     print(
-        '##20mar @processInsertChat collection --> $collection, docId --> $docId');
+        '##20mar @processInsertChat collection --> $collection, docIdRoom --> $docIdRoom');
 
     await FirebaseFirestore.instance
         .collection(collection ?? 'room')
-        .doc(docId)
+        .doc(docIdRoom)
         .collection('chat')
         .doc()
         .set(chatModel.toMap())
-        .then((value) {
+        .then((value) async {
       print('##20mar Process Insert Chat Success');
+
+      await FirebaseFirestore.instance
+          .collection('room')
+          .doc(docIdRoom)
+          .get()
+          .then((value) async {
+        RoomModel roomModel = RoomModel.fromMap(value.data()!);
+        UserModel? userModel = await findUserModel(uid: roomModel.uidCreate);
+        print('##20mar token ที่จะส่ง noti ---> ${userModel!.token}');
+
+        if ((userModel.token!.isNotEmpty) && (appController.mainUid.toString() != roomModel.uidCreate.toString())) {
+          processSentNoti(
+              title: 'มีคนพูดถึงคุณ', body: '${appController.messageChats.last} %23${appController.indexBodyMainPageView.value}', token: userModel.token!);
+        }
+      });
+
       appController.shareLocation.value = false;
       appController.messageChats.clear();
       appController.fileRealPosts.clear();
+    });
+  }
+
+  Future<void> processSentNoti(
+      {required String title,
+      required String body,
+      required String token}) async {
+    String urlApi =
+        'https://www.androidthai.in.th/realpost/apiNotiRealPost.php?isAdd=true&token=$token&body=$body&title=$title';
+    await Dio().get(urlApi).then((value) {
+      print('Sent Noti Success');
     });
   }
 
