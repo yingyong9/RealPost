@@ -359,7 +359,7 @@ class AppController extends GetxController {
     }
     await FirebaseFirestore.instance
         .collection('room')
-        .orderBy('timestamp', descending: true)
+        .orderBy('timestamp', descending: true).limit(10)
         .get()
         .then((value) async {
       int indexPage = 0;

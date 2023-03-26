@@ -45,7 +45,7 @@ class _MainPageViewState extends State<MainPageView> {
     //     PageController(initialPage: controller.indexBodyMainPageView.value);
     controller.pageControllers.add(PageController(initialPage: controller.indexBodyMainPageView.value));
     AppService().initialSetup(context: context);
-    AppService().aboutNoti();
+    AppService().aboutNoti(context: context);
     // trySignOut();
   }
 

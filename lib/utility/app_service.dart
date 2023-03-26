@@ -34,7 +34,7 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
-  Future<void> aboutNoti() async {
+  Future<void> aboutNoti({required BuildContext context}) async {
     FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
     String? token = await firebaseMessaging.getToken();
     if (token != null) {
@@ -60,22 +60,38 @@ class AppService {
 
     FirebaseMessaging.onMessage.listen((event) {
       activeReceiveNoti(
-          title: event.notification!.title!, body: event.notification!.body!);
+          title: event.notification!.title!,
+          body: event.notification!.body!,
+          statusOnMessage: true, context: context);
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
       activeReceiveNoti(
-          title: event.notification!.title!, body: event.notification!.body!);
+          title: event.notification!.title!,
+          body: event.notification!.body!,
+          statusOnMessage: false, context: context);
     });
   }
 
-  void activeReceiveNoti({required String title, required String body}) {
+  void activeReceiveNoti(
+      {required String title,
+      required String body,
+      required bool statusOnMessage,
+      required BuildContext context}) {
     print('##24mar title --> $title, body --> $body');
     var bodys = body.split('#');
     print('##24mar bodys index --> ${bodys.last}');
-    appController.indexBodyMainPageView.value = int.parse(bodys.last.trim());
-    appController.pageControllers.last
-        .jumpToPage(appController.indexBodyMainPageView.value);
+
+    if (statusOnMessage) {
+      // From OnMessage
+      appController.indexBodyMainPageView.value = int.parse(bodys.last.trim());
+      appController.pageControllers.last
+          .jumpToPage(appController.indexBodyMainPageView.value);
+    } else {
+      appController.indexBodyMainPageView.value = int.parse(bodys.last.trim());
+      appController.pageControllers.last
+          .jumpToPage(appController.indexBodyMainPageView.value);
+    }
   }
 
   Future<void> findArrayFriendUid() async {
@@ -729,9 +745,14 @@ class AppService {
         UserModel? userModel = await findUserModel(uid: roomModel.uidCreate);
         print('##20mar token ที่จะส่ง noti ---> ${userModel!.token}');
 
-        if ((userModel.token!.isNotEmpty) && (appController.mainUid.toString() != roomModel.uidCreate.toString())) {
+        if ((userModel.token!.isNotEmpty) &&
+            (appController.mainUid.toString() !=
+                roomModel.uidCreate.toString())) {
           processSentNoti(
-              title: 'มีคนพูดถึงคุณ', body: '${appController.messageChats.last} %23${appController.indexBodyMainPageView.value}', token: userModel.token!);
+              title: 'มีคนพูดถึงคุณ',
+              body:
+                  '${appController.messageChats.last} %23${appController.indexBodyMainPageView.value}',
+              token: userModel.token!);
         }
       });
 
