@@ -34,6 +34,29 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
+  Future<void> readAllChatOwner({required String docIdRoom}) async {
+    if (appController.chatOwnerModels.isNotEmpty) {
+      appController.chatOwnerModels.clear();
+    }
+
+    FirebaseFirestore.instance
+        .collection('room')
+        .doc(docIdRoom)
+        .collection('chatOwner')
+        .orderBy('timestamp')
+        .snapshots()
+        .listen((event) {
+      if (appController.chatOwnerModels.isNotEmpty) {
+        appController.chatOwnerModels.clear();
+      }
+
+      for (var element in event.docs) {
+        ChatModel model = ChatModel.fromMap(element.data());
+        appController.chatOwnerModels.add(model);
+      }
+    });
+  }
+
   Future<void> aboutNoti({required BuildContext context}) async {
     FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
     String? token = await firebaseMessaging.getToken();
@@ -62,14 +85,16 @@ class AppService {
       activeReceiveNoti(
           title: event.notification!.title!,
           body: event.notification!.body!,
-          statusOnMessage: true, context: context);
+          statusOnMessage: true,
+          context: context);
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
       activeReceiveNoti(
           title: event.notification!.title!,
           body: event.notification!.body!,
-          statusOnMessage: false, context: context);
+          statusOnMessage: false,
+          context: context);
     });
   }
 
@@ -492,6 +517,7 @@ class AppService {
       }
 
       appController.readAllChat(docIdRoom: appController.docIdRooms[0]);
+      AppService().readAllChatOwner(docIdRoom: appController.docIdRooms[0]);
 
       if (appController.docIdRoomChooses.isNotEmpty) {
         appController.docIdRoomChooses.clear();
@@ -721,16 +747,17 @@ class AppService {
   Future<void> processInsertChat(
       {required ChatModel chatModel,
       required String docIdRoom,
-      String? collection}) async {
+      String? collection,
+      String? collectionChat}) async {
     AppController appController = Get.put(AppController());
 
     print(
-        '##20mar @processInsertChat collection --> $collection, docIdRoom --> $docIdRoom');
+        '##20mar @processInsertChat collection --> $collection, docIdRoom --> $docIdRoom, collectionChat ---> $collectionChat');
 
     await FirebaseFirestore.instance
         .collection(collection ?? 'room')
         .doc(docIdRoom)
-        .collection('chat')
+        .collection(collectionChat ?? 'chat')
         .doc()
         .set(chatModel.toMap())
         .then((value) async {
