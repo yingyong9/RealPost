@@ -98,6 +98,8 @@ class AppController extends GetxController {
 
   RxList<PageController> pageControllers = <PageController>[].obs;
 
+  RxList<ChatModel> chatOwnerModels = <ChatModel>[].obs;
+
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
       salsegroups.clear();
@@ -360,6 +362,7 @@ class AppController extends GetxController {
     await FirebaseFirestore.instance
         .collection('room')
         .orderBy('timestamp', descending: true)
+        // .limit(10)
         .get()
         .then((value) async {
       int indexPage = 0;

@@ -344,7 +344,7 @@ class AppBottomSheet {
                       onTap: () {
                         Get.to(const AddProduct());
                       },
-                      child: WidgetImage(
+                      child: const WidgetImage(
                         path: 'images/addgreen.png',
                         size: 36,
                       ),

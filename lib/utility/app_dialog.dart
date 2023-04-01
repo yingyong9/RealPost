@@ -669,6 +669,8 @@ class AppDialog {
                                         ? appController.docIdPrivateChats[0]
                                         : appController.docIdRoomChooses[0],
                                     collection: collection,
+                                     collectionChat: 'chatOwner'
+                                   
                                   )
                                       .then((value) async {
                                     Get.back();
@@ -687,6 +689,7 @@ class AppDialog {
                                   chatModel: chatModel,
                                   docIdRoom: docIdRoom ?? '',
                                   collection: collection,
+                                   collectionChat: 'chatOwner'
                                 )
                                     .then((value) {
                                   Get.back();

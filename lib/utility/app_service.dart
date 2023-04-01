@@ -34,7 +34,30 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
-  Future<void> aboutNoti() async {
+  Future<void> readAllChatOwner({required String docIdRoom}) async {
+    if (appController.chatOwnerModels.isNotEmpty) {
+      appController.chatOwnerModels.clear();
+    }
+
+    FirebaseFirestore.instance
+        .collection('room')
+        .doc(docIdRoom)
+        .collection('chatOwner')
+        .orderBy('timestamp')
+        .snapshots()
+        .listen((event) {
+      if (appController.chatOwnerModels.isNotEmpty) {
+        appController.chatOwnerModels.clear();
+      }
+
+      for (var element in event.docs) {
+        ChatModel model = ChatModel.fromMap(element.data());
+        appController.chatOwnerModels.add(model);
+      }
+    });
+  }
+
+  Future<void> aboutNoti({required BuildContext context}) async {
     FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
     String? token = await firebaseMessaging.getToken();
     if (token != null) {
@@ -60,22 +83,40 @@ class AppService {
 
     FirebaseMessaging.onMessage.listen((event) {
       activeReceiveNoti(
-          title: event.notification!.title!, body: event.notification!.body!);
+          title: event.notification!.title!,
+          body: event.notification!.body!,
+          statusOnMessage: true,
+          context: context);
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
       activeReceiveNoti(
-          title: event.notification!.title!, body: event.notification!.body!);
+          title: event.notification!.title!,
+          body: event.notification!.body!,
+          statusOnMessage: false,
+          context: context);
     });
   }
 
-  void activeReceiveNoti({required String title, required String body}) {
+  void activeReceiveNoti(
+      {required String title,
+      required String body,
+      required bool statusOnMessage,
+      required BuildContext context}) {
     print('##24mar title --> $title, body --> $body');
     var bodys = body.split('#');
     print('##24mar bodys index --> ${bodys.last}');
-    appController.indexBodyMainPageView.value = int.parse(bodys.last.trim());
-    appController.pageControllers.last
-        .jumpToPage(appController.indexBodyMainPageView.value);
+
+    if (statusOnMessage) {
+      // From OnMessage
+      appController.indexBodyMainPageView.value = int.parse(bodys.last.trim());
+      appController.pageControllers.last
+          .jumpToPage(appController.indexBodyMainPageView.value);
+    } else {
+      appController.indexBodyMainPageView.value = int.parse(bodys.last.trim());
+      appController.pageControllers.last
+          .jumpToPage(appController.indexBodyMainPageView.value);
+    }
   }
 
   Future<void> findArrayFriendUid() async {
@@ -476,6 +517,7 @@ class AppService {
       }
 
       appController.readAllChat(docIdRoom: appController.docIdRooms[0]);
+      AppService().readAllChatOwner(docIdRoom: appController.docIdRooms[0]);
 
       if (appController.docIdRoomChooses.isNotEmpty) {
         appController.docIdRoomChooses.clear();
@@ -705,16 +747,17 @@ class AppService {
   Future<void> processInsertChat(
       {required ChatModel chatModel,
       required String docIdRoom,
-      String? collection}) async {
+      String? collection,
+      String? collectionChat}) async {
     AppController appController = Get.put(AppController());
 
     print(
-        '##20mar @processInsertChat collection --> $collection, docIdRoom --> $docIdRoom');
+        '##20mar @processInsertChat collection --> $collection, docIdRoom --> $docIdRoom, collectionChat ---> $collectionChat');
 
     await FirebaseFirestore.instance
         .collection(collection ?? 'room')
         .doc(docIdRoom)
-        .collection('chat')
+        .collection(collectionChat ?? 'chat')
         .doc()
         .set(chatModel.toMap())
         .then((value) async {
@@ -729,9 +772,14 @@ class AppService {
         UserModel? userModel = await findUserModel(uid: roomModel.uidCreate);
         print('##20mar token ที่จะส่ง noti ---> ${userModel!.token}');
 
-        if ((userModel.token!.isNotEmpty) && (appController.mainUid.toString() != roomModel.uidCreate.toString())) {
+        if ((userModel.token!.isNotEmpty) &&
+            (appController.mainUid.toString() !=
+                roomModel.uidCreate.toString())) {
           processSentNoti(
-              title: 'มีคนพูดถึงคุณ', body: '${appController.messageChats.last} %23${appController.indexBodyMainPageView.value}', token: userModel.token!);
+              title: 'มีคนพูดถึงคุณ',
+              body:
+                  '${appController.messageChats.last} %23${appController.indexBodyMainPageView.value}',
+              token: userModel.token!);
         }
       });
 

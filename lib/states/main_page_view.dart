@@ -43,9 +43,10 @@ class _MainPageViewState extends State<MainPageView> {
     super.initState();
     // pageViewController =
     //     PageController(initialPage: controller.indexBodyMainPageView.value);
-    controller.pageControllers.add(PageController(initialPage: controller.indexBodyMainPageView.value));
+    controller.pageControllers.add(
+        PageController(initialPage: controller.indexBodyMainPageView.value));
     AppService().initialSetup(context: context);
-    AppService().aboutNoti();
+    AppService().aboutNoti(context: context);
     // trySignOut();
   }
 
@@ -114,6 +115,11 @@ class _MainPageViewState extends State<MainPageView> {
                                     false;
 
                                 appController.readAllChat(
+                                    docIdRoom: appController.docIdRooms[
+                                        appController
+                                            .indexBodyMainPageView.value]);
+
+                                AppService().readAllChatOwner(
                                     docIdRoom: appController.docIdRooms[
                                         appController
                                             .indexBodyMainPageView.value]);
@@ -205,6 +211,33 @@ class _MainPageViewState extends State<MainPageView> {
         displayListChat(appController, boxConstraints),
         displayOwnerRoom(boxConstraints, appController),
         displayRealText(appController: appController),
+        Positioned(
+          // top: boxConstraints.maxHeight * 0.6 - 70,
+          top: 60, right: 0,
+          child: Container(
+            width: boxConstraints.maxWidth * 0.5,
+            // height: 60,
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+            margin: const EdgeInsets.only(top: 4),
+            decoration: AppConstant()
+                .boxChatGuest(bgColor: Colors.black.withOpacity(0.5)),
+            child: appController.chatOwnerModels.isEmpty
+                ? const SizedBox()
+                : WidgetText(
+                    text: appController.chatOwnerModels.last.message,
+                    textStyle: AppConstant().h3Style(color: Colors.white),
+                  ),
+          ),
+        ),
+        // Positioned(
+        //     top: boxConstraints.maxHeight * 0.6 - 220,
+        //     child: WidgetImageInternet(
+        //       urlImage:
+        //           'https://firebasestorage.googleapis.com/v0/b/realpost-19dd3.appspot.com/o/realpost%2Fphoto257360.jpg?alt=media&token=cb7e7aac-5ef4-4cfd-beae-85b70017cdc3',
+        //       width: 80,
+        //       height: 150,
+        //       boxFit: BoxFit.cover,
+        //     ))
         // chatPrivateButton(appController: appController),
         // const WidgetDisplayPrice(),
       ],
@@ -219,8 +252,8 @@ class _MainPageViewState extends State<MainPageView> {
         : displayListMessage(
             boxConstraints,
             appController,
-            top: 300,
-            height: boxConstraints.maxHeight * 0.3,
+            top: boxConstraints.maxHeight * 0.6,
+            height: boxConstraints.maxHeight * 0.25,
             reverse: true,
           );
   }
@@ -377,7 +410,7 @@ class _MainPageViewState extends State<MainPageView> {
     return Positioned(
       top: top,
       child: SizedBox(
-        width: boxConstraints.maxWidth * 0.5,
+        width: boxConstraints.maxWidth * 0.75,
         height: height ??
             boxConstraints.maxHeight - (boxConstraints.maxHeight * 0.2),
         child: ListView.builder(
@@ -389,50 +422,66 @@ class _MainPageViewState extends State<MainPageView> {
             return Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  margin: EdgeInsets.only(
-                    left: marginLeft ?? 16,
-                    // right: 4,
-                  ),
-                  child: WidgetCircularImage(
-                    urlImage: appController.chatModels[index].urlAvatar,
-                    radius: 14,
-                  ),
-                ),
+                // Container(
+                //   margin: EdgeInsets.only(
+                //     left: marginLeft ?? 16,
+                //     // right: 4,
+                //   ),
+                //   child: WidgetCircularImage(
+                //     urlImage: appController.chatModels[index].urlAvatar,
+                //     radius: 14,
+                //   ),
+                // ),
                 Container(
                   constraints:
-                      BoxConstraints(maxWidth: boxConstraints.maxWidth * 0.5),
+                      BoxConstraints(maxWidth: boxConstraints.maxWidth * 0.75),
                   padding:
                       const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
                   margin: const EdgeInsets.only(top: 4),
                   decoration: AppConstant()
                       .boxChatGuest(bgColor: Colors.black.withOpacity(0.5)),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: boxConstraints.maxWidth * 0.5 - 80,
-                        child: WidgetText(
-                          text: appController.chatModels[index].disPlayName,
-                          textStyle: AppConstant()
-                              .h3Style(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      SizedBox(
-                        width: boxConstraints.maxWidth * 0.5 - 80,
-                        child: WidgetText(
-                            text: appController.chatModels[index].message),
-                      ),
-                      appController.chatModels[index].urlRealPost.isEmpty
-                          ? const SizedBox()
-                          : SizedBox(
-                              width: boxConstraints.maxWidth * 0.5 - 80,
-                              child: WidgetImageInternet(
-                                  urlImage: appController
-                                      .chatModels[index].urlRealPost),
-                            ),
-                    ],
-                  ),
+
+                  child: Text.rich(TextSpan(
+                      text: appController.chatModels[index].disPlayName,
+                      style: AppConstant().h3Style(
+                          color: Colors.yellow, fontWeight: FontWeight.bold),
+                      children: [
+                        TextSpan(
+                            text: ' : ',
+                            style: AppConstant().h3Style(
+                                color: Colors.yellow,
+                                fontWeight: FontWeight.bold)),
+                        TextSpan(
+                            text: appController.chatModels[index].message,
+                            style: AppConstant().h3Style(color: Colors.white))
+                      ])),
+                  // child: Row(
+                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                  //   children: [
+                  //     SizedBox(
+                  //       // width: boxConstraints.maxWidth * 0.5 - 80,
+                  //       child: WidgetText(
+                  //         text: appController.chatModels[index].disPlayName,
+                  //         textStyle: AppConstant()
+                  //             .h3Style(fontWeight: FontWeight.bold),
+                  //       ),
+                  //     ),
+                  //     WidgetText(text: ' : '),
+                  //     SizedBox(
+                  //       // width: boxConstraints.maxWidth * 0.5 - 80,
+                  //       child: WidgetText(
+                  //           text: appController.chatModels[index].message),
+                  //     ),
+                  //     appController.chatModels[index].urlRealPost.isEmpty
+                  //         ? const SizedBox()
+                  //         : SizedBox(
+                  //             width: boxConstraints.maxWidth * 0.5 - 80,
+                  //             child: WidgetImageInternet(
+                  //                 urlImage: appController
+                  //                     .chatModels[index].urlRealPost),
+                  //           ),
+                  //   ],
+                  // ),
                 ),
               ],
             );
@@ -444,7 +493,7 @@ class _MainPageViewState extends State<MainPageView> {
 
   Widget displayImageRoom(RoomModel roomModel, BoxConstraints boxConstraints) {
     return ImageSlideshow(
-      autoPlayInterval: roomModel.urlRooms.length == 1 ? 0 : 3000,
+      autoPlayInterval: roomModel.urlRooms.length == 1 ? 0 : 5000,
       isLoop: true,
       height: roomModel.safeProduct!
           ? boxConstraints.maxHeight * 0.5

@@ -57,7 +57,6 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
                 print('No Text form');
 
                 if (widget.roomModel!.uidCreate == user!.uid) {
-
                   AppDialog(context: context).realPostBottonSheet(
                       collection: widget.collection, docIdRoom: widget.docId!);
                 }
@@ -75,22 +74,39 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
                 widget.textEditingController.text = '';
 
                 print(
-                    'userModel => ${widget.appController.userModels.last.toMap()}');
+                    '##31mar userModel => ${widget.appController.userModels.last.toMap()}');
 
                 if (widget.appController.userModels.last.urlAvatar?.isEmpty ??
                     true) {
                   AppDialog(context: context).avatarBottonSheet();
                 } else {
                   ChatModel chatModel = await AppService().createChatModel();
-                  print('##13mar chatModel ---> ${chatModel.toMap()}');
-                  print('##13mar docIdRoom ---> ${widget.docId}');
+                  print('##31mar chatModel ---> ${chatModel.toMap()}');
+                  print('##31mar docIdRoom ---> ${widget.docId}');
 
-                  await AppService().processInsertChat(
-                      chatModel: chatModel, docIdRoom: widget.docId!);
+                  await AppService()
+                      .processInsertChat(
+                          chatModel: chatModel, docIdRoom: widget.docId!)
+                      .then((value) {
+                    widget.appController
+                        .processFindDocIdPrivateChat(
+                            uidLogin: user!.uid,
+                            uidFriend: widget.roomModel!.uidCreate)
+                        .then((value) {
+                      if (widget.appController.mainUid.toString() !=
+                          widget.roomModel!.uidCreate.toString()) {
+                        Map<String, dynamic> map = chatModel.toMap();
+                        map['urlRealPost'] = widget.roomModel!.urlRooms[0];
 
-                  // AppDialog(context: context).realPostBottonSheet(
-                  //     collection: widget.collection,
-                  //     docIdRoom: widget.docId!);
+                        ChatModel newChatModel = ChatModel.fromMap(map);
+
+                        AppService().processInsertPrivateChat(
+                            docIdPrivateChat:
+                                widget.appController.docIdPrivateChats.last,
+                            chatModel: newChatModel);
+                      }
+                    });
+                  });
                 }
               }
             },
