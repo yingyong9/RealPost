@@ -100,6 +100,8 @@ class AppController extends GetxController {
 
   RxList<ChatModel> chatOwnerModels = <ChatModel>[].obs;
 
+  RxList<DocumentSnapshot> documentSnapshots = <DocumentSnapshot>[].obs;
+
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
       salsegroups.clear();
@@ -352,17 +354,33 @@ class AppController extends GetxController {
     });
   }
 
+  Future<void> readAllDocumentSnapshotRoom() async {
+    await FirebaseFirestore.instance
+        .collection('room')
+        .orderBy('timestamp', descending: true)
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        documentSnapshots.add(element);
+      }
+    });
+  }
+
   Future<void> readAllRoom() async {
     if (roomModels.isNotEmpty) {
       roomModels.clear();
       docIdRooms.clear();
       listChatModels.clear();
       userModelAtRooms.clear();
+      documentSnapshots.clear();
     }
+
+    await readAllDocumentSnapshotRoom();
+
     await FirebaseFirestore.instance
         .collection('room')
         .orderBy('timestamp', descending: true)
-        // .limit(10)
+        .limit(AppConstant.amountLoadPage)
         .get()
         .then((value) async {
       int indexPage = 0;
@@ -419,4 +437,77 @@ class AppController extends GetxController {
       }
     });
   }
+
+  Future<void> readAllRoomStartDocument({required DocumentSnapshot documentSnapshot}) async {
+    // if (roomModels.isNotEmpty) {
+    //   roomModels.clear();
+    //   docIdRooms.clear();
+    //   listChatModels.clear();
+    //   userModelAtRooms.clear();
+    //   documentSnapshots.clear();
+    // }
+
+    
+
+    await FirebaseFirestore.instance
+        .collection('room')
+        .orderBy('timestamp', descending: true)
+        .startAfterDocument(documentSnapshot)
+        // .limit(AppConstant.amountLoadPage)
+        .get()
+        .then((value) async {
+      // int indexPage = 0;
+      var user = FirebaseAuth.instance.currentUser;
+      var uidLogin = user!.uid;
+
+      for (var element in value.docs) {
+        RoomModel model = RoomModel.fromMap(element.data());
+        roomModels.add(model);
+        docIdRooms.add(element.id);
+
+        //ทำเพื่อ คลิกไปที่ room ตัวเอง
+        // if (uidLogin == model.uidCreate) {
+        //   print('##3mar page ที่มี indexPage --> $indexPage');
+        //   print('##3mar page ที่มี docIdRoom --> ${element.id}');
+        //   docIdRoomClickHome.value = element.id;
+        //   indexPageHome.value = indexPage;
+        // }
+
+        UserModel? userModel =
+            await AppService().findUserModel(uid: model.uidCreate);
+        if (userModel != null) {
+          userModelAtRooms.add(userModel);
+        }
+
+        var chatModels = <ChatModel>[];
+        ChatModel? lateChatModel;
+        var user = FirebaseAuth.instance.currentUser;
+        bool check = true;
+
+        FirebaseFirestore.instance
+            .collection('room')
+            .doc(element.id)
+            .collection('chat')
+            .orderBy('timestamp', descending: false)
+            .snapshots()
+            .listen((event) {
+          if (event.docs.isEmpty) {
+          } else {
+            for (var element2 in event.docs) {
+              ChatModel chatModel = ChatModel.fromMap(element2.data());
+              chatModels.add(chatModel);
+
+              if ((chatModel.uidChat == user!.uid) && check) {
+                check = false;
+                lateChatModel = chatModel;
+              }
+            }
+          }
+          listChatModels.add(chatModels);
+          lastChatModelLogins.add(lateChatModel!);
+        });
+        // indexPage++;
+      }
+    });
+  } // end Readroom// end Readroom
 }

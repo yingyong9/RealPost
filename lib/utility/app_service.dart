@@ -109,10 +109,37 @@ class AppService {
 
     if (statusOnMessage) {
       // From OnMessage
-      appController.indexBodyMainPageView.value = int.parse(bodys.last.trim());
-      appController.pageControllers.last
-          .jumpToPage(appController.indexBodyMainPageView.value);
+
+      if (appController.indexBodyMainPageView.value != int.parse(bodys.last)) {
+        AppDialog(context: context).normalDialog(
+          title: title,
+          leadingWidget: const WidgetImage(path: 'images/icon.png', size: 80),
+          contentWidget: WidgetText(
+            text: body,
+            textStyle: AppConstant().h3Style(color: Colors.black),
+          ),
+          actions: [
+            WidgetTextButton(
+              text: 'ดู',
+              pressFunc: () {
+                Get.back();
+                appController.indexBodyMainPageView.value =
+                    int.parse(bodys.last.trim());
+                appController.pageControllers.last
+                    .jumpToPage(appController.indexBodyMainPageView.value);
+              },
+            ),
+            WidgetTextButton(
+              text: 'ไว้ภายหลัง',
+              pressFunc: () {
+                Get.back();
+              },
+            )
+          ],
+        );
+      }
     } else {
+      //From OpenApp
       appController.indexBodyMainPageView.value = int.parse(bodys.last.trim());
       appController.pageControllers.last
           .jumpToPage(appController.indexBodyMainPageView.value);
@@ -500,20 +527,22 @@ class AppService {
 
   Future<void> initialSetup({required BuildContext context}) async {
     appController.readAllRoom().then((value) {
-      print('##15mar docIdRoom.length --> ${appController.docIdRooms.length}');
+      print('##1april docIdRoom.length --> ${appController.docIdRooms.length}');
 
-      for (var element in appController.roomModels) {
-        if (appController.mainUid.value == element.uidCreate) {
-          appController.noRoom.value = false;
-        }
-      }
+      // for (var element in appController.roomModels) {
+      //   if (appController.mainUid.value == element.uidCreate) {
+      //     appController.noRoom.value = false;
+      //   }
+      // }
+
+      appController.noRoom.value = false;
 
       appController.processReadCommentSalses();
 
       if (appController.noRoom.value) {
         Get.to(const TakePhotoOnly());
       } else {
-        print('##5jan Have Room');
+        print('##1april Have Room');
       }
 
       appController.readAllChat(docIdRoom: appController.docIdRooms[0]);

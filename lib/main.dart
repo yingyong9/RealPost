@@ -43,10 +43,9 @@ Future<void> main() async {
   // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
   await Firebase.initializeApp().then((value) {
-    
     AppController appController = Get.put(AppController());
     AppService().readAllUserModel().then((value) {
-      print('##15mar userModels ---> ${appController.userModels.length}');
+      print('##1april userModels ---> ${appController.userModels.length}');
     });
 
     FirebaseAuth.instance.authStateChanges().listen((event) async {
@@ -70,6 +69,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: AppConstant.appName,
