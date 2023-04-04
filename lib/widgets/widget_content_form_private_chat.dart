@@ -1,19 +1,17 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/room_model.dart';
-import 'package:realpost/states/add_product.dart';
+import 'package:realpost/models/user_model.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
-import 'package:realpost/widgets/widget_image.dart';
 
 class WidgetContentFormPrivateChat extends StatefulWidget {
   const WidgetContentFormPrivateChat({
@@ -25,6 +23,7 @@ class WidgetContentFormPrivateChat extends StatefulWidget {
     this.docId,
     this.roomModel,
     this.docIdPrivateChat,
+    this.uidFriend,
   }) : super(key: key);
 
   final BoxConstraints boxConstraints;
@@ -34,6 +33,7 @@ class WidgetContentFormPrivateChat extends StatefulWidget {
   final String? docId;
   final RoomModel? roomModel;
   final String? docIdPrivateChat;
+  final String? uidFriend;
 
   @override
   State<WidgetContentFormPrivateChat> createState() =>
@@ -179,16 +179,29 @@ class _WidgetContentFormPrivateChatState
                   print(
                       '##5feb docIdPrivateChat ---> ${widget.docIdPrivateChat}');
 
-                  await AppService().processInsertPrivateChat(
-                      docIdPrivateChat: widget.docIdPrivateChat!,
-                      chatModel: chatModel);
+                  await AppService()
+                      .processInsertPrivateChat(
+                          docIdPrivateChat: widget.docIdPrivateChat!,
+                          chatModel: chatModel)
+                      .then((value) async {
+                    UserModel? userModelLogin = await AppService()
+                        .findUserModel(uid: widget.appController.mainUid.value);
+                    print(
+                        '##4april userModelLogin --> ${userModelLogin!.toMap()}');
 
-                  // await AppService().processInsertChat(
-                  //     chatModel: chatModel, docId: widget.docId!);
+                    UserModel? userModelFriend = await AppService()
+                        .findUserModel(uid: widget.uidFriend!);
+                    print(
+                        '##4april userModelFriend --> ${userModelLogin.toMap()}');
 
-                  // AppDialog(context: context).realPostBottonSheet(
-                  //     collection: widget.collection,
-                  //     docIdRoom: widget.docId!);
+                    AppService().processSentNoti(
+                        title: 'มีข้อความ',
+                        body:
+                            '${widget.appController.messageChats.last} %23${userModelLogin.phoneNumber}',
+                        token: userModelFriend!.token!);
+                  });
+
+                 
                 }
               }
             },

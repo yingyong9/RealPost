@@ -24,7 +24,7 @@ class AppBottomSheet {
   AppController appController = Get.put(AppController());
 
   void orderButtonSheet({
-    required RoomModel roomModel,
+    required RoomModel roomModel, required double height,
   }) {
     appController.displayPin.value = false;
     print('uid of room ---> ${roomModel.uidCreate}');
@@ -33,18 +33,20 @@ class AppBottomSheet {
     Get.bottomSheet(
       Container(
         decoration: const BoxDecoration(color: Colors.white),
-        height: 200,
+        height: height,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ((roomModel.uidCreate.toString()) ==
                     (appController.mainUid.toString()))
                 ? const SizedBox()
-                : WidgetText(
-                    text: 'กรุณาเลือก',
-                    textStyle: AppConstant().h2Style(color: Colors.black),
-                  ),
-            WidgetListViewHorizontal(roomModel: roomModel),
+                : Container(margin: const EdgeInsets.only(left: 8),
+                  child: WidgetText(
+                      text: 'กรุณาเลือก',
+                      textStyle: AppConstant().h2Style(color: Colors.black),
+                    ),
+                ),
+            WidgetListViewHorizontal(roomModel: roomModel, height: height-100,),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -53,7 +55,7 @@ class AppBottomSheet {
                         (appController.mainUid.toString()))
                     ? const SizedBox()
                     : WidgetButton(
-                        label: 'Pin',
+                        label: 'เลือก',
                         pressFunc: () async {
                           int? indexChoose;
                           int i = 0;
@@ -64,7 +66,7 @@ class AppBottomSheet {
                             i++;
                           }
 
-                          print('##13mar indexChoose =-----> $indexChoose');
+                          print('##4april indexChoose =-----> $indexChoose');
 
                           if (indexChoose == null) {
                             AppSnackBar().normalSnackBar(

@@ -350,7 +350,7 @@ class _MainPageViewState extends State<MainPageView> {
               onTap: () {
                 AppBottomSheet().orderButtonSheet(
                     roomModel: appController
-                        .roomModels[appController.indexBodyMainPageView.value]);
+                        .roomModels[appController.indexBodyMainPageView.value], height: boxConstraints.maxHeight*0.35);
               },
             ),
           ),

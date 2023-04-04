@@ -11,9 +11,11 @@ class WidgetListViewHorizontal extends StatefulWidget {
   const WidgetListViewHorizontal({
     Key? key,
     required this.roomModel,
+    required this.height,
   }) : super(key: key);
 
   final RoomModel roomModel;
+  final double height;
 
   @override
   State<WidgetListViewHorizontal> createState() =>
@@ -43,7 +45,7 @@ class _WidgetListViewHorizontalState extends State<WidgetListViewHorizontal> {
         builder: (AppController appController) {
           print('tabChooses ---> ${appController.tabChooses.length}');
           return SizedBox(
-            height: 100,
+            height: widget.height,
             child: ListView.builder(
               shrinkWrap: true,
               physics: const ClampingScrollPhysics(),
@@ -56,15 +58,14 @@ class _WidgetListViewHorizontalState extends State<WidgetListViewHorizontal> {
                 padding: const EdgeInsets.all(4.0),
                 child: WidgetImageInternet(
                   urlImage: widget.roomModel.urlRooms[index],
-                  width: 100,
-                  height: 100,
+                  width: widget.height,
+                  height: widget.height,
                   boxFit: BoxFit.cover,
                   tapFunc: () {
-                    
-
                     appController.displayPin.value = true;
 
-                    print('You tap index ---> $index  displayPin --> ${appController.displayPin}');
+                    print(
+                        '##4april You tap index ---> $index  displayPin --> ${appController.displayPin}');
 
                     int i = 0;
                     for (var element in appController.tabChooses) {
