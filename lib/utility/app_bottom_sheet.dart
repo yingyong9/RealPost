@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/comment_salse_model.dart';
 import 'package:realpost/models/room_model.dart';
+import 'package:realpost/models/user_model.dart';
 import 'package:realpost/states/add_product.dart';
 import 'package:realpost/states/private_chat.dart';
 import 'package:realpost/utility/app_constant.dart';
@@ -24,7 +25,9 @@ class AppBottomSheet {
   AppController appController = Get.put(AppController());
 
   void orderButtonSheet({
-    required RoomModel roomModel, required double height,
+    required RoomModel roomModel,
+    required double height,
+    required UserModel userModelLogin,
   }) {
     appController.displayPin.value = false;
     print('uid of room ---> ${roomModel.uidCreate}');
@@ -40,17 +43,23 @@ class AppBottomSheet {
             ((roomModel.uidCreate.toString()) ==
                     (appController.mainUid.toString()))
                 ? const SizedBox()
-                : Container(margin: const EdgeInsets.only(left: 8),
-                  child: WidgetText(
+                : Container(
+                    margin: const EdgeInsets.only(left: 8),
+                    child: WidgetText(
                       text: 'กรุณาเลือก',
                       textStyle: AppConstant().h2Style(color: Colors.black),
                     ),
-                ),
-            WidgetListViewHorizontal(roomModel: roomModel, height: height-100,),
+                  ),
+            WidgetListViewHorizontal(
+              roomModel: roomModel,
+              height: height - 100,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const SizedBox(width: 16,),
+                const SizedBox(
+                  width: 16,
+                ),
                 ((roomModel.uidCreate.toString()) ==
                         (appController.mainUid.toString()))
                     ? const SizedBox()
@@ -100,9 +109,22 @@ class AppBottomSheet {
                             appController
                                 .processFindDocIdPrivateChat(
                                     uidLogin: user!.uid, uidFriend: uidFriend)
-                                .then((value) {
+                                .then((value) async {
                               print(
                                   '##17mar docIdPrivateChat ----> ${appController.docIdPrivateChats.last}');
+
+                              UserModel? userModelFriend = await AppService()
+                                  .findUserModel(uid: uidFriend);
+
+                                
+
+                              print(
+                                  '##4april userModelLogin ---> ${userModelLogin!.toMap()}');
+
+                              AppService().processSentNoti(
+                                  title: 'มีข้อความ',
+                                  body: 'จากตระกร้า %23${userModelLogin.phoneNumber}',
+                                  token: userModelFriend!.token!);
 
                               AppService()
                                   .processInsertPrivateChat(
@@ -110,6 +132,7 @@ class AppBottomSheet {
                                           appController.docIdPrivateChats.last,
                                       chatModel: chatModel)
                                   .then((value) {
+                                Get.back();
                                 Get.to(PrivateChat(
                                   uidFriend: uidFriend,
                                 ));
