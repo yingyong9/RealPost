@@ -21,6 +21,7 @@ import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/salse_group_model.dart';
 import 'package:realpost/models/user_model.dart';
 import 'package:realpost/states/display_name.dart';
+import 'package:realpost/states/private_chat.dart';
 import 'package:realpost/states/take_photo_only.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
@@ -98,51 +99,101 @@ class AppService {
     });
   }
 
-  void activeReceiveNoti(
+  Future<void> activeReceiveNoti(
       {required String title,
       required String body,
       required bool statusOnMessage,
-      required BuildContext context}) {
+      required BuildContext context}) async {
     print('##24mar title --> $title, body --> $body');
     var bodys = body.split('#');
-    print('##24mar bodys index --> ${bodys.last}');
+    print('##3april bodys index --> ${bodys.last}');
 
-    if (statusOnMessage) {
-      // From OnMessage
+    if (bodys.last.length > 5) {
+      //Go to Private Chat
+      print('##3april Tag type phoneNumber');
 
-      if (appController.indexBodyMainPageView.value != int.parse(bodys.last)) {
-        AppDialog(context: context).normalDialog(
-          title: title,
-          leadingWidget: const WidgetImage(path: 'images/icon.png', size: 80),
-          contentWidget: WidgetText(
-            text: body,
-            textStyle: AppConstant().h3Style(color: Colors.black),
-          ),
-          actions: [
-            WidgetTextButton(
-              text: 'ดู',
-              pressFunc: () {
-                Get.back();
-                appController.indexBodyMainPageView.value =
-                    int.parse(bodys.last.trim());
-                appController.pageControllers.last
-                    .jumpToPage(appController.indexBodyMainPageView.value);
-              },
-            ),
-            WidgetTextButton(
-              text: 'ไว้ภายหลัง',
-              pressFunc: () {
-                Get.back();
-              },
-            )
-          ],
-        );
-      }
+      await FirebaseFirestore.instance
+          .collection('user')
+          .where('phoneNumber', isEqualTo: bodys.last)
+          .get()
+          .then((value) {
+        for (var element in value.docs) {
+          String uidFriend = element.id;
+          print('##3april uidFriend --> $uidFriend');
+
+          if (statusOnMessage) {
+            //OnMessage
+            AppDialog(context: context).normalDialog(
+              title: 'มีข้อความ',
+              leadingWidget:
+                  const WidgetImage(path: 'images/icon.png', size: 80),
+              contentWidget: WidgetText(
+                text: body,
+                textStyle: AppConstant().h3Style(color: Colors.black),
+              ),
+              actions: [
+                WidgetTextButton(
+                  text: 'ดู',
+                  pressFunc: () {
+                    Get.back();
+                    Get.to(PrivateChat(uidFriend: uidFriend));
+                  },
+                ),
+                WidgetTextButton(
+                  text: 'ไว้ภายหลัง',
+                  pressFunc: () {
+                    Get.back();
+                  },
+                )
+              ],
+            );
+          } else {
+            //OnOpenApp
+            Get.to(PrivateChat(uidFriend: uidFriend));
+          }
+        }
+      });
     } else {
-      //From OpenApp
-      appController.indexBodyMainPageView.value = int.parse(bodys.last.trim());
-      appController.pageControllers.last
-          .jumpToPage(appController.indexBodyMainPageView.value);
+      //Go to Page View
+      if (statusOnMessage) {
+        // From OnMessage
+
+        if (appController.indexBodyMainPageView.value !=
+            int.parse(bodys.last)) {
+          AppDialog(context: context).normalDialog(
+            title: title,
+            leadingWidget: const WidgetImage(path: 'images/icon.png', size: 80),
+            contentWidget: WidgetText(
+              text: body,
+              textStyle: AppConstant().h3Style(color: Colors.black),
+            ),
+            actions: [
+              WidgetTextButton(
+                text: 'ดู',
+                pressFunc: () {
+                  Get.back();
+                  appController.indexBodyMainPageView.value =
+                      int.parse(bodys.last.trim());
+                  appController.pageControllers.last
+                      .jumpToPage(appController.indexBodyMainPageView.value);
+                },
+              ),
+              WidgetTextButton(
+                text: 'ไว้ภายหลัง',
+                pressFunc: () {
+                  Get.back();
+                },
+              )
+            ],
+          );
+        }
+      } else {
+        //From OpenApp
+        appController.indexBodyMainPageView.value =
+            int.parse(bodys.last.trim());
+        appController.pageControllers.last
+            .jumpToPage(appController.indexBodyMainPageView.value);
+      } // end if
     }
   }
 

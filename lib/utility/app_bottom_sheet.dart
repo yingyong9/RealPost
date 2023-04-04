@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/comment_salse_model.dart';
 import 'package:realpost/models/room_model.dart';
+import 'package:realpost/models/user_model.dart';
 import 'package:realpost/states/add_product.dart';
 import 'package:realpost/states/private_chat.dart';
 import 'package:realpost/utility/app_constant.dart';
@@ -25,6 +26,8 @@ class AppBottomSheet {
 
   void orderButtonSheet({
     required RoomModel roomModel,
+    required double height,
+    required UserModel userModelLogin,
   }) {
     appController.displayPin.value = false;
     print('uid of room ---> ${roomModel.uidCreate}');
@@ -33,27 +36,35 @@ class AppBottomSheet {
     Get.bottomSheet(
       Container(
         decoration: const BoxDecoration(color: Colors.white),
-        height: 200,
+        height: height,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ((roomModel.uidCreate.toString()) ==
                     (appController.mainUid.toString()))
                 ? const SizedBox()
-                : WidgetText(
-                    text: 'กรุณาเลือก',
-                    textStyle: AppConstant().h2Style(color: Colors.black),
+                : Container(
+                    margin: const EdgeInsets.only(left: 8),
+                    child: WidgetText(
+                      text: 'กรุณาเลือก',
+                      textStyle: AppConstant().h2Style(color: Colors.black),
+                    ),
                   ),
-            WidgetListViewHorizontal(roomModel: roomModel),
+            WidgetListViewHorizontal(
+              roomModel: roomModel,
+              height: height - 100,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const SizedBox(width: 16,),
+                const SizedBox(
+                  width: 16,
+                ),
                 ((roomModel.uidCreate.toString()) ==
                         (appController.mainUid.toString()))
                     ? const SizedBox()
                     : WidgetButton(
-                        label: 'Pin',
+                        label: 'เลือก',
                         pressFunc: () async {
                           int? indexChoose;
                           int i = 0;
@@ -64,7 +75,7 @@ class AppBottomSheet {
                             i++;
                           }
 
-                          print('##13mar indexChoose =-----> $indexChoose');
+                          print('##4april indexChoose =-----> $indexChoose');
 
                           if (indexChoose == null) {
                             AppSnackBar().normalSnackBar(
@@ -98,9 +109,22 @@ class AppBottomSheet {
                             appController
                                 .processFindDocIdPrivateChat(
                                     uidLogin: user!.uid, uidFriend: uidFriend)
-                                .then((value) {
+                                .then((value) async {
                               print(
                                   '##17mar docIdPrivateChat ----> ${appController.docIdPrivateChats.last}');
+
+                              UserModel? userModelFriend = await AppService()
+                                  .findUserModel(uid: uidFriend);
+
+                                
+
+                              print(
+                                  '##4april userModelLogin ---> ${userModelLogin!.toMap()}');
+
+                              AppService().processSentNoti(
+                                  title: 'มีข้อความ',
+                                  body: 'จากตระกร้า %23${userModelLogin.phoneNumber}',
+                                  token: userModelFriend!.token!);
 
                               AppService()
                                   .processInsertPrivateChat(
@@ -108,6 +132,7 @@ class AppBottomSheet {
                                           appController.docIdPrivateChats.last,
                                       chatModel: chatModel)
                                   .then((value) {
+                                Get.back();
                                 Get.to(PrivateChat(
                                   uidFriend: uidFriend,
                                 ));

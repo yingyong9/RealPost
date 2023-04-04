@@ -350,7 +350,9 @@ class _MainPageViewState extends State<MainPageView> {
               onTap: () {
                 AppBottomSheet().orderButtonSheet(
                     roomModel: appController
-                        .roomModels[appController.indexBodyMainPageView.value]);
+                        .roomModels[appController.indexBodyMainPageView.value],
+                    height: boxConstraints.maxHeight * 0.35,
+                    userModelLogin: appController.userModels.last);
               },
             ),
           ),
@@ -464,7 +466,8 @@ class _MainPageViewState extends State<MainPageView> {
                         '##2april You tab uidFriend --> ${appController.chatModels[index].uidChat}');
                     if (appController.chatModels[index].uidChat.toString() !=
                         appController.mainUid.toString()) {
-                      Get.to(PrivateChat(uidFriend: appController.chatModels[index].uidChat));
+                      Get.to(PrivateChat(
+                          uidFriend: appController.chatModels[index].uidChat));
                     }
                   },
                   child: Container(

@@ -42,8 +42,8 @@ class _PrivateChatState extends State<PrivateChat> {
     super.initState();
     uidFriend = widget.uidFriend;
     uidLogin = user!.uid;
+    print('##4april uidFriend --> $uidFriend');
 
-    // controller.load = true;
     controller.processFindDocIdPrivateChat(
         uidLogin: uidLogin!, uidFriend: uidFriend!);
 
@@ -85,6 +85,7 @@ class _PrivateChatState extends State<PrivateChat> {
                         textEditingController: textEditingController,
                         collection: 'privatechat',
                         docIdPrivateChat: appController.docIdPrivateChats.last,
+                        uidFriend: uidFriend,
                       ),
                     ],
                   ),
