@@ -35,6 +35,20 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
+  Future<void> freshUserModelLogin() async {
+    var user = FirebaseAuth.instance.currentUser;
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      if (value.data() != null) {
+        UserModel userModel = UserModel.fromMap(value.data()!);
+        appController.userModelsLogin.add(userModel);
+      }
+    });
+  }
+
   Future<void> readAllChatOwner({required String docIdRoom}) async {
     if (appController.chatOwnerModels.isNotEmpty) {
       appController.chatOwnerModels.clear();
@@ -289,6 +303,7 @@ class AppService {
         UserModel? havePhoneUserModel;
 
         bool havePhone = false;
+
         for (var element in appController.userModels) {
           if (element.phoneNumber == phoneNumber) {
             havePhone = true;
