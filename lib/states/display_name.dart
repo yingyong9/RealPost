@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:realpost/models/user_model.dart';
+import 'package:realpost/states/take_photo_only.dart';
 import 'package:realpost/utility/app_constant.dart';
+import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_text.dart';
@@ -29,7 +31,6 @@ class DisplayName extends StatefulWidget {
 
 class _DisplayNameState extends State<DisplayName> {
   String? displayName;
-  
 
   @override
   Widget build(BuildContext context) {
@@ -77,12 +78,15 @@ class _DisplayNameState extends State<DisplayName> {
                       email: widget.email,
                       password: widget.password,
                     );
+
                     await FirebaseFirestore.instance
                         .collection('user')
                         .doc(widget.uidLogin)
                         .set(model.toMap())
                         .then((value) {
-                      Get.offAllNamed('/mainPageView');
+                      // Get.offAllNamed('/mainPageView');
+                      AppService().freshUserModelLogin();
+                      Get.offAll(const TakePhotoOnly());
                     });
                   }
                 },

@@ -75,7 +75,7 @@ class TakePhotoOnly extends StatelessWidget {
                                         iconData: Icons.send,
                                         pressFunc: () async {
                                           print(
-                                              '##15feb userModels --> ${appController.userModels.last.toMap()}');
+                                              '##15feb userModelsLogin --> ${appController.userModelsLogin.last.toMap()}');
 
                                           await AppService()
                                               .processUploadMultiPhoto(
@@ -85,36 +85,40 @@ class TakePhotoOnly extends StatelessWidget {
                                             print(
                                                 '##15feb urlImages --> $urlImages');
 
-                                            if (appController.userModels.last
+                                            if (appController.userModelsLogin.last
                                                 .urlAvatar!.isEmpty) {
                                               //อัพ Avatar
                                               Map<String, dynamic> map =
-                                                  appController.userModels.last
+                                                  appController.userModelsLogin.last
                                                       .toMap();
                                               map['urlAvatar'] = urlImages.last;
                                               AppService()
                                                   .processUpdateUserModel(
-                                                      map: map);
+                                                      map: map)
+                                                  .then((value) {
+                                                Get.offAllNamed(
+                                                    '/mainPageView');
+                                              });
                                             }
 
-                                            var user = FirebaseAuth
-                                                .instance.currentUser;
+                                            // var user = FirebaseAuth
+                                            //     .instance.currentUser;
 
-                                            RoomModel roomModel = RoomModel(
-                                                uidCreate: user!.uid,
-                                                room: '',
-                                                timestamp: Timestamp.fromDate(
-                                                    DateTime.now()),
-                                                urlRooms: urlImages);
+                                            // RoomModel roomModel = RoomModel(
+                                            //     uidCreate: user!.uid,
+                                            //     room: '',
+                                            //     timestamp: Timestamp.fromDate(
+                                            //         DateTime.now()),
+                                            //     urlRooms: urlImages);
 
-                                            AppService()
-                                                .processInsertRoom(
-                                                    roomModel: roomModel)
-                                                .then((value) {
-                                              AppService().initialSetup(
-                                                  context: context);
-                                              Get.back();
-                                            });
+                                            // AppService()
+                                            //     .processInsertRoom(
+                                            //         roomModel: roomModel)
+                                            //     .then((value) {
+                                            //   AppService().initialSetup(
+                                            //       context: context);
+                                            //   Get.back();
+                                            // });
                                           });
                                         },
                                       ),

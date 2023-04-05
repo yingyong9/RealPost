@@ -42,6 +42,7 @@ class AppController extends GetxController {
   RxBool shareLocation = false.obs;
 
   RxList<UserModel> userModels = <UserModel>[].obs;
+  RxList<UserModel> userModelsLogin = <UserModel>[].obs;
 
   RxList<File> fileAvatars = <File>[].obs;
   RxList<String> urlAvatarChooses = <String>[].obs;
