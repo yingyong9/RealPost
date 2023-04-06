@@ -440,13 +440,7 @@ class AppController extends GetxController {
   }
 
   Future<void> readAllRoomStartDocument({required DocumentSnapshot documentSnapshot}) async {
-    // if (roomModels.isNotEmpty) {
-    //   roomModels.clear();
-    //   docIdRooms.clear();
-    //   listChatModels.clear();
-    //   userModelAtRooms.clear();
-    //   documentSnapshots.clear();
-    // }
+
 
     
 
