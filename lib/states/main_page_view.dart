@@ -143,6 +143,7 @@ class _MainPageViewState extends State<MainPageView> {
                                 if (appController.indexBodyMainPageView.value ==
                                     0) {
                                   AppService().initialSetup(context: context);
+                                  secondLoad = true;
                                 }
 
                                 if ((appController
@@ -237,24 +238,25 @@ class _MainPageViewState extends State<MainPageView> {
         displayListChat(appController, boxConstraints),
         displayOwnerRoom(boxConstraints, appController),
         displayRealText(appController: appController),
-        Positioned(
-          // top: boxConstraints.maxHeight * 0.6 - 70,
-          top: 60, right: 0,
-          child: Container(
-            width: boxConstraints.maxWidth * 0.5,
-            // height: 60,
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-            margin: const EdgeInsets.only(top: 4),
-            decoration: AppConstant()
-                .boxChatGuest(bgColor: Colors.black.withOpacity(0.5)),
-            child: appController.chatOwnerModels.isEmpty
-                ? const SizedBox()
-                : WidgetText(
+        appController.chatOwnerModels.isEmpty
+            ? const SizedBox()
+            : Positioned(
+                // top: boxConstraints.maxHeight * 0.6 - 70,
+                top: 60, right: 0,
+                child: Container(
+                  width: boxConstraints.maxWidth * 0.5,
+                  // height: 60,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                  margin: const EdgeInsets.only(top: 4),
+                  decoration: AppConstant()
+                      .boxChatGuest(bgColor: Colors.black.withOpacity(0.5)),
+                  child: WidgetText(
                     text: appController.chatOwnerModels.last.message,
                     textStyle: AppConstant().h3Style(color: Colors.white),
                   ),
-          ),
-        ),
+                ),
+              ),
         // Positioned(
         //     top: boxConstraints.maxHeight * 0.6 - 220,
         //     child: WidgetImageInternet(
@@ -371,11 +373,11 @@ class _MainPageViewState extends State<MainPageView> {
                   .toDate())
           ? Container(
               padding: const EdgeInsets.all(8),
-              decoration: AppConstant().boxCurve(
-                  color: Color.fromARGB(255, 198, 27, 52), radius: 20),
+              // decoration: AppConstant().boxCurve(
+              //     color: Color.fromARGB(255, 198, 27, 52), radius: 20),
               child: WidgetText(
-                text: '  สด  ',
-                textStyle: AppConstant().h2Style(color: Colors.white),
+                text: '  Real  ',
+                textStyle: AppConstant().h2Style(color: Colors.red.shade700),
               ),
             )
           : const SizedBox(),
@@ -574,9 +576,10 @@ class _MainPageViewState extends State<MainPageView> {
         : Row(
             children: [
               Container(
-                constraints:
-                    BoxConstraints(maxWidth: boxConstraints.maxWidth * 0.75),
-                decoration: AppConstant().boxBlack(),
+                height: 60,
+                constraints: BoxConstraints(maxWidth: boxConstraints.maxWidth),
+                decoration: AppConstant()
+                    .boxBlack(color: Colors.black.withOpacity(0.5)),
                 child: Row(
                   children: [
                     WidgetCircularImage(
