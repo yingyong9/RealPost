@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print, sort_child_properties_last
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
@@ -47,6 +48,7 @@ class _MainPageViewState extends State<MainPageView> {
 
     AppService().initialSetup(context: context);
     AppService().aboutNoti(context: context);
+    AppService().freshUserModelLogin();
     // trySignOut();
   }
 
@@ -62,8 +64,7 @@ class _MainPageViewState extends State<MainPageView> {
         return GetX(
             init: AppController(),
             builder: (AppController appController) {
-              print(
-                  '##1april documentSnapshot ---> ${appController.documentSnapshots.length}');
+              print('##9april ---> ${appController.chatOwnerModels.length}');
 
               return SafeArea(
                 child: appController.noRoom.value
@@ -240,35 +241,43 @@ class _MainPageViewState extends State<MainPageView> {
         displayRealText(appController: appController),
         appController.chatOwnerModels.isEmpty
             ? const SizedBox()
+            : displayTextChatOwner(boxConstraints, appController),
+        appController.chatOwnerModels.isEmpty
+            ? const SizedBox()
             : Positioned(
-                // top: boxConstraints.maxHeight * 0.6 - 70,
-                top: 60, right: 0,
-                child: Container(
-                  width: boxConstraints.maxWidth * 0.5,
-                  // height: 60,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-                  margin: const EdgeInsets.only(top: 4),
-                  decoration: AppConstant()
-                      .boxChatGuest(bgColor: Colors.black.withOpacity(0.5)),
-                  child: WidgetText(
-                    text: appController.chatOwnerModels.last.message,
-                    textStyle: AppConstant().h3Style(color: Colors.white),
+                top: 70,
+                left: 16,
+                child: Container(decoration: AppConstant().borderBox(),
+                 
+                  child: WidgetImageInternet(
+                    urlImage: appController.chatOwnerModels.last.urlRealPost,
+                    width: boxConstraints.maxWidth * 0.5 - 64,
+                    height: boxConstraints.maxWidth * 0.5 - 32,
+                    boxFit: BoxFit.cover,
                   ),
                 ),
               ),
-        // Positioned(
-        //     top: boxConstraints.maxHeight * 0.6 - 220,
-        //     child: WidgetImageInternet(
-        //       urlImage:
-        //           'https://firebasestorage.googleapis.com/v0/b/realpost-19dd3.appspot.com/o/realpost%2Fphoto257360.jpg?alt=media&token=cb7e7aac-5ef4-4cfd-beae-85b70017cdc3',
-        //       width: 80,
-        //       height: 150,
-        //       boxFit: BoxFit.cover,
-        //     ))
-        // chatPrivateButton(appController: appController),
-        // const WidgetDisplayPrice(),
       ],
+    );
+  }
+
+  Positioned displayTextChatOwner(
+      BoxConstraints boxConstraints, AppController appController) {
+    return Positioned(
+      // top: boxConstraints.maxHeight * 0.6 - 70,
+      top: 60, right: 0,
+      child: Container(
+        width: boxConstraints.maxWidth * 0.5,
+        // height: 60,
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+        margin: const EdgeInsets.only(top: 4),
+        decoration:
+            AppConstant().boxChatGuest(bgColor: Colors.black.withOpacity(0.5)),
+        child: WidgetText(
+          text: appController.chatOwnerModels.last.message,
+          textStyle: AppConstant().h3Style(color: Colors.white),
+        ),
+      ),
     );
   }
 
@@ -293,9 +302,33 @@ class _MainPageViewState extends State<MainPageView> {
       top: appController.roomModels[appController.indexBodyMainPageView.value]
               .safeProduct!
           ? boxConstraints.maxHeight * 0.4 - 50
-          : boxConstraints.maxHeight * 0.7 - 150,
+          : boxConstraints.maxHeight * 0.7 - 200,
       child: Column(
         children: [
+          appController.roomModels[appController.indexBodyMainPageView.value]
+                      .geoPoint!.latitude ==
+                  0
+              ? const SizedBox()
+              : Container(
+                  decoration:
+                      AppConstant().boxCurve(color: Colors.green.shade900),
+                  child: WidgetIconButton(
+                    color: Colors.grey.shade300,
+                    size: 36,
+                    pressFunc: () {
+                      GeoPoint geoPoint = appController
+                          .roomModels[appController.indexBodyMainPageView.value]
+                          .geoPoint!;
+                      String url =
+                          'https://www.google.com/maps/search/?api=1&query=${geoPoint.latitude},${geoPoint.longitude}';
+                      AppService().processLunchUrl(url: url);
+                    },
+                    iconData: Icons.pin_drop,
+                  ),
+                ),
+          const SizedBox(
+            height: 8,
+          ),
           WidgetImage(
             path: 'images/icon2.png',
             size: 60,

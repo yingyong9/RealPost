@@ -18,6 +18,7 @@ class RoomModel {
   final String? amountGroup;
   final String? stock;
   final String? timeGroup;
+  final GeoPoint? geoPoint;
 
   RoomModel({
     required this.uidCreate,
@@ -34,6 +35,7 @@ class RoomModel {
     this.amountGroup,
     this.stock,
     this.timeGroup,
+    this.geoPoint,
   });
 
   Map<String, dynamic> toMap() {
@@ -47,11 +49,12 @@ class RoomModel {
       'safeProduct': safeProduct,
       'groupProduct': groupProduct,
       'singlePrice': singlePrice,
-      'minPrice': singlePrice,
+      'minPrice': minPrice,
       'totalPrice': totalPrice,
       'amountGroup': amountGroup,
       'stock': stock,
       'timeGroup': timeGroup,
+      'geoPoint': geoPoint,
     };
   }
 
@@ -59,18 +62,18 @@ class RoomModel {
     return RoomModel(
       uidCreate: (map['uidCreate'] ?? '') as String,
       room: (map['room'] ?? '') as String,
-      timestamp: (map['timestamp']),
+          timestamp: (map['timestamp']),
       urlCamera: (map['urlCamera'] ?? ''),
       urlRooms: List<String>.from(map['urlRooms'] ?? []),
       detail: map['detail'] ?? '',
       safeProduct: map['safeProduct'] ?? false,
       groupProduct: map['groupProduct'] ?? '',
       singlePrice: map['singlePrice'] ?? '',
-      minPrice: map['minPrice'] ?? '',
       totalPrice: map['totalPrice'] ?? '',
       amountGroup: map['amountGroup'] ?? '',
       stock: map['stock'] ?? '',
       timeGroup: map['timeGroup'] ?? '',
+      geoPoint: map['geoPoint']?? const GeoPoint(0, 0),
     );
   }
 
