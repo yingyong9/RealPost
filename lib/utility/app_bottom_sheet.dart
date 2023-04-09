@@ -119,7 +119,7 @@ class AppBottomSheet {
                                 
 
                               print(
-                                  '##4april userModelLogin ---> ${userModelLogin!.toMap()}');
+                                  '##4april userModelLogin ---> ${userModelLogin.toMap()}');
 
                               AppService().processSentNoti(
                                   title: 'มีข้อความ',

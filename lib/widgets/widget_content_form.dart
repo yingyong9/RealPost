@@ -74,7 +74,7 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
                 widget.textEditingController.text = '';
 
                 print(
-                    '##31mar userModel => ${widget.appController.userModels.last.toMap()}');
+                    '##31mar userModel => ${widget.appController.userModelsLogin.last.toMap()}');
 
                 if (widget.appController.userModels.last.urlAvatar?.isEmpty ??
                     true) {

@@ -374,35 +374,64 @@ class AppDialog {
                   width: 250,
                   label: 'ส่งตำแหน่ง',
                   pressFunc: () {
-                    ChatModel chatModel = ChatModel(
-                      message: appController.messageChats.isEmpty
-                          ? ''
-                          : appController.messageChats[0],
-                      timestamp: Timestamp.fromDate(DateTime.now()),
-                      uidChat: FirebaseAuth.instance.currentUser!.uid,
-                      urlRealPost: appController.urlRealPostChooses.isEmpty
-                          ? ''
-                          : appController.urlRealPostChooses[0],
-                      disPlayName: appController.userModels[0].displayName!,
-                      urlAvatar: appController.userModels[0].urlAvatar!.isEmpty
-                          ? appController.urlAvatarChooses[0]
-                          : appController.userModels[0].urlAvatar!,
-                      article: appController.articleControllers[0].text,
-                      link: '',
-                      geoPoint: GeoPoint(appController.positions[0].latitude,
-                          appController.positions[0].longitude),
-                      albums: [],
-                    );
+                    print(
+                        'userModelLogin ==> ${appController.userModelsLogin.length}');
+
+                    Map<String, dynamic> map = appController
+                        .roomModels[appController.indexBodyMainPageView.value]
+                        .toMap();
+
+                    print('map --> $map');
+
+                    print(
+                        'geoPoint model --> ${appController.roomModels[appController.indexBodyMainPageView.value].geoPoint!.latitude}');
+                    var geoPoint = map['geoPoint'].toString();
+
+                    GeoPoint userGeoPoint = GeoPoint(
+                        appController.positions.last.latitude,
+                        appController.positions.last.longitude);
+
+                    map['geoPoint'] = userGeoPoint;
+
+                    print('geoPoint --> ${map['geoPoint'].latitude}');
+
                     AppService()
-                        .processInsertChat(
-                            chatModel: chatModel,
-                            docIdRoom: collection != null
-                                ? appController.docIdPrivateChats[0]
-                                : appController.docIdRoomChooses[0],
-                            collection: collection)
+                        .processUpdateRoom(
+                            docIdRoom: appController.docIdRooms[
+                                appController.indexBodyMainPageView.value],
+                            data: map)
                         .then((value) {
                       Get.back();
                     });
+
+                    // ChatModel chatModel = ChatModel(
+                    //   message: appController.messageChats.isEmpty
+                    //       ? ''
+                    //       : appController.messageChats[0],
+                    //   timestamp: Timestamp.fromDate(DateTime.now()),
+                    //   uidChat: FirebaseAuth.instance.currentUser!.uid,
+                    //   urlRealPost: appController.urlRealPostChooses.isEmpty
+                    //       ? ''
+                    //       : appController.urlRealPostChooses[0],
+                    //   disPlayName:
+                    //       appController.userModelsLogin.last.displayName!,
+                    //   urlAvatar: appController.userModelsLogin.last.urlAvatar!,
+                    //   article: appController.articleControllers[0].text,
+                    //   link: '',
+                    //   geoPoint: GeoPoint(appController.positions[0].latitude,
+                    //       appController.positions[0].longitude),
+                    //   albums: [],
+                    // );
+                    // AppService()
+                    //     .processInsertChat(
+                    //         chatModel: chatModel,
+                    //         docIdRoom: collection != null
+                    //             ? appController.docIdPrivateChats[0]
+                    //             : appController.docIdRoomChooses[0],
+                    //         collection: collection)
+                    //     .then((value) {
+                    //   Get.back();
+                    // });
                   },
                 ),
               ],
@@ -587,25 +616,25 @@ class AppDialog {
                               }
                             },
                           ),
-                          WidgetIconButton(
-                            iconData: Icons.add_photo_alternate,
-                            pressFunc: () async {
-                              if (appController.fileRealPosts.isNotEmpty) {
-                                appController.fileRealPosts.clear();
-                              }
+                          // WidgetIconButton(
+                          //   iconData: Icons.add_photo_alternate,
+                          //   pressFunc: () async {
+                          //     if (appController.fileRealPosts.isNotEmpty) {
+                          //       appController.fileRealPosts.clear();
+                          //     }
 
-                              if (appController.urlRealPostChooses.isNotEmpty) {
-                                appController.urlRealPostChooses.clear();
-                              }
+                          //     if (appController.urlRealPostChooses.isNotEmpty) {
+                          //       appController.urlRealPostChooses.clear();
+                          //     }
 
-                              var result = await AppService().processTakePhoto(
-                                  source: ImageSource.gallery);
-                              if (result != null) {
-                                appController.fileRealPosts.add(result);
-                              }
-                            },
-                          ),
-                          WidgetIconButton(
+                          //     var result = await AppService().processTakePhoto(
+                          //         source: ImageSource.gallery);
+                          //     if (result != null) {
+                          //       appController.fileRealPosts.add(result);
+                          //     }
+                          //   },
+                          // ),
+                         appController.roomModels[appController.indexBodyMainPageView.value].geoPoint!.latitude == 0 ?  WidgetIconButton(
                             iconData: Icons.pin_drop,
                             pressFunc: () {
                               print(
@@ -613,7 +642,7 @@ class AppDialog {
                               Get.back();
                               mapBottomSheet(collection: collection);
                             },
-                          ),
+                          ) : const SizedBox(),
                           // const Spacer(),
                           Expanded(
                               child: WidgetForm(
@@ -664,14 +693,14 @@ class AppDialog {
 
                                   AppService()
                                       .processInsertChat(
-                                    chatModel: chatModel,
-                                    docIdRoom: collection != null
-                                        ? appController.docIdPrivateChats[0]
-                                        : appController.docIdRoomChooses[0],
-                                    collection: collection,
-                                     collectionChat: 'chatOwner'
-                                   
-                                  )
+                                          chatModel: chatModel,
+                                          docIdRoom: collection != null
+                                              ? appController
+                                                  .docIdPrivateChats[0]
+                                              : appController
+                                                  .docIdRoomChooses[0],
+                                          collection: collection,
+                                          collectionChat: 'chatOwner')
                                       .then((value) async {
                                     Get.back();
                                   });
@@ -682,18 +711,17 @@ class AppDialog {
                                 if (appController.messageChats.isEmpty) {
                                   Get.back();
                                 } else {
-                                   ChatModel chatModel =
-                                    await AppService().createChatModel();
-                                AppService()
-                                    .processInsertChat(
-                                  chatModel: chatModel,
-                                  docIdRoom: docIdRoom ?? '',
-                                  collection: collection,
-                                   collectionChat: 'chatOwner'
-                                )
-                                    .then((value) {
-                                  Get.back();
-                                });
+                                  ChatModel chatModel =
+                                      await AppService().createChatModel();
+                                  AppService()
+                                      .processInsertChat(
+                                          chatModel: chatModel,
+                                          docIdRoom: docIdRoom ?? '',
+                                          collection: collection,
+                                          collectionChat: 'chatOwner')
+                                      .then((value) {
+                                    Get.back();
+                                  });
                                 }
                               }
                             },
