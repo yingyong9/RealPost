@@ -35,6 +35,26 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
+  String findUrlImageWork({required List<ChatModel> chatmodels}) {
+    String result = '';
+    for (var element in chatmodels) {
+      if (element.urlRealPost.isNotEmpty) {
+        result = element.urlRealPost;
+      }
+    }
+    return result;
+  }
+
+  String findContentMessage({required List<ChatModel> chatmodels}) {
+    String result = '';
+    for (var element in chatmodels) {
+      if (element.message.isNotEmpty) {
+        result = element.message;
+      }
+    }
+    return result;
+  }
+
   Future<void> freshUserModelLogin() async {
     var user = FirebaseAuth.instance.currentUser;
     await FirebaseFirestore.instance

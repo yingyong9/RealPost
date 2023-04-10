@@ -1,5 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:realpost/widgets/widget_image.dart';
+import 'package:realpost/widgets/widget_progress.dart';
 
 class WidgetImageInternet extends StatelessWidget {
   const WidgetImageInternet({
@@ -25,11 +28,13 @@ class WidgetImageInternet extends StatelessWidget {
       onTap: tapFunc,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(radius ?? 10),
-        child: Image.network(
-          urlImage,
+        child: CachedNetworkImage(
+          imageUrl: urlImage,
           width: width,
           height: height,
           fit: boxFit,
+          placeholder: (context, url) => const WidgetProgress(),
+          errorWidget: (context, url, error) => const WidgetImage(path: 'images/icon.png'),
         ),
       ),
     );
