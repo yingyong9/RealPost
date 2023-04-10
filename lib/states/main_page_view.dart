@@ -1,5 +1,8 @@
 // ignore_for_file: avoid_print, sort_child_properties_last
 
+import 'package:chat_bubbles/bubbles/bubble_special_one.dart';
+import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
+import 'package:chat_bubbles/bubbles/bubble_special_two.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -242,15 +245,19 @@ class _MainPageViewState extends State<MainPageView> {
         appController.chatOwnerModels.isEmpty
             ? const SizedBox()
             : displayTextChatOwner(boxConstraints, appController),
-        appController.chatOwnerModels.isEmpty
+        (appController.chatOwnerModels.isEmpty) ||
+                (AppService()
+                    .findUrlImageWork(chatmodels: appController.chatOwnerModels)
+                    .isEmpty)
             ? const SizedBox()
             : Positioned(
                 top: 70,
                 left: 16,
-                child: Container(decoration: AppConstant().borderBox(),
-                 
+                child: Container(
+                  decoration: AppConstant().borderBox(),
                   child: WidgetImageInternet(
-                    urlImage: appController.chatOwnerModels.last.urlRealPost,
+                    urlImage: AppService().findUrlImageWork(
+                        chatmodels: appController.chatOwnerModels),
                     width: boxConstraints.maxWidth * 0.5 - 64,
                     height: boxConstraints.maxWidth * 0.5 - 32,
                     boxFit: BoxFit.cover,
@@ -261,24 +268,40 @@ class _MainPageViewState extends State<MainPageView> {
     );
   }
 
-  Positioned displayTextChatOwner(
+  Widget displayTextChatOwner(
       BoxConstraints boxConstraints, AppController appController) {
-    return Positioned(
-      // top: boxConstraints.maxHeight * 0.6 - 70,
-      top: 60, right: 0,
-      child: Container(
-        width: boxConstraints.maxWidth * 0.5,
-        // height: 60,
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-        margin: const EdgeInsets.only(top: 4),
-        decoration:
-            AppConstant().boxChatGuest(bgColor: Colors.black.withOpacity(0.5)),
-        child: WidgetText(
-          text: appController.chatOwnerModels.last.message,
-          textStyle: AppConstant().h3Style(color: Colors.white),
-        ),
-      ),
-    );
+    return AppService()
+            .findContentMessage(chatmodels: appController.chatOwnerModels)
+            .isEmpty
+        ? const SizedBox()
+        : Positioned(
+            top: 60,
+            right: 0,
+            // child: Container(
+            //   width: boxConstraints.maxWidth * 0.5,
+
+            //   padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+            //   margin: const EdgeInsets.only(top: 4),
+            //   decoration: AppConstant()
+            //       .boxChatGuest(bgColor: Colors.black.withOpacity(0.5)),
+            //   child: WidgetText(
+            //     text: AppService().findContentMessage(
+            //         chatmodels: appController.chatOwnerModels),
+            //     textStyle: AppConstant().h3Style(color: Colors.white),
+            //   ),
+            // ),
+            child: Container(width: boxConstraints.maxWidth * 0.6,
+              child: BubbleSpecialThree(
+                text: AppService().findContentMessage(
+                    chatmodels: appController.chatOwnerModels),
+                textStyle: AppConstant().h3Style(color: Colors.white),
+                isSender: false,
+                color: Colors.blue.shade900,
+                // color: Colors.black,
+                
+              ),
+            ),
+          );
   }
 
   Widget displayListChat(
