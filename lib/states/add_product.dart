@@ -9,6 +9,7 @@ import 'package:realpost/models/room_model.dart';
 
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
+import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/utility/app_snackbar.dart';
 import 'package:realpost/widgets/widget_button.dart';
@@ -196,15 +197,17 @@ class _AddProductState extends State<AddProduct> {
                                       // Get.offAllNamed('/mainPageView');
 
                                       AppService()
-                                          .initialSetup(context: context).then((value) {
-                                            Get.back();
-                                          });
-
-                                      
+                                          .initialSetup(context: context)
+                                          .then((value) {
+                                        Get.back();
+                                      });
                                     });
                                   }
                                 } else {
                                   //ไม่ได้ขายของ
+
+                                  AppDialog(context: context).dialogProcess();
+
                                   print('##16jan ไม่ขายสินค้าด้วย');
                                   var urlRooms = await AppService()
                                       .processUploadMultiPhoto(path: 'product');
@@ -238,6 +241,7 @@ class _AddProductState extends State<AddProduct> {
                                       .processInsertRoom(roomModel: roomModel)
                                       .then((value) {
                                     AppService().initialSetup(context: context);
+                                    Get.back();
                                     Get.back();
                                   });
                                 }
