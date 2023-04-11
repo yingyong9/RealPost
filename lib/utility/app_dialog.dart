@@ -24,6 +24,7 @@ import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_menu.dart';
+import 'package:realpost/widgets/widget_progress.dart';
 import 'package:realpost/widgets/widget_text.dart';
 import 'package:realpost/widgets/widget_text_button.dart';
 
@@ -32,6 +33,15 @@ class AppDialog {
   AppDialog({
     required this.context,
   });
+
+  void dialogProcess() {
+    Get.dialog(WillPopScope(
+      child: const WidgetProgress(),
+      onWillPop: () async {
+        return false;
+      },
+    ));
+  }
 
   void dialogCommentSalse({
     required List<CommentSalseModel> commentSalseModels,
@@ -634,15 +644,22 @@ class AppDialog {
                           //     }
                           //   },
                           // ),
-                         appController.roomModels[appController.indexBodyMainPageView.value].geoPoint!.latitude == 0 ?  WidgetIconButton(
-                            iconData: Icons.pin_drop,
-                            pressFunc: () {
-                              print(
-                                  'You tap pin ===> ${appController.positions[0]}');
-                              Get.back();
-                              mapBottomSheet(collection: collection);
-                            },
-                          ) : const SizedBox(),
+                          appController
+                                      .roomModels[appController
+                                          .indexBodyMainPageView.value]
+                                      .geoPoint!
+                                      .latitude ==
+                                  0
+                              ? WidgetIconButton(
+                                  iconData: Icons.pin_drop,
+                                  pressFunc: () {
+                                    print(
+                                        'You tap pin ===> ${appController.positions[0]}');
+                                    Get.back();
+                                    mapBottomSheet(collection: collection);
+                                  },
+                                )
+                              : const SizedBox(),
                           // const Spacer(),
                           Expanded(
                               child: WidgetForm(

@@ -297,7 +297,7 @@ class _MainPageViewState extends State<MainPageView> {
                 textStyle: AppConstant().h3Style(color: Colors.white),
                 isSender: false,
                 color: Colors.blue.shade900,
-                // color: Colors.black,
+                // color: Colors.green.shade900,
                 
               ),
             ),
