@@ -10,6 +10,7 @@ import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/utility/app_service.dart';
+import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
@@ -41,98 +42,102 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Row(
-          children: [
-             widget.roomModel!.uidCreate == widget.appController.mainUid.toString() ? Row(
-              children: [
-                WidgetIconButton(
-                  pressFunc: () {},
-                  iconData: Icons.add_a_photo,
-                ),
-                WidgetIconButton(
-                  pressFunc: () {},
-                  iconData: Icons.pin_drop,
-                ),
-              ],
-            ) : const SizedBox(),
-            WidgetForm(
-              width: widget.boxConstraints.maxWidth-100,
-              hintStyle: AppConstant().h3Style(color: AppConstant.grey),
-              hint: 'พิมพ์ข้อความ...',
-              textStyle: AppConstant().h3Style(),
-              controller: widget.textEditingController,
-              suffixIcon: WidgetIconButton(
-                iconData: Icons.send,
-                pressFunc: () async {
-                  if (widget.textEditingController.text.isEmpty) {
-                    print('No Text form');
-
-                    if (widget.roomModel!.uidCreate == user!.uid) {
-                      AppDialog(context: context).realPostBottonSheet(
-                          collection: widget.collection,
-                          docIdRoom: widget.docId!);
-                    }
-                  } else {
-                    print(
-                        '##9jan text ที่โพส = ${widget.textEditingController.text}');
-
-                    if (widget.appController.messageChats.isNotEmpty) {
-                      widget.appController.messageChats.clear();
-                    }
-
-                    widget.appController.messageChats
-                        .add(widget.textEditingController.text);
-
-                    widget.textEditingController.text = '';
-
-                    print(
-                        '##31mar userModel => ${widget.appController.userModelsLogin.last.toMap()}');
-
-                    if (widget
-                            .appController.userModels.last.urlAvatar?.isEmpty ??
-                        true) {
-                      AppDialog(context: context).avatarBottonSheet();
-                    } else {
-                      ChatModel chatModel =
-                          await AppService().createChatModel();
-                      print('##31mar chatModel ---> ${chatModel.toMap()}');
-                      print('##31mar docIdRoom ---> ${widget.docId}');
-
-                      await AppService()
-                          .processInsertChat(
-                              chatModel: chatModel, docIdRoom: widget.docId!)
-                          .then((value) {
-                        widget.appController
-                            .processFindDocIdPrivateChat(
-                                uidLogin: user!.uid,
-                                uidFriend: widget.roomModel!.uidCreate)
-                            .then((value) {
-                          if (widget.appController.mainUid.toString() !=
-                              widget.roomModel!.uidCreate.toString()) {
-                            Map<String, dynamic> map = chatModel.toMap();
-                            map['urlRealPost'] = widget.roomModel!.urlRooms[0];
-
-                            ChatModel newChatModel = ChatModel.fromMap(map);
-
-                            AppService().processInsertPrivateChat(
-                                docIdPrivateChat:
-                                    widget.appController.docIdPrivateChats.last,
-                                chatModel: newChatModel);
-                          }
-                        });
-                      });
-                    }
+    return SizedBox(
+      width: widget.boxConstraints.maxWidth,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          //  widget.roomModel!.uidCreate == widget.appController.mainUid.toString() ? Row(
+          //   children: [
+          //     WidgetIconButton(
+          //       pressFunc: () {},
+          //       iconData: Icons.add_a_photo,
+          //     ),
+          //     WidgetIconButton(
+          //       pressFunc: () {},
+          //       iconData: Icons.pin_drop,
+          //     ),
+          //   ],
+          // ) : const SizedBox(),
+          Container(
+            margin: const EdgeInsets.only(left: 8),
+            child: WidgetButton(
+              label: 'Real',
+              pressFunc: () {
+                 if (widget.roomModel!.uidCreate == user!.uid) {
+                    AppDialog(context: context).realPostBottonSheet(
+                        collection: widget.collection, docIdRoom: widget.docId!);
                   }
-                },
-              ),
+              },
+              bgColor: Colors.red.shade900,
             ),
-          ],
-        ),
-        // contentSizebox(context),
-      ],
+          ),
+          WidgetForm(
+            width: widget.boxConstraints.maxWidth - 90,
+            hintStyle: AppConstant().h3Style(color: AppConstant.grey),
+            hint: 'พิมพ์ข้อความ...',
+            textStyle: AppConstant().h3Style(),
+            controller: widget.textEditingController,
+            suffixIcon: WidgetIconButton(
+              iconData: Icons.send,
+              pressFunc: () async {
+                if (widget.textEditingController.text.isEmpty) {
+                  print('No Text form');
+
+                } else {
+                  print(
+                      '##9jan text ที่โพส = ${widget.textEditingController.text}');
+
+                  if (widget.appController.messageChats.isNotEmpty) {
+                    widget.appController.messageChats.clear();
+                  }
+
+                  widget.appController.messageChats
+                      .add(widget.textEditingController.text);
+
+                  widget.textEditingController.text = '';
+
+                  print(
+                      '##31mar userModel => ${widget.appController.userModelsLogin.last.toMap()}');
+
+                  if (widget.appController.userModels.last.urlAvatar?.isEmpty ??
+                      true) {
+                    AppDialog(context: context).avatarBottonSheet();
+                  } else {
+                    ChatModel chatModel = await AppService().createChatModel();
+                    print('##31mar chatModel ---> ${chatModel.toMap()}');
+                    print('##31mar docIdRoom ---> ${widget.docId}');
+
+                    await AppService()
+                        .processInsertChat(
+                            chatModel: chatModel, docIdRoom: widget.docId!)
+                        .then((value) {
+                      widget.appController
+                          .processFindDocIdPrivateChat(
+                              uidLogin: user!.uid,
+                              uidFriend: widget.roomModel!.uidCreate)
+                          .then((value) {
+                        if (widget.appController.mainUid.toString() !=
+                            widget.roomModel!.uidCreate.toString()) {
+                          Map<String, dynamic> map = chatModel.toMap();
+                          map['urlRealPost'] = widget.roomModel!.urlRooms[0];
+
+                          ChatModel newChatModel = ChatModel.fromMap(map);
+
+                          AppService().processInsertPrivateChat(
+                              docIdPrivateChat:
+                                  widget.appController.docIdPrivateChats.last,
+                              chatModel: newChatModel);
+                        }
+                      });
+                    });
+                  }
+                }
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 
