@@ -30,14 +30,12 @@ class AppController extends GetxController {
   RxList<String> docIdRooms = <String>[].obs;
   RxList<String> docIdRoomChooses = <String>[].obs;
   RxList<UserModel> userModelAtRooms = <UserModel>[].obs;
-
   RxList<List<ChatModel>> listChatModels = <List<ChatModel>>[].obs;
   RxList<ChatModel> lastChatModelLogins = <ChatModel>[].obs;
   RxList<StampModel> stampModels = <StampModel>[].obs;
   RxList<String> emojiAddRoomChooses = <String>[].obs;
   RxList<ChatModel> chatModels = <ChatModel>[].obs;
   RxList<String> addressMaps = <String>[].obs;
-
   RxBool load = true.obs;
   RxBool shareLocation = false.obs;
 
@@ -55,6 +53,7 @@ class AppController extends GetxController {
 
   RxList<String> docIdPrivateChats = <String>[].obs;
   RxList<ChatModel> privateChatModels = <ChatModel>[].obs;
+  RxList<int> unReads = <int>[].obs;
 
   RxList<String> links = <String>[].obs;
   RxList<XFile> xFiles = <XFile>[].obs;
@@ -254,7 +253,7 @@ class AppController extends GetxController {
             createNewPrivate = false;
             docIdPrivateChats.add(element.id);
 
-            print('##8feb docIdPrivateChat ---> ${docIdPrivateChats.last}');
+            print('##12april docIdPrivateChat ---> ${docIdPrivateChats.last}');
 
             await FirebaseFirestore.instance
                 .collection('privatechat')

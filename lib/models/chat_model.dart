@@ -15,6 +15,7 @@ class ChatModel {
   final GeoPoint? geoPoint;
   final List<String> albums;
   final String? urlBigImage;
+  final bool? readed;
 
   ChatModel({
     required this.message,
@@ -28,6 +29,7 @@ class ChatModel {
     this.geoPoint,
     required this.albums,
     this.urlBigImage,
+    this.readed,
   });
 
   Map<String, dynamic> toMap() {
@@ -43,22 +45,24 @@ class ChatModel {
       'geoPoint': geoPoint,
       'albums': albums,
       'urlBigImage': urlBigImage,
+      'readed': readed,
     };
   }
 
   factory ChatModel.fromMap(Map<String, dynamic> map) {
     return ChatModel(
       message: (map['message'] ?? '') as String,
+      timestamp: (map['timestamp']),
       uidChat: (map['uidChat'] ?? '') as String,
       disPlayName: (map['disPlayName'] ?? '') as String,
       urlAvatar: (map['urlAvatar'] ?? '') as String,
       urlRealPost: (map['urlRealPost'] ?? '') as String,
       article: map['article'] != null ? map['article'] as String : null,
       link: map['link'] != null ? map['link'] as String : null,
-      urlBigImage: map['urlBigImage'] != null ? map['urlBigImage'] as String : null,
-      timestamp: (map['timestamp']),
-      geoPoint: map['geoPoint'] ?? const GeoPoint(0, 0),
+      geoPoint: map['geoPoint'] ?? const GeoPoint(0, 0) ,
       albums: List<String>.from(map['albums'] ?? []),
+      urlBigImage: map['urlBigImage'] != null ? map['urlBigImage'] as String : null,
+      readed: map['readed'] ?? false,
     );
   }
 

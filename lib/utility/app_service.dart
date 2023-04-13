@@ -35,6 +35,31 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
+  Future<void> makeReadChat() async {
+    await FirebaseFirestore.instance
+        .collection('privatechat')
+        .doc(appController.docIdPrivateChats.last)
+        .collection('chat')
+        .get()
+        .then((value) async {
+      for (var element in value.docs) {
+        ChatModel chatModel = ChatModel.fromMap(element.data());
+        if (!chatModel.readed!) {
+          Map<String, dynamic> map = chatModel.toMap();
+          map['readed'] = true;
+
+          await FirebaseFirestore.instance
+              .collection('privatechat')
+              .doc(appController.docIdPrivateChats.last)
+              .collection('chat')
+              .doc(element.id)
+              .update(map)
+              .then((value) => null);
+        }
+      }
+    });
+  }
+
   String findUrlImageWork({required List<ChatModel> chatmodels}) {
     String result = '';
     for (var element in chatmodels) {
@@ -235,21 +260,52 @@ class AppService {
     if (appController.uidFriends.isNotEmpty) {
       appController.uidFriends.clear();
       appController.userModelPrivateChats.clear();
+      appController.unReads.clear();
+      
     }
     var result =
         await FirebaseFirestore.instance.collection('privatechat').get();
+
     if (result.docs.isNotEmpty) {
       for (var element in result.docs) {
+        //private ทั้งหมด
         PrivateChatModel privateChatModel =
             PrivateChatModel.fromMap(element.data());
+
+        String docIdPrivatechat = element.id;
 
         if (privateChatModel.uidchats.contains(appController.mainUid.value)) {
           print('##19mar uidChats ---> ${privateChatModel.uidchats}');
           for (var element in privateChatModel.uidchats) {
             if (element != appController.mainUid.value) {
               appController.uidFriends.add(element);
-              await findUserModel(uid: element).then((value) {
+              await findUserModel(uid: element).then((value) async {
                 appController.userModelPrivateChats.add(value!);
+
+                await FirebaseFirestore.instance
+                    .collection('privatechat')
+                    .doc(docIdPrivatechat)
+                    .collection('chat')
+                    .get()
+                    .then((value) {
+                  int unRead = 0;
+                  if (value.docs.isNotEmpty) {
+                    for (var element in value.docs) {
+                      ChatModel chatModel = ChatModel.fromMap(element.data());
+                      if (!chatModel.readed!) {
+                        if (chatModel.uidChat !=
+                            appController.mainUid.toString()) {
+                          unRead++;
+                        }
+                      }
+                    }
+                  }
+
+                  print(
+                      '##12april docIdPrivatechat ที่มีการ Chat ---> $docIdPrivatechat unRead ===> $unRead');
+                  appController.unReads.add(unRead);
+                  appController.load.value = false;
+                });
               });
             }
           }

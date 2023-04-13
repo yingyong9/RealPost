@@ -401,6 +401,7 @@ class _AddProductState extends State<AddProduct> {
           physics: const ClampingScrollPhysics(),
           scrollDirection: Axis.horizontal,
           children: [
+            cardCamera(),
             appController.xFiles.isEmpty
                 ? const SizedBox()
                 : Column(
@@ -473,6 +474,36 @@ class _AddProductState extends State<AddProduct> {
                 text: string,
                 textStyle: AppConstant().h3Style(color: AppConstant.grey),
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+   Widget cardCamera() {
+    return InkWell(
+      onTap: () {
+       
+      },
+      child: SizedBox(
+        width: 80,
+        height: 80,
+        child: Card(
+          color: AppConstant.bgGrey,
+          elevation: 0,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.camera,
+                color: AppConstant.grey,
+                size: 36,
+              ),
+              // WidgetText(
+              //   text: string,
+              //   textStyle: AppConstant().h3Style(color: AppConstant.grey),
+              // ),
             ],
           ),
         ),

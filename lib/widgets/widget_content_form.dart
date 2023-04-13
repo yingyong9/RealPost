@@ -44,73 +44,92 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        WidgetForm(
-          width: widget.boxConstraints.maxWidth,
-          hintStyle: AppConstant().h3Style(color: AppConstant.grey),
-          hint: 'พิมพ์ข้อความ...',
-          textStyle: AppConstant().h3Style(),
-          controller: widget.textEditingController,
-          suffixIcon: WidgetIconButton(
-            iconData: Icons.send,
-            pressFunc: () async {
-              if (widget.textEditingController.text.isEmpty) {
-                print('No Text form');
+        Row(
+          children: [
+             widget.roomModel!.uidCreate == widget.appController.mainUid.toString() ? Row(
+              children: [
+                WidgetIconButton(
+                  pressFunc: () {},
+                  iconData: Icons.add_a_photo,
+                ),
+                WidgetIconButton(
+                  pressFunc: () {},
+                  iconData: Icons.pin_drop,
+                ),
+              ],
+            ) : const SizedBox(),
+            WidgetForm(
+              width: widget.boxConstraints.maxWidth-100,
+              hintStyle: AppConstant().h3Style(color: AppConstant.grey),
+              hint: 'พิมพ์ข้อความ...',
+              textStyle: AppConstant().h3Style(),
+              controller: widget.textEditingController,
+              suffixIcon: WidgetIconButton(
+                iconData: Icons.send,
+                pressFunc: () async {
+                  if (widget.textEditingController.text.isEmpty) {
+                    print('No Text form');
 
-                if (widget.roomModel!.uidCreate == user!.uid) {
-                  AppDialog(context: context).realPostBottonSheet(
-                      collection: widget.collection, docIdRoom: widget.docId!);
-                }
-              } else {
-                print(
-                    '##9jan text ที่โพส = ${widget.textEditingController.text}');
+                    if (widget.roomModel!.uidCreate == user!.uid) {
+                      AppDialog(context: context).realPostBottonSheet(
+                          collection: widget.collection,
+                          docIdRoom: widget.docId!);
+                    }
+                  } else {
+                    print(
+                        '##9jan text ที่โพส = ${widget.textEditingController.text}');
 
-                if (widget.appController.messageChats.isNotEmpty) {
-                  widget.appController.messageChats.clear();
-                }
+                    if (widget.appController.messageChats.isNotEmpty) {
+                      widget.appController.messageChats.clear();
+                    }
 
-                widget.appController.messageChats
-                    .add(widget.textEditingController.text);
+                    widget.appController.messageChats
+                        .add(widget.textEditingController.text);
 
-                widget.textEditingController.text = '';
+                    widget.textEditingController.text = '';
 
-                print(
-                    '##31mar userModel => ${widget.appController.userModelsLogin.last.toMap()}');
+                    print(
+                        '##31mar userModel => ${widget.appController.userModelsLogin.last.toMap()}');
 
-                if (widget.appController.userModels.last.urlAvatar?.isEmpty ??
-                    true) {
-                  AppDialog(context: context).avatarBottonSheet();
-                } else {
-                  ChatModel chatModel = await AppService().createChatModel();
-                  print('##31mar chatModel ---> ${chatModel.toMap()}');
-                  print('##31mar docIdRoom ---> ${widget.docId}');
+                    if (widget
+                            .appController.userModels.last.urlAvatar?.isEmpty ??
+                        true) {
+                      AppDialog(context: context).avatarBottonSheet();
+                    } else {
+                      ChatModel chatModel =
+                          await AppService().createChatModel();
+                      print('##31mar chatModel ---> ${chatModel.toMap()}');
+                      print('##31mar docIdRoom ---> ${widget.docId}');
 
-                  await AppService()
-                      .processInsertChat(
-                          chatModel: chatModel, docIdRoom: widget.docId!)
-                      .then((value) {
-                    widget.appController
-                        .processFindDocIdPrivateChat(
-                            uidLogin: user!.uid,
-                            uidFriend: widget.roomModel!.uidCreate)
-                        .then((value) {
-                      if (widget.appController.mainUid.toString() !=
-                          widget.roomModel!.uidCreate.toString()) {
-                        Map<String, dynamic> map = chatModel.toMap();
-                        map['urlRealPost'] = widget.roomModel!.urlRooms[0];
+                      await AppService()
+                          .processInsertChat(
+                              chatModel: chatModel, docIdRoom: widget.docId!)
+                          .then((value) {
+                        widget.appController
+                            .processFindDocIdPrivateChat(
+                                uidLogin: user!.uid,
+                                uidFriend: widget.roomModel!.uidCreate)
+                            .then((value) {
+                          if (widget.appController.mainUid.toString() !=
+                              widget.roomModel!.uidCreate.toString()) {
+                            Map<String, dynamic> map = chatModel.toMap();
+                            map['urlRealPost'] = widget.roomModel!.urlRooms[0];
 
-                        ChatModel newChatModel = ChatModel.fromMap(map);
+                            ChatModel newChatModel = ChatModel.fromMap(map);
 
-                        AppService().processInsertPrivateChat(
-                            docIdPrivateChat:
-                                widget.appController.docIdPrivateChats.last,
-                            chatModel: newChatModel);
-                      }
-                    });
-                  });
-                }
-              }
-            },
-          ),
+                            AppService().processInsertPrivateChat(
+                                docIdPrivateChat:
+                                    widget.appController.docIdPrivateChats.last,
+                                chatModel: newChatModel);
+                          }
+                        });
+                      });
+                    }
+                  }
+                },
+              ),
+            ),
+          ],
         ),
         // contentSizebox(context),
       ],
