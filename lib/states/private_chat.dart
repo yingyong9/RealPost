@@ -44,8 +44,11 @@ class _PrivateChatState extends State<PrivateChat> {
     uidLogin = user!.uid;
     print('##4april uidFriend --> $uidFriend');
 
-    controller.processFindDocIdPrivateChat(
-        uidLogin: uidLogin!, uidFriend: uidFriend!);
+    controller
+        .processFindDocIdPrivateChat(uidLogin: uidLogin!, uidFriend: uidFriend!)
+        .then((value) {
+      AppService().makeReadChat();
+    });
 
     if (widget.firstContent != null) {
       String firstContent = widget.firstContent!;
