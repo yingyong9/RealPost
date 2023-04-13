@@ -64,10 +64,10 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
             child: WidgetButton(
               label: 'Real',
               pressFunc: () {
-                 if (widget.roomModel!.uidCreate == user!.uid) {
-                    AppDialog(context: context).realPostBottonSheet(
-                        collection: widget.collection, docIdRoom: widget.docId!);
-                  }
+                if (widget.roomModel!.uidCreate == user!.uid) {
+                  AppDialog(context: context).realPostBottonSheet(
+                      collection: widget.collection, docIdRoom: widget.docId!);
+                }
               },
               bgColor: Colors.red.shade900,
             ),
@@ -83,7 +83,6 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
               pressFunc: () async {
                 if (widget.textEditingController.text.isEmpty) {
                   print('No Text form');
-
                 } else {
                   print(
                       '##9jan text ที่โพส = ${widget.textEditingController.text}');
@@ -97,40 +96,42 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
 
                   widget.textEditingController.text = '';
 
-                  print(
-                      '##31mar userModel => ${widget.appController.userModelsLogin.last.toMap()}');
+                  ChatModel chatModel = await AppService().createChatModel();
 
-                  if (widget.appController.userModels.last.urlAvatar?.isEmpty ??
-                      true) {
-                    AppDialog(context: context).avatarBottonSheet();
-                  } else {
-                    ChatModel chatModel = await AppService().createChatModel();
-                    print('##31mar chatModel ---> ${chatModel.toMap()}');
-                    print('##31mar docIdRoom ---> ${widget.docId}');
-
-                    await AppService()
-                        .processInsertChat(
-                            chatModel: chatModel, docIdRoom: widget.docId!)
+                  //สำหรับบันทึกใน room --> chat
+                  await AppService()
+                      .processInsertChat(
+                    chatModel: chatModel,
+                    docIdRoom: widget.docId!,
+                  )
+                      .then((value) {
+                    widget.appController
+                        .processFindDocIdPrivateChat(
+                            uidLogin: user!.uid,
+                            uidFriend: widget.roomModel!.uidCreate)
                         .then((value) {
-                      widget.appController
-                          .processFindDocIdPrivateChat(
-                              uidLogin: user!.uid,
-                              uidFriend: widget.roomModel!.uidCreate)
-                          .then((value) {
-                        if (widget.appController.mainUid.toString() !=
-                            widget.roomModel!.uidCreate.toString()) {
-                          Map<String, dynamic> map = chatModel.toMap();
-                          map['urlRealPost'] = widget.roomModel!.urlRooms[0];
+                      if (widget.appController.mainUid.toString() !=
+                          widget.roomModel!.uidCreate.toString()) {
+                        Map<String, dynamic> map = chatModel.toMap();
+                        map['urlRealPost'] = widget.roomModel!.urlRooms[0];
 
-                          ChatModel newChatModel = ChatModel.fromMap(map);
+                        ChatModel newChatModel = ChatModel.fromMap(map);
 
-                          AppService().processInsertPrivateChat(
-                              docIdPrivateChat:
-                                  widget.appController.docIdPrivateChats.last,
-                              chatModel: newChatModel);
-                        }
-                      });
+                        AppService().processInsertPrivateChat(
+                            docIdPrivateChat:
+                                widget.appController.docIdPrivateChats.last,
+                            chatModel: newChatModel);
+                      }
                     });
+                  });
+
+                  //สำหรับ room --> chatOwner
+                  if (widget.roomModel!.uidCreate ==
+                      widget.appController.mainUid.toString()) {
+                    AppService().processInsertChat(
+                        chatModel: chatModel,
+                        docIdRoom: widget.docId!,
+                        collectionChat: 'chatOwner');
                   }
                 }
               },

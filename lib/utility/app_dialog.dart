@@ -660,16 +660,16 @@ class AppDialog {
                                   },
                                 )
                               : const SizedBox(),
-                          // const Spacer(),
-                          Expanded(
-                              child: WidgetForm(
-                            fillColor: Colors.grey.shade300,
-                            maginBottom: 4,
-                            height: 40,
-                            changeFunc: (p0) {
-                              appController.messageChats.add(p0.trim());
-                            },
-                          )),
+                          const Spacer(),
+                          // Expanded(
+                          //     child: WidgetForm(
+                          //   fillColor: Colors.grey.shade300,
+                          //   maginBottom: 4,
+                          //   height: 40,
+                          //   changeFunc: (p0) {
+                          //     appController.messageChats.add(p0.trim());
+                          //   },
+                          // )),
                           WidgetIconButton(
                             iconData: Icons.send,
                             pressFunc: () async {
