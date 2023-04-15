@@ -9,6 +9,7 @@ class UserModel {
   final String? email;
   final String? password;
   final String? token;
+  final String? idReal;
 
   UserModel({
     this.displayName,
@@ -18,6 +19,7 @@ class UserModel {
     this.email,
     this.password,
     this.token,
+    this.idReal,
   });
 
   Map<String, dynamic> toMap() {
@@ -29,20 +31,30 @@ class UserModel {
       'email': email,
       'password': password,
       'token': token,
+      'idReal': idReal,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       displayName: map['displayName'] ?? '',
-      urlAvatar: map['urlAvatar']?? '',
+      urlAvatar: map['urlAvatar'] ?? '',
       phoneNumber: map['phoneNumber'] ?? '',
       uidUser: map['uidUser'] ?? '',
-      email: map['email']?? '',
+      email: map['email'] ?? '',
       password: map['password'] ?? '',
-      token: map['token']?? '',
+      token: map['token'] ?? '',
+      idReal: map['idReal'] ?? '',
     );
   }
+
+  // displayName: map['displayName'] ?? '',
+  // urlAvatar: map['urlAvatar']?? '',
+  // phoneNumber: map['phoneNumber'] ?? '',
+  // uidUser: map['uidUser'] ?? '',
+  // email: map['email']?? '',
+  // password: map['password'] ?? '',
+  // token: map['token']?? '',
 
   String toJson() => json.encode(toMap());
 

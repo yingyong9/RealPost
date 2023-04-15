@@ -197,7 +197,7 @@ class _WidgetContentFormPrivateChatState
                     AppService().processSentNoti(
                         title: 'มีข้อความ',
                         body:
-                            '${widget.appController.messageChats.last} %23${userModelLogin.phoneNumber}',
+                            '${widget.appController.messageChats.last} %23${userModelLogin.idReal}',
                         token: userModelFriend!.token!);
                   });
 
