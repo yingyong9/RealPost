@@ -53,6 +53,7 @@ class _MainPageViewState extends State<MainPageView> {
     AppService().aboutNoti(context: context);
     AppService().freshUserModelLogin();
     // trySignOut();
+    // AppService().genIdReal();
   }
 
   Future<void> trySignOut() async {
@@ -290,7 +291,8 @@ class _MainPageViewState extends State<MainPageView> {
             //     textStyle: AppConstant().h3Style(color: Colors.white),
             //   ),
             // ),
-            child: Container(width: boxConstraints.maxWidth * 0.6,
+            child: Container(
+              width: boxConstraints.maxWidth * 0.6,
               child: BubbleSpecialThree(
                 text: AppService().findContentMessage(
                     chatmodels: appController.chatOwnerModels),
@@ -298,7 +300,6 @@ class _MainPageViewState extends State<MainPageView> {
                 isSender: false,
                 color: Colors.blue.shade900,
                 // color: Colors.green.shade900,
-                
               ),
             ),
           );

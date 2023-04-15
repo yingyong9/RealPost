@@ -35,6 +35,38 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
+  Future<void> processSendNotiAllUser(
+      {required String title, required String body}) async {
+    await FirebaseFirestore.instance.collection('user').get().then((value) {
+      for (var element in value.docs) {
+        UserModel userModel = UserModel.fromMap(element.data());
+        if (userModel.uidUser != appController.mainUid.toString()) {
+          processSentNoti(title: title, body: body, token: userModel.token!);
+        }
+      }
+    });
+  }
+
+  Future<void> genIdReal() async {
+    await FirebaseFirestore.instance
+        .collection('user')
+        .get()
+        .then((value) async {
+      for (var element in value.docs) {
+        UserModel userModel = UserModel.fromMap(element.data());
+        String idReal = userModel.uidUser!.substring(0, 10);
+        Map<String, dynamic> map = userModel.toMap();
+        map['idReal'] = idReal;
+
+        await FirebaseFirestore.instance
+            .collection('user')
+            .doc(element.id)
+            .update(map)
+            .then((value) => print('genIdReal Success'));
+      }
+    });
+  }
+
   Future<void> makeReadChat() async {
     await FirebaseFirestore.instance
         .collection('privatechat')
@@ -169,11 +201,11 @@ class AppService {
 
     if (bodys.last.length > 5) {
       //Go to Private Chat
-      print('##3april Tag type phoneNumber');
+      print('##3april Tag type uidUser');
 
       await FirebaseFirestore.instance
           .collection('user')
-          .where('phoneNumber', isEqualTo: bodys.last)
+          .where('idReal', isEqualTo: bodys.last)
           .get()
           .then((value) {
         for (var element in value.docs) {
@@ -219,7 +251,7 @@ class AppService {
 
         if (appController.indexBodyMainPageView.value !=
             int.parse(bodys.last)) {
-          AppDialog(context: context).normalDialog(
+          AppDialog(context: context).normalDialog( 
             title: title,
             leadingWidget: const WidgetImage(path: 'images/icon.png', size: 80),
             contentWidget: WidgetText(
@@ -261,7 +293,6 @@ class AppService {
       appController.uidFriends.clear();
       appController.userModelPrivateChats.clear();
       appController.unReads.clear();
-      
     }
     var result =
         await FirebaseFirestore.instance.collection('privatechat').get();

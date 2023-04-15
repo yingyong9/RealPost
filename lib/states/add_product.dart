@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:realpost/models/room_model.dart';
+import 'package:realpost/states/main_page_view.dart';
 
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
@@ -240,6 +241,10 @@ class _AddProductState extends State<AddProduct> {
                                   await AppService()
                                       .processInsertRoom(roomModel: roomModel)
                                       .then((value) {
+                                    AppService().processSendNotiAllUser(
+                                        title: 'มี RealPost ใหม่',
+                                        body: '${roomModel.room}%230');
+
                                     AppService().initialSetup(context: context);
                                     Get.back();
                                     Get.back();
@@ -481,11 +486,9 @@ class _AddProductState extends State<AddProduct> {
     );
   }
 
-   Widget cardCamera() {
+  Widget cardCamera() {
     return InkWell(
-      onTap: () {
-       
-      },
+      onTap: () {},
       child: SizedBox(
         width: 80,
         height: 80,
