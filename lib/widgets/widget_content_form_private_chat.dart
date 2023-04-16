@@ -89,19 +89,50 @@ class _WidgetContentFormPrivateChatState
                               .processUploadPhoto(
                                   file: file, path: 'photopost');
 
-                          Map<String, dynamic> map = widget
-                              .appController
-                              .roomModels[widget
-                                  .appController.indexBodyMainPageView.value]
-                              .toMap();
+                          print('##16april urlCamera ---> $urlCamera');
 
-                          List<String> urlRooms = <String>[];
-                          urlRooms.add(urlCamera!);
+                          ChatModel chatModel =
+                              await AppService().createChatModel(urlRealPost: urlCamera);
 
-                          map['urlRooms'] = urlRooms;
+                          print(
+                              '##16april chatModel TakePhoto --> ${chatModel.toMap()}');
 
-                          await AppService().processUpdateRoom(
-                              docIdRoom: widget.docId!, data: map);
+                               await AppService()
+                      .processInsertPrivateChat(
+                          docIdPrivateChat: widget.docIdPrivateChat!,
+                          chatModel: chatModel)
+                      .then((value) async {
+                        
+                    UserModel? userModelLogin = await AppService()
+                        .findUserModel(uid: widget.appController.mainUid.value);
+                    print(
+                        '##4april userModelLogin --> ${userModelLogin!.toMap()}');
+
+                    UserModel? userModelFriend = await AppService()
+                        .findUserModel(uid: widget.uidFriend!);
+                    print(
+                        '##4april userModelFriend --> ${userModelLogin.toMap()}');
+
+                    AppService().processSentNoti(
+                        title: 'มีข้อความ',
+                        body:
+                            '${widget.appController.messageChats.last} %23${userModelLogin.idReal}',
+                        token: userModelFriend!.token!);
+                  });
+
+                          // Map<String, dynamic> map = widget
+                          //     .appController
+                          //     .roomModels[widget
+                          //         .appController.indexBodyMainPageView.value]
+                          //     .toMap();
+
+                          // List<String> urlRooms = <String>[];
+                          // urlRooms.add(urlCamera!);
+
+                          // map['urlRooms'] = urlRooms;
+
+                          // await AppService().processUpdateRoom(
+                          //     docIdRoom: widget.docId!, data: map);
                         } // if
                       },
                     ),
@@ -148,12 +179,12 @@ class _WidgetContentFormPrivateChatState
               if (widget.textEditingController.text.isEmpty) {
                 print('No Text form');
 
-                if (widget
-                    .appController.userModels.last.urlAvatar!.isNotEmpty) {
-                  // การทำงานครั้งที่สอง
-                  AppDialog(context: context).realPostBottonSheet(
-                      collection: widget.collection, docIdRoom: widget.docId!);
-                }
+                // if (widget
+                //     .appController.userModels.last.urlAvatar!.isNotEmpty) {
+                //   // การทำงานครั้งที่สอง
+                //   AppDialog(context: context).realPostBottonSheet(
+                //       collection: widget.collection, docIdRoom: widget.docId!);
+                // }
               } else {
                 print(
                     '##9jan text ที่โพส = ${widget.textEditingController.text}');
@@ -184,6 +215,7 @@ class _WidgetContentFormPrivateChatState
                           docIdPrivateChat: widget.docIdPrivateChat!,
                           chatModel: chatModel)
                       .then((value) async {
+
                     UserModel? userModelLogin = await AppService()
                         .findUserModel(uid: widget.appController.mainUid.value);
                     print(
@@ -200,8 +232,6 @@ class _WidgetContentFormPrivateChatState
                             '${widget.appController.messageChats.last} %23${userModelLogin.idReal}',
                         token: userModelFriend!.token!);
                   });
-
-                 
                 }
               }
             },

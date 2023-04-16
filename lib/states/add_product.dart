@@ -488,7 +488,9 @@ class _AddProductState extends State<AddProduct> {
 
   Widget cardCamera() {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        AppService().takePhotoforMultiImage();
+      },
       child: SizedBox(
         width: 80,
         height: 80,
