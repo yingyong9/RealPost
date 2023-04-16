@@ -35,6 +35,15 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
+  Future<void> delayListFriend() async {
+    await Future.delayed(
+      const Duration(seconds: 3),
+      () {
+        appController.listFriendLoad.value = false;
+      },
+    );
+  }
+
   Future<void> processSendNotiAllUser(
       {required String title, required String body}) async {
     await FirebaseFirestore.instance.collection('user').get().then((value) {
@@ -251,7 +260,7 @@ class AppService {
 
         if (appController.indexBodyMainPageView.value !=
             int.parse(bodys.last)) {
-          AppDialog(context: context).normalDialog( 
+          AppDialog(context: context).normalDialog(
             title: title,
             leadingWidget: const WidgetImage(path: 'images/icon.png', size: 80),
             contentWidget: WidgetText(
@@ -844,6 +853,19 @@ class AppService {
             'คุณเลือกภาพเกินที่กำหนด', 'เราอนุญาติให้เลือกภาพไม่เกิน 9 รูป');
       }
     });
+  }
+
+  Future<void> takePhotoforMultiImage() async {
+    XFile? xFile = await ImagePicker()
+        .pickImage(source: ImageSource.camera, maxWidth: 800, maxHeight: 800);
+    if (xFile != null) {
+      if (appController.xFiles.length <= 9) {
+        appController.xFiles.add(xFile);
+      } else {
+        Get.snackbar(
+            'คุณเลือกภาพเกินที่กำหนด', 'เราอนุญาติให้เลือกภาพไม่เกิน 9 รูป');
+      }
+    }
   }
 
   Future<void> processLunchUrl({required String url}) async {

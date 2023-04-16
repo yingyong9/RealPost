@@ -26,6 +26,7 @@ import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_progress.dart';
+import 'package:realpost/widgets/widget_progress_animation.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
 class MainPageView extends StatefulWidget {
@@ -72,7 +73,7 @@ class _MainPageViewState extends State<MainPageView> {
 
               return SafeArea(
                 child: appController.noRoom.value
-                    ? const WidgetProgress()
+                    ? const WidgetProgessAnimation()
                     : ((appController.roomModels.isEmpty) &&
                             (appController.userModels.isEmpty) &&
                             (appController.userModelAtRooms.isEmpty))
@@ -357,7 +358,9 @@ class _MainPageViewState extends State<MainPageView> {
             path: 'images/icon2.png',
             size: 60,
             tapFunc: () {
-              Get.to(const ListFriend());
+              Get.to(const ListFriend())!.then((value) {
+                appController.listFriendLoad.value = true;
+              });
             },
           ),
           Container(

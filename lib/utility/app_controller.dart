@@ -70,37 +70,25 @@ class AppController extends GetxController {
   RxList<String> chooseTimeGroups = <String>[].obs;
   RxList<int> indexTabs = <int>[0].obs;
   RxInt amountSalse = 1.obs;
-
   RxList commentSalses = <CommentSalseModel>[].obs;
   RxList docIdCommentSalses = <String>[].obs;
-
   RxList salsegroups = <SalseGroupModel>[].obs;
-
   RxBool haveUserLoginInComment = false.obs;
-
   RxString docIdRoomClickHome = ''.obs;
   RxInt indexPageHome = 0.obs;
-
   RxInt timeOtp = AppConstant.timeCountsec.obs;
-
   RxString mainUid = ''.obs;
-
   RxList<bool> tabChooses = <bool>[].obs;
-
   RxBool noRoom = true.obs;
-
   RxBool showFalseOTP = false.obs;
-
   RxBool displayPin = false.obs;
-
   RxList<String> uidFriends = <String>[].obs;
   RxList<UserModel> userModelPrivateChats = <UserModel>[].obs;
-
   RxList<PageController> pageControllers = <PageController>[].obs;
-
   RxList<ChatModel> chatOwnerModels = <ChatModel>[].obs;
-
   RxList<DocumentSnapshot> documentSnapshots = <DocumentSnapshot>[].obs;
+
+  RxBool listFriendLoad = true.obs;
 
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
@@ -438,11 +426,8 @@ class AppController extends GetxController {
     });
   }
 
-  Future<void> readAllRoomStartDocument({required DocumentSnapshot documentSnapshot}) async {
-
-
-    
-
+  Future<void> readAllRoomStartDocument(
+      {required DocumentSnapshot documentSnapshot}) async {
     await FirebaseFirestore.instance
         .collection('room')
         .orderBy('timestamp', descending: true)
