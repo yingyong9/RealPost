@@ -708,14 +708,11 @@ class AppService {
   }
 
   Future<void> initialSetup({required BuildContext context}) async {
-    appController.readAllRoom().then((value) {
-      print('##1april docIdRoom.length --> ${appController.docIdRooms.length}');
+    AppService().freshUserModelLogin();
 
-      // for (var element in appController.roomModels) {
-      //   if (appController.mainUid.value == element.uidCreate) {
-      //     appController.noRoom.value = false;
-      //   }
-      // }
+    appController.readAllRoom().then((value) {
+      print(
+          '##17april docIdRoom.length --> ${appController.docIdRooms.length}');
 
       appController.noRoom.value = false;
 
@@ -795,9 +792,9 @@ class AppService {
           timestamp: Timestamp.fromDate(DateTime.now()),
           uidChat: appController.mainUid.value,
           urlRealPost: urlRealPost ?? '',
-          disPlayName: appController.userModels.last.displayName!,
+          disPlayName: appController.userModelsLogin.last.displayName!,
           urlAvatar:
-              appController.userModels.last.urlAvatar ?? AppConstant.urlAvatar,
+              appController.userModelsLogin.last.urlAvatar ?? AppConstant.urlAvatar,
           article: '',
           link: '',
           geoPoint: appController.shareLocation.value

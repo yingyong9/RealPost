@@ -47,18 +47,7 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          //  widget.roomModel!.uidCreate == widget.appController.mainUid.toString() ? Row(
-          //   children: [
-          //     WidgetIconButton(
-          //       pressFunc: () {},
-          //       iconData: Icons.add_a_photo,
-          //     ),
-          //     WidgetIconButton(
-          //       pressFunc: () {},
-          //       iconData: Icons.pin_drop,
-          //     ),
-          //   ],
-          // ) : const SizedBox(),
+         
           Container(
             margin: const EdgeInsets.only(left: 8),
             child: WidgetButton(
