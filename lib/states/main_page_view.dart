@@ -53,8 +53,6 @@ class _MainPageViewState extends State<MainPageView> {
     AppService().initialSetup(context: context);
     AppService().aboutNoti(context: context);
     AppService().freshUserModelLogin();
-    // trySignOut();
-    // AppService().genIdReal();
   }
 
   Future<void> trySignOut() async {
@@ -102,8 +100,11 @@ class _MainPageViewState extends State<MainPageView> {
                                               ? const SizedBox()
                                               : displayForm(boxConstraints,
                                                   appController),
-                                          backHomeAndAdd(appController,
-                                              boxConstraints: boxConstraints),
+                                          appController.displayPanel.value
+                                              ? backHomeAndAdd(appController,
+                                                  boxConstraints:
+                                                      boxConstraints)
+                                              : const SizedBox(),
                                         ],
                                       ),
                                     ),
@@ -142,7 +143,7 @@ class _MainPageViewState extends State<MainPageView> {
                                 appController.processReadCommentSalses();
 
                                 print(
-                                    '##2april indexbody ---> ${appController.indexBodyMainPageView.value}');
+                                    '##17april indexbody ---> ${appController.indexBodyMainPageView.value}');
                                 print(
                                     '##2april docIdRoom --> ${appController.documentSnapshots[appController.indexBodyMainPageView.value].id}');
 
@@ -158,7 +159,7 @@ class _MainPageViewState extends State<MainPageView> {
                                     secondLoad) {
                                   secondLoad = false;
                                   print(
-                                      '##2april docIdRoom ที่อยู่ในเงื่อนไข --> ${appController.documentSnapshots[appController.indexBodyMainPageView.value].id}');
+                                      '##17april docIdRoom ที่อยู่ในเงื่อนไข --> ${appController.documentSnapshots[appController.indexBodyMainPageView.value].id}');
                                   appController.readAllRoomStartDocument(
                                       documentSnapshot:
                                           appController.documentSnapshots[
@@ -279,28 +280,22 @@ class _MainPageViewState extends State<MainPageView> {
         : Positioned(
             top: 60,
             right: 0,
-            // child: Container(
-            //   width: boxConstraints.maxWidth * 0.5,
-
-            //   padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-            //   margin: const EdgeInsets.only(top: 4),
-            //   decoration: AppConstant()
-            //       .boxChatGuest(bgColor: Colors.black.withOpacity(0.5)),
-            //   child: WidgetText(
-            //     text: AppService().findContentMessage(
-            //         chatmodels: appController.chatOwnerModels),
-            //     textStyle: AppConstant().h3Style(color: Colors.white),
-            //   ),
-            // ),
-            child: Container(
-              width: boxConstraints.maxWidth * 0.6,
-              child: BubbleSpecialThree(
-                text: AppService().findContentMessage(
-                    chatmodels: appController.chatOwnerModels),
-                textStyle: AppConstant().h3Style(color: Colors.white),
-                isSender: false,
-                color: Colors.blue.shade900,
-                // color: Colors.green.shade900,
+            child: InkWell(
+              onTap: () {
+                print('##17aprilYou tap');
+                appController.displayPanel.value =
+                    !appController.displayPanel.value;
+              },
+              child: SizedBox(
+                width: boxConstraints.maxWidth * 0.6,
+                child: BubbleSpecialThree(
+                  text: AppService().findContentMessage(
+                      chatmodels: appController.chatOwnerModels),
+                  textStyle: AppConstant().h3Style(color: Colors.white),
+                  isSender: false,
+                  color: Colors.blue.shade900,
+                  // color: Colors.green.shade900,
+                ),
               ),
             ),
           );
@@ -324,10 +319,7 @@ class _MainPageViewState extends State<MainPageView> {
       {required BoxConstraints boxConstraints}) {
     return Positioned(
       right: 16,
-      top: appController.roomModels[appController.indexBodyMainPageView.value]
-              .safeProduct!
-          ? boxConstraints.maxHeight * 0.4 - 50
-          : boxConstraints.maxHeight * 0.7 - 200,
+      top: boxConstraints.maxHeight * 0.7 - 260,
       child: Column(
         children: [
           appController.roomModels[appController.indexBodyMainPageView.value]
@@ -351,6 +343,20 @@ class _MainPageViewState extends State<MainPageView> {
                     iconData: Icons.pin_drop,
                   ),
                 ),
+          const SizedBox(
+            height: 8,
+          ),
+
+          Container(
+            decoration: AppConstant().boxCurve(color: Colors.green.shade900),
+            child: WidgetIconButton(
+              color: Colors.grey.shade300,
+              size: 36,
+              pressFunc: () {},
+              iconData: Icons.search,
+            ),
+          ),
+
           const SizedBox(
             height: 8,
           ),

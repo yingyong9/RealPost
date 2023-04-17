@@ -44,19 +44,17 @@ Future<void> main() async {
 
   await Firebase.initializeApp().then((value) {
     AppController appController = Get.put(AppController());
-    AppService().readAllUserModel().then((value) {
-      print('##1april userModels ---> ${appController.userModels.length}');
-    });
+    // AppService().readAllUserModel().then((value) {
+     
+    // });
 
     FirebaseAuth.instance.authStateChanges().listen((event) async {
-      // await FirebaseAuth.instance.signOut();
-
       if (event == null) {
         keyPage = AppConstant.pagePhoneNumber;
         runApp(const MyApp());
       } else {
         appController.mainUid.value = event.uid;
-        print('##2mar mainUid ---> ${appController.mainUid}');
+        print('##17april mainUid ---> ${appController.mainUid}');
         keyPage = '/mainPageView';
         runApp(const MyApp());
       }

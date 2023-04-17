@@ -89,6 +89,7 @@ class AppController extends GetxController {
   RxList<DocumentSnapshot> documentSnapshots = <DocumentSnapshot>[].obs;
 
   RxBool listFriendLoad = true.obs;
+  RxBool displayPanel = true.obs;
 
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
@@ -368,25 +369,13 @@ class AppController extends GetxController {
     await FirebaseFirestore.instance
         .collection('room')
         .orderBy('timestamp', descending: true)
-        .limit(AppConstant.amountLoadPage)
+        .limit(AppConstant.amountLoadPage) //limit 20
         .get()
         .then((value) async {
-      int indexPage = 0;
-      var user = FirebaseAuth.instance.currentUser;
-      var uidLogin = user!.uid;
-
       for (var element in value.docs) {
         RoomModel model = RoomModel.fromMap(element.data());
         roomModels.add(model);
         docIdRooms.add(element.id);
-
-        //ทำเพื่อ คลิกไปที่ room ตัวเอง
-        if (uidLogin == model.uidCreate) {
-          print('##3mar page ที่มี indexPage --> $indexPage');
-          print('##3mar page ที่มี docIdRoom --> ${element.id}');
-          docIdRoomClickHome.value = element.id;
-          indexPageHome.value = indexPage;
-        }
 
         UserModel? userModel =
             await AppService().findUserModel(uid: model.uidCreate);
@@ -421,7 +410,7 @@ class AppController extends GetxController {
           listChatModels.add(chatModels);
           lastChatModelLogins.add(lateChatModel!);
         });
-        indexPage++;
+        // indexPage++;
       }
     });
   }
@@ -435,22 +424,10 @@ class AppController extends GetxController {
         // .limit(AppConstant.amountLoadPage)
         .get()
         .then((value) async {
-      // int indexPage = 0;
-      var user = FirebaseAuth.instance.currentUser;
-      var uidLogin = user!.uid;
-
       for (var element in value.docs) {
         RoomModel model = RoomModel.fromMap(element.data());
         roomModels.add(model);
         docIdRooms.add(element.id);
-
-        //ทำเพื่อ คลิกไปที่ room ตัวเอง
-        // if (uidLogin == model.uidCreate) {
-        //   print('##3mar page ที่มี indexPage --> $indexPage');
-        //   print('##3mar page ที่มี docIdRoom --> ${element.id}');
-        //   docIdRoomClickHome.value = element.id;
-        //   indexPageHome.value = indexPage;
-        // }
 
         UserModel? userModel =
             await AppService().findUserModel(uid: model.uidCreate);
