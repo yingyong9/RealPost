@@ -1,8 +1,6 @@
 // ignore_for_file: avoid_print, sort_child_properties_last
 
-import 'package:chat_bubbles/bubbles/bubble_special_one.dart';
 import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
-import 'package:chat_bubbles/bubbles/bubble_special_two.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -25,9 +23,9 @@ import 'package:realpost/widgets/widget_content_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
-import 'package:realpost/widgets/widget_progress.dart';
 import 'package:realpost/widgets/widget_progress_animation.dart';
 import 'package:realpost/widgets/widget_text.dart';
+import 'package:badges/badges.dart' as badges;
 
 class MainPageView extends StatefulWidget {
   const MainPageView({super.key});
@@ -100,7 +98,9 @@ class _MainPageViewState extends State<MainPageView> {
                                               ? const SizedBox()
                                               : displayForm(boxConstraints,
                                                   appController),
-                                          appController.displayPanel.value
+                                          ((appController.displayPanel.value) &&
+                                                  (appController
+                                                      .displayAll.value))
                                               ? backHomeAndAdd(appController,
                                                   boxConstraints:
                                                       boxConstraints)
@@ -241,32 +241,38 @@ class _MainPageViewState extends State<MainPageView> {
   ) {
     return Stack(
       children: [
-        displayImageRoom(element, boxConstraints),
+        displayImageRoom(element, boxConstraints, appController: appController),
         displayListChat(appController, boxConstraints),
-        displayOwnerRoom(boxConstraints, appController),
+        // appController.displayAll.value
+        //     ? displayOwnerRoom(boxConstraints, appController)
+        //     : const SizedBox(),
         displayRealText(appController: appController),
         appController.chatOwnerModels.isEmpty
             ? const SizedBox()
-            : displayTextChatOwner(boxConstraints, appController),
+            : appController.displayAll.value
+                ? displayTextChatOwner(boxConstraints, appController)
+                : const SizedBox(),
         (appController.chatOwnerModels.isEmpty) ||
                 (AppService()
                     .findUrlImageWork(chatmodels: appController.chatOwnerModels)
                     .isEmpty)
             ? const SizedBox()
-            : Positioned(
-                top: 70,
-                left: 16,
-                child: Container(
-                  decoration: AppConstant().borderBox(),
-                  child: WidgetImageInternet(
-                    urlImage: AppService().findUrlImageWork(
-                        chatmodels: appController.chatOwnerModels),
-                    width: boxConstraints.maxWidth * 0.5 - 64,
-                    height: boxConstraints.maxWidth * 0.5 - 32,
-                    boxFit: BoxFit.cover,
-                  ),
-                ),
-              ),
+            : appController.displayAll.value
+                ? Positioned(
+                    top: 16,
+                    left: 16,
+                    child: Container(
+                      decoration: AppConstant().borderBox(),
+                      child: WidgetImageInternet(
+                        urlImage: AppService().findUrlImageWork(
+                            chatmodels: appController.chatOwnerModels),
+                        width: boxConstraints.maxWidth * 0.5 - 64,
+                        height: boxConstraints.maxWidth * 0.5 - 32,
+                        boxFit: BoxFit.cover,
+                      ),
+                    ),
+                  )
+                : const SizedBox(),
       ],
     );
   }
@@ -322,6 +328,31 @@ class _MainPageViewState extends State<MainPageView> {
       top: boxConstraints.maxHeight * 0.7 - 260,
       child: Column(
         children: [
+          badges.Badge(badgeStyle: badges.BadgeStyle(badgeColor: Colors.red.shade700),
+            position: badges.BadgePosition.bottomEnd(end: 10, bottom: -12),
+            badgeContent: const Icon(
+              Icons.add,
+              size: 20,
+              color: Colors.white,
+            ),
+            child: Container(
+              decoration: AppConstant().boxCurve(color: Colors.white),
+              child: WidgetImageInternet(
+                urlImage: appController
+                    .userModelAtRooms[appController.indexBodyMainPageView.value]
+                    .urlAvatar!,
+                width: 48,
+                height: 48,
+                boxFit: BoxFit.cover,
+                tapFunc: () {
+                  Get.to(const DisplayProfile());
+                },
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 8,
+          ),
           appController.roomModels[appController.indexBodyMainPageView.value]
                       .geoPoint!.latitude ==
                   0
@@ -369,20 +400,7 @@ class _MainPageViewState extends State<MainPageView> {
               });
             },
           ),
-          Container(
-            decoration: AppConstant().boxCurve(color: Colors.green.shade900),
-            child: WidgetIconButton(
-              color: Colors.grey.shade300,
-              size: 36,
-              pressFunc: () {
-                Get.to(const DisplayProfile());
-              },
-              iconData: Icons.home,
-            ),
-          ),
-          const SizedBox(
-            height: 8,
-          ),
+
           Container(
             decoration: AppConstant().boxCurve(color: Colors.white),
             child: WidgetIconButton(
@@ -439,8 +457,6 @@ class _MainPageViewState extends State<MainPageView> {
                   .toDate())
           ? Container(
               padding: const EdgeInsets.all(8),
-              // decoration: AppConstant().boxCurve(
-              //     color: Color.fromARGB(255, 198, 27, 52), radius: 20),
               child: WidgetText(
                 text: '  Real  ',
                 textStyle: AppConstant().h2Style(color: Colors.red.shade700),
@@ -518,16 +534,6 @@ class _MainPageViewState extends State<MainPageView> {
             return Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Container(
-                //   margin: EdgeInsets.only(
-                //     left: marginLeft ?? 16,
-                //     // right: 4,
-                //   ),
-                //   child: WidgetCircularImage(
-                //     urlImage: appController.chatModels[index].urlAvatar,
-                //     radius: 14,
-                //   ),
-                // ),
                 InkWell(
                   onTap: () {
                     print(
@@ -546,7 +552,6 @@ class _MainPageViewState extends State<MainPageView> {
                     margin: const EdgeInsets.only(top: 4),
                     decoration: AppConstant()
                         .boxChatGuest(bgColor: Colors.black.withOpacity(0.5)),
-
                     child: Text.rich(TextSpan(
                         text: appController.chatModels[index].disPlayName,
                         style: AppConstant().h3Style(
@@ -561,33 +566,6 @@ class _MainPageViewState extends State<MainPageView> {
                               text: appController.chatModels[index].message,
                               style: AppConstant().h3Style(color: Colors.white))
                         ])),
-                    // child: Row(
-                    //   crossAxisAlignment: CrossAxisAlignment.start,
-                    //   children: [
-                    //     SizedBox(
-                    //       // width: boxConstraints.maxWidth * 0.5 - 80,
-                    //       child: WidgetText(
-                    //         text: appController.chatModels[index].disPlayName,
-                    //         textStyle: AppConstant()
-                    //             .h3Style(fontWeight: FontWeight.bold),
-                    //       ),
-                    //     ),
-                    //     WidgetText(text: ' : '),
-                    //     SizedBox(
-                    //       // width: boxConstraints.maxWidth * 0.5 - 80,
-                    //       child: WidgetText(
-                    //           text: appController.chatModels[index].message),
-                    //     ),
-                    //     appController.chatModels[index].urlRealPost.isEmpty
-                    //         ? const SizedBox()
-                    //         : SizedBox(
-                    //             width: boxConstraints.maxWidth * 0.5 - 80,
-                    //             child: WidgetImageInternet(
-                    //                 urlImage: appController
-                    //                     .chatModels[index].urlRealPost),
-                    //           ),
-                    //   ],
-                    // ),
                   ),
                 ),
               ],
@@ -598,7 +576,8 @@ class _MainPageViewState extends State<MainPageView> {
     );
   }
 
-  Widget displayImageRoom(RoomModel roomModel, BoxConstraints boxConstraints) {
+  Widget displayImageRoom(RoomModel roomModel, BoxConstraints boxConstraints,
+      {required AppController appController}) {
     return ImageSlideshow(
       autoPlayInterval: roomModel.urlRooms.length == 1 ? 0 : 5000,
       isLoop: true,
@@ -611,6 +590,11 @@ class _MainPageViewState extends State<MainPageView> {
               urlImage: e,
               width: boxConstraints.maxWidth,
               boxFit: BoxFit.cover,
+              tapFunc: () {
+                print('##18april you tab at image');
+                appController.displayAll.value =
+                    !appController.displayAll.value;
+              },
             ),
           )
           .toList(),
@@ -644,16 +628,20 @@ class _MainPageViewState extends State<MainPageView> {
               Container(
                 height: 60,
                 constraints: BoxConstraints(maxWidth: boxConstraints.maxWidth),
-                decoration: AppConstant()
-                    .boxBlack(color: Colors.black.withOpacity(0.5)),
+                // decoration: AppConstant()
+                //     .boxBlack(color: Colors.black.withOpacity(0.5)),
                 child: Row(
                   children: [
-                    WidgetCircularImage(
-                        urlImage: appController
-                                .userModelAtRooms[
-                                    appController.indexBodyMainPageView.value]
-                                .urlAvatar ??
-                            AppConstant.urlAvatar),
+                    badges.Badge(
+                      position: badges.BadgePosition.bottomEnd(end: 10),
+                      badgeContent: Text('+'),
+                      child: WidgetCircularImage(
+                          urlImage: appController
+                                  .userModelAtRooms[
+                                      appController.indexBodyMainPageView.value]
+                                  .urlAvatar ??
+                              AppConstant.urlAvatar),
+                    ),
                     const SizedBox(
                       width: 16,
                     ),
