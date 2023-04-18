@@ -90,6 +90,7 @@ class AppController extends GetxController {
 
   RxBool listFriendLoad = true.obs;
   RxBool displayPanel = true.obs;
+  RxBool displayAll = true.obs;
 
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
