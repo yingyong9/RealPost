@@ -632,16 +632,12 @@ class _MainPageViewState extends State<MainPageView> {
                 //     .boxBlack(color: Colors.black.withOpacity(0.5)),
                 child: Row(
                   children: [
-                    badges.Badge(
-                      position: badges.BadgePosition.bottomEnd(end: 10),
-                      badgeContent: Text('+'),
-                      child: WidgetCircularImage(
+                    WidgetCircularImage(
                           urlImage: appController
                                   .userModelAtRooms[
                                       appController.indexBodyMainPageView.value]
                                   .urlAvatar ??
                               AppConstant.urlAvatar),
-                    ),
                     const SizedBox(
                       width: 16,
                     ),
