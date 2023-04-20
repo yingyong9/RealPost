@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
 
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -576,7 +578,7 @@ class AppDialog {
                 '##22mar @realPostBoottonSheet fileRealPosts --> ${appController.fileRealPosts.length}');
             return Container(
               decoration: BoxDecoration(color: AppConstant.bgColor),
-              height: 306,
+              height: 356,
               child: Stack(
                 children: [
                   Column(
@@ -590,7 +592,7 @@ class AppDialog {
                       ),
                       appController.urlRealPostChooses.isNotEmpty
                           ? WidgetImageInternet(
-                              urlImage: appController.urlRealPostChooses[0],
+                              urlImage: appController.urlRealPostChooses.last,
                               width: 200,
                               height: 200,
                             )
@@ -601,6 +603,41 @@ class AppDialog {
                                   width: 200,
                                   height: 200,
                                 ),
+                      Container(
+                        height: 50,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          physics: const ClampingScrollPhysics(),
+                          itemCount: appController.stampModels.length,
+                          itemBuilder: (context, index) => WidgetImageInternet(
+                            urlImage: appController.stampModels[index].url,
+                            tapFunc: () async {
+                              appController.urlRealPostChooses
+                                  .add(appController.stampModels[index].url);
+
+                                   ChatModel chatModel = await AppService()
+                                      .createChatModel(
+                                          urlRealPost: appController
+                                              .urlRealPostChooses.last);
+
+                                  AppService()
+                                      .processInsertChat(
+                                          chatModel: chatModel,
+                                          docIdRoom: collection != null
+                                              ? appController
+                                                  .docIdPrivateChats[0]
+                                              : appController
+                                                  .docIdRoomChooses[0],
+                                          collection: collection,
+                                          collectionChat: 'chatOwner')
+                                      .then((value) async {
+                                    Get.back();
+                                  });
+                            },
+                          ),
+                        ),
+                      ),
                       Divider(
                         color: AppConstant.dark,
                         thickness: 1,
@@ -660,6 +697,33 @@ class AppDialog {
                                   },
                                 )
                               : const SizedBox(),
+                          WidgetIconButton(
+                            pressFunc: () {},
+                            iconData: Icons.add_photo_alternate,
+                            color: const Color.fromARGB(255, 22, 117, 124),
+                          ),
+                          WidgetIconButton(
+                            pressFunc: () async {
+                              await AppService()
+                                  .processTakePhoto(source: ImageSource.camera)
+                                  .then((value) async {
+                                await AppService()
+                                    .processUploadPhoto(
+                                        file: value!, path: 'room2')
+                                    .then((value) {
+                                  String? urlImage = value;
+                                  print('##20april urlImage ---> $urlImage');
+                                  appController.urlRealPostChooses
+                                      .add(urlImage!);
+                                  if (appController.fileRealPosts.isNotEmpty) {
+                                    appController.fileRealPosts.clear();
+                                  }
+                                });
+                              });
+                            },
+                            iconData: Icons.camera,
+                            color: const Color.fromARGB(255, 22, 117, 124),
+                          ),
                           const Spacer(),
                           // Expanded(
                           //     child: WidgetForm(
@@ -675,7 +739,7 @@ class AppDialog {
                             pressFunc: () async {
                               if (appController.fileRealPosts.isNotEmpty) {
                                 print(
-                                    '##20mar แบบถ่ายภาพ  ${appController.fileRealPosts.length}');
+                                    '##20april แบบถ่ายภาพ  ${appController.fileRealPosts.length}');
 
                                 //upload
                                 await AppService()
@@ -694,19 +758,10 @@ class AppDialog {
                                   appController.urlRealPostChooses
                                       .add(value.toString());
 
-                                  print(
-                                      '##20mar urlRealPostChoose[0] ----> ${appController.urlRealPostChooses.last}');
-
                                   ChatModel chatModel = await AppService()
                                       .createChatModel(
                                           urlRealPost: appController
                                               .urlRealPostChooses.last);
-
-                                  print(
-                                      '##20mar chatModel ---> ${chatModel.toMap()}');
-
-                                  print(
-                                      '##8jan docIdRoomChoose ---> ${appController.docIdRoomChooses.length}');
 
                                   AppService()
                                       .processInsertChat(
@@ -723,23 +778,46 @@ class AppDialog {
                                   });
                                 });
                               } else {
-                                print('##19dec ไม่ได้ถ่ายภาพ');
+                                print('##20april ไม่ได้ถ่ายภาพ');
 
-                                if (appController.messageChats.isEmpty) {
+                                var urlRooms = <String>[];
+                                urlRooms
+                                    .add(appController.urlRealPostChooses.last);
+
+                                Map<String, dynamic> map = appController
+                                    .roomModels[appController
+                                        .indexBodyMainPageView.value]
+                                    .toMap();
+
+                                map['urlRooms'] = urlRooms;
+
+                                print('##20april map ใหม่ --> $map');
+                                AppService()
+                                    .processUpdateRoom(
+                                        docIdRoom: appController.docIdRooms[
+                                            appController
+                                                .indexBodyMainPageView.value],
+                                        data: map)
+                                    .then((value) {
+                                  appController.urlRealPostChooses.clear();
                                   Get.back();
-                                } else {
-                                  ChatModel chatModel =
-                                      await AppService().createChatModel();
-                                  AppService()
-                                      .processInsertChat(
-                                          chatModel: chatModel,
-                                          docIdRoom: docIdRoom ?? '',
-                                          collection: collection,
-                                          collectionChat: 'chatOwner')
-                                      .then((value) {
-                                    Get.back();
-                                  });
-                                }
+                                });
+
+                                // if (appController.messageChats.isEmpty) {
+                                //   Get.back();
+                                // } else {
+                                //   ChatModel chatModel =
+                                //       await AppService().createChatModel();
+                                //   AppService()
+                                //       .processInsertChat(
+                                //           chatModel: chatModel,
+                                //           docIdRoom: docIdRoom ?? '',
+                                //           collection: collection,
+                                //           collectionChat: 'chatOwner')
+                                //       .then((value) {
+                                //     Get.back();
+                                //   });
+                                // }
                               }
                             },
                           ),

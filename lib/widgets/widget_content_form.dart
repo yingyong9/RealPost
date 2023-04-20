@@ -47,36 +47,57 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          AppService().compareCurrentTime(
-              otherDatetime: widget.appController
-                  .roomModels[widget.appController.indexBodyMainPageView.value]
-                  .timestamp
-                  .toDate()) ? Container(
-            margin: const EdgeInsets.only(left: 8),
-            child: WidgetButton(
-              label: 'Real',
-              pressFunc: () {
-                if ((widget.roomModel!.uidCreate == user!.uid) &&
-                    (AppService().compareCurrentTime(
+          (AppService().compareCurrentTime(
+                      otherDatetime: widget
+                          .appController
+                          .roomModels[
+                              widget.appController.indexBodyMainPageView.value]
+                          .timestamp
+                          .toDate()) &&
+                  (widget
+                          .appController
+                          .roomModels[
+                              widget.appController.indexBodyMainPageView.value]
+                          .uidCreate ==
+                      widget.appController.mainUid.toString()))
+              ? Container(
+                  margin: const EdgeInsets.only(left: 8),
+                  child: WidgetButton(
+                    label: 'Real',
+                    pressFunc: () {
+                      if ((widget.roomModel!.uidCreate == user!.uid) &&
+                          (AppService().compareCurrentTime(
+                              otherDatetime: widget
+                                  .appController
+                                  .roomModels[widget.appController
+                                      .indexBodyMainPageView.value]
+                                  .timestamp
+                                  .toDate()))) {
+                        AppDialog(context: context).realPostBottonSheet(
+                            collection: widget.collection,
+                            docIdRoom: widget.docId!);
+                      }
+                    },
+                    bgColor: Colors.red.shade900,
+                  ),
+                )
+              : const SizedBox(),
+          WidgetForm(
+            width: (AppService().compareCurrentTime(
                         otherDatetime: widget
                             .appController
                             .roomModels[widget
                                 .appController.indexBodyMainPageView.value]
                             .timestamp
-                            .toDate()))) {
-                  AppDialog(context: context).realPostBottonSheet(
-                      collection: widget.collection, docIdRoom: widget.docId!);
-                }
-              },
-              bgColor: Colors.red.shade900,
-            ),
-          ) : const SizedBox(),
-          WidgetForm(
-            width: AppService().compareCurrentTime(
-              otherDatetime: widget.appController
-                  .roomModels[widget.appController.indexBodyMainPageView.value]
-                  .timestamp
-                  .toDate()) ? widget.boxConstraints.maxWidth - 90 : widget.boxConstraints.maxWidth,
+                            .toDate()) &&
+                    (widget
+                            .appController
+                            .roomModels[widget
+                                .appController.indexBodyMainPageView.value]
+                            .uidCreate ==
+                        widget.appController.mainUid.toString()))
+                ? widget.boxConstraints.maxWidth - 90
+                : widget.boxConstraints.maxWidth,
             hintStyle: AppConstant().h3Style(color: AppConstant.grey),
             hint: 'พิมพ์ข้อความ...',
             textStyle: AppConstant().h3Style(),
