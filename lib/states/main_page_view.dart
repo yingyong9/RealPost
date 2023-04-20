@@ -241,17 +241,10 @@ class _MainPageViewState extends State<MainPageView> {
   ) {
     return Stack(
       children: [
-        displayImageRoom(element, boxConstraints, appController: appController),
+        displayImageRoom(boxConstraints, appController: appController),
         displayListChat(appController, boxConstraints),
-        // appController.displayAll.value
-        //     ? displayOwnerRoom(boxConstraints, appController)
-        //     : const SizedBox(),
         displayRealText(appController: appController),
-        appController.chatOwnerModels.isEmpty
-            ? const SizedBox()
-            : appController.displayAll.value
-                ? displayTextChatOwner(boxConstraints, appController)
-                : const SizedBox(),
+        blueTextOwner(appController, boxConstraints),
         (appController.chatOwnerModels.isEmpty) ||
                 (AppService()
                     .findUrlImageWork(chatmodels: appController.chatOwnerModels)
@@ -275,6 +268,15 @@ class _MainPageViewState extends State<MainPageView> {
                 : const SizedBox(),
       ],
     );
+  }
+
+  Widget blueTextOwner(
+      AppController appController, BoxConstraints boxConstraints) {
+    return appController.chatOwnerModels.isEmpty
+        ? const SizedBox()
+        : appController.displayAll.value
+            ? displayTextChatOwner(boxConstraints, appController)
+            : const SizedBox();
   }
 
   Widget displayTextChatOwner(
@@ -309,142 +311,189 @@ class _MainPageViewState extends State<MainPageView> {
 
   Widget displayListChat(
       AppController appController, BoxConstraints boxConstraints) {
-    return appController
-            .roomModels[appController.indexBodyMainPageView.value].safeProduct!
-        ? const SizedBox()
-        : displayListMessage(
+    return appController.displayAll.value
+        ? displayListMessage(
             boxConstraints,
             appController,
             top: boxConstraints.maxHeight * 0.6,
             height: boxConstraints.maxHeight * 0.25,
             reverse: true,
-          );
+          )
+        : const SizedBox();
   }
 
-  Positioned backHomeAndAdd(AppController appController,
+  Widget backHomeAndAdd(AppController appController,
       {required BoxConstraints boxConstraints}) {
-    return Positioned(
-      right: 16,
-      top: boxConstraints.maxHeight * 0.7 - 260,
-      child: Column(
-        children: [
-          badges.Badge(badgeStyle: badges.BadgeStyle(badgeColor: Colors.red.shade700),
-            position: badges.BadgePosition.bottomEnd(end: 10, bottom: -12),
-            badgeContent: const Icon(
-              Icons.add,
-              size: 20,
-              color: Colors.white,
-            ),
-            child: Container(
-              decoration: AppConstant().boxCurve(color: Colors.white),
-              child: WidgetImageInternet(
-                urlImage: appController
-                    .userModelAtRooms[appController.indexBodyMainPageView.value]
-                    .urlAvatar!,
-                width: 48,
-                height: 48,
-                boxFit: BoxFit.cover,
-                tapFunc: () {
-                  Get.to(const DisplayProfile());
-                },
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-          appController.roomModels[appController.indexBodyMainPageView.value]
-                      .geoPoint!.latitude ==
-                  0
-              ? const SizedBox()
-              : Container(
+    return appController.displayAddFriends.isEmpty
+        ? const SizedBox()
+        : Positioned(
+            right: 16,
+            top: boxConstraints.maxHeight * 0.7 - 260,
+            child: Column(
+              children: [
+                appController.displayAddFriends[
+                        appController.indexBodyMainPageView.value]
+                    ? badges.Badge(
+                        badgeStyle:
+                            badges.BadgeStyle(badgeColor: Colors.red.shade700),
+                        position: badges.BadgePosition.bottomEnd(
+                            end: 10, bottom: -12),
+                        badgeContent: const Icon(
+                          Icons.add,
+                          size: 20,
+                          color: Colors.white,
+                        ),
+                        child: Container(
+                          decoration:
+                              AppConstant().boxCurve(color: Colors.white),
+                          child: WidgetImageInternet(
+                            urlImage: appController
+                                .userModelAtRooms[
+                                    appController.indexBodyMainPageView.value]
+                                .urlAvatar!,
+                            width: 48,
+                            height: 48,
+                            boxFit: BoxFit.cover,
+                            tapFunc: () {
+                              Get.to(const DisplayProfile());
+                            },
+                          ),
+                        ),
+                        onTap: () {
+                          String uidFriend = appController
+                              .roomModels[
+                                  appController.indexBodyMainPageView.value]
+                              .uidCreate;
+
+                          AppService()
+                              .processAddFriend(uidFriend: uidFriend)
+                              .then((value) async {
+                            print(
+                                '##19april You tab add uidFried --> $uidFriend success');
+                            appController.displayAddFriends.clear();
+                            for (var element in appController.roomModels) {
+                              appController.displayAddFriends.add(
+                                  await AppService().findPatnerFriend(
+                                      uidCheckFriend: element.uidCreate));
+                            }
+                          });
+                        },
+                      )
+                    : Container(
+                        decoration: AppConstant().boxCurve(color: Colors.white),
+                        child: WidgetImageInternet(
+                          urlImage: appController
+                              .userModelAtRooms[
+                                  appController.indexBodyMainPageView.value]
+                              .urlAvatar!,
+                          width: 48,
+                          height: 48,
+                          boxFit: BoxFit.cover,
+                          tapFunc: () {
+                            Get.to(const DisplayProfile());
+                          },
+                        ),
+                      ),
+                const SizedBox(
+                  height: 8,
+                ),
+                appController
+                            .roomModels[
+                                appController.indexBodyMainPageView.value]
+                            .geoPoint!
+                            .latitude ==
+                        0
+                    ? const SizedBox()
+                    : Container(
+                        decoration: AppConstant()
+                            .boxCurve(color: Colors.green.shade900),
+                        child: WidgetIconButton(
+                          color: Colors.grey.shade300,
+                          size: 36,
+                          pressFunc: () {
+                            GeoPoint geoPoint = appController
+                                .roomModels[
+                                    appController.indexBodyMainPageView.value]
+                                .geoPoint!;
+                            String url =
+                                'https://www.google.com/maps/search/?api=1&query=${geoPoint.latitude},${geoPoint.longitude}';
+                            AppService().processLunchUrl(url: url);
+                          },
+                          iconData: Icons.pin_drop,
+                        ),
+                      ),
+                const SizedBox(
+                  height: 8,
+                ),
+
+                Container(
                   decoration:
                       AppConstant().boxCurve(color: Colors.green.shade900),
                   child: WidgetIconButton(
                     color: Colors.grey.shade300,
                     size: 36,
-                    pressFunc: () {
-                      GeoPoint geoPoint = appController
-                          .roomModels[appController.indexBodyMainPageView.value]
-                          .geoPoint!;
-                      String url =
-                          'https://www.google.com/maps/search/?api=1&query=${geoPoint.latitude},${geoPoint.longitude}';
-                      AppService().processLunchUrl(url: url);
-                    },
-                    iconData: Icons.pin_drop,
+                    pressFunc: () {},
+                    iconData: Icons.search,
                   ),
                 ),
-          const SizedBox(
-            height: 8,
-          ),
 
-          Container(
-            decoration: AppConstant().boxCurve(color: Colors.green.shade900),
-            child: WidgetIconButton(
-              color: Colors.grey.shade300,
-              size: 36,
-              pressFunc: () {},
-              iconData: Icons.search,
+                const SizedBox(
+                  height: 8,
+                ),
+                WidgetImage(
+                  path: 'images/icon2.png',
+                  size: 60,
+                  tapFunc: () {
+                    Get.to(const ListFriend())!.then((value) {
+                      appController.listFriendLoad.value = true;
+                    });
+                  },
+                ),
+
+                Container(
+                  decoration: AppConstant().boxCurve(color: Colors.white),
+                  child: WidgetIconButton(
+                    pressFunc: () {
+                      if (appController.xFiles.isNotEmpty) {
+                        appController.xFiles.clear();
+                      }
+
+                      Get.to(const AddProduct())!.then((value) {});
+                    },
+                    iconData: Icons.add_box,
+                    color: Colors.green,
+                    size: 36,
+                  ),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                // (appController.roomModels[appController.indexBodyMainPageView.value]
+                //             .uidCreate
+                //             .toString() ==
+                //         appController.mainUid.toString())
+                //     ? const SizedBox()
+                //     :
+
+                Container(
+                  decoration: AppConstant().boxCurve(color: Colors.white),
+                  child: InkWell(
+                    child: const WidgetImage(
+                      path: 'images/basket.png',
+                      size: 48,
+                    ),
+                    onTap: () {
+                      AppBottomSheet().orderButtonSheet(
+                          roomModel: appController.roomModels[
+                              appController.indexBodyMainPageView.value],
+                          height: boxConstraints.maxHeight * 0.35,
+                          userModelLogin: appController.userModels.last);
+                    },
+                  ),
+                ),
+              ],
             ),
-          ),
-
-          const SizedBox(
-            height: 8,
-          ),
-          WidgetImage(
-            path: 'images/icon2.png',
-            size: 60,
-            tapFunc: () {
-              Get.to(const ListFriend())!.then((value) {
-                appController.listFriendLoad.value = true;
-              });
-            },
-          ),
-
-          Container(
-            decoration: AppConstant().boxCurve(color: Colors.white),
-            child: WidgetIconButton(
-              pressFunc: () {
-                if (appController.xFiles.isNotEmpty) {
-                  appController.xFiles.clear();
-                }
-
-                Get.to(const AddProduct())!.then((value) {});
-              },
-              iconData: Icons.add_box,
-              color: Colors.green,
-              size: 36,
-            ),
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-          // (appController.roomModels[appController.indexBodyMainPageView.value]
-          //             .uidCreate
-          //             .toString() ==
-          //         appController.mainUid.toString())
-          //     ? const SizedBox()
-          //     :
-
-          Container(
-            decoration: AppConstant().boxCurve(color: Colors.white),
-            child: InkWell(
-              child: const WidgetImage(
-                path: 'images/basket.png',
-                size: 48,
-              ),
-              onTap: () {
-                AppBottomSheet().orderButtonSheet(
-                    roomModel: appController
-                        .roomModels[appController.indexBodyMainPageView.value],
-                    height: boxConstraints.maxHeight * 0.35,
-                    userModelLogin: appController.userModels.last);
-              },
-            ),
-          ),
-        ],
-      ),
-    );
+          );
   }
 
   Widget displayRealText({required AppController appController}) {
@@ -576,15 +625,24 @@ class _MainPageViewState extends State<MainPageView> {
     );
   }
 
-  Widget displayImageRoom(RoomModel roomModel, BoxConstraints boxConstraints,
+  Widget displayImageRoom(BoxConstraints boxConstraints,
       {required AppController appController}) {
     return ImageSlideshow(
-      autoPlayInterval: roomModel.urlRooms.length == 1 ? 0 : 5000,
+      autoPlayInterval: appController
+                  .roomModels[appController.indexBodyMainPageView.value]
+                  .urlRooms
+                  .length ==
+              1
+          ? 0
+          : 5000,
       isLoop: true,
-      height: roomModel.safeProduct!
+      height: appController
+              .roomModels[appController.indexBodyMainPageView.value]
+              .safeProduct!
           ? boxConstraints.maxHeight * 0.5
           : boxConstraints.maxHeight - 70,
-      children: roomModel.urlRooms
+      children: appController
+          .roomModels[appController.indexBodyMainPageView.value].urlRooms
           .map(
             (e) => WidgetImageInternet(
               urlImage: e,
@@ -633,11 +691,11 @@ class _MainPageViewState extends State<MainPageView> {
                 child: Row(
                   children: [
                     WidgetCircularImage(
-                          urlImage: appController
-                                  .userModelAtRooms[
-                                      appController.indexBodyMainPageView.value]
-                                  .urlAvatar ??
-                              AppConstant.urlAvatar),
+                        urlImage: appController
+                                .userModelAtRooms[
+                                    appController.indexBodyMainPageView.value]
+                                .urlAvatar ??
+                            AppConstant.urlAvatar),
                     const SizedBox(
                       width: 16,
                     ),

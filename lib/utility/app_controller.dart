@@ -92,6 +92,8 @@ class AppController extends GetxController {
   RxBool displayPanel = true.obs;
   RxBool displayAll = true.obs;
 
+  RxList<bool> displayAddFriends = <bool>[].obs;
+
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
       salsegroups.clear();
@@ -363,6 +365,7 @@ class AppController extends GetxController {
       listChatModels.clear();
       userModelAtRooms.clear();
       documentSnapshots.clear();
+      displayAddFriends.clear();
     }
 
     await readAllDocumentSnapshotRoom();
@@ -383,6 +386,10 @@ class AppController extends GetxController {
         if (userModel != null) {
           userModelAtRooms.add(userModel);
         }
+
+        await AppService().findPatnerFriend(uidCheckFriend: model.uidCreate).then((value) {
+          displayAddFriends.add(value);
+        });
 
         var chatModels = <ChatModel>[];
         ChatModel? lateChatModel;

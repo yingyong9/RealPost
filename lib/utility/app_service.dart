@@ -15,6 +15,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/comment_salse_model.dart';
+import 'package:realpost/models/friend_model.dart';
 import 'package:realpost/models/otp_require_thaibulk.dart';
 import 'package:realpost/models/private_chat_model.dart';
 import 'package:realpost/models/room_model.dart';
@@ -34,6 +35,33 @@ import 'package:url_launcher/url_launcher.dart';
 
 class AppService {
   AppController appController = Get.put(AppController());
+
+  Future<bool> findPatnerFriend({required String uidCheckFriend}) async {
+    bool result = true; // display add friend
+
+    var snapshot = await FirebaseFirestore.instance.collection('friend').get();
+    for (var element in snapshot.docs) {
+      FriendModel friendModel = FriendModel.fromMap(element.data());
+      if (friendModel.uidFriends.contains(appController.mainUid.toString())) {
+        if (friendModel.uidFriends.contains(uidCheckFriend)) {
+          result = false;
+        }
+      }
+    }
+
+    return result;
+  }
+
+  Future<void> processAddFriend({required String uidFriend}) async {
+    var friends = <String>[];
+    friends.add(appController.mainUid.toString());
+    friends.add(uidFriend);
+    FriendModel friendModel = FriendModel(uidFriends: friends);
+    await FirebaseFirestore.instance
+        .collection('friend')
+        .doc()
+        .set(friendModel.toMap());
+  }
 
   Future<void> delayListFriend() async {
     await Future.delayed(
@@ -518,29 +546,7 @@ class AppService {
     });
   }
 
-  // Future<void> createAnonymouns({required String phoneNumber}) async {
-  //   await FirebaseAuth.instance.signInAnonymously().then((value) async {
-  //     String uid = value.user!.uid;
-  //     print('##22feb uid from anonymouns --> $uid');
-
-  //     await value.user!.getIdTokenResult().then((value) async {
-  //       String? token = value.token;
-
-  //       Map<String, dynamic> map = {};
-  //       map['uid'] = uid;
-  //       // map['token'] = token;
-
-  //       print('##22feb map ---> $map');
-  //       await FirebaseFirestore.instance
-  //           .collection('checkphone')
-  //           .doc(phoneNumber)
-  //           .set(map)
-  //           .then((value) {
-  //         Get.offAll(DisplayName(uidLogin: uid));
-  //       });
-  //     });
-  //   });
-  // }
+ 
 
   Future<OtpRequireThaibulk> processSentSmsThaibulk(
       {required String phoneNumber}) async {
@@ -793,8 +799,8 @@ class AppService {
           uidChat: appController.mainUid.value,
           urlRealPost: urlRealPost ?? '',
           disPlayName: appController.userModelsLogin.last.displayName!,
-          urlAvatar:
-              appController.userModelsLogin.last.urlAvatar ?? AppConstant.urlAvatar,
+          urlAvatar: appController.userModelsLogin.last.urlAvatar ??
+              AppConstant.urlAvatar,
           article: '',
           link: '',
           geoPoint: appController.shareLocation.value
@@ -1075,7 +1081,7 @@ class AppService {
         .doc(docIdRoom)
         .update(data)
         .then((value) {
-      print('##5jan update Room Success');
+      print('##20april update Room Success');
       appController.readAllRoom();
     });
   }
