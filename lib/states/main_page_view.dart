@@ -10,6 +10,7 @@ import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/states/add_product.dart';
 import 'package:realpost/states/display_profile.dart';
+import 'package:realpost/states/full_screen_image.dart';
 import 'package:realpost/states/list_friend.dart';
 import 'package:realpost/states/private_chat.dart';
 import 'package:realpost/states/tab_price.dart';
@@ -262,6 +263,13 @@ class _MainPageViewState extends State<MainPageView> {
                         width: boxConstraints.maxWidth * 0.5 - 64,
                         height: boxConstraints.maxWidth * 0.5 - 32,
                         boxFit: BoxFit.cover,
+                        tapFunc: () {
+                          print(
+                              'you tap image ${AppService().findUrlImageWork(chatmodels: appController.chatOwnerModels)}');
+                          Get.to(FullScreenImage(
+                              urlImage: AppService().findUrlImageWork(
+                                  chatmodels: appController.chatOwnerModels)));
+                        },
                       ),
                     ),
                   )

@@ -58,6 +58,7 @@ dependencies:
   cached_network_image: ^3.2.3
   chat_bubbles: ^1.4.1
   loading_animation_widget: ^1.2.0+4
+  photo_view: ^0.14.0
 
 dev_dependencies:
   flutter_test:
