@@ -48,18 +48,12 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           (AppService().compareCurrentTime(
-                      otherDatetime: widget
-                          .appController
-                          .roomModels[
-                              widget.appController.indexBodyMainPageView.value]
-                          .timestamp
-                          .toDate()) &&
-                  (widget
-                          .appController
-                          .roomModels[
-                              widget.appController.indexBodyMainPageView.value]
-                          .uidCreate ==
-                      widget.appController.mainUid.toString()))
+                  otherDatetime: widget
+                      .appController
+                      .roomModels[
+                          widget.appController.indexBodyMainPageView.value]
+                      .timestamp
+                      .toDate()))
               ? Container(
                   margin: const EdgeInsets.only(left: 8),
                   child: WidgetButton(
@@ -76,6 +70,8 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
                         AppDialog(context: context).realPostBottonSheet(
                             collection: widget.collection,
                             docIdRoom: widget.docId!);
+                      } else {
+                        print('ไม่ใช้เจ้าของ room กด');
                       }
                     },
                     bgColor: Colors.red.shade900,
@@ -84,18 +80,12 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
               : const SizedBox(),
           WidgetForm(
             width: (AppService().compareCurrentTime(
-                        otherDatetime: widget
-                            .appController
-                            .roomModels[widget
-                                .appController.indexBodyMainPageView.value]
-                            .timestamp
-                            .toDate()) &&
-                    (widget
-                            .appController
-                            .roomModels[widget
-                                .appController.indexBodyMainPageView.value]
-                            .uidCreate ==
-                        widget.appController.mainUid.toString()))
+                    otherDatetime: widget
+                        .appController
+                        .roomModels[
+                            widget.appController.indexBodyMainPageView.value]
+                        .timestamp
+                        .toDate()))
                 ? widget.boxConstraints.maxWidth - 90
                 : widget.boxConstraints.maxWidth,
             hintStyle: AppConstant().h3Style(color: AppConstant.grey),
