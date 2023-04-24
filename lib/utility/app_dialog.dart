@@ -616,24 +616,22 @@ class AppDialog {
                               appController.urlRealPostChooses
                                   .add(appController.stampModels[index].url);
 
-                                   ChatModel chatModel = await AppService()
-                                      .createChatModel(
-                                          urlRealPost: appController
-                                              .urlRealPostChooses.last);
+                              ChatModel chatModel = await AppService()
+                                  .createChatModel(
+                                      urlRealPost: appController
+                                          .urlRealPostChooses.last);
 
-                                  AppService()
-                                      .processInsertChat(
-                                          chatModel: chatModel,
-                                          docIdRoom: collection != null
-                                              ? appController
-                                                  .docIdPrivateChats[0]
-                                              : appController
-                                                  .docIdRoomChooses[0],
-                                          collection: collection,
-                                          collectionChat: 'chatOwner')
-                                      .then((value) async {
-                                    Get.back();
-                                  });
+                              AppService()
+                                  .processInsertChat(
+                                      chatModel: chatModel,
+                                      docIdRoom: collection != null
+                                          ? appController.docIdPrivateChats[0]
+                                          : appController.docIdRoomChooses[0],
+                                      collection: collection,
+                                      collectionChat: 'chatOwner')
+                                  .then((value) async {
+                                Get.back();
+                              });
                             },
                           ),
                         ),
@@ -698,9 +696,23 @@ class AppDialog {
                                 )
                               : const SizedBox(),
                           WidgetIconButton(
-                            pressFunc: () {},
+                            pressFunc: () async {
+                              if (appController.fileRealPosts.isNotEmpty) {
+                                appController.fileRealPosts.clear();
+                              }
+
+                              if (appController.urlRealPostChooses.isNotEmpty) {
+                                appController.urlRealPostChooses.clear();
+                              }
+
+                              var result = await AppService().processTakePhoto(
+                                  source: ImageSource.gallery);
+                              if (result != null) {
+                                appController.fileRealPosts.add(result);
+                              }
+                            },
                             iconData: Icons.add_photo_alternate,
-                            color: const Color.fromARGB(255, 22, 117, 124),
+                            // color: const Color.fromARGB(255, 22, 117, 124),
                           ),
                           WidgetIconButton(
                             pressFunc: () async {
@@ -722,6 +734,28 @@ class AppDialog {
                               });
                             },
                             iconData: Icons.camera,
+                            color: const Color.fromARGB(255, 22, 117, 124),
+                          ),
+                          WidgetIconButton(
+                            pressFunc: () async {
+                              await AppService()
+                                  .processTakePhoto(source: ImageSource.gallery)
+                                  .then((value) async {
+                                await AppService()
+                                    .processUploadPhoto(
+                                        file: value!, path: 'room2')
+                                    .then((value) {
+                                  String? urlImage = value;
+                                  print('##20april urlImage ---> $urlImage');
+                                  appController.urlRealPostChooses
+                                      .add(urlImage!);
+                                  if (appController.fileRealPosts.isNotEmpty) {
+                                    appController.fileRealPosts.clear();
+                                  }
+                                });
+                              });
+                            },
+                            iconData: Icons.add_photo_alternate,
                             color: const Color.fromARGB(255, 22, 117, 124),
                           ),
                           const Spacer(),
