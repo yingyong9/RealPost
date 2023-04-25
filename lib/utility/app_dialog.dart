@@ -760,7 +760,7 @@ class AppDialog {
                           // ),
                           // const Spacer(),
 
-                           Expanded(
+                          Expanded(
                               child: WidgetForm(
                             fillColor: Colors.grey.shade300,
                             maginBottom: 4,
@@ -769,7 +769,7 @@ class AppDialog {
                               appController.messageChats.add(p0.trim());
                             },
                           )),
-                        
+
                           WidgetIconButton(
                             iconData: Icons.send,
                             pressFunc: () async {
@@ -813,34 +813,48 @@ class AppDialog {
                                     print('จบทำงานที่นี่ ถ้ามีภาพ');
                                     Get.back();
                                   });
+
+                                  AppService()
+                                      .processInsertChat(
+                                          chatModel: chatModel,
+                                          docIdRoom: collection != null
+                                              ? appController
+                                                  .docIdPrivateChats[0]
+                                              : appController
+                                                  .docIdRoomChooses[0],
+                                          collection: collection,
+                                          collectionChat: 'chat')
+                                      .then((value) async {
+                                    print('จบทำงานที่นี่ ถ้ามีภาพ');
+                                    Get.back();
+                                  });
                                 });
                               } else {
-                                print('##20april ไม่ได้ถ่ายภาพ');
+                                print('##20april ไม่ได้ถ่ายภาพ appController.urlRealPostChooses ----> ${appController.urlRealPostChooses.length}');
 
                                 var urlRooms = <String>[];
-                                urlRooms
-                                    .add(appController.urlRealPostChooses.last);
+                                // urlRooms
+                                //     .add(appController.urlRealPostChooses.last);
 
-                                Map<String, dynamic> map = appController
-                                    .roomModels[appController
-                                        .indexBodyMainPageView.value]
-                                    .toMap();
+                                // Map<String, dynamic> map = appController
+                                //     .roomModels[appController
+                                //         .indexBodyMainPageView.value]
+                                //     .toMap();
 
-                                map['urlRooms'] = urlRooms;
+                                // map['urlRooms'] = urlRooms;
 
-                                print('##20april map ใหม่ --> $map');
-                                AppService()
-                                    .processUpdateRoom(
-                                        docIdRoom: appController.docIdRooms[
-                                            appController
-                                                .indexBodyMainPageView.value],
-                                        data: map)
-                                    .then((value) {
-                                  appController.urlRealPostChooses.clear();
-                                  Get.back();
-                                });
+                                // print('##20april map ใหม่ --> $map');
 
-                               
+                                // AppService()
+                                //     .processUpdateRoom(
+                                //         docIdRoom: appController.docIdRooms[
+                                //             appController
+                                //                 .indexBodyMainPageView.value],
+                                //         data: map)
+                                //     .then((value) {
+                                //   appController.urlRealPostChooses.clear();
+                                //   Get.back();
+                                // });
                               }
                             },
                           ),
