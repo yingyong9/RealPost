@@ -68,6 +68,9 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
                                       .indexBodyMainPageView.value]
                                   .timestamp
                                   .toDate()))) {
+                        print(
+                            'collection ที่ส่งไป realPostBottinSheet ---> ${widget.collection}');
+
                         AppDialog(context: context).realPostBottonSheet(
                             collection: widget.collection,
                             docIdRoom: widget.docId!);
