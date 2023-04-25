@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/comment_salse_model.dart';
 import 'package:realpost/models/room_model.dart';
@@ -16,6 +17,7 @@ import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/utility/app_snackbar.dart';
 import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_choose_amout_salse.dart';
+import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_listview_hoizontal.dart';
@@ -23,6 +25,303 @@ import 'package:realpost/widgets/widget_text.dart';
 
 class AppBottomSheet {
   AppController appController = Get.put(AppController());
+
+  void realGestBottonSheet() {
+    AppController controller = Get.put(AppController());
+    if ((controller.fileRealPosts.isNotEmpty) ||
+        (controller.urlRealPostChooses.isNotEmpty)) {
+      controller.fileRealPosts.clear();
+      controller.urlRealPostChooses.clear();
+    }
+
+    Get.bottomSheet(
+      GetX(
+          init: AppController(),
+          builder: (AppController appController) {
+           
+            return Container(
+              decoration: BoxDecoration(color: AppConstant.bgColor),
+              height: 356,
+              child: Stack(
+                children: [
+                  Column(
+                    children: [
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      WidgetText(
+                        text: 'Real Post',
+                        textStyle: AppConstant().h2Style(color: Colors.red.shade700),
+                      ),
+                      appController.urlRealPostChooses.isNotEmpty
+                          ? WidgetImageInternet(
+                              urlImage: appController.urlRealPostChooses.last,
+                              width: 200,
+                              height: 200,
+                            )
+                          : appController.fileRealPosts.isEmpty
+                              ? const SizedBox(height: 200)
+                              : Image.file(
+                                  appController.fileRealPosts[0],
+                                  width: 200,
+                                  height: 200,
+                                ),
+                      SizedBox(
+                        height: 50,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          physics: const ClampingScrollPhysics(),
+                          itemCount: appController.stampModels.length,
+                          itemBuilder: (context, index) => WidgetImageInternet(
+                            urlImage: appController.stampModels[index].url,
+                            tapFunc: () async {
+                              appController.urlRealPostChooses
+                                  .add(appController.stampModels[index].url);
+
+                              ChatModel chatModel = await AppService()
+                                  .createChatModel(
+                                      urlRealPost: appController
+                                          .urlRealPostChooses.last);
+
+                              AppService()
+                                  .processInsertChat(
+                                chatModel: chatModel,
+                                docIdRoom: appController.docIdRooms[
+                                    appController.indexBodyMainPageView.value],
+                              )
+                                  .then((value) async {
+                                Get.back();
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      Divider(
+                        color: AppConstant.dark,
+                        thickness: 1,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          WidgetIconButton(
+                            iconData: Icons.add_a_photo,
+                            pressFunc: () async {
+                              if (appController.fileRealPosts.isNotEmpty) {
+                                appController.fileRealPosts.clear();
+                              }
+
+                              if (appController.urlRealPostChooses.isNotEmpty) {
+                                appController.urlRealPostChooses.clear();
+                              }
+
+                              var result = await AppService()
+                                  .processTakePhoto(source: ImageSource.camera);
+                              if (result != null) {
+                                appController.fileRealPosts.add(result);
+                              }
+                            },
+                          ),
+                          // WidgetIconButton(
+                          //   iconData: Icons.add_photo_alternate,
+                          //   pressFunc: () async {
+                          //     if (appController.fileRealPosts.isNotEmpty) {
+                          //       appController.fileRealPosts.clear();
+                          //     }
+
+                          //     if (appController.urlRealPostChooses.isNotEmpty) {
+                          //       appController.urlRealPostChooses.clear();
+                          //     }
+
+                          //     var result = await AppService().processTakePhoto(
+                          //         source: ImageSource.gallery);
+                          //     if (result != null) {
+                          //       appController.fileRealPosts.add(result);
+                          //     }
+                          //   },
+                          // ),
+                          // appController
+                          //             .roomModels[appController
+                          //                 .indexBodyMainPageView.value]
+                          //             .geoPoint!
+                          //             .latitude ==
+                          //         0
+                          //     ? WidgetIconButton(
+                          //         iconData: Icons.pin_drop,
+                          //         pressFunc: () {
+                          //           print(
+                          //               'You tap pin ===> ${appController.positions[0]}');
+                          //           Get.back();
+                          //           mapBottomSheet(collection: collection);
+                          //         },
+                          //       )
+                          //     : const SizedBox(),
+                          WidgetIconButton(
+                            pressFunc: () async {
+                              if (appController.fileRealPosts.isNotEmpty) {
+                                appController.fileRealPosts.clear();
+                              }
+
+                              if (appController.urlRealPostChooses.isNotEmpty) {
+                                appController.urlRealPostChooses.clear();
+                              }
+
+                              var result = await AppService().processTakePhoto(
+                                  source: ImageSource.gallery);
+                              if (result != null) {
+                                appController.fileRealPosts.add(result);
+                              }
+                            },
+                            iconData: Icons.add_photo_alternate,
+                            // color: const Color.fromARGB(255, 22, 117, 124),
+                          ),
+                          WidgetIconButton(
+                            pressFunc: () async {
+                              await AppService()
+                                  .processTakePhoto(source: ImageSource.camera)
+                                  .then((value) async {
+                                await AppService()
+                                    .processUploadPhoto(
+                                        file: value!, path: 'room2')
+                                    .then((value) {
+                                  String? urlImage = value;
+                                  print('##20april urlImage ---> $urlImage');
+                                  appController.urlRealPostChooses
+                                      .add(urlImage!);
+                                  if (appController.fileRealPosts.isNotEmpty) {
+                                    appController.fileRealPosts.clear();
+                                  }
+                                });
+                              });
+                            },
+                            iconData: Icons.camera,
+                            color: const Color.fromARGB(255, 22, 117, 124),
+                          ),
+                          WidgetIconButton(
+                            pressFunc: () async {
+                              await AppService()
+                                  .processTakePhoto(source: ImageSource.gallery)
+                                  .then((value) async {
+                                await AppService()
+                                    .processUploadPhoto(
+                                        file: value!, path: 'room2')
+                                    .then((value) {
+                                  String? urlImage = value;
+                                  print('##20april urlImage ---> $urlImage');
+                                  appController.urlRealPostChooses
+                                      .add(urlImage!);
+                                  if (appController.fileRealPosts.isNotEmpty) {
+                                    appController.fileRealPosts.clear();
+                                  }
+                                });
+                              });
+                            },
+                            iconData: Icons.add_photo_alternate,
+                            color: const Color.fromARGB(255, 22, 117, 124),
+                          ),
+                          const Spacer(),
+
+                          WidgetIconButton(
+                            iconData: Icons.send,
+                            pressFunc: () async {
+                              if (appController.fileRealPosts.isNotEmpty) {
+                                print(
+                                    '##20april แบบถ่ายภาพ  ${appController.fileRealPosts.length}');
+
+                                //upload
+                                await AppService()
+                                    .processUploadPhoto(
+                                        file: appController.fileRealPosts.last,
+                                        path: 'realpost')
+                                    .then((value) async {
+                                  print(
+                                      '##20mar url ของภาพที่ อัพโหลดไป ---> $value');
+
+                                  if (appController
+                                      .urlRealPostChooses.isNotEmpty) {
+                                    appController.urlRealPostChooses.clear();
+                                  }
+
+                                  appController.urlRealPostChooses
+                                      .add(value.toString());
+
+                                  ChatModel chatModel = await AppService()
+                                      .createChatModel(
+                                          urlRealPost: appController
+                                              .urlRealPostChooses.last);
+
+                                  AppService()
+                                      .processInsertChat(
+                                    chatModel: chatModel,
+                                    docIdRoom: appController.docIdRooms[
+                                        appController
+                                            .indexBodyMainPageView.value],
+                                  )
+                                      .then((value) async {
+                                    print('จบทำงานที่นี่ ถ้ามีภาพ');
+                                    Get.back();
+                                  });
+                                });
+                              } else {
+                                print('##20april ไม่ได้ถ่ายภาพ');
+
+                                var urlRooms = <String>[];
+                                urlRooms
+                                    .add(appController.urlRealPostChooses.last);
+
+                                Map<String, dynamic> map = appController
+                                    .roomModels[appController
+                                        .indexBodyMainPageView.value]
+                                    .toMap();
+
+                                map['urlRooms'] = urlRooms;
+
+                                print('##20april map ใหม่ --> $map');
+                                AppService()
+                                    .processUpdateRoom(
+                                        docIdRoom: appController.docIdRooms[
+                                            appController
+                                                .indexBodyMainPageView.value],
+                                        data: map)
+                                    .then((value) {
+                                  appController.urlRealPostChooses.clear();
+                                  Get.back();
+                                });
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  WidgetIconButton(
+                    pressFunc: () {
+                      if (appController.fileRealPosts.isNotEmpty) {
+                        appController.fileRealPosts.clear();
+                      }
+
+                      if (appController.urlRealPostChooses.isNotEmpty) {
+                        appController.urlRealPostChooses.clear();
+                      }
+
+                      if (appController.xFiles.isNotEmpty) {
+                        appController.xFiles.clear();
+                      }
+
+                      Get.back();
+                    },
+                    iconData: GetPlatform.isAndroid
+                        ? Icons.arrow_back
+                        : Icons.arrow_back_ios,
+                  )
+                ],
+              ),
+            );
+          }),
+      isDismissible: true,
+      isScrollControlled: true,
+    );
+  } //////////////////////// end
 
   void orderButtonSheet({
     required RoomModel roomModel,
@@ -116,14 +415,13 @@ class AppBottomSheet {
                               UserModel? userModelFriend = await AppService()
                                   .findUserModel(uid: uidFriend);
 
-                                
-
                               print(
                                   '##4april userModelLogin ---> ${userModelLogin.toMap()}');
 
                               AppService().processSentNoti(
                                   title: 'มีข้อความ',
-                                  body: 'จากตระกร้า %23${userModelLogin.phoneNumber}',
+                                  body:
+                                      'จากตระกร้า %23${userModelLogin.phoneNumber}',
                                   token: userModelFriend!.token!);
 
                               AppService()

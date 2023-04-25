@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:realpost/models/chat_model.dart';
 
 import 'package:realpost/models/room_model.dart';
+import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
@@ -48,18 +49,12 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           (AppService().compareCurrentTime(
-                      otherDatetime: widget
-                          .appController
-                          .roomModels[
-                              widget.appController.indexBodyMainPageView.value]
-                          .timestamp
-                          .toDate()) &&
-                  (widget
-                          .appController
-                          .roomModels[
-                              widget.appController.indexBodyMainPageView.value]
-                          .uidCreate ==
-                      widget.appController.mainUid.toString()))
+                  otherDatetime: widget
+                      .appController
+                      .roomModels[
+                          widget.appController.indexBodyMainPageView.value]
+                      .timestamp
+                      .toDate()))
               ? Container(
                   margin: const EdgeInsets.only(left: 8),
                   child: WidgetButton(
@@ -73,9 +68,15 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
                                       .indexBodyMainPageView.value]
                                   .timestamp
                                   .toDate()))) {
+                        print(
+                            'collection ที่ส่งไป realPostBottinSheet ---> ${widget.collection}');
+
                         AppDialog(context: context).realPostBottonSheet(
                             collection: widget.collection,
                             docIdRoom: widget.docId!);
+                      } else {
+                        print('ไม่ใช้เจ้าของ room กด');
+                        // AppBottomSheet().realGestBottonSheet();
                       }
                     },
                     bgColor: Colors.red.shade900,
@@ -84,18 +85,12 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
               : const SizedBox(),
           WidgetForm(
             width: (AppService().compareCurrentTime(
-                        otherDatetime: widget
-                            .appController
-                            .roomModels[widget
-                                .appController.indexBodyMainPageView.value]
-                            .timestamp
-                            .toDate()) &&
-                    (widget
-                            .appController
-                            .roomModels[widget
-                                .appController.indexBodyMainPageView.value]
-                            .uidCreate ==
-                        widget.appController.mainUid.toString()))
+                    otherDatetime: widget
+                        .appController
+                        .roomModels[
+                            widget.appController.indexBodyMainPageView.value]
+                        .timestamp
+                        .toDate()))
                 ? widget.boxConstraints.maxWidth - 90
                 : widget.boxConstraints.maxWidth,
             hintStyle: AppConstant().h3Style(color: AppConstant.grey),

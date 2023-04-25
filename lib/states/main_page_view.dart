@@ -588,43 +588,61 @@ class _MainPageViewState extends State<MainPageView> {
           physics: const ScrollPhysics(),
           itemCount: appController.chatModels.length,
           itemBuilder: (context, index) {
-            return Row(
+            return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                InkWell(
-                  onTap: () {
-                    print(
-                        '##2april You tab uidFriend --> ${appController.chatModels[index].uidChat}');
-                    if (appController.chatModels[index].uidChat.toString() !=
-                        appController.mainUid.toString()) {
-                      Get.to(PrivateChat(
-                          uidFriend: appController.chatModels[index].uidChat));
-                    }
-                  },
-                  child: Container(
-                    constraints: BoxConstraints(
-                        maxWidth: boxConstraints.maxWidth * 0.75),
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-                    margin: const EdgeInsets.only(top: 4),
-                    decoration: AppConstant()
-                        .boxChatGuest(bgColor: Colors.black.withOpacity(0.5)),
-                    child: Text.rich(TextSpan(
-                        text: appController.chatModels[index].disPlayName,
-                        style: AppConstant().h3Style(
-                            color: Colors.yellow, fontWeight: FontWeight.bold),
-                        children: [
-                          TextSpan(
-                              text: ' : ',
-                              style: AppConstant().h3Style(
-                                  color: Colors.yellow,
-                                  fontWeight: FontWeight.bold)),
-                          TextSpan(
-                              text: appController.chatModels[index].message,
-                              style: AppConstant().h3Style(color: Colors.white))
-                        ])),
-                  ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        print(
+                            '##2april You tab uidFriend --> ${appController.chatModels[index].uidChat}');
+                        if (appController.chatModels[index].uidChat
+                                .toString() !=
+                            appController.mainUid.toString()) {
+                          Get.to(PrivateChat(
+                              uidFriend:
+                                  appController.chatModels[index].uidChat));
+                        }
+                      },
+                      child: Container(
+                        constraints: BoxConstraints(
+                            maxWidth: boxConstraints.maxWidth * 0.75),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 4, horizontal: 12),
+                        margin: const EdgeInsets.only(top: 4),
+                        decoration: AppConstant().boxChatGuest(
+                            bgColor: Colors.black.withOpacity(0.5)),
+                        child: Text.rich(TextSpan(
+                            text: appController.chatModels[index].disPlayName,
+                            style: AppConstant().h3Style(
+                                color: Colors.yellow,
+                                fontWeight: FontWeight.bold),
+                            children: [
+                              TextSpan(
+                                  text: ' : ',
+                                  style: AppConstant().h3Style(
+                                      color: Colors.yellow,
+                                      fontWeight: FontWeight.bold)),
+                              TextSpan(
+                                  text: appController.chatModels[index].message,
+                                  style: AppConstant()
+                                      .h3Style(color: Colors.white))
+                            ])),
+                      ),
+                    ),
+                  ],
                 ),
+               appController.chatModels[index].urlRealPost.isEmpty ? const SizedBox() :   Container(
+                  margin: const EdgeInsets.only(left: 36, top: 8, bottom: 8),
+                  child: WidgetImageInternet(
+                    urlImage: appController.chatModels[index].urlRealPost,
+                    width: 70,
+                    height: 80,
+                    boxFit: BoxFit.cover,
+                  ),
+                )
               ],
             );
           },

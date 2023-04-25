@@ -616,24 +616,22 @@ class AppDialog {
                               appController.urlRealPostChooses
                                   .add(appController.stampModels[index].url);
 
-                                   ChatModel chatModel = await AppService()
-                                      .createChatModel(
-                                          urlRealPost: appController
-                                              .urlRealPostChooses.last);
+                              ChatModel chatModel = await AppService()
+                                  .createChatModel(
+                                      urlRealPost: appController
+                                          .urlRealPostChooses.last);
 
-                                  AppService()
-                                      .processInsertChat(
-                                          chatModel: chatModel,
-                                          docIdRoom: collection != null
-                                              ? appController
-                                                  .docIdPrivateChats[0]
-                                              : appController
-                                                  .docIdRoomChooses[0],
-                                          collection: collection,
-                                          collectionChat: 'chatOwner')
-                                      .then((value) async {
-                                    Get.back();
-                                  });
+                              AppService()
+                                  .processInsertChat(
+                                      chatModel: chatModel,
+                                      docIdRoom: collection != null
+                                          ? appController.docIdPrivateChats[0]
+                                          : appController.docIdRoomChooses[0],
+                                      collection: collection,
+                                      collectionChat: 'chatOwner')
+                                  .then((value) async {
+                                Get.back();
+                              });
                             },
                           ),
                         ),
@@ -698,42 +696,80 @@ class AppDialog {
                                 )
                               : const SizedBox(),
                           WidgetIconButton(
-                            pressFunc: () {},
-                            iconData: Icons.add_photo_alternate,
-                            color: const Color.fromARGB(255, 22, 117, 124),
-                          ),
-                          WidgetIconButton(
                             pressFunc: () async {
-                              await AppService()
-                                  .processTakePhoto(source: ImageSource.camera)
-                                  .then((value) async {
-                                await AppService()
-                                    .processUploadPhoto(
-                                        file: value!, path: 'room2')
-                                    .then((value) {
-                                  String? urlImage = value;
-                                  print('##20april urlImage ---> $urlImage');
-                                  appController.urlRealPostChooses
-                                      .add(urlImage!);
-                                  if (appController.fileRealPosts.isNotEmpty) {
-                                    appController.fileRealPosts.clear();
-                                  }
-                                });
-                              });
+                              if (appController.fileRealPosts.isNotEmpty) {
+                                appController.fileRealPosts.clear();
+                              }
+
+                              if (appController.urlRealPostChooses.isNotEmpty) {
+                                appController.urlRealPostChooses.clear();
+                              }
+
+                              var result = await AppService().processTakePhoto(
+                                  source: ImageSource.gallery);
+                              if (result != null) {
+                                appController.fileRealPosts.add(result);
+                              }
                             },
-                            iconData: Icons.camera,
-                            color: const Color.fromARGB(255, 22, 117, 124),
+                            iconData: Icons.add_photo_alternate,
+                            // color: const Color.fromARGB(255, 22, 117, 124),
                           ),
-                          const Spacer(),
-                          // Expanded(
-                          //     child: WidgetForm(
-                          //   fillColor: Colors.grey.shade300,
-                          //   maginBottom: 4,
-                          //   height: 40,
-                          //   changeFunc: (p0) {
-                          //     appController.messageChats.add(p0.trim());
+                          // WidgetIconButton(
+                          //   pressFunc: () async {
+                          //     await AppService()
+                          //         .processTakePhoto(source: ImageSource.camera)
+                          //         .then((value) async {
+                          //       await AppService()
+                          //           .processUploadPhoto(
+                          //               file: value!, path: 'room2')
+                          //           .then((value) {
+                          //         String? urlImage = value;
+                          //         print('##20april urlImage ---> $urlImage');
+                          //         appController.urlRealPostChooses
+                          //             .add(urlImage!);
+                          //         if (appController.fileRealPosts.isNotEmpty) {
+                          //           appController.fileRealPosts.clear();
+                          //         }
+                          //       });
+                          //     });
                           //   },
-                          // )),
+                          //   iconData: Icons.camera,
+                          //   color: const Color.fromARGB(255, 22, 117, 124),
+                          // ),
+                          // WidgetIconButton(
+                          //   pressFunc: () async {
+                          //     await AppService()
+                          //         .processTakePhoto(source: ImageSource.gallery)
+                          //         .then((value) async {
+                          //       await AppService()
+                          //           .processUploadPhoto(
+                          //               file: value!, path: 'room2')
+                          //           .then((value) {
+                          //         String? urlImage = value;
+                          //         print('##20april urlImage ---> $urlImage');
+                          //         appController.urlRealPostChooses
+                          //             .add(urlImage!);
+                          //         if (appController.fileRealPosts.isNotEmpty) {
+                          //           appController.fileRealPosts.clear();
+                          //         }
+                          //       });
+                          //     });
+                          //   },
+                          //   iconData: Icons.add_photo_alternate,
+                          //   color: const Color.fromARGB(255, 22, 117, 124),
+                          // ),
+                          // const Spacer(),
+
+                          Expanded(
+                              child: WidgetForm(
+                            fillColor: Colors.grey.shade300,
+                            maginBottom: 4,
+                            height: 40,
+                            changeFunc: (p0) {
+                              appController.messageChats.add(p0.trim());
+                            },
+                          )),
+
                           WidgetIconButton(
                             iconData: Icons.send,
                             pressFunc: () async {
@@ -774,50 +810,51 @@ class AppDialog {
                                           collection: collection,
                                           collectionChat: 'chatOwner')
                                       .then((value) async {
+                                    print('จบทำงานที่นี่ ถ้ามีภาพ');
+                                    Get.back();
+                                  });
+
+                                  AppService()
+                                      .processInsertChat(
+                                          chatModel: chatModel,
+                                          docIdRoom: collection != null
+                                              ? appController
+                                                  .docIdPrivateChats[0]
+                                              : appController
+                                                  .docIdRoomChooses[0],
+                                          collection: collection,
+                                          collectionChat: 'chat')
+                                      .then((value) async {
+                                    print('จบทำงานที่นี่ ถ้ามีภาพ');
                                     Get.back();
                                   });
                                 });
                               } else {
-                                print('##20april ไม่ได้ถ่ายภาพ');
+                                print('##20april ไม่ได้ถ่ายภาพ appController.urlRealPostChooses ----> ${appController.urlRealPostChooses.length}');
 
                                 var urlRooms = <String>[];
-                                urlRooms
-                                    .add(appController.urlRealPostChooses.last);
+                                // urlRooms
+                                //     .add(appController.urlRealPostChooses.last);
 
-                                Map<String, dynamic> map = appController
-                                    .roomModels[appController
-                                        .indexBodyMainPageView.value]
-                                    .toMap();
+                                // Map<String, dynamic> map = appController
+                                //     .roomModels[appController
+                                //         .indexBodyMainPageView.value]
+                                //     .toMap();
 
-                                map['urlRooms'] = urlRooms;
+                                // map['urlRooms'] = urlRooms;
 
-                                print('##20april map ใหม่ --> $map');
-                                AppService()
-                                    .processUpdateRoom(
-                                        docIdRoom: appController.docIdRooms[
-                                            appController
-                                                .indexBodyMainPageView.value],
-                                        data: map)
-                                    .then((value) {
-                                  appController.urlRealPostChooses.clear();
-                                  Get.back();
-                                });
+                                // print('##20april map ใหม่ --> $map');
 
-                                // if (appController.messageChats.isEmpty) {
+                                // AppService()
+                                //     .processUpdateRoom(
+                                //         docIdRoom: appController.docIdRooms[
+                                //             appController
+                                //                 .indexBodyMainPageView.value],
+                                //         data: map)
+                                //     .then((value) {
+                                //   appController.urlRealPostChooses.clear();
                                 //   Get.back();
-                                // } else {
-                                //   ChatModel chatModel =
-                                //       await AppService().createChatModel();
-                                //   AppService()
-                                //       .processInsertChat(
-                                //           chatModel: chatModel,
-                                //           docIdRoom: docIdRoom ?? '',
-                                //           collection: collection,
-                                //           collectionChat: 'chatOwner')
-                                //       .then((value) {
-                                //     Get.back();
-                                //   });
-                                // }
+                                // });
                               }
                             },
                           ),
@@ -852,7 +889,7 @@ class AppDialog {
       isDismissible: true,
       isScrollControlled: true,
     );
-  }
+  } //////////////////////// end
 
   void myBottonSheet({required Function() tapFunc}) {
     AppController appController = Get.put(AppController());
