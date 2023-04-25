@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:realpost/models/chat_model.dart';
 
 import 'package:realpost/models/room_model.dart';
+import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
@@ -72,6 +73,7 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
                             docIdRoom: widget.docId!);
                       } else {
                         print('ไม่ใช้เจ้าของ room กด');
+                        // AppBottomSheet().realGestBottonSheet();
                       }
                     },
                     bgColor: Colors.red.shade900,

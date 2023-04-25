@@ -759,15 +759,7 @@ class AppDialog {
                             color: const Color.fromARGB(255, 22, 117, 124),
                           ),
                           const Spacer(),
-                          // Expanded(
-                          //     child: WidgetForm(
-                          //   fillColor: Colors.grey.shade300,
-                          //   maginBottom: 4,
-                          //   height: 40,
-                          //   changeFunc: (p0) {
-                          //     appController.messageChats.add(p0.trim());
-                          //   },
-                          // )),
+                        
                           WidgetIconButton(
                             iconData: Icons.send,
                             pressFunc: () async {
@@ -808,6 +800,7 @@ class AppDialog {
                                           collection: collection,
                                           collectionChat: 'chatOwner')
                                       .then((value) async {
+                                    print('จบทำงานที่นี่ ถ้ามีภาพ');
                                     Get.back();
                                   });
                                 });
@@ -837,21 +830,7 @@ class AppDialog {
                                   Get.back();
                                 });
 
-                                // if (appController.messageChats.isEmpty) {
-                                //   Get.back();
-                                // } else {
-                                //   ChatModel chatModel =
-                                //       await AppService().createChatModel();
-                                //   AppService()
-                                //       .processInsertChat(
-                                //           chatModel: chatModel,
-                                //           docIdRoom: docIdRoom ?? '',
-                                //           collection: collection,
-                                //           collectionChat: 'chatOwner')
-                                //       .then((value) {
-                                //     Get.back();
-                                //   });
-                                // }
+                               
                               }
                             },
                           ),
@@ -886,7 +865,7 @@ class AppDialog {
       isDismissible: true,
       isScrollControlled: true,
     );
-  }
+  } //////////////////////// end
 
   void myBottonSheet({required Function() tapFunc}) {
     AppController appController = Get.put(AppController());
