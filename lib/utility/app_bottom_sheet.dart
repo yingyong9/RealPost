@@ -17,6 +17,7 @@ import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/utility/app_snackbar.dart';
 import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_choose_amout_salse.dart';
+import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
@@ -175,51 +176,59 @@ class AppBottomSheet {
                             iconData: Icons.add_photo_alternate,
                             // color: const Color.fromARGB(255, 22, 117, 124),
                           ),
-                          WidgetIconButton(
-                            pressFunc: () async {
-                              await AppService()
-                                  .processTakePhoto(source: ImageSource.camera)
-                                  .then((value) async {
-                                await AppService()
-                                    .processUploadPhoto(
-                                        file: value!, path: 'room2')
-                                    .then((value) {
-                                  String? urlImage = value;
-                                  print('##20april urlImage ---> $urlImage');
-                                  appController.urlRealPostChooses
-                                      .add(urlImage!);
-                                  if (appController.fileRealPosts.isNotEmpty) {
-                                    appController.fileRealPosts.clear();
-                                  }
-                                });
-                              });
+                          // WidgetIconButton(
+                          //   pressFunc: () async {
+                          //     await AppService()
+                          //         .processTakePhoto(source: ImageSource.camera)
+                          //         .then((value) async {
+                          //       await AppService()
+                          //           .processUploadPhoto(
+                          //               file: value!, path: 'room2')
+                          //           .then((value) {
+                          //         String? urlImage = value;
+                          //         print('##20april urlImage ---> $urlImage');
+                          //         appController.urlRealPostChooses
+                          //             .add(urlImage!);
+                          //         if (appController.fileRealPosts.isNotEmpty) {
+                          //           appController.fileRealPosts.clear();
+                          //         }
+                          //       });
+                          //     });
+                          //   },
+                          //   iconData: Icons.camera,
+                          //   color: const Color.fromARGB(255, 22, 117, 124),
+                          // ),
+                          // WidgetIconButton(
+                          //   pressFunc: () async {
+                          //     await AppService()
+                          //         .processTakePhoto(source: ImageSource.gallery)
+                          //         .then((value) async {
+                          //       await AppService()
+                          //           .processUploadPhoto(
+                          //               file: value!, path: 'room2')
+                          //           .then((value) {
+                          //         String? urlImage = value;
+                          //         print('##20april urlImage ---> $urlImage');
+                          //         appController.urlRealPostChooses
+                          //             .add(urlImage!);
+                          //         if (appController.fileRealPosts.isNotEmpty) {
+                          //           appController.fileRealPosts.clear();
+                          //         }
+                          //       });
+                          //     });
+                          //   },
+                          //   iconData: Icons.add_photo_alternate,
+                          //   color: const Color.fromARGB(255, 22, 117, 124),
+                          // ),
+                           Expanded(
+                              child: WidgetForm(
+                            fillColor: Colors.grey.shade300,
+                            maginBottom: 4,
+                            height: 40,
+                            changeFunc: (p0) {
+                              appController.messageChats.add(p0.trim());
                             },
-                            iconData: Icons.camera,
-                            color: const Color.fromARGB(255, 22, 117, 124),
-                          ),
-                          WidgetIconButton(
-                            pressFunc: () async {
-                              await AppService()
-                                  .processTakePhoto(source: ImageSource.gallery)
-                                  .then((value) async {
-                                await AppService()
-                                    .processUploadPhoto(
-                                        file: value!, path: 'room2')
-                                    .then((value) {
-                                  String? urlImage = value;
-                                  print('##20april urlImage ---> $urlImage');
-                                  appController.urlRealPostChooses
-                                      .add(urlImage!);
-                                  if (appController.fileRealPosts.isNotEmpty) {
-                                    appController.fileRealPosts.clear();
-                                  }
-                                });
-                              });
-                            },
-                            iconData: Icons.add_photo_alternate,
-                            color: const Color.fromARGB(255, 22, 117, 124),
-                          ),
-                          const Spacer(),
+                          )),
 
                           WidgetIconButton(
                             iconData: Icons.send,

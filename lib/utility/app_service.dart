@@ -783,7 +783,7 @@ class AppService {
 
   Future<ChatModel> createChatModel(
       {String? urlBigImage, String? urlRealPost}) async {
-    AppController appController = Get.put(AppController());
+    
     ChatModel chatModel;
 
     if (appController.xFiles.isEmpty) {
