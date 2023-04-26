@@ -76,7 +76,7 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
                             docIdRoom: widget.docId!);
                       } else {
                         print('ไม่ใช้เจ้าของ room กด');
-                        // AppBottomSheet().realGestBottonSheet();
+                        AppBottomSheet().realGestBottonSheet();
                       }
                     },
                     bgColor: Colors.red.shade900,
@@ -152,7 +152,7 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
                         docIdRoom: widget.docId!,
                         collectionChat: 'chatOwner');
                   }
-                }
+                } // /////////////// end
               },
             ),
           ),

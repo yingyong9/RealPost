@@ -775,7 +775,7 @@ class AppDialog {
                             pressFunc: () async {
                               if (appController.fileRealPosts.isNotEmpty) {
                                 print(
-                                    '##20april แบบถ่ายภาพ  ${appController.fileRealPosts.length}');
+                                    '##26april แบบถ่ายภาพ  ${appController.fileRealPosts.length}');
 
                                 //upload
                                 await AppService()
@@ -784,7 +784,7 @@ class AppDialog {
                                         path: 'realpost')
                                     .then((value) async {
                                   print(
-                                      '##20mar url ของภาพที่ อัพโหลดไป ---> $value');
+                                      '##26april url ของภาพที่ อัพโหลดไป ---> $value');
 
                                   if (appController
                                       .urlRealPostChooses.isNotEmpty) {
@@ -798,6 +798,9 @@ class AppDialog {
                                       .createChatModel(
                                           urlRealPost: appController
                                               .urlRealPostChooses.last);
+
+                                  print(
+                                      '##26april chatModel at มีภาพ ----> ${chatModel.toMap()}');
 
                                   AppService()
                                       .processInsertChat(
@@ -830,31 +833,70 @@ class AppDialog {
                                   });
                                 });
                               } else {
-                                print('##20april ไม่ได้ถ่ายภาพ appController.urlRealPostChooses ----> ${appController.urlRealPostChooses.length}');
+                                print(
+                                    '##26april ไม่ได้ถ่ายภาพ appController.urlRealPostChooses ----> ${appController.urlRealPostChooses.length}');
 
-                                var urlRooms = <String>[];
-                                // urlRooms
-                                //     .add(appController.urlRealPostChooses.last);
+                                ChatModel chatModel =
+                                    await AppService().createChatModel();
 
-                                // Map<String, dynamic> map = appController
-                                //     .roomModels[appController
-                                //         .indexBodyMainPageView.value]
-                                //     .toMap();
+                                print(
+                                    '##26april chatModel at ไม่มีภาพ ----> ${chatModel.toMap()}');
 
-                                // map['urlRooms'] = urlRooms;
+                                //สำหรับบันทึกใน room --> chat
+                                await AppService()
+                                    .processInsertChat(
+                                  chatModel: chatModel,
+                                  docIdRoom: appController.docIdRooms[
+                                      appController
+                                          .indexBodyMainPageView.value],
+                                )
+                                    .then((value) {
+                                  appController
+                                      .processFindDocIdPrivateChat(
+                                          uidLogin: appController.mainUid.value,
+                                          uidFriend: appController
+                                              .roomModels[appController
+                                                  .indexBodyMainPageView.value]
+                                              .uidCreate)
+                                      .then((value) {
+                                    if (appController.mainUid.toString() !=
+                                        appController
+                                            .roomModels[appController
+                                                .indexBodyMainPageView.value]
+                                            .uidCreate) {
+                                      Map<String, dynamic> map =
+                                          chatModel.toMap();
+                                      map['urlRealPost'] = appController
+                                          .roomModels[appController
+                                              .indexBodyMainPageView.value]
+                                          .urlRooms[0];
 
-                                // print('##20april map ใหม่ --> $map');
+                                      ChatModel newChatModel =
+                                          ChatModel.fromMap(map);
 
-                                // AppService()
-                                //     .processUpdateRoom(
-                                //         docIdRoom: appController.docIdRooms[
-                                //             appController
-                                //                 .indexBodyMainPageView.value],
-                                //         data: map)
-                                //     .then((value) {
-                                //   appController.urlRealPostChooses.clear();
-                                //   Get.back();
-                                // });
+                                      AppService().processInsertPrivateChat(
+                                          docIdPrivateChat: appController
+                                              .docIdPrivateChats.last,
+                                          chatModel: newChatModel);
+                                    }
+                                  });
+                                });
+
+                                //สำหรับ room --> chatOwner
+                                if (appController
+                                        .roomModels[appController
+                                            .indexBodyMainPageView.value]
+                                        .uidCreate ==
+                                    appController.mainUid.toString()) {
+                                  AppService()
+                                      .processInsertChat(
+                                          chatModel: chatModel,
+                                          docIdRoom: appController.docIdRooms[
+                                              appController
+                                                  .indexBodyMainPageView.value],
+                                          collectionChat: 'chatOwner')
+                                      .then((value) => Get.back());
+                                }
                               }
                             },
                           ),
