@@ -85,8 +85,8 @@ class AppBottomSheet {
                                       urlRealPost: appController
                                           .urlRealPostChooses.last);
 
-                                         print(
-                                    '##26april  chatModel ---> ${chatModel.toMap()}');
+                              print(
+                                  '##26april  chatModel ---> ${chatModel.toMap()}');
 
                               // AppService()
                               //     .processInsertChat(
@@ -126,7 +126,6 @@ class AppBottomSheet {
                               }
                             },
                           ),
-                         
                           WidgetIconButton(
                             pressFunc: () async {
                               if (appController.fileRealPosts.isNotEmpty) {
@@ -145,7 +144,6 @@ class AppBottomSheet {
                             },
                             iconData: Icons.add_photo_alternate,
                           ),
-
                           Expanded(
                               child: WidgetForm(
                             fillColor: Colors.grey.shade300,
@@ -155,7 +153,6 @@ class AppBottomSheet {
                               appController.messageChats.add(p0.trim());
                             },
                           )),
-
                           WidgetIconButton(
                             iconData: Icons.send,
                             pressFunc: () async {
@@ -169,7 +166,7 @@ class AppBottomSheet {
                                       path: 'realpost')
                                   .then((value) async {
                                 print(
-                                    '##20mar url ของภาพที่ อัพโหลดไป ---> $value');
+                                    '##26april url ของภาพที่ อัพโหลดไป ---> $value');
 
                                 if (appController
                                     .urlRealPostChooses.isNotEmpty) {
@@ -184,8 +181,10 @@ class AppBottomSheet {
                                         urlRealPost: appController
                                             .urlRealPostChooses.last);
 
-                               
+                                print(
+                                    '##26april chatModel for insert ---->>> ${chatModel.toMap()}');
 
+                                //Insert CollectionChat --> chat
                                 AppService()
                                     .processInsertChat(
                                   chatModel: chatModel,
@@ -194,8 +193,17 @@ class AppBottomSheet {
                                           .indexBodyMainPageView.value],
                                 )
                                     .then((value) async {
-                                  print('จบทำงานที่นี่');
-                                  Get.back();
+                                  AppService()
+                                      .processInsertChat(
+                                          collectionChat: 'chatOwner',
+                                          chatModel: chatModel,
+                                          docIdRoom: appController.docIdRooms[
+                                              appController
+                                                  .indexBodyMainPageView.value])
+                                      .then((value) {
+                                        Get.back();
+                                         Get.back();
+                                      });
                                 });
                               });
                             },
