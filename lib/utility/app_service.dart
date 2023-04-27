@@ -546,8 +546,6 @@ class AppService {
     });
   }
 
- 
-
   Future<OtpRequireThaibulk> processSentSmsThaibulk(
       {required String phoneNumber}) async {
     String urlApi = 'https://otp.thaibulksms.com/v2/otp/request';
@@ -783,7 +781,6 @@ class AppService {
 
   Future<ChatModel> createChatModel(
       {String? urlBigImage, String? urlRealPost}) async {
-    
     ChatModel chatModel;
 
     if (appController.xFiles.isEmpty) {
@@ -999,14 +996,16 @@ class AppService {
         UserModel? userModel = await findUserModel(uid: roomModel.uidCreate);
         print('##20mar token ที่จะส่ง noti ---> ${userModel!.token}');
 
-        if ((userModel.token!.isNotEmpty) &&
-            (appController.mainUid.toString() !=
-                roomModel.uidCreate.toString())) {
-          processSentNoti(
-              title: 'มีคนพูดถึงคุณ',
-              body:
-                  '${appController.messageChats.last} %23${appController.indexBodyMainPageView.value}',
-              token: userModel.token!);
+        if (collection != null) {
+          if ((userModel.token!.isNotEmpty) &&
+              (appController.mainUid.toString() !=
+                  roomModel.uidCreate.toString())) {
+            processSentNoti(
+                title: 'มีคนพูดถึงคุณ',
+                body:
+                    '${appController.messageChats.last} %23${appController.indexBodyMainPageView.value}',
+                token: userModel.token!);
+          }
         }
       });
 
