@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print, sort_child_properties_last
 
+import 'package:chat_bubbles/bubbles/bubble_special_one.dart';
 import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -298,10 +299,12 @@ class _MainPageViewState extends State<MainPageView> {
           ),
           SizedBox(
             width: boxConstraints.maxWidth * 0.6,
-            child: WidgetText(
+            child: BubbleSpecialOne(
               text: appController
                   .roomModels[appController.indexBodyMainPageView.value].room,
-              textStyle: AppConstant().h2Style(color: Colors.blue.shade700),
+              textStyle: AppConstant().h3Style(color: Colors.white),
+              isSender: false,
+              color: Colors.blue.shade900,
             ),
           ),
         ],
@@ -354,7 +357,7 @@ class _MainPageViewState extends State<MainPageView> {
         ? displayListMessage(
             boxConstraints,
             appController,
-            top: boxConstraints.maxHeight * 0.25,
+            top: boxConstraints.maxHeight * 0.1,
             height: boxConstraints.maxHeight * 0.65,
             reverse: true,
           )
@@ -645,35 +648,44 @@ class _MainPageViewState extends State<MainPageView> {
                           const SizedBox(
                             width: 8,
                           ),
-                          Container(
-                            constraints: BoxConstraints(
-                                maxWidth: boxConstraints.maxWidth * 0.5 - 40),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 4, horizontal: 12),
-                            margin: const EdgeInsets.only(top: 4),
-                            decoration: AppConstant().boxChatGuest(
-                                bgColor: Colors.black.withOpacity(0.5)),
-                            child: Text.rich(
-                              TextSpan(
-                                  text: appController
-                                      .chatModels[index].disPlayName,
-                                  style: AppConstant().h3Style(
-                                      color: Colors.yellow,
-                                      fontWeight: FontWeight.bold),
-                                  children: [
-                                    TextSpan(
-                                        text: ' : ',
-                                        style: AppConstant().h3Style(
-                                            color: Colors.yellow,
-                                            fontWeight: FontWeight.bold)),
-                                    TextSpan(
-                                        text: appController
-                                            .chatModels[index].message,
-                                        style: AppConstant()
-                                            .h3Style(color: Colors.white))
-                                  ]),
+                          SizedBox(
+                            width: boxConstraints.maxWidth * 0.75 - 40,
+                            child: BubbleSpecialOne(
+                              text: appController.chatModels[index].message,
+                              color: Colors.blue.shade700,
+                              isSender: false,
+                              textStyle: AppConstant().h3Style(),
                             ),
-                          ),
+                          )
+                          // Container(
+                          //   constraints: BoxConstraints(
+                          //       maxWidth: boxConstraints.maxWidth * 0.5 - 40),
+                          //   padding: const EdgeInsets.symmetric(
+                          //       vertical: 4, horizontal: 12),
+                          //   margin: const EdgeInsets.only(top: 4),
+                          //   // decoration: AppConstant().boxChatGuest(
+                          //   //     bgColor: Colors.black.withOpacity(0.5)),
+                          //   child: Text.rich(
+                          //     TextSpan(
+                          //         text: appController
+                          //             .chatModels[index].disPlayName,
+                          //         style: AppConstant().h3Style(
+                          //             color: Colors.yellow,
+                          //             fontWeight: FontWeight.bold),
+                          //         children: [
+                          //           TextSpan(
+                          //               text: ' : ',
+                          //               style: AppConstant().h3Style(
+                          //                   color: Colors.yellow,
+                          //                   fontWeight: FontWeight.bold)),
+                          //           TextSpan(
+                          //               text: appController
+                          //                   .chatModels[index].message,
+                          //               style: AppConstant()
+                          //                   .h3Style(color: Colors.white))
+                          //         ]),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
