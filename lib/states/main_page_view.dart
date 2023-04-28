@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print, sort_child_properties_last
 
+import 'package:chat_bubbles/bubbles/bubble_special_one.dart';
 import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,6 +26,7 @@ import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_progress_animation.dart';
+import 'package:realpost/widgets/widget_squeer_avatar.dart';
 import 'package:realpost/widgets/widget_text.dart';
 import 'package:badges/badges.dart' as badges;
 
@@ -245,36 +247,68 @@ class _MainPageViewState extends State<MainPageView> {
         displayImageRoom(boxConstraints, appController: appController),
         displayListChat(appController, boxConstraints),
         displayRealText(appController: appController),
-        blueTextOwner(appController, boxConstraints),
-        (appController.chatOwnerModels.isEmpty) ||
-                (AppService()
-                    .findUrlImageWork(chatmodels: appController.chatOwnerModels)
-                    .isEmpty)
-            ? const SizedBox()
-            : appController.displayAll.value
-                ? Positioned(
-                    top: 16,
-                    left: 16,
-                    child: Container(
-                      decoration: AppConstant().borderBox(),
-                      child: WidgetImageInternet(
-                        urlImage: AppService().findUrlImageWork(
-                            chatmodels: appController.chatOwnerModels),
-                        width: boxConstraints.maxWidth * 0.5 - 64,
-                        height: boxConstraints.maxWidth * 0.5 - 32,
-                        boxFit: BoxFit.cover,
-                        tapFunc: () {
-                          print(
-                              'you tap image ${AppService().findUrlImageWork(chatmodels: appController.chatOwnerModels)}');
-                          Get.to(FullScreenImage(
-                              urlImage: AppService().findUrlImageWork(
-                                  chatmodels: appController.chatOwnerModels)));
-                        },
-                      ),
-                    ),
-                  )
-                : const SizedBox(),
+        displayRoomText(appController, boxConstraints),
+        // blueTextOwner(appController, boxConstraints),
+        // (appController.chatOwnerModels.isEmpty) ||
+        //         (AppService()
+        //             .findUrlImageWork(chatmodels: appController.chatOwnerModels)
+        //             .isEmpty)
+        //     ? const SizedBox()
+        //     : appController.displayAll.value
+        //         ? Positioned(
+        //             top: 16,
+        //             left: 16,
+        //             child: Container(
+        //               decoration: AppConstant().borderBox(),
+        //               child: WidgetImageInternet(
+        //                 urlImage: AppService().findUrlImageWork(
+        //                     chatmodels: appController.chatOwnerModels),
+        //                 width: boxConstraints.maxWidth * 0.5 - 64,
+        //                 height: boxConstraints.maxWidth * 0.5 - 32,
+        //                 boxFit: BoxFit.cover,
+        //                 tapFunc: () {
+        //                   print(
+        //                       'you tap image ${AppService().findUrlImageWork(chatmodels: appController.chatOwnerModels)}');
+        //                   Get.to(FullScreenImage(
+        //                       urlImage: AppService().findUrlImageWork(
+        //                           chatmodels: appController.chatOwnerModels)));
+        //                 },
+        //               ),
+        //             ),
+        //           )
+        //         : const SizedBox(),
       ],
+    );
+  }
+
+  Positioned displayRoomText(
+      AppController appController, BoxConstraints boxConstraints) {
+    return Positioned(
+      left: 16,
+      top: 8,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          WidgetSqueerAvatar(
+              size: 30,
+              urlImage: appController
+                  .roomModels[appController.indexBodyMainPageView.value]
+                  .urlRooms[0]),
+          const SizedBox(
+            width: 8,
+          ),
+          SizedBox(
+            width: boxConstraints.maxWidth * 0.6,
+            child: BubbleSpecialOne(
+              text: appController
+                  .roomModels[appController.indexBodyMainPageView.value].room,
+              textStyle: AppConstant().h3Style(color: Colors.white),
+              isSender: false,
+              color: Colors.blue.shade900,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -323,8 +357,8 @@ class _MainPageViewState extends State<MainPageView> {
         ? displayListMessage(
             boxConstraints,
             appController,
-            top: boxConstraints.maxHeight * 0.6,
-            height: boxConstraints.maxHeight * 0.25,
+            top: boxConstraints.maxHeight * 0.1,
+            height: boxConstraints.maxHeight * 0.65,
             reverse: true,
           )
         : const SizedBox();
@@ -596,8 +630,6 @@ class _MainPageViewState extends State<MainPageView> {
                   children: [
                     InkWell(
                       onTap: () {
-                        print(
-                            '##2april You tab uidFriend --> ${appController.chatModels[index].uidChat}');
                         if (appController.chatModels[index].uidChat
                                 .toString() !=
                             appController.mainUid.toString()) {
@@ -606,43 +638,71 @@ class _MainPageViewState extends State<MainPageView> {
                                   appController.chatModels[index].uidChat));
                         }
                       },
-                      child: Container(
-                        constraints: BoxConstraints(
-                            maxWidth: boxConstraints.maxWidth * 0.75),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 4, horizontal: 12),
-                        margin: const EdgeInsets.only(top: 4),
-                        decoration: AppConstant().boxChatGuest(
-                            bgColor: Colors.black.withOpacity(0.5)),
-                        child: Text.rich(TextSpan(
-                            text: appController.chatModels[index].disPlayName,
-                            style: AppConstant().h3Style(
-                                color: Colors.yellow,
-                                fontWeight: FontWeight.bold),
-                            children: [
-                              TextSpan(
-                                  text: ' : ',
-                                  style: AppConstant().h3Style(
-                                      color: Colors.yellow,
-                                      fontWeight: FontWeight.bold)),
-                              TextSpan(
-                                  text: appController.chatModels[index].message,
-                                  style: AppConstant()
-                                      .h3Style(color: Colors.white))
-                            ])),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          WidgetSqueerAvatar(
+                            urlImage: appController.chatModels[index].urlAvatar,
+                            size: 30,
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          SizedBox(
+                            width: boxConstraints.maxWidth * 0.75 - 40,
+                            child: BubbleSpecialOne(
+                              text: appController.chatModels[index].message,
+                              color: Colors.blue.shade700,
+                              isSender: false,
+                              textStyle: AppConstant().h3Style(),
+                            ),
+                          )
+                          // Container(
+                          //   constraints: BoxConstraints(
+                          //       maxWidth: boxConstraints.maxWidth * 0.5 - 40),
+                          //   padding: const EdgeInsets.symmetric(
+                          //       vertical: 4, horizontal: 12),
+                          //   margin: const EdgeInsets.only(top: 4),
+                          //   // decoration: AppConstant().boxChatGuest(
+                          //   //     bgColor: Colors.black.withOpacity(0.5)),
+                          //   child: Text.rich(
+                          //     TextSpan(
+                          //         text: appController
+                          //             .chatModels[index].disPlayName,
+                          //         style: AppConstant().h3Style(
+                          //             color: Colors.yellow,
+                          //             fontWeight: FontWeight.bold),
+                          //         children: [
+                          //           TextSpan(
+                          //               text: ' : ',
+                          //               style: AppConstant().h3Style(
+                          //                   color: Colors.yellow,
+                          //                   fontWeight: FontWeight.bold)),
+                          //           TextSpan(
+                          //               text: appController
+                          //                   .chatModels[index].message,
+                          //               style: AppConstant()
+                          //                   .h3Style(color: Colors.white))
+                          //         ]),
+                          //   ),
+                          // ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-               appController.chatModels[index].urlRealPost.isEmpty ? const SizedBox() :   Container(
-                  margin: const EdgeInsets.only(left: 36, top: 8, bottom: 8),
-                  child: WidgetImageInternet(
-                    urlImage: appController.chatModels[index].urlRealPost,
-                    width: 70,
-                    height: 80,
-                    boxFit: BoxFit.cover,
-                  ),
-                )
+                appController.chatModels[index].urlRealPost.isEmpty
+                    ? const SizedBox()
+                    : Container(
+                        margin:
+                            const EdgeInsets.only(left: 36, top: 8, bottom: 8),
+                        child: WidgetImageInternet(
+                          urlImage: appController.chatModels[index].urlRealPost,
+                          width: boxConstraints.maxWidth * 0.5 - 40,
+                          // height: 80,
+                          boxFit: BoxFit.cover,
+                        ),
+                      )
               ],
             );
           },
