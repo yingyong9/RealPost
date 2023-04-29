@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,6 +16,7 @@ import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
+import 'package:restart_app/restart_app.dart';
 
 class WidgetContentForm extends StatefulWidget {
   const WidgetContentForm({
@@ -43,122 +45,158 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: widget.boxConstraints.maxWidth,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          (AppService().compareCurrentTime(
-                  otherDatetime: widget
-                      .appController
-                      .roomModels[
-                          widget.appController.indexBodyMainPageView.value]
-                      .timestamp
-                      .toDate()))
-              ? Container(
-                  margin: const EdgeInsets.only(left: 8),
-                  child: WidgetButton(
-                    label: 'Real',
-                    pressFunc: () {
-                      if ((widget.roomModel!.uidCreate == user!.uid) &&
-                          (AppService().compareCurrentTime(
-                              otherDatetime: widget
-                                  .appController
-                                  .roomModels[widget.appController
-                                      .indexBodyMainPageView.value]
-                                  .timestamp
-                                  .toDate()))) {
-                        print(
-                            'collection ที่ส่งไป realPostBottinSheet ---> ${widget.collection}');
+    return GetX(
+        init: AppController(),
+        builder: (AppController appController) {
+          print('${appController.mainUid}');
+          return SizedBox(
+            width: widget.boxConstraints.maxWidth,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                (AppService().compareCurrentTime(
+                        otherDatetime: widget
+                            .appController
+                            .roomModels[widget
+                                .appController.indexBodyMainPageView.value]
+                            .timestamp
+                            .toDate()))
+                    ? Container(
+                        margin: const EdgeInsets.only(left: 8),
+                        child: WidgetButton(
+                          label: 'Real',
+                          pressFunc: () {
+                            if ((widget.roomModel!.uidCreate == user!.uid) &&
+                                (AppService().compareCurrentTime(
+                                    otherDatetime: widget
+                                        .appController
+                                        .roomModels[widget.appController
+                                            .indexBodyMainPageView.value]
+                                        .timestamp
+                                        .toDate()))) {
+                              // print(
+                              //     'collection ที่ส่งไป realPostBottinSheet ---> ${widget.collection}');
 
-                        AppDialog(context: context).realPostBottonSheet(
-                            collection: widget.collection,
-                            docIdRoom: widget.docId!);
+                              AppDialog(context: context).realPostBottonSheet(
+                                  collection: widget.collection,
+                                  docIdRoom: widget.docId!);
+                            } else {
+                              print('ไม่ใช้เจ้าของ room กด');
+                              AppBottomSheet().realGestBottonSheet();
+                            }
+                          },
+                          bgColor: Colors.red.shade900,
+                        ),
+                      )
+                    : const SizedBox(),
+                WidgetForm(
+                  width: (AppService().compareCurrentTime(
+                          otherDatetime: widget
+                              .appController
+                              .roomModels[widget
+                                  .appController.indexBodyMainPageView.value]
+                              .timestamp
+                              .toDate()))
+                      ? widget.boxConstraints.maxWidth - 90
+                      : widget.boxConstraints.maxWidth,
+                  hintStyle: AppConstant().h3Style(color: AppConstant.grey),
+                  hint: 'พิมพ์ข้อความ...',
+                  textStyle: AppConstant().h3Style(),
+                  controller: widget.textEditingController,
+                  suffixIcon: WidgetIconButton(
+                    iconData: Icons.send,
+                    pressFunc: () async {
+                      if (widget.textEditingController.text.isEmpty) {
+                        print('No Text form');
                       } else {
-                        print('ไม่ใช้เจ้าของ room กด');
-                        AppBottomSheet().realGestBottonSheet();
-                      }
+                        print(
+                            '##9jan text ที่โพส = ${widget.textEditingController.text}');
+
+                        //Check Time ว่าเป็น today ????
+                        if (AppService().compareCurrentTime(
+                            otherDatetime: appController
+                                .roomModels[
+                                    appController.indexBodyMainPageView.value]
+                                .timestamp
+                                .toDate())) {
+                          //Status Real
+                          print('##29 Status Real');
+                        } else {
+                          //update time post
+                          print('##29 update Time post');
+                          Map<String, dynamic> map = appController.roomModels[
+                                  appController.indexBodyMainPageView.value]
+                              .toMap();
+
+                          map['timestamp'] = Timestamp.fromDate(DateTime.now());
+                          AppService()
+                              .processUpdateRoom(
+                                  docIdRoom: appController.docIdRooms[
+                                      appController
+                                          .indexBodyMainPageView.value],
+                                  data: map)
+                              .then((value) {
+                            // AppService().initialSetup(context: context);
+                            Restart.restartApp();
+                          });
+                        }
+
+                        if (widget.appController.messageChats.isNotEmpty) {
+                          widget.appController.messageChats.clear();
+                        }
+
+                        widget.appController.messageChats
+                            .add(widget.textEditingController.text);
+
+                        widget.textEditingController.text = '';
+
+                        ChatModel chatModel =
+                            await AppService().createChatModel();
+
+                        //สำหรับบันทึกใน room --> chat
+                        await AppService()
+                            .processInsertChat(
+                          chatModel: chatModel,
+                          docIdRoom: widget.docId!,
+                        )
+                            .then((value) {
+                          widget.appController
+                              .processFindDocIdPrivateChat(
+                                  uidLogin: user!.uid,
+                                  uidFriend: widget.roomModel!.uidCreate)
+                              .then((value) {
+                            if (widget.appController.mainUid.toString() !=
+                                widget.roomModel!.uidCreate.toString()) {
+                              Map<String, dynamic> map = chatModel.toMap();
+                              map['urlRealPost'] =
+                                  widget.roomModel!.urlRooms[0];
+
+                              ChatModel newChatModel = ChatModel.fromMap(map);
+
+                              AppService().processInsertPrivateChat(
+                                  docIdPrivateChat: widget
+                                      .appController.docIdPrivateChats.last,
+                                  chatModel: newChatModel);
+                            }
+                          });
+                        });
+
+                        //สำหรับ room --> chatOwner
+                        if (widget.roomModel!.uidCreate ==
+                            widget.appController.mainUid.toString()) {
+                          AppService().processInsertChat(
+                              chatModel: chatModel,
+                              docIdRoom: widget.docId!,
+                              collectionChat: 'chatOwner');
+                        }
+                      } // /////////////// end
                     },
-                    bgColor: Colors.red.shade900,
                   ),
-                )
-              : const SizedBox(),
-          WidgetForm(
-            width: (AppService().compareCurrentTime(
-                    otherDatetime: widget
-                        .appController
-                        .roomModels[
-                            widget.appController.indexBodyMainPageView.value]
-                        .timestamp
-                        .toDate()))
-                ? widget.boxConstraints.maxWidth - 90
-                : widget.boxConstraints.maxWidth,
-            hintStyle: AppConstant().h3Style(color: AppConstant.grey),
-            hint: 'พิมพ์ข้อความ...',
-            textStyle: AppConstant().h3Style(),
-            controller: widget.textEditingController,
-            suffixIcon: WidgetIconButton(
-              iconData: Icons.send,
-              pressFunc: () async {
-                if (widget.textEditingController.text.isEmpty) {
-                  print('No Text form');
-                } else {
-                  print(
-                      '##9jan text ที่โพส = ${widget.textEditingController.text}');
-
-                  if (widget.appController.messageChats.isNotEmpty) {
-                    widget.appController.messageChats.clear();
-                  }
-
-                  widget.appController.messageChats
-                      .add(widget.textEditingController.text);
-
-                  widget.textEditingController.text = '';
-
-                  ChatModel chatModel = await AppService().createChatModel();
-
-                  //สำหรับบันทึกใน room --> chat
-                  await AppService()
-                      .processInsertChat(
-                    chatModel: chatModel,
-                    docIdRoom: widget.docId!,
-                  )
-                      .then((value) {
-                    widget.appController
-                        .processFindDocIdPrivateChat(
-                            uidLogin: user!.uid,
-                            uidFriend: widget.roomModel!.uidCreate)
-                        .then((value) {
-                      if (widget.appController.mainUid.toString() !=
-                          widget.roomModel!.uidCreate.toString()) {
-                        Map<String, dynamic> map = chatModel.toMap();
-                        map['urlRealPost'] = widget.roomModel!.urlRooms[0];
-
-                        ChatModel newChatModel = ChatModel.fromMap(map);
-
-                        AppService().processInsertPrivateChat(
-                            docIdPrivateChat:
-                                widget.appController.docIdPrivateChats.last,
-                            chatModel: newChatModel);
-                      }
-                    });
-                  });
-
-                  //สำหรับ room --> chatOwner
-                  if (widget.roomModel!.uidCreate ==
-                      widget.appController.mainUid.toString()) {
-                    AppService().processInsertChat(
-                        chatModel: chatModel,
-                        docIdRoom: widget.docId!,
-                        collectionChat: 'chatOwner');
-                  }
-                } // /////////////// end
-              },
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
-    );
+          );
+        });
   }
 
   SizedBox contentSizebox(BuildContext context) {
