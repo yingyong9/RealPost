@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/states/add_product.dart';
+import 'package:realpost/states/display_photo_view.dart';
 import 'package:realpost/states/display_profile.dart';
 import 'package:realpost/states/full_screen_image.dart';
 import 'package:realpost/states/list_friend.dart';
@@ -29,6 +30,7 @@ import 'package:realpost/widgets/widget_progress_animation.dart';
 import 'package:realpost/widgets/widget_squeer_avatar.dart';
 import 'package:realpost/widgets/widget_text.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:restart_app/restart_app.dart';
 
 class MainPageView extends StatefulWidget {
   const MainPageView({super.key});
@@ -244,7 +246,7 @@ class _MainPageViewState extends State<MainPageView> {
   ) {
     return Stack(
       children: [
-        displayImageRoom(boxConstraints, appController: appController),
+        // displayImageRoom(boxConstraints, appController: appController),
         displayListChat(appController, boxConstraints),
         displayRealText(appController: appController),
         displayRoomText(appController, boxConstraints),
@@ -290,7 +292,7 @@ class _MainPageViewState extends State<MainPageView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           WidgetSqueerAvatar(
-              size: 30,
+              size: 60,
               urlImage: appController
                   .roomModels[appController.indexBodyMainPageView.value]
                   .urlRooms[0]),
@@ -302,9 +304,9 @@ class _MainPageViewState extends State<MainPageView> {
             child: BubbleSpecialOne(
               text: appController
                   .roomModels[appController.indexBodyMainPageView.value].room,
-              textStyle: AppConstant().h3Style(color: Colors.white),
+              textStyle: AppConstant().h3Style(color: Colors.black),
               isSender: false,
-              color: Colors.blue.shade900,
+              color: AppConstant.bgChat,
             ),
           ),
         ],
@@ -357,8 +359,8 @@ class _MainPageViewState extends State<MainPageView> {
         ? displayListMessage(
             boxConstraints,
             appController,
-            top: boxConstraints.maxHeight * 0.1,
-            height: boxConstraints.maxHeight * 0.65,
+            top: boxConstraints.maxHeight * 0.15,
+            height: boxConstraints.maxHeight * 0.7,
             reverse: true,
           )
         : const SizedBox();
@@ -630,13 +632,13 @@ class _MainPageViewState extends State<MainPageView> {
                   children: [
                     InkWell(
                       onTap: () {
-                        if (appController.chatModels[index].uidChat
-                                .toString() !=
-                            appController.mainUid.toString()) {
-                          Get.to(PrivateChat(
-                              uidFriend:
-                                  appController.chatModels[index].uidChat));
-                        }
+                        // if (appController.chatModels[index].uidChat
+                        //         .toString() !=
+                        //     appController.mainUid.toString()) {
+                        //   Get.to(PrivateChat(
+                        //       uidFriend:
+                        //           appController.chatModels[index].uidChat));
+                        // }
                       },
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -652,9 +654,10 @@ class _MainPageViewState extends State<MainPageView> {
                             width: boxConstraints.maxWidth * 0.75 - 40,
                             child: BubbleSpecialOne(
                               text: appController.chatModels[index].message,
-                              color: Colors.blue.shade700,
+                              color: AppConstant.bgChat,
                               isSender: false,
-                              textStyle: AppConstant().h3Style(),
+                              textStyle:
+                                  AppConstant().h3Style(color: Colors.black),
                             ),
                           )
                           // Container(
@@ -701,6 +704,45 @@ class _MainPageViewState extends State<MainPageView> {
                           width: boxConstraints.maxWidth * 0.5 - 40,
                           // height: 80,
                           boxFit: BoxFit.cover,
+                          tapFunc: () {
+                            print(
+                                'You tap image url ===> ${appController.chatModels[index].urlRealPost}');
+                            Get.to(FullScreenImage(
+                                    urlImage: appController
+                                        .chatModels[index].urlRealPost))!
+                                .then((value) {
+                                 
+                                         //Check Time ว่าเป็น today ????
+                        if (AppService().compareCurrentTime(
+                            otherDatetime: appController
+                                .roomModels[
+                                    appController.indexBodyMainPageView.value]
+                                .timestamp
+                                .toDate())) {
+                          //Status Real
+                          print('##29 Status Real');
+                        } else {
+                          //update time post
+                          print('##29 update Time post');
+                          Map<String, dynamic> map = appController.roomModels[
+                                  appController.indexBodyMainPageView.value]
+                              .toMap();
+
+                          map['timestamp'] = Timestamp.fromDate(DateTime.now());
+                          AppService()
+                              .processUpdateRoom(
+                                  docIdRoom: appController.docIdRooms[
+                                      appController
+                                          .indexBodyMainPageView.value],
+                                  data: map)
+                              .then((value) {
+                            // AppService().initialSetup(context: context);
+                            Restart.restartApp();
+                          });
+                        }
+
+                                });
+                          },
                         ),
                       )
               ],

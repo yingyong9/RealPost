@@ -18,6 +18,7 @@ class AppConstant {
   static Color spcialColor = Colors.white;
   static Color grey = const Color.fromARGB(255, 164, 159, 159);
   static Color bgGrey = const Color.fromARGB(255, 240, 236, 236);
+  static Color bgChat = Colors.white;
 
   static String appName = 'Real Post.';
   static String urlAvatar =
