@@ -10,7 +10,6 @@ import 'package:get/get.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/states/add_product.dart';
-import 'package:realpost/states/display_photo_view.dart';
 import 'package:realpost/states/display_profile.dart';
 import 'package:realpost/states/full_screen_image.dart';
 import 'package:realpost/states/list_friend.dart';
@@ -41,7 +40,6 @@ class MainPageView extends StatefulWidget {
 
 class _MainPageViewState extends State<MainPageView> {
   AppController controller = Get.put(AppController());
-
   TextEditingController textEditingController = TextEditingController();
 
   bool secondLoad = true;
@@ -118,20 +116,18 @@ class _MainPageViewState extends State<MainPageView> {
                               // controller: pageViewController,
                               controller: appController.pageControllers.last,
                               scrollDirection: Axis.vertical,
+
                               onPageChanged: (value) {
                                 appController.indexBodyMainPageView.value =
                                     value;
 
                                 appController.amountSalse.value = 1;
-
                                 appController.haveUserLoginInComment.value =
                                     false;
-
                                 appController.readAllChat(
                                     docIdRoom: appController.docIdRooms[
                                         appController
                                             .indexBodyMainPageView.value]);
-
                                 AppService().readAllChatOwner(
                                     docIdRoom: appController.docIdRooms[
                                         appController
@@ -147,11 +143,6 @@ class _MainPageViewState extends State<MainPageView> {
 
                                 appController.processReadCommentSalses();
 
-                                print(
-                                    '##17april indexbody ---> ${appController.indexBodyMainPageView.value}');
-                                print(
-                                    '##2april docIdRoom --> ${appController.documentSnapshots[appController.indexBodyMainPageView.value].id}');
-
                                 if (appController.indexBodyMainPageView.value ==
                                     0) {
                                   AppService().initialSetup(context: context);
@@ -164,7 +155,7 @@ class _MainPageViewState extends State<MainPageView> {
                                     secondLoad) {
                                   secondLoad = false;
                                   print(
-                                      '##17april docIdRoom ที่อยู่ในเงื่อนไข --> ${appController.documentSnapshots[appController.indexBodyMainPageView.value].id}');
+                                      '##30april docIdRoom ที่อยู่ในเงื่อนไข --> ${appController.documentSnapshots[appController.indexBodyMainPageView.value].id}');
                                   appController.readAllRoomStartDocument(
                                       documentSnapshot:
                                           appController.documentSnapshots[
@@ -438,6 +429,7 @@ class _MainPageViewState extends State<MainPageView> {
                           },
                         ),
                       ),
+
                 const SizedBox(
                   height: 8,
                 ),
@@ -519,7 +511,7 @@ class _MainPageViewState extends State<MainPageView> {
                 //     ? const SizedBox()
                 //     :
 
-                Container(
+                appController.roomModels[appController.indexBodyMainPageView.value].displayCart! ? Container(
                   decoration: AppConstant().boxCurve(color: Colors.white),
                   child: InkWell(
                     child: const WidgetImage(
@@ -534,7 +526,7 @@ class _MainPageViewState extends State<MainPageView> {
                           userModelLogin: appController.userModels.last);
                     },
                   ),
-                ),
+                ) : const SizedBox(),
               ],
             ),
           );
@@ -630,28 +622,33 @@ class _MainPageViewState extends State<MainPageView> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    InkWell(
-                      onTap: () {
-                        // if (appController.chatModels[index].uidChat
-                        //         .toString() !=
-                        //     appController.mainUid.toString()) {
-                        //   Get.to(PrivateChat(
-                        //       uidFriend:
-                        //           appController.chatModels[index].uidChat));
-                        // }
-                      },
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          WidgetSqueerAvatar(
-                            urlImage: appController.chatModels[index].urlAvatar,
-                            size: 30,
-                          ),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          SizedBox(
-                            width: boxConstraints.maxWidth * 0.75 - 40,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        WidgetSqueerAvatar(
+                          urlImage: appController.chatModels[index].urlAvatar,
+                          size: 30,
+                          pressFunc: () {
+                            if (appController.chatModels[index].uidChat
+                                    .toString() !=
+                                appController.mainUid.toString()) {
+                              Get.to(PrivateChat(
+                                  uidFriend:
+                                      appController.chatModels[index].uidChat));
+                            }
+                          },
+                        ),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        SizedBox(
+                          width: boxConstraints.maxWidth * 0.75 - 40,
+                          child: InkWell(
+                            onTap: () {
+                              print('##30april you tap Bubble');
+                              AppService().processLunchUrl(
+                                  url: appController.chatModels[index].message);
+                            },
                             child: BubbleSpecialOne(
                               text: appController.chatModels[index].message,
                               color: AppConstant.bgChat,
@@ -659,38 +656,38 @@ class _MainPageViewState extends State<MainPageView> {
                               textStyle:
                                   AppConstant().h3Style(color: Colors.black),
                             ),
-                          )
-                          // Container(
-                          //   constraints: BoxConstraints(
-                          //       maxWidth: boxConstraints.maxWidth * 0.5 - 40),
-                          //   padding: const EdgeInsets.symmetric(
-                          //       vertical: 4, horizontal: 12),
-                          //   margin: const EdgeInsets.only(top: 4),
-                          //   // decoration: AppConstant().boxChatGuest(
-                          //   //     bgColor: Colors.black.withOpacity(0.5)),
-                          //   child: Text.rich(
-                          //     TextSpan(
-                          //         text: appController
-                          //             .chatModels[index].disPlayName,
-                          //         style: AppConstant().h3Style(
-                          //             color: Colors.yellow,
-                          //             fontWeight: FontWeight.bold),
-                          //         children: [
-                          //           TextSpan(
-                          //               text: ' : ',
-                          //               style: AppConstant().h3Style(
-                          //                   color: Colors.yellow,
-                          //                   fontWeight: FontWeight.bold)),
-                          //           TextSpan(
-                          //               text: appController
-                          //                   .chatModels[index].message,
-                          //               style: AppConstant()
-                          //                   .h3Style(color: Colors.white))
-                          //         ]),
-                          //   ),
-                          // ),
-                        ],
-                      ),
+                          ),
+                        )
+                        // Container(
+                        //   constraints: BoxConstraints(
+                        //       maxWidth: boxConstraints.maxWidth * 0.5 - 40),
+                        //   padding: const EdgeInsets.symmetric(
+                        //       vertical: 4, horizontal: 12),
+                        //   margin: const EdgeInsets.only(top: 4),
+                        //   // decoration: AppConstant().boxChatGuest(
+                        //   //     bgColor: Colors.black.withOpacity(0.5)),
+                        //   child: Text.rich(
+                        //     TextSpan(
+                        //         text: appController
+                        //             .chatModels[index].disPlayName,
+                        //         style: AppConstant().h3Style(
+                        //             color: Colors.yellow,
+                        //             fontWeight: FontWeight.bold),
+                        //         children: [
+                        //           TextSpan(
+                        //               text: ' : ',
+                        //               style: AppConstant().h3Style(
+                        //                   color: Colors.yellow,
+                        //                   fontWeight: FontWeight.bold)),
+                        //           TextSpan(
+                        //               text: appController
+                        //                   .chatModels[index].message,
+                        //               style: AppConstant()
+                        //                   .h3Style(color: Colors.white))
+                        //         ]),
+                        //   ),
+                        // ),
+                      ],
                     ),
                   ],
                 ),
@@ -711,37 +708,37 @@ class _MainPageViewState extends State<MainPageView> {
                                     urlImage: appController
                                         .chatModels[index].urlRealPost))!
                                 .then((value) {
-                                 
-                                         //Check Time ว่าเป็น today ????
-                        if (AppService().compareCurrentTime(
-                            otherDatetime: appController
-                                .roomModels[
-                                    appController.indexBodyMainPageView.value]
-                                .timestamp
-                                .toDate())) {
-                          //Status Real
-                          print('##29 Status Real');
-                        } else {
-                          //update time post
-                          print('##29 update Time post');
-                          Map<String, dynamic> map = appController.roomModels[
-                                  appController.indexBodyMainPageView.value]
-                              .toMap();
+                              //Check Time ว่าเป็น today ????
+                              if (AppService().compareCurrentTime(
+                                  otherDatetime: appController
+                                      .roomModels[appController
+                                          .indexBodyMainPageView.value]
+                                      .timestamp
+                                      .toDate())) {
+                                //Status Real
+                                print('##29 Status Real');
+                              } else {
+                                //update time post
+                                print('##29 update Time post');
+                                Map<String, dynamic> map = appController
+                                    .roomModels[appController
+                                        .indexBodyMainPageView.value]
+                                    .toMap();
 
-                          map['timestamp'] = Timestamp.fromDate(DateTime.now());
-                          AppService()
-                              .processUpdateRoom(
-                                  docIdRoom: appController.docIdRooms[
-                                      appController
-                                          .indexBodyMainPageView.value],
-                                  data: map)
-                              .then((value) {
-                            // AppService().initialSetup(context: context);
-                            Restart.restartApp();
-                          });
-                        }
-
+                                map['timestamp'] =
+                                    Timestamp.fromDate(DateTime.now());
+                                AppService()
+                                    .processUpdateRoom(
+                                        docIdRoom: appController.docIdRooms[
+                                            appController
+                                                .indexBodyMainPageView.value],
+                                        data: map)
+                                    .then((value) {
+                                  // AppService().initialSetup(context: context);
+                                  Restart.restartApp();
                                 });
+                              }
+                            });
                           },
                         ),
                       )

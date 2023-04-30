@@ -36,6 +36,8 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
+  
+
   Future<bool> findPatnerFriend({required String uidCheckFriend}) async {
     bool result = true; // display add friend
 

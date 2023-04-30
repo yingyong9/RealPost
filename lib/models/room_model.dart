@@ -19,6 +19,7 @@ class RoomModel {
   final String? stock;
   final String? timeGroup;
   final GeoPoint? geoPoint;
+  final bool? displayCart;
 
   RoomModel({
     required this.uidCreate,
@@ -36,6 +37,7 @@ class RoomModel {
     this.stock,
     this.timeGroup,
     this.geoPoint,
+    this.displayCart,
   });
 
   Map<String, dynamic> toMap() {
@@ -55,6 +57,7 @@ class RoomModel {
       'stock': stock,
       'timeGroup': timeGroup,
       'geoPoint': geoPoint,
+      'displayCart': displayCart,
     };
   }
 
@@ -62,7 +65,7 @@ class RoomModel {
     return RoomModel(
       uidCreate: (map['uidCreate'] ?? '') as String,
       room: (map['room'] ?? '') as String,
-          timestamp: (map['timestamp']),
+      timestamp: (map['timestamp']),
       urlCamera: (map['urlCamera'] ?? ''),
       urlRooms: List<String>.from(map['urlRooms'] ?? []),
       detail: map['detail'] ?? '',
@@ -73,10 +76,13 @@ class RoomModel {
       amountGroup: map['amountGroup'] ?? '',
       stock: map['stock'] ?? '',
       timeGroup: map['timeGroup'] ?? '',
-      geoPoint: map['geoPoint']?? const GeoPoint(0, 0),
+      geoPoint: map['geoPoint'] ?? const GeoPoint(0, 0),
+      displayCart: map['displayCart'] ?? false,
     );
   }
 
+  // uidCreate: (map['uidCreate'] ?? '') as String,
+  //     room: (map['room'] ?? '') as String,
   //     timestamp: (map['timestamp']),
   //     urlCamera: (map['urlCamera'] ?? ''),
   //     urlRooms: List<String>.from(map['urlRooms'] ?? []),
@@ -88,6 +94,8 @@ class RoomModel {
   //     amountGroup: map['amountGroup'] ?? '',
   //     stock: map['stock'] ?? '',
   //     timeGroup: map['timeGroup'] ?? '',
+  //     geoPoint: map['geoPoint'] ?? const GeoPoint(0, 0),
+  //     displayCart: map['displayCart'] ?? false,
 
   String toJson() => json.encode(toMap());
 

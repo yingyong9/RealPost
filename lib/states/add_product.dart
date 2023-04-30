@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:realpost/models/room_model.dart';
-import 'package:realpost/states/main_page_view.dart';
 
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
@@ -19,6 +18,7 @@ import 'package:realpost/widgets/widget_content_box_white_row.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_text.dart';
+import 'package:restart_app/restart_app.dart';
 
 class AddProduct extends StatefulWidget {
   const AddProduct({super.key});
@@ -61,6 +61,17 @@ class _AddProductState extends State<AddProduct> {
                           children: [
                             contentImage(boxConstraints, appController),
                             contentName(boxConstraints),
+                            CheckboxListTile(
+                              value: false,
+                              controlAffinity: ListTileControlAffinity.leading,
+                              onChanged: (value) {},
+                              title: WidgetText(
+                                text: 'ต้องการใช้ตระกร้า คลิกที่นี่',
+                                textStyle:
+                                    AppConstant().h3Style(color: Colors.black),
+                              ),
+                             
+                            ),
                             // contentDetail(boxConstraints),
                             // bottonSalse(appController),
                             contentGroup(
@@ -241,13 +252,17 @@ class _AddProductState extends State<AddProduct> {
                                   await AppService()
                                       .processInsertRoom(roomModel: roomModel)
                                       .then((value) {
-                                    AppService().processSendNotiAllUser(
-                                        title: 'มี RealPost ใหม่',
-                                        body: '${roomModel.room}%230');
+                                    AppService()
+                                        .processSendNotiAllUser(
+                                            title: 'มี RealPost ใหม่',
+                                            body: '${roomModel.room}%230')
+                                        .then((value) {
+                                      Restart.restartApp();
+                                    });
 
-                                    AppService().initialSetup(context: context);
-                                    Get.back();
-                                    Get.back();
+                                    // AppService().initialSetup(context: context);
+                                    // Get.back();
+                                    // Get.back();
                                   });
                                 }
                               }
