@@ -6,21 +6,25 @@ class WidgetSqueerAvatar extends StatelessWidget {
     Key? key,
     required this.urlImage,
     this.size,
+    this.pressFunc,
   }) : super(key: key);
 
   final String urlImage;
   final double? size;
+  final Function()? pressFunc;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: size ?? 60,
-      height: size ?? 60,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        image: DecorationImage(
-          image: NetworkImage(urlImage),
-          fit: BoxFit.cover,
+    return InkWell(onTap: pressFunc,
+      child: Container(
+        width: size ?? 60,
+        height: size ?? 60,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          image: DecorationImage(
+            image: NetworkImage(urlImage),
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     );
