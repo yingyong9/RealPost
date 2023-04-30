@@ -10,7 +10,6 @@ import 'package:get/get.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/states/add_product.dart';
-import 'package:realpost/states/display_photo_view.dart';
 import 'package:realpost/states/display_profile.dart';
 import 'package:realpost/states/full_screen_image.dart';
 import 'package:realpost/states/list_friend.dart';
@@ -41,7 +40,6 @@ class MainPageView extends StatefulWidget {
 
 class _MainPageViewState extends State<MainPageView> {
   AppController controller = Get.put(AppController());
-
   TextEditingController textEditingController = TextEditingController();
 
   bool secondLoad = true;
@@ -118,20 +116,18 @@ class _MainPageViewState extends State<MainPageView> {
                               // controller: pageViewController,
                               controller: appController.pageControllers.last,
                               scrollDirection: Axis.vertical,
+
                               onPageChanged: (value) {
                                 appController.indexBodyMainPageView.value =
                                     value;
 
                                 appController.amountSalse.value = 1;
-
                                 appController.haveUserLoginInComment.value =
                                     false;
-
                                 appController.readAllChat(
                                     docIdRoom: appController.docIdRooms[
                                         appController
                                             .indexBodyMainPageView.value]);
-
                                 AppService().readAllChatOwner(
                                     docIdRoom: appController.docIdRooms[
                                         appController
@@ -147,11 +143,6 @@ class _MainPageViewState extends State<MainPageView> {
 
                                 appController.processReadCommentSalses();
 
-                                print(
-                                    '##17april indexbody ---> ${appController.indexBodyMainPageView.value}');
-                                print(
-                                    '##2april docIdRoom --> ${appController.documentSnapshots[appController.indexBodyMainPageView.value].id}');
-
                                 if (appController.indexBodyMainPageView.value ==
                                     0) {
                                   AppService().initialSetup(context: context);
@@ -164,7 +155,7 @@ class _MainPageViewState extends State<MainPageView> {
                                     secondLoad) {
                                   secondLoad = false;
                                   print(
-                                      '##17april docIdRoom ที่อยู่ในเงื่อนไข --> ${appController.documentSnapshots[appController.indexBodyMainPageView.value].id}');
+                                      '##30april docIdRoom ที่อยู่ในเงื่อนไข --> ${appController.documentSnapshots[appController.indexBodyMainPageView.value].id}');
                                   appController.readAllRoomStartDocument(
                                       documentSnapshot:
                                           appController.documentSnapshots[
@@ -438,6 +429,9 @@ class _MainPageViewState extends State<MainPageView> {
                           },
                         ),
                       ),
+
+
+
                 const SizedBox(
                   height: 8,
                 ),

@@ -443,6 +443,10 @@ class AppController extends GetxController {
           userModelAtRooms.add(userModel);
         }
 
+        await AppService().findPatnerFriend(uidCheckFriend: model.uidCreate).then((value) {
+          displayAddFriends.add(value);
+        });
+
         var chatModels = <ChatModel>[];
         ChatModel? lateChatModel;
         var user = FirebaseAuth.instance.currentUser;
