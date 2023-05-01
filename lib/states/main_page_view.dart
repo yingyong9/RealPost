@@ -238,9 +238,11 @@ class _MainPageViewState extends State<MainPageView> {
     return Stack(
       children: [
         // displayImageRoom(boxConstraints, appController: appController),
+
         displayListChat(appController, boxConstraints),
         displayRealText(appController: appController),
         displayRoomText(appController, boxConstraints),
+
         // blueTextOwner(appController, boxConstraints),
         // (appController.chatOwnerModels.isEmpty) ||
         //         (AppService()
@@ -511,22 +513,26 @@ class _MainPageViewState extends State<MainPageView> {
                 //     ? const SizedBox()
                 //     :
 
-                appController.roomModels[appController.indexBodyMainPageView.value].displayCart! ? Container(
-                  decoration: AppConstant().boxCurve(color: Colors.white),
-                  child: InkWell(
-                    child: const WidgetImage(
-                      path: 'images/basket.png',
-                      size: 48,
-                    ),
-                    onTap: () {
-                      AppBottomSheet().orderButtonSheet(
-                          roomModel: appController.roomModels[
-                              appController.indexBodyMainPageView.value],
-                          height: boxConstraints.maxHeight * 0.35,
-                          userModelLogin: appController.userModels.last);
-                    },
-                  ),
-                ) : const SizedBox(),
+                appController
+                        .roomModels[appController.indexBodyMainPageView.value]
+                        .displayCart!
+                    ? Container(
+                        decoration: AppConstant().boxCurve(color: Colors.white),
+                        child: InkWell(
+                          child: const WidgetImage(
+                            path: 'images/basket.png',
+                            size: 48,
+                          ),
+                          onTap: () {
+                            AppBottomSheet().orderButtonSheet(
+                                roomModel: appController.roomModels[
+                                    appController.indexBodyMainPageView.value],
+                                height: boxConstraints.maxHeight * 0.35,
+                                userModelLogin: appController.userModels.last);
+                          },
+                        ),
+                      )
+                    : const SizedBox(),
               ],
             ),
           );
@@ -535,19 +541,28 @@ class _MainPageViewState extends State<MainPageView> {
   Widget displayRealText({required AppController appController}) {
     return Positioned(
       right: 8,
-      child: AppService().compareCurrentTime(
-              otherDatetime: appController
-                  .roomModels[appController.indexBodyMainPageView.value]
-                  .timestamp
-                  .toDate())
-          ? Container(
-              padding: const EdgeInsets.all(8),
-              child: WidgetText(
-                text: '  Real  ',
-                textStyle: AppConstant().h2Style(color: Colors.red.shade700),
-              ),
-            )
-          : const SizedBox(),
+      child: Column(
+        children: [
+          AppService().compareCurrentTime(
+                  otherDatetime: appController
+                      .roomModels[appController.indexBodyMainPageView.value]
+                      .timestamp
+                      .toDate())
+              ? Container(
+                  padding: const EdgeInsets.all(8),
+                  child: WidgetText(
+                    text: '  Real  ',
+                    textStyle:
+                        AppConstant().h2Style(color: Colors.red.shade700),
+                  ),
+                )
+              : const SizedBox(),
+          appController.roomModels[appController.indexBodyMainPageView.value]
+                  .roomPublic
+              ? WidgetText(text: 'สาธารณะ')
+              : const SizedBox(),
+        ],
+      ),
     );
   }
 
@@ -632,9 +647,26 @@ class _MainPageViewState extends State<MainPageView> {
                             if (appController.chatModels[index].uidChat
                                     .toString() !=
                                 appController.mainUid.toString()) {
-                              Get.to(PrivateChat(
-                                  uidFriend:
-                                      appController.chatModels[index].uidChat));
+                              if (appController
+                                  .roomModels[
+                                      appController.indexBodyMainPageView.value]
+                                  .roomPublic) {
+                                //Public
+                                Get.to(PrivateChat(
+                                    uidFriend: appController
+                                        .chatModels[index].uidChat));
+                              } else {
+                                //Private
+                                if (appController.chatModels[index].uidChat ==
+                                    appController
+                                        .roomModels[appController
+                                            .indexBodyMainPageView.value]
+                                        .uidCreate) {
+                                  Get.to(PrivateChat(
+                                      uidFriend: appController
+                                          .chatModels[index].uidChat));
+                                }
+                              }
                             }
                           },
                         ),

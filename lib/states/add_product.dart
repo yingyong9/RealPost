@@ -62,15 +62,17 @@ class _AddProductState extends State<AddProduct> {
                             contentImage(boxConstraints, appController),
                             contentName(boxConstraints),
                             CheckboxListTile(
-                              value: false,
+                              value: appController.roomPublic.value,
                               controlAffinity: ListTileControlAffinity.leading,
-                              onChanged: (value) {},
+                              onChanged: (value) {
+                                appController.roomPublic.value =
+                                    !appController.roomPublic.value;
+                              },
                               title: WidgetText(
-                                text: 'ต้องการใช้ตระกร้า คลิกที่นี่',
+                                text: 'แชตสาธารณะ คลิกที่นี่',
                                 textStyle:
                                     AppConstant().h3Style(color: Colors.black),
                               ),
-                             
                             ),
                             // contentDetail(boxConstraints),
                             // bottonSalse(appController),

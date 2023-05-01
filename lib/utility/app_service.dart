@@ -36,8 +36,6 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
-  
-
   Future<bool> findPatnerFriend({required String uidCheckFriend}) async {
     bool result = true; // display add friend
 
@@ -708,7 +706,8 @@ class AppService {
         totalPrice: totalPrice,
         amountGroup: amountGroup,
         stock: stock,
-        timeGroup: timeGroup);
+        timeGroup: timeGroup,
+        roomPublic: appController.roomPublic.value);
 
     return roomModel;
   }

@@ -20,6 +20,7 @@ class RoomModel {
   final String? timeGroup;
   final GeoPoint? geoPoint;
   final bool? displayCart;
+  final bool roomPublic;
 
   RoomModel({
     required this.uidCreate,
@@ -38,6 +39,7 @@ class RoomModel {
     this.timeGroup,
     this.geoPoint,
     this.displayCart,
+    required this.roomPublic,
   });
 
   Map<String, dynamic> toMap() {
@@ -58,6 +60,7 @@ class RoomModel {
       'timeGroup': timeGroup,
       'geoPoint': geoPoint,
       'displayCart': displayCart,
+      'roomPublic': roomPublic,
     };
   }
 
@@ -78,6 +81,7 @@ class RoomModel {
       timeGroup: map['timeGroup'] ?? '',
       geoPoint: map['geoPoint'] ?? const GeoPoint(0, 0),
       displayCart: map['displayCart'] ?? false,
+      roomPublic: map['roomPublic'] ?? false,
     );
   }
 
@@ -96,6 +100,7 @@ class RoomModel {
   //     timeGroup: map['timeGroup'] ?? '',
   //     geoPoint: map['geoPoint'] ?? const GeoPoint(0, 0),
   //     displayCart: map['displayCart'] ?? false,
+  //     roomPublic: map['roomPublic'] ?? true,
 
   String toJson() => json.encode(toMap());
 
