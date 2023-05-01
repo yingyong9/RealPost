@@ -87,12 +87,12 @@ class AppController extends GetxController {
   RxList<PageController> pageControllers = <PageController>[].obs;
   RxList<ChatModel> chatOwnerModels = <ChatModel>[].obs;
   RxList<DocumentSnapshot> documentSnapshots = <DocumentSnapshot>[].obs;
-
   RxBool listFriendLoad = true.obs;
   RxBool displayPanel = true.obs;
   RxBool displayAll = true.obs;
-
   RxList<bool> displayAddFriends = <bool>[].obs;
+
+  RxBool roomPublic = false.obs;
 
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
@@ -387,7 +387,9 @@ class AppController extends GetxController {
           userModelAtRooms.add(userModel);
         }
 
-        await AppService().findPatnerFriend(uidCheckFriend: model.uidCreate).then((value) {
+        await AppService()
+            .findPatnerFriend(uidCheckFriend: model.uidCreate)
+            .then((value) {
           displayAddFriends.add(value);
         });
 
@@ -443,7 +445,9 @@ class AppController extends GetxController {
           userModelAtRooms.add(userModel);
         }
 
-        await AppService().findPatnerFriend(uidCheckFriend: model.uidCreate).then((value) {
+        await AppService()
+            .findPatnerFriend(uidCheckFriend: model.uidCreate)
+            .then((value) {
           displayAddFriends.add(value);
         });
 

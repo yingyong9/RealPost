@@ -163,7 +163,7 @@ class _AddRoomState extends State<AddRoom> {
                   timestamp: Timestamp.fromDate(DateTime.now()),
                   urlRooms: [
                     urlPhoto ?? appController.stampModels.last.url,
-                  ],
+                  ], roomPublic: appController.roomPublic.value,
                 );
                 print('roomModel ==> ${roomModel.toMap()}');
                 await AppService()
