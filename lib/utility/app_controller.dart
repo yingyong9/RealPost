@@ -30,18 +30,22 @@ class AppController extends GetxController {
   RxList<String> docIdRooms = <String>[].obs;
   RxList<String> docIdRoomChooses = <String>[].obs;
   RxList<UserModel> userModelAtRooms = <UserModel>[].obs;
+
   RxList<List<ChatModel>> listChatModels = <List<ChatModel>>[].obs;
+  RxList<List<String>> listDocIdChats = <List<String>>[].obs;
+
   RxList<ChatModel> lastChatModelLogins = <ChatModel>[].obs;
   RxList<StampModel> stampModels = <StampModel>[].obs;
   RxList<String> emojiAddRoomChooses = <String>[].obs;
+
   RxList<ChatModel> chatModels = <ChatModel>[].obs;
+  RxList<String> docIdChats = <String>[].obs;
+
   RxList<String> addressMaps = <String>[].obs;
   RxBool load = true.obs;
   RxBool shareLocation = false.obs;
-
   RxList<UserModel> userModels = <UserModel>[].obs;
   RxList<UserModel> userModelsLogin = <UserModel>[].obs;
-
   RxList<File> fileAvatars = <File>[].obs;
   RxList<String> urlAvatarChooses = <String>[].obs;
   RxList<File> fileRealPosts = <File>[].obs;
@@ -50,11 +54,9 @@ class AppController extends GetxController {
   RxList<TextEditingController> articleControllers =
       <TextEditingController>[TextEditingController()].obs;
   RxList<Position> positions = <Position>[].obs;
-
   RxList<String> docIdPrivateChats = <String>[].obs;
   RxList<ChatModel> privateChatModels = <ChatModel>[].obs;
   RxList<int> unReads = <int>[].obs;
-
   RxList<String> links = <String>[].obs;
   RxList<XFile> xFiles = <XFile>[].obs;
   RxInt indexBodyMainPageView = 0.obs;
@@ -91,8 +93,9 @@ class AppController extends GetxController {
   RxBool displayPanel = true.obs;
   RxBool displayAll = true.obs;
   RxList<bool> displayAddFriends = <bool>[].obs;
-
   RxBool roomPublic = false.obs;
+
+  RxBool tabFavorit = false.obs;
 
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
@@ -292,6 +295,7 @@ class AppController extends GetxController {
     if (chatModels.isNotEmpty) {
       chatModels.clear();
       addressMaps.clear();
+      docIdChats.clear();
     }
 
     FirebaseFirestore.instance
@@ -306,12 +310,14 @@ class AppController extends GetxController {
         if (chatModels.isNotEmpty) {
           chatModels.clear();
           addressMaps.clear();
+          docIdChats.clear();
         }
 
         for (var element in event.docs) {
           ChatModel model = ChatModel.fromMap(element.data());
           print('##8jan chatModel ==> ${model.toMap()}');
           chatModels.add(model);
+          docIdChats.add(element.id);
 
           if (model.geoPoint!.latitude != 0) {
             String apiPath =
@@ -398,16 +404,20 @@ class AppController extends GetxController {
         var user = FirebaseAuth.instance.currentUser;
         bool check = true;
 
+        var docIdChats = <String>[];
+
         FirebaseFirestore.instance
             .collection('room')
             .doc(element.id)
             .collection('chat')
-            .orderBy('timestamp', descending: false)
+            .orderBy('timestamp')
             .snapshots()
             .listen((event) {
           if (event.docs.isEmpty) {
           } else {
             for (var element2 in event.docs) {
+              docIdChats.add(element2.id);
+
               ChatModel chatModel = ChatModel.fromMap(element2.data());
               chatModels.add(chatModel);
 
@@ -418,6 +428,7 @@ class AppController extends GetxController {
             }
           }
           listChatModels.add(chatModels);
+          listDocIdChats.add(docIdChats);
           lastChatModelLogins.add(lateChatModel!);
         });
         // indexPage++;

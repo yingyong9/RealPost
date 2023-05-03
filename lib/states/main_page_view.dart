@@ -104,7 +104,10 @@ class _MainPageViewState extends State<MainPageView> {
                                           ((appController.displayPanel.value) &&
                                                   (appController
                                                       .displayAll.value))
-                                              ? backHomeAndAdd(appController,
+                                              // ? backHomeAndAdd(appController,
+                                              //     boxConstraints:
+                                              //         boxConstraints)
+                                              ? rightMenu(appController,
                                                   boxConstraints:
                                                       boxConstraints)
                                               : const SizedBox(),
@@ -292,15 +295,21 @@ class _MainPageViewState extends State<MainPageView> {
           const SizedBox(
             width: 8,
           ),
-          SizedBox(
+          Container(
+            // decoration:
+            //     AppConstant().boxChatGuest(bgColor: Colors.grey.shade700),
             width: boxConstraints.maxWidth * 0.6,
-            child: BubbleSpecialOne(
-              text: appController
-                  .roomModels[appController.indexBodyMainPageView.value].room,
-              textStyle: AppConstant().h3Style(color: Colors.black),
-              isSender: false,
-              color: AppConstant.bgChat,
-            ),
+            // child: BubbleSpecialOne(
+            //   text: appController
+            //       .roomModels[appController.indexBodyMainPageView.value].room,
+            //   textStyle: AppConstant().h3Style(color: Colors.black),
+            //   isSender: false,
+            //   color: AppConstant.bgChat,
+            // ),
+            child: WidgetText(
+                text: appController
+                    .roomModels[appController.indexBodyMainPageView.value]
+                    .room),
           ),
         ],
       ),
@@ -359,6 +368,147 @@ class _MainPageViewState extends State<MainPageView> {
         : const SizedBox();
   }
 
+  Widget rightMenu(AppController appController,
+      {required BoxConstraints boxConstraints}) {
+    var widgets = <Widget>[
+      firstMenu(),
+      secondMenu(),
+      thirdMenu(),
+      forthMenu(appController: appController),
+      fifMenu(appController: appController),
+      sixMenu(boxConstraints: boxConstraints),
+    ];
+
+    return Positioned(
+      right: 16,
+      top: boxConstraints.maxHeight * 0.7 - 260,
+      child: DropdownButton(
+        underline: const SizedBox(),
+        iconSize: 0.0,
+        dropdownColor: AppConstant.bgColor,
+        items: widgets
+            .map(
+              (e) => DropdownMenuItem(
+                child: e,
+                value: e,
+              ),
+            )
+            .toList(),
+        hint: Container(
+          margin: const EdgeInsets.all(4),
+          decoration: AppConstant().boxCurve(color: Colors.red.shade700),
+          child: WidgetIconButton(
+            iconData: Icons.menu,
+            pressFunc: () {},
+          ),
+        ),
+        value: null,
+        onChanged: (value) {},
+      ),
+    );
+  }
+
+  Widget firstMenu() {
+    return controller.displayAddFriends[controller.indexBodyMainPageView.value]
+        ? badges.Badge(
+            badgeStyle: badges.BadgeStyle(badgeColor: Colors.red.shade700),
+            position: badges.BadgePosition.bottomEnd(end: 10, bottom: -12),
+            badgeContent: const Icon(
+              Icons.add,
+              size: 20,
+              color: Colors.white,
+            ),
+            child: Container(
+              decoration: AppConstant().boxCurve(color: Colors.white),
+              child: WidgetImageInternet(
+                urlImage: controller
+                    .userModelAtRooms[controller.indexBodyMainPageView.value]
+                    .urlAvatar!,
+                width: 48,
+                height: 48,
+                boxFit: BoxFit.cover,
+                tapFunc: () {
+                  Get.to(const DisplayProfile());
+                },
+              ),
+            ),
+            onTap: () {
+              String uidFriend = controller
+                  .roomModels[controller.indexBodyMainPageView.value].uidCreate;
+
+              AppService()
+                  .processAddFriend(uidFriend: uidFriend)
+                  .then((value) async {
+                print('##19april You tab add uidFried --> $uidFriend success');
+                controller.displayAddFriends.clear();
+                for (var element in controller.roomModels) {
+                  controller.displayAddFriends.add(await AppService()
+                      .findPatnerFriend(uidCheckFriend: element.uidCreate));
+                }
+              });
+            },
+          )
+        : Container(
+            decoration: AppConstant().boxCurve(color: Colors.white),
+            child: WidgetImageInternet(
+              urlImage: controller
+                  .userModelAtRooms[controller.indexBodyMainPageView.value]
+                  .urlAvatar!,
+              width: 48,
+              height: 48,
+              boxFit: BoxFit.cover,
+              tapFunc: () {
+                Get.to(const DisplayProfile());
+              },
+            ),
+          );
+  }
+
+  Widget secondMenu() {
+    return controller.roomModels[controller.indexBodyMainPageView.value]
+                .geoPoint!.latitude ==
+            0
+        ? const SizedBox()
+        : Container(
+            decoration: AppConstant().boxCurve(color: Colors.green.shade900),
+            child: WidgetIconButton(
+              color: Colors.grey.shade300,
+              size: 36,
+              pressFunc: () {
+                GeoPoint geoPoint = controller
+                    .roomModels[controller.indexBodyMainPageView.value]
+                    .geoPoint!;
+                String url =
+                    'https://www.google.com/maps/search/?api=1&query=${geoPoint.latitude},${geoPoint.longitude}';
+                AppService().processLunchUrl(url: url);
+              },
+              iconData: Icons.pin_drop,
+            ),
+          );
+  }
+
+  Widget sixMenu({required BoxConstraints boxConstraints}) {
+    return controller
+            .roomModels[controller.indexBodyMainPageView.value].displayCart!
+        ? Container(
+            decoration: AppConstant().boxCurve(color: Colors.white),
+            child: InkWell(
+              child: const WidgetImage(
+                path: 'images/basket.png',
+                size: 48,
+              ),
+              onTap: () {
+                AppBottomSheet().orderButtonSheet(
+                    roomModel: controller
+                        .roomModels[controller.indexBodyMainPageView.value],
+                    height: boxConstraints.maxHeight * 0.35,
+                    userModelLogin: controller.userModels.last);
+              },
+            ),
+          )
+        : const SizedBox();
+  }
+
   Widget backHomeAndAdd(AppController appController,
       {required BoxConstraints boxConstraints}) {
     return appController.displayAddFriends.isEmpty
@@ -368,174 +518,69 @@ class _MainPageViewState extends State<MainPageView> {
             top: boxConstraints.maxHeight * 0.7 - 260,
             child: Column(
               children: [
-                appController.displayAddFriends[
-                        appController.indexBodyMainPageView.value]
-                    ? badges.Badge(
-                        badgeStyle:
-                            badges.BadgeStyle(badgeColor: Colors.red.shade700),
-                        position: badges.BadgePosition.bottomEnd(
-                            end: 10, bottom: -12),
-                        badgeContent: const Icon(
-                          Icons.add,
-                          size: 20,
-                          color: Colors.white,
-                        ),
-                        child: Container(
-                          decoration:
-                              AppConstant().boxCurve(color: Colors.white),
-                          child: WidgetImageInternet(
-                            urlImage: appController
-                                .userModelAtRooms[
-                                    appController.indexBodyMainPageView.value]
-                                .urlAvatar!,
-                            width: 48,
-                            height: 48,
-                            boxFit: BoxFit.cover,
-                            tapFunc: () {
-                              Get.to(const DisplayProfile());
-                            },
-                          ),
-                        ),
-                        onTap: () {
-                          String uidFriend = appController
-                              .roomModels[
-                                  appController.indexBodyMainPageView.value]
-                              .uidCreate;
-
-                          AppService()
-                              .processAddFriend(uidFriend: uidFriend)
-                              .then((value) async {
-                            print(
-                                '##19april You tab add uidFried --> $uidFriend success');
-                            appController.displayAddFriends.clear();
-                            for (var element in appController.roomModels) {
-                              appController.displayAddFriends.add(
-                                  await AppService().findPatnerFriend(
-                                      uidCheckFriend: element.uidCreate));
-                            }
-                          });
-                        },
-                      )
-                    : Container(
-                        decoration: AppConstant().boxCurve(color: Colors.white),
-                        child: WidgetImageInternet(
-                          urlImage: appController
-                              .userModelAtRooms[
-                                  appController.indexBodyMainPageView.value]
-                              .urlAvatar!,
-                          width: 48,
-                          height: 48,
-                          boxFit: BoxFit.cover,
-                          tapFunc: () {
-                            Get.to(const DisplayProfile());
-                          },
-                        ),
-                      ),
-
+                firstMenu(),
                 const SizedBox(
                   height: 8,
                 ),
-                appController
-                            .roomModels[
-                                appController.indexBodyMainPageView.value]
-                            .geoPoint!
-                            .latitude ==
-                        0
-                    ? const SizedBox()
-                    : Container(
-                        decoration: AppConstant()
-                            .boxCurve(color: Colors.green.shade900),
-                        child: WidgetIconButton(
-                          color: Colors.grey.shade300,
-                          size: 36,
-                          pressFunc: () {
-                            GeoPoint geoPoint = appController
-                                .roomModels[
-                                    appController.indexBodyMainPageView.value]
-                                .geoPoint!;
-                            String url =
-                                'https://www.google.com/maps/search/?api=1&query=${geoPoint.latitude},${geoPoint.longitude}';
-                            AppService().processLunchUrl(url: url);
-                          },
-                          iconData: Icons.pin_drop,
-                        ),
-                      ),
+                secondMenu(),
                 const SizedBox(
                   height: 8,
                 ),
-
-                Container(
-                  decoration:
-                      AppConstant().boxCurve(color: Colors.green.shade900),
-                  child: WidgetIconButton(
-                    color: Colors.grey.shade300,
-                    size: 36,
-                    pressFunc: () {},
-                    iconData: Icons.search,
-                  ),
-                ),
-
+                thirdMenu(),
                 const SizedBox(
                   height: 8,
                 ),
-                WidgetImage(
-                  path: 'images/icon2.png',
-                  size: 60,
-                  tapFunc: () {
-                    Get.to(const ListFriend())!.then((value) {
-                      appController.listFriendLoad.value = true;
-                    });
-                  },
-                ),
-
-                Container(
-                  decoration: AppConstant().boxCurve(color: Colors.white),
-                  child: WidgetIconButton(
-                    pressFunc: () {
-                      if (appController.xFiles.isNotEmpty) {
-                        appController.xFiles.clear();
-                      }
-
-                      Get.to(const AddProduct())!.then((value) {});
-                    },
-                    iconData: Icons.add_box,
-                    color: Colors.green,
-                    size: 36,
-                  ),
-                ),
+                forthMenu(appController: appController),
+                fifMenu(appController: appController),
                 const SizedBox(
                   height: 8,
                 ),
-                // (appController.roomModels[appController.indexBodyMainPageView.value]
-                //             .uidCreate
-                //             .toString() ==
-                //         appController.mainUid.toString())
-                //     ? const SizedBox()
-                //     :
-
-                appController
-                        .roomModels[appController.indexBodyMainPageView.value]
-                        .displayCart!
-                    ? Container(
-                        decoration: AppConstant().boxCurve(color: Colors.white),
-                        child: InkWell(
-                          child: const WidgetImage(
-                            path: 'images/basket.png',
-                            size: 48,
-                          ),
-                          onTap: () {
-                            AppBottomSheet().orderButtonSheet(
-                                roomModel: appController.roomModels[
-                                    appController.indexBodyMainPageView.value],
-                                height: boxConstraints.maxHeight * 0.35,
-                                userModelLogin: appController.userModels.last);
-                          },
-                        ),
-                      )
-                    : const SizedBox(),
+                sixMenu(boxConstraints: boxConstraints)
               ],
             ),
           );
+  }
+
+  Container fifMenu({required AppController appController}) {
+    return Container(
+      decoration: AppConstant().boxCurve(color: Colors.white),
+      child: WidgetIconButton(
+        pressFunc: () {
+          if (appController.xFiles.isNotEmpty) {
+            appController.xFiles.clear();
+          }
+
+          Get.to(const AddProduct())!.then((value) {});
+        },
+        iconData: Icons.add_box,
+        color: Colors.green,
+        size: 36,
+      ),
+    );
+  }
+
+  WidgetImage forthMenu({required AppController appController}) {
+    return WidgetImage(
+      path: 'images/icon2.png',
+      size: 60,
+      tapFunc: () {
+        Get.to(const ListFriend())!.then((value) {
+          appController.listFriendLoad.value = true;
+        });
+      },
+    );
+  }
+
+  Container thirdMenu() {
+    return Container(
+      decoration: AppConstant().boxCurve(color: Colors.green.shade900),
+      child: WidgetIconButton(
+        color: Colors.grey.shade300,
+        size: 36,
+        pressFunc: () {},
+        iconData: Icons.search,
+      ),
+    );
   }
 
   Widget displayRealText({required AppController appController}) {
@@ -674,106 +719,123 @@ class _MainPageViewState extends State<MainPageView> {
                           width: 8,
                         ),
                         SizedBox(
-                          width: boxConstraints.maxWidth * 0.75 - 40,
+                          width: boxConstraints.maxWidth * 0.75 - 90,
                           child: InkWell(
                             onTap: () {
                               print('##30april you tap Bubble');
                               AppService().processLunchUrl(
                                   url: appController.chatModels[index].message);
                             },
-                            child: BubbleSpecialOne(
-                              text: appController.chatModels[index].message,
-                              color: AppConstant.bgChat,
-                              isSender: false,
-                              textStyle:
-                                  AppConstant().h3Style(color: Colors.black),
+                            child: Container(
+                              decoration: AppConstant()
+                                  .boxChatGuest(bgColor: Colors.grey.shade700),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  appController
+                                          .chatModels[index].urlRealPost.isEmpty
+                                      ? const SizedBox()
+                                      : Container(
+                                          margin:
+                                              const EdgeInsets.only(bottom: 8),
+                                          child: WidgetImageInternet(
+                                            urlImage: appController
+                                                .chatModels[index].urlRealPost,
+                                            boxFit: BoxFit.cover,
+                                            tapFunc: () {
+                                              print(
+                                                  'You tap image url ===> ${appController.chatModels[index].urlRealPost}');
+                                              Get.to(FullScreenImage(
+                                                      urlImage: appController
+                                                          .chatModels[index]
+                                                          .urlRealPost))!
+                                                  .then((value) {
+                                                //Check Time ว่าเป็น today ????
+                                                if (AppService().compareCurrentTime(
+                                                    otherDatetime: appController
+                                                        .roomModels[appController
+                                                            .indexBodyMainPageView
+                                                            .value]
+                                                        .timestamp
+                                                        .toDate())) {
+                                                  //Status Real
+                                                  print('##29 Status Real');
+                                                } else {
+                                                  //update time post
+                                                  print(
+                                                      '##29 update Time post');
+                                                  Map<String, dynamic> map =
+                                                      appController
+                                                          .roomModels[appController
+                                                              .indexBodyMainPageView
+                                                              .value]
+                                                          .toMap();
+
+                                                  map['timestamp'] =
+                                                      Timestamp.fromDate(
+                                                          DateTime.now());
+                                                  AppService()
+                                                      .processUpdateRoom(
+                                                          docIdRoom: appController
+                                                                  .docIdRooms[
+                                                              appController
+                                                                  .indexBodyMainPageView
+                                                                  .value],
+                                                          data: map)
+                                                      .then((value) {
+                                                    // AppService().initialSetup(context: context);
+                                                    Restart.restartApp();
+                                                  });
+                                                }
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 12),
+                                    child: WidgetText(
+                                        text: appController
+                                            .chatModels[index].message),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         )
-                        // Container(
-                        //   constraints: BoxConstraints(
-                        //       maxWidth: boxConstraints.maxWidth * 0.5 - 40),
-                        //   padding: const EdgeInsets.symmetric(
-                        //       vertical: 4, horizontal: 12),
-                        //   margin: const EdgeInsets.only(top: 4),
-                        //   // decoration: AppConstant().boxChatGuest(
-                        //   //     bgColor: Colors.black.withOpacity(0.5)),
-                        //   child: Text.rich(
-                        //     TextSpan(
-                        //         text: appController
-                        //             .chatModels[index].disPlayName,
-                        //         style: AppConstant().h3Style(
-                        //             color: Colors.yellow,
-                        //             fontWeight: FontWeight.bold),
-                        //         children: [
-                        //           TextSpan(
-                        //               text: ' : ',
-                        //               style: AppConstant().h3Style(
-                        //                   color: Colors.yellow,
-                        //                   fontWeight: FontWeight.bold)),
-                        //           TextSpan(
-                        //               text: appController
-                        //                   .chatModels[index].message,
-                        //               style: AppConstant()
-                        //                   .h3Style(color: Colors.white))
-                        //         ]),
-                        //   ),
-                        // ),
                       ],
                     ),
+                    const SizedBox(
+                      width: 4,
+                    ),
+                    Column(
+                      children: [
+                        WidgetIconButton(
+                          pressFunc: () {
+                            print('index chat --> $index');
+                            print(
+                                'docIdChat ---> ${appController.docIdChats[index]}');
+                            AppService().addFavorite(
+                                docIdChat: appController.docIdChats[index],
+                                chatModel: appController.chatModels[index]);
+                          },
+                          iconData: Icons.favorite,
+                          splashRadius: 25,
+                        ),
+                        WidgetText(
+                            text: appController.chatModels[index].favorit
+                                .toString()),
+                        Icon(
+                          Icons.comment,
+                          color: Colors.white,
+                        ),
+                      ],
+                    )
                   ],
                 ),
-                appController.chatModels[index].urlRealPost.isEmpty
-                    ? const SizedBox()
-                    : Container(
-                        margin:
-                            const EdgeInsets.only(left: 36, top: 8, bottom: 8),
-                        child: WidgetImageInternet(
-                          urlImage: appController.chatModels[index].urlRealPost,
-                          width: boxConstraints.maxWidth * 0.5 - 40,
-                          // height: 80,
-                          boxFit: BoxFit.cover,
-                          tapFunc: () {
-                            print(
-                                'You tap image url ===> ${appController.chatModels[index].urlRealPost}');
-                            Get.to(FullScreenImage(
-                                    urlImage: appController
-                                        .chatModels[index].urlRealPost))!
-                                .then((value) {
-                              //Check Time ว่าเป็น today ????
-                              if (AppService().compareCurrentTime(
-                                  otherDatetime: appController
-                                      .roomModels[appController
-                                          .indexBodyMainPageView.value]
-                                      .timestamp
-                                      .toDate())) {
-                                //Status Real
-                                print('##29 Status Real');
-                              } else {
-                                //update time post
-                                print('##29 update Time post');
-                                Map<String, dynamic> map = appController
-                                    .roomModels[appController
-                                        .indexBodyMainPageView.value]
-                                    .toMap();
-
-                                map['timestamp'] =
-                                    Timestamp.fromDate(DateTime.now());
-                                AppService()
-                                    .processUpdateRoom(
-                                        docIdRoom: appController.docIdRooms[
-                                            appController
-                                                .indexBodyMainPageView.value],
-                                        data: map)
-                                    .then((value) {
-                                  // AppService().initialSetup(context: context);
-                                  Restart.restartApp();
-                                });
-                              }
-                            });
-                          },
-                        ),
-                      )
+                const SizedBox(
+                  height: 36,
+                ),
               ],
             );
           },

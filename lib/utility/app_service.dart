@@ -36,6 +36,20 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
+  Future<void> addFavorite(
+      {required String docIdChat, required ChatModel chatModel}) async {
+    Map<String, dynamic> map = chatModel.toMap();
+    map['favorit'] = map['favorit'] + 1;
+
+    await FirebaseFirestore.instance
+        .collection('room')
+        .doc(
+            appController.docIdRooms[appController.indexBodyMainPageView.value])
+        .collection('chat')
+        .doc(docIdChat)
+        .update(map);
+  }
+
   Future<bool> findPatnerFriend({required String uidCheckFriend}) async {
     bool result = true; // display add friend
 

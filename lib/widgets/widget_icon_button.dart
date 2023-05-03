@@ -12,6 +12,7 @@ class WidgetIconButton extends StatelessWidget {
     this.iconWidget,
     this.size,
     this.padding,
+    this.splashRadius,
   }) : super(key: key);
 
   final IconData? iconData;
@@ -20,11 +21,15 @@ class WidgetIconButton extends StatelessWidget {
   final Widget? iconWidget;
   final double? size;
   final double? padding;
+  final double? splashRadius;
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-        padding:  EdgeInsets.all(padding ?? 4),
+        highlightColor: Colors.pink,
+        splashColor: Colors.pink,
+        splashRadius: splashRadius,
+        padding: EdgeInsets.all(padding ?? 4),
         onPressed: pressFunc,
         icon: iconWidget ??
             Icon(
