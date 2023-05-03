@@ -62,9 +62,9 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
                             .timestamp
                             .toDate()))
                     ? Container(
-                        margin: const EdgeInsets.only(left: 8),
-                        child: WidgetButton(
-                          label: 'Real',
+                        margin: const EdgeInsets.only(left: 8, bottom: 4),
+                        child: WidgetIconButton(
+                          size: 36,
                           pressFunc: () {
                             if ((widget.roomModel!.uidCreate == user!.uid) &&
                                 (AppService().compareCurrentTime(
@@ -85,7 +85,7 @@ class _WidgetContentFormState extends State<WidgetContentForm> {
                               AppBottomSheet().realGestBottonSheet();
                             }
                           },
-                          bgColor: Colors.red.shade900,
+                          iconData: Icons.image,
                         ),
                       )
                     : const SizedBox(),
