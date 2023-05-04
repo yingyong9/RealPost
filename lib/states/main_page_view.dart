@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_print, sort_child_properties_last
 
-import 'package:chat_bubbles/bubbles/bubble_special_one.dart';
 import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -91,22 +90,11 @@ class _MainPageViewState extends State<MainPageView> {
                                         children: [
                                           contentTop(element, boxConstraints,
                                               appController),
-                                          contentMidforSalse(element,
+                                          displayForm(
                                               boxConstraints, appController),
-                                          appController
-                                                  .roomModels[appController
-                                                      .indexBodyMainPageView
-                                                      .value]
-                                                  .safeProduct!
-                                              ? const SizedBox()
-                                              : displayForm(boxConstraints,
-                                                  appController),
                                           ((appController.displayPanel.value) &&
                                                   (appController
                                                       .displayAll.value))
-                                              // ? backHomeAndAdd(appController,
-                                              //     boxConstraints:
-                                              //         boxConstraints)
                                               ? rightMenu(appController,
                                                   boxConstraints:
                                                       boxConstraints)
@@ -245,36 +233,6 @@ class _MainPageViewState extends State<MainPageView> {
         displayListChat(appController, boxConstraints),
         displayRealText(appController: appController),
         displayRoomText(appController, boxConstraints),
-
-        // blueTextOwner(appController, boxConstraints),
-        // (appController.chatOwnerModels.isEmpty) ||
-        //         (AppService()
-        //             .findUrlImageWork(chatmodels: appController.chatOwnerModels)
-        //             .isEmpty)
-        //     ? const SizedBox()
-        //     : appController.displayAll.value
-        //         ? Positioned(
-        //             top: 16,
-        //             left: 16,
-        //             child: Container(
-        //               decoration: AppConstant().borderBox(),
-        //               child: WidgetImageInternet(
-        //                 urlImage: AppService().findUrlImageWork(
-        //                     chatmodels: appController.chatOwnerModels),
-        //                 width: boxConstraints.maxWidth * 0.5 - 64,
-        //                 height: boxConstraints.maxWidth * 0.5 - 32,
-        //                 boxFit: BoxFit.cover,
-        //                 tapFunc: () {
-        //                   print(
-        //                       'you tap image ${AppService().findUrlImageWork(chatmodels: appController.chatOwnerModels)}');
-        //                   Get.to(FullScreenImage(
-        //                       urlImage: AppService().findUrlImageWork(
-        //                           chatmodels: appController.chatOwnerModels)));
-        //                 },
-        //               ),
-        //             ),
-        //           )
-        //         : const SizedBox(),
       ],
     );
   }
@@ -361,9 +319,6 @@ class _MainPageViewState extends State<MainPageView> {
         ? displayListMessage(
             boxConstraints,
             appController,
-            top: boxConstraints.maxHeight * 0.15,
-            height: boxConstraints.maxHeight * 0.7,
-            reverse: true,
           )
         : const SizedBox();
   }
@@ -380,30 +335,31 @@ class _MainPageViewState extends State<MainPageView> {
     ];
 
     return Positioned(
-      right: 16,
-      top: boxConstraints.maxHeight * 0.7 - 260,
-      child: DropdownButton(
-        underline: const SizedBox(),
-        iconSize: 0.0,
-        dropdownColor: AppConstant.bgColor,
-        items: widgets
-            .map(
-              (e) => DropdownMenuItem(
-                child: e,
-                value: e,
-              ),
-            )
-            .toList(),
-        hint: Container(
-          margin: const EdgeInsets.all(4),
-          decoration: AppConstant().boxCurve(color: Colors.red.shade700),
-          child: WidgetIconButton(
-            iconData: Icons.menu,
-            pressFunc: () {},
+      right: 0,
+      top: 70,
+      child: Container(
+        // width: 25,
+        child: DropdownButton(
+          elevation: 0,
+          underline: const SizedBox(),
+          iconSize: 0.0,
+          dropdownColor: AppConstant.bgColor,
+          items: widgets
+              .map(
+                (e) => DropdownMenuItem(
+                  child: e,
+                  value: e,
+                ),
+              )
+              .toList(),
+          hint: Container(padding: const EdgeInsets.all(4),
+            margin: const EdgeInsets.only(left: 28),
+            decoration: AppConstant().boxCurve(color: Colors.red.shade700),
+            child: Icon(Icons.menu, color: Colors.white,),
           ),
+          value: null,
+          onChanged: (value) {},
         ),
-        value: null,
-        onChanged: (value) {},
       ),
     );
   }
@@ -656,22 +612,14 @@ class _MainPageViewState extends State<MainPageView> {
   }
 
   Positioned displayListMessage(
-    BoxConstraints boxConstraints,
-    AppController appController, {
-    required double top,
-    double? marginLeft,
-    // required bool status,
-    double? height,
-    bool? reverse,
-  }) {
+      BoxConstraints boxConstraints, AppController appController) {
     return Positioned(
-      top: top,
+      top: boxConstraints.maxHeight * 0.15,
       child: SizedBox(
-        width: boxConstraints.maxWidth * 0.75,
-        height: height ??
-            boxConstraints.maxHeight - (boxConstraints.maxHeight * 0.2),
+        width: boxConstraints.maxWidth * 0.9,
+        height: boxConstraints.maxHeight * 0.7,
         child: ListView.builder(
-          reverse: reverse ?? false,
+          reverse: true,
           shrinkWrap: true,
           physics: const ScrollPhysics(),
           itemCount: appController.chatModels.length,
@@ -682,8 +630,7 @@ class _MainPageViewState extends State<MainPageView> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Column(
                       children: [
                         WidgetSqueerAvatar(
                           urlImage: appController.chatModels[index].urlAvatar,
@@ -715,121 +662,113 @@ class _MainPageViewState extends State<MainPageView> {
                             }
                           },
                         ),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        SizedBox(
-                          width: boxConstraints.maxWidth * 0.75 - 90,
-                          child: InkWell(
-                            onTap: () {
-                              print('##30april you tap Bubble');
-                              AppService().processLunchUrl(
-                                  url: appController.chatModels[index].message);
-                            },
-                            child: Container(
-                              decoration: AppConstant()
-                                  .boxChatGuest(bgColor: Colors.grey.shade700),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  appController
-                                          .chatModels[index].urlRealPost.isEmpty
-                                      ? const SizedBox()
-                                      : Container(
-                                          margin:
-                                              const EdgeInsets.only(bottom: 8),
-                                          child: WidgetImageInternet(
-                                            urlImage: appController
-                                                .chatModels[index].urlRealPost,
-                                            boxFit: BoxFit.cover,
-                                            tapFunc: () {
-                                              print(
-                                                  'You tap image url ===> ${appController.chatModels[index].urlRealPost}');
-                                              Get.to(FullScreenImage(
-                                                      urlImage: appController
-                                                          .chatModels[index]
-                                                          .urlRealPost))!
-                                                  .then((value) {
-                                                //Check Time ว่าเป็น today ????
-                                                if (AppService().compareCurrentTime(
-                                                    otherDatetime: appController
-                                                        .roomModels[appController
-                                                            .indexBodyMainPageView
-                                                            .value]
-                                                        .timestamp
-                                                        .toDate())) {
-                                                  //Status Real
-                                                  print('##29 Status Real');
-                                                } else {
-                                                  //update time post
-                                                  print(
-                                                      '##29 update Time post');
-                                                  Map<String, dynamic> map =
-                                                      appController
-                                                          .roomModels[appController
-                                                              .indexBodyMainPageView
-                                                              .value]
-                                                          .toMap();
-
-                                                  map['timestamp'] =
-                                                      Timestamp.fromDate(
-                                                          DateTime.now());
-                                                  AppService()
-                                                      .processUpdateRoom(
-                                                          docIdRoom: appController
-                                                                  .docIdRooms[
-                                                              appController
-                                                                  .indexBodyMainPageView
-                                                                  .value],
-                                                          data: map)
-                                                      .then((value) {
-                                                    // AppService().initialSetup(context: context);
-                                                    Restart.restartApp();
-                                                  });
-                                                }
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 12),
-                                    child: WidgetText(
-                                        text: appController
-                                            .chatModels[index].message),
-                                  ),
-                                ],
-                              ),
+                        Column(
+                          children: [
+                            WidgetIconButton(
+                              pressFunc: () {
+                                print('index chat --> $index');
+                                print(
+                                    'docIdChat ---> ${appController.docIdChats[index]}');
+                                AppService().addFavorite(
+                                    docIdChat: appController.docIdChats[index],
+                                    chatModel: appController.chatModels[index]);
+                              },
+                              iconData: Icons.favorite,
+                              splashRadius: 25,
                             ),
-                          ),
+                            WidgetText(
+                                text: appController.chatModels[index].favorit
+                                    .toString()),
+                            const Icon(
+                              Icons.comment,
+                              color: Colors.white,
+                            ),
+                          ],
                         )
                       ],
                     ),
-                    const SizedBox(
-                      width: 4,
-                    ),
-                    Column(
-                      children: [
-                        WidgetIconButton(
-                          pressFunc: () {
-                            print('index chat --> $index');
-                            print(
-                                'docIdChat ---> ${appController.docIdChats[index]}');
-                            AppService().addFavorite(
-                                docIdChat: appController.docIdChats[index],
-                                chatModel: appController.chatModels[index]);
-                          },
-                          iconData: Icons.favorite,
-                          splashRadius: 25,
+                    SizedBox(
+                      width: boxConstraints.maxWidth * 0.9 - 48,
+                      child: InkWell(
+                        onTap: () {
+                          print('##30april you tap Bubble');
+                          AppService().processLunchUrl(
+                              url: appController.chatModels[index].message);
+                        },
+                        child: Container(
+                          decoration: AppConstant()
+                              .boxChatGuest(bgColor: Colors.grey.shade700),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              appController
+                                      .chatModels[index].urlRealPost.isEmpty
+                                  ? const SizedBox()
+                                  : Container(
+                                      margin: const EdgeInsets.only(bottom: 8),
+                                      child: WidgetImageInternet(
+                                        urlImage: appController
+                                            .chatModels[index].urlRealPost,
+                                        boxFit: BoxFit.cover,
+                                        tapFunc: () {
+                                          print(
+                                              'You tap image url ===> ${appController.chatModels[index].urlRealPost}');
+                                          Get.to(FullScreenImage(
+                                                  urlImage: appController
+                                                      .chatModels[index]
+                                                      .urlRealPost))!
+                                              .then((value) {
+                                            //Check Time ว่าเป็น today ????
+                                            if (AppService().compareCurrentTime(
+                                                otherDatetime: appController
+                                                    .roomModels[appController
+                                                        .indexBodyMainPageView
+                                                        .value]
+                                                    .timestamp
+                                                    .toDate())) {
+                                              //Status Real
+                                              print('##29 Status Real');
+                                            } else {
+                                              //update time post
+                                              print('##29 update Time post');
+                                              Map<String, dynamic> map =
+                                                  appController
+                                                      .roomModels[appController
+                                                          .indexBodyMainPageView
+                                                          .value]
+                                                      .toMap();
+
+                                              map['timestamp'] =
+                                                  Timestamp.fromDate(
+                                                      DateTime.now());
+                                              AppService()
+                                                  .processUpdateRoom(
+                                                      docIdRoom: appController
+                                                              .docIdRooms[
+                                                          appController
+                                                              .indexBodyMainPageView
+                                                              .value],
+                                                      data: map)
+                                                  .then((value) {
+                                                // AppService().initialSetup(context: context);
+                                                Restart.restartApp();
+                                              });
+                                            }
+                                          });
+                                        },
+                                      ),
+                                    ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 12),
+                                child: WidgetText(
+                                    text: appController
+                                        .chatModels[index].message),
+                              ),
+                            ],
+                          ),
                         ),
-                        WidgetText(
-                            text: appController.chatModels[index].favorit
-                                .toString()),
-                        Icon(
-                          Icons.comment,
-                          color: Colors.white,
-                        ),
-                      ],
+                      ),
                     )
                   ],
                 ),
