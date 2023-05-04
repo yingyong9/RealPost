@@ -90,16 +90,8 @@ class _MainPageViewState extends State<MainPageView> {
                                         children: [
                                           contentTop(element, boxConstraints,
                                               appController),
-                                          contentMidforSalse(element,
+                                          displayForm(
                                               boxConstraints, appController),
-                                          appController
-                                                  .roomModels[appController
-                                                      .indexBodyMainPageView
-                                                      .value]
-                                                  .safeProduct!
-                                              ? const SizedBox()
-                                              : displayForm(boxConstraints,
-                                                  appController),
                                           ((appController.displayPanel.value) &&
                                                   (appController
                                                       .displayAll.value))
@@ -327,9 +319,6 @@ class _MainPageViewState extends State<MainPageView> {
         ? displayListMessage(
             boxConstraints,
             appController,
-            top: boxConstraints.maxHeight * 0.15,
-            height: boxConstraints.maxHeight * 0.7,
-            reverse: true,
           )
         : const SizedBox();
   }
@@ -347,30 +336,30 @@ class _MainPageViewState extends State<MainPageView> {
 
     return Positioned(
       right: 0,
-      // top: boxConstraints.maxHeight * 0.7 - 260,
       top: 70,
-      child: DropdownButton(
-        underline: const SizedBox(),
-        iconSize: 0.0,
-        dropdownColor: AppConstant.bgColor,
-        items: widgets
-            .map(
-              (e) => DropdownMenuItem(
-                child: e,
-                value: e,
-              ),
-            )
-            .toList(),
-        hint: Container(
-          margin: const EdgeInsets.all(4),
-          decoration: AppConstant().boxCurve(color: Colors.red.shade700),
-          child: WidgetIconButton(
-            iconData: Icons.menu,
-            pressFunc: () {},
+      child: Container(
+        // width: 25,
+        child: DropdownButton(
+          elevation: 0,
+          underline: const SizedBox(),
+          iconSize: 0.0,
+          dropdownColor: AppConstant.bgColor,
+          items: widgets
+              .map(
+                (e) => DropdownMenuItem(
+                  child: e,
+                  value: e,
+                ),
+              )
+              .toList(),
+          hint: Container(padding: const EdgeInsets.all(4),
+            margin: const EdgeInsets.only(left: 28),
+            decoration: AppConstant().boxCurve(color: Colors.red.shade700),
+            child: Icon(Icons.menu, color: Colors.white,),
           ),
+          value: null,
+          onChanged: (value) {},
         ),
-        value: null,
-        onChanged: (value) {},
       ),
     );
   }
@@ -623,22 +612,14 @@ class _MainPageViewState extends State<MainPageView> {
   }
 
   Positioned displayListMessage(
-    BoxConstraints boxConstraints,
-    AppController appController, {
-    required double top,
-    double? marginLeft,
-    // required bool status,
-    double? height,
-    bool? reverse,
-  }) {
+      BoxConstraints boxConstraints, AppController appController) {
     return Positioned(
-      top: top,
+      top: boxConstraints.maxHeight * 0.15,
       child: SizedBox(
-        width: boxConstraints.maxWidth * 0.75,
-        height: height ??
-            boxConstraints.maxHeight - (boxConstraints.maxHeight * 0.2),
+        width: boxConstraints.maxWidth * 0.9,
+        height: boxConstraints.maxHeight * 0.7,
         child: ListView.builder(
-          reverse: reverse ?? false,
+          reverse: true,
           shrinkWrap: true,
           physics: const ScrollPhysics(),
           itemCount: appController.chatModels.length,
@@ -649,158 +630,146 @@ class _MainPageViewState extends State<MainPageView> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Column(
                       children: [
+                        WidgetSqueerAvatar(
+                          urlImage: appController.chatModels[index].urlAvatar,
+                          size: 30,
+                          pressFunc: () {
+                            if (appController.chatModels[index].uidChat
+                                    .toString() !=
+                                appController.mainUid.toString()) {
+                              if (appController
+                                  .roomModels[
+                                      appController.indexBodyMainPageView.value]
+                                  .roomPublic) {
+                                //Public
+                                Get.to(PrivateChat(
+                                    uidFriend: appController
+                                        .chatModels[index].uidChat));
+                              } else {
+                                //Private
+                                if (appController.chatModels[index].uidChat ==
+                                    appController
+                                        .roomModels[appController
+                                            .indexBodyMainPageView.value]
+                                        .uidCreate) {
+                                  Get.to(PrivateChat(
+                                      uidFriend: appController
+                                          .chatModels[index].uidChat));
+                                }
+                              }
+                            }
+                          },
+                        ),
                         Column(
                           children: [
-                            WidgetSqueerAvatar(
-                              urlImage:
-                                  appController.chatModels[index].urlAvatar,
-                              size: 30,
+                            WidgetIconButton(
                               pressFunc: () {
-                                if (appController.chatModels[index].uidChat
-                                        .toString() !=
-                                    appController.mainUid.toString()) {
-                                  if (appController
-                                      .roomModels[appController
-                                          .indexBodyMainPageView.value]
-                                      .roomPublic) {
-                                    //Public
-                                    Get.to(PrivateChat(
-                                        uidFriend: appController
-                                            .chatModels[index].uidChat));
-                                  } else {
-                                    //Private
-                                    if (appController
-                                            .chatModels[index].uidChat ==
-                                        appController
-                                            .roomModels[appController
-                                                .indexBodyMainPageView.value]
-                                            .uidCreate) {
-                                      Get.to(PrivateChat(
-                                          uidFriend: appController
-                                              .chatModels[index].uidChat));
-                                    }
-                                  }
-                                }
+                                print('index chat --> $index');
+                                print(
+                                    'docIdChat ---> ${appController.docIdChats[index]}');
+                                AppService().addFavorite(
+                                    docIdChat: appController.docIdChats[index],
+                                    chatModel: appController.chatModels[index]);
                               },
+                              iconData: Icons.favorite,
+                              splashRadius: 25,
                             ),
-                            Column(
-                              children: [
-                                WidgetIconButton(
-                                  pressFunc: () {
-                                    print('index chat --> $index');
-                                    print(
-                                        'docIdChat ---> ${appController.docIdChats[index]}');
-                                    AppService().addFavorite(
-                                        docIdChat:
-                                            appController.docIdChats[index],
-                                        chatModel:
-                                            appController.chatModels[index]);
-                                  },
-                                  iconData: Icons.favorite,
-                                  splashRadius: 25,
-                                ),
-                                WidgetText(
-                                    text: appController
-                                        .chatModels[index].favorit
-                                        .toString()),
-                                const Icon(
-                                  Icons.comment,
-                                  color: Colors.white,
-                                ),
-                              ],
-                            )
+                            WidgetText(
+                                text: appController.chatModels[index].favorit
+                                    .toString()),
+                            const Icon(
+                              Icons.comment,
+                              color: Colors.white,
+                            ),
                           ],
-                        ),
-                        SizedBox(
-                          width: boxConstraints.maxWidth * 0.75 - 50,
-                          child: InkWell(
-                            onTap: () {
-                              print('##30april you tap Bubble');
-                              AppService().processLunchUrl(
-                                  url: appController.chatModels[index].message);
-                            },
-                            child: Container(
-                              decoration: AppConstant()
-                                  .boxChatGuest(bgColor: Colors.grey.shade700),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  appController
-                                          .chatModels[index].urlRealPost.isEmpty
-                                      ? const SizedBox()
-                                      : Container(
-                                          margin:
-                                              const EdgeInsets.only(bottom: 8),
-                                          child: WidgetImageInternet(
-                                            urlImage: appController
-                                                .chatModels[index].urlRealPost,
-                                            boxFit: BoxFit.cover,
-                                            tapFunc: () {
-                                              print(
-                                                  'You tap image url ===> ${appController.chatModels[index].urlRealPost}');
-                                              Get.to(FullScreenImage(
-                                                      urlImage: appController
-                                                          .chatModels[index]
-                                                          .urlRealPost))!
-                                                  .then((value) {
-                                                //Check Time ว่าเป็น today ????
-                                                if (AppService().compareCurrentTime(
-                                                    otherDatetime: appController
-                                                        .roomModels[appController
-                                                            .indexBodyMainPageView
-                                                            .value]
-                                                        .timestamp
-                                                        .toDate())) {
-                                                  //Status Real
-                                                  print('##29 Status Real');
-                                                } else {
-                                                  //update time post
-                                                  print(
-                                                      '##29 update Time post');
-                                                  Map<String, dynamic> map =
-                                                      appController
-                                                          .roomModels[appController
-                                                              .indexBodyMainPageView
-                                                              .value]
-                                                          .toMap();
-
-                                                  map['timestamp'] =
-                                                      Timestamp.fromDate(
-                                                          DateTime.now());
-                                                  AppService()
-                                                      .processUpdateRoom(
-                                                          docIdRoom: appController
-                                                                  .docIdRooms[
-                                                              appController
-                                                                  .indexBodyMainPageView
-                                                                  .value],
-                                                          data: map)
-                                                      .then((value) {
-                                                    // AppService().initialSetup(context: context);
-                                                    Restart.restartApp();
-                                                  });
-                                                }
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 12),
-                                    child: WidgetText(
-                                        text: appController
-                                            .chatModels[index].message),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
                         )
                       ],
                     ),
+                    SizedBox(
+                      width: boxConstraints.maxWidth * 0.9 - 48,
+                      child: InkWell(
+                        onTap: () {
+                          print('##30april you tap Bubble');
+                          AppService().processLunchUrl(
+                              url: appController.chatModels[index].message);
+                        },
+                        child: Container(
+                          decoration: AppConstant()
+                              .boxChatGuest(bgColor: Colors.grey.shade700),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              appController
+                                      .chatModels[index].urlRealPost.isEmpty
+                                  ? const SizedBox()
+                                  : Container(
+                                      margin: const EdgeInsets.only(bottom: 8),
+                                      child: WidgetImageInternet(
+                                        urlImage: appController
+                                            .chatModels[index].urlRealPost,
+                                        boxFit: BoxFit.cover,
+                                        tapFunc: () {
+                                          print(
+                                              'You tap image url ===> ${appController.chatModels[index].urlRealPost}');
+                                          Get.to(FullScreenImage(
+                                                  urlImage: appController
+                                                      .chatModels[index]
+                                                      .urlRealPost))!
+                                              .then((value) {
+                                            //Check Time ว่าเป็น today ????
+                                            if (AppService().compareCurrentTime(
+                                                otherDatetime: appController
+                                                    .roomModels[appController
+                                                        .indexBodyMainPageView
+                                                        .value]
+                                                    .timestamp
+                                                    .toDate())) {
+                                              //Status Real
+                                              print('##29 Status Real');
+                                            } else {
+                                              //update time post
+                                              print('##29 update Time post');
+                                              Map<String, dynamic> map =
+                                                  appController
+                                                      .roomModels[appController
+                                                          .indexBodyMainPageView
+                                                          .value]
+                                                      .toMap();
+
+                                              map['timestamp'] =
+                                                  Timestamp.fromDate(
+                                                      DateTime.now());
+                                              AppService()
+                                                  .processUpdateRoom(
+                                                      docIdRoom: appController
+                                                              .docIdRooms[
+                                                          appController
+                                                              .indexBodyMainPageView
+                                                              .value],
+                                                      data: map)
+                                                  .then((value) {
+                                                // AppService().initialSetup(context: context);
+                                                Restart.restartApp();
+                                              });
+                                            }
+                                          });
+                                        },
+                                      ),
+                                    ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 12),
+                                child: WidgetText(
+                                    text: appController
+                                        .chatModels[index].message),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
                   ],
                 ),
                 const SizedBox(
