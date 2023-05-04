@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_print, sort_child_properties_last
 
-import 'package:chat_bubbles/bubbles/bubble_special_one.dart';
 import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -104,9 +103,6 @@ class _MainPageViewState extends State<MainPageView> {
                                           ((appController.displayPanel.value) &&
                                                   (appController
                                                       .displayAll.value))
-                                              // ? backHomeAndAdd(appController,
-                                              //     boxConstraints:
-                                              //         boxConstraints)
                                               ? rightMenu(appController,
                                                   boxConstraints:
                                                       boxConstraints)
@@ -245,36 +241,6 @@ class _MainPageViewState extends State<MainPageView> {
         displayListChat(appController, boxConstraints),
         displayRealText(appController: appController),
         displayRoomText(appController, boxConstraints),
-
-        // blueTextOwner(appController, boxConstraints),
-        // (appController.chatOwnerModels.isEmpty) ||
-        //         (AppService()
-        //             .findUrlImageWork(chatmodels: appController.chatOwnerModels)
-        //             .isEmpty)
-        //     ? const SizedBox()
-        //     : appController.displayAll.value
-        //         ? Positioned(
-        //             top: 16,
-        //             left: 16,
-        //             child: Container(
-        //               decoration: AppConstant().borderBox(),
-        //               child: WidgetImageInternet(
-        //                 urlImage: AppService().findUrlImageWork(
-        //                     chatmodels: appController.chatOwnerModels),
-        //                 width: boxConstraints.maxWidth * 0.5 - 64,
-        //                 height: boxConstraints.maxWidth * 0.5 - 32,
-        //                 boxFit: BoxFit.cover,
-        //                 tapFunc: () {
-        //                   print(
-        //                       'you tap image ${AppService().findUrlImageWork(chatmodels: appController.chatOwnerModels)}');
-        //                   Get.to(FullScreenImage(
-        //                       urlImage: AppService().findUrlImageWork(
-        //                           chatmodels: appController.chatOwnerModels)));
-        //                 },
-        //               ),
-        //             ),
-        //           )
-        //         : const SizedBox(),
       ],
     );
   }
@@ -380,8 +346,9 @@ class _MainPageViewState extends State<MainPageView> {
     ];
 
     return Positioned(
-      right: 16,
-      top: boxConstraints.maxHeight * 0.7 - 260,
+      right: 0,
+      // top: boxConstraints.maxHeight * 0.7 - 260,
+      top: 70,
       child: DropdownButton(
         underline: const SizedBox(),
         iconSize: 0.0,
@@ -685,41 +652,70 @@ class _MainPageViewState extends State<MainPageView> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        WidgetSqueerAvatar(
-                          urlImage: appController.chatModels[index].urlAvatar,
-                          size: 30,
-                          pressFunc: () {
-                            if (appController.chatModels[index].uidChat
-                                    .toString() !=
-                                appController.mainUid.toString()) {
-                              if (appController
-                                  .roomModels[
-                                      appController.indexBodyMainPageView.value]
-                                  .roomPublic) {
-                                //Public
-                                Get.to(PrivateChat(
-                                    uidFriend: appController
-                                        .chatModels[index].uidChat));
-                              } else {
-                                //Private
-                                if (appController.chatModels[index].uidChat ==
-                                    appController
-                                        .roomModels[appController
-                                            .indexBodyMainPageView.value]
-                                        .uidCreate) {
-                                  Get.to(PrivateChat(
-                                      uidFriend: appController
-                                          .chatModels[index].uidChat));
+                        Column(
+                          children: [
+                            WidgetSqueerAvatar(
+                              urlImage:
+                                  appController.chatModels[index].urlAvatar,
+                              size: 30,
+                              pressFunc: () {
+                                if (appController.chatModels[index].uidChat
+                                        .toString() !=
+                                    appController.mainUid.toString()) {
+                                  if (appController
+                                      .roomModels[appController
+                                          .indexBodyMainPageView.value]
+                                      .roomPublic) {
+                                    //Public
+                                    Get.to(PrivateChat(
+                                        uidFriend: appController
+                                            .chatModels[index].uidChat));
+                                  } else {
+                                    //Private
+                                    if (appController
+                                            .chatModels[index].uidChat ==
+                                        appController
+                                            .roomModels[appController
+                                                .indexBodyMainPageView.value]
+                                            .uidCreate) {
+                                      Get.to(PrivateChat(
+                                          uidFriend: appController
+                                              .chatModels[index].uidChat));
+                                    }
+                                  }
                                 }
-                              }
-                            }
-                          },
-                        ),
-                        const SizedBox(
-                          width: 8,
+                              },
+                            ),
+                            Column(
+                              children: [
+                                WidgetIconButton(
+                                  pressFunc: () {
+                                    print('index chat --> $index');
+                                    print(
+                                        'docIdChat ---> ${appController.docIdChats[index]}');
+                                    AppService().addFavorite(
+                                        docIdChat:
+                                            appController.docIdChats[index],
+                                        chatModel:
+                                            appController.chatModels[index]);
+                                  },
+                                  iconData: Icons.favorite,
+                                  splashRadius: 25,
+                                ),
+                                WidgetText(
+                                    text: appController
+                                        .chatModels[index].favorit
+                                        .toString()),
+                                const Icon(
+                                  Icons.comment,
+                                  color: Colors.white,
+                                ),
+                              ],
+                            )
+                          ],
                         ),
                         SizedBox(
-                          width: boxConstraints.maxWidth * 0.75 - 90,
+                          width: boxConstraints.maxWidth * 0.75 - 50,
                           child: InkWell(
                             onTap: () {
                               print('##30april you tap Bubble');
@@ -805,32 +801,6 @@ class _MainPageViewState extends State<MainPageView> {
                         )
                       ],
                     ),
-                    const SizedBox(
-                      width: 4,
-                    ),
-                    Column(
-                      children: [
-                        WidgetIconButton(
-                          pressFunc: () {
-                            print('index chat --> $index');
-                            print(
-                                'docIdChat ---> ${appController.docIdChats[index]}');
-                            AppService().addFavorite(
-                                docIdChat: appController.docIdChats[index],
-                                chatModel: appController.chatModels[index]);
-                          },
-                          iconData: Icons.favorite,
-                          splashRadius: 25,
-                        ),
-                        WidgetText(
-                            text: appController.chatModels[index].favorit
-                                .toString()),
-                        Icon(
-                          Icons.comment,
-                          color: Colors.white,
-                        ),
-                      ],
-                    )
                   ],
                 ),
                 const SizedBox(
