@@ -27,6 +27,14 @@ class AppConstant {
   static String pagePhoneNumber = '/phoneNumber';
   static String pageMainHome = '/mainHome';
 
+  BoxDecoration gradientColor() => BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color.fromARGB(255, 234, 43, 215), Color.fromARGB(255, 114, 50, 232)],
+          // colors: [Color.fromARGB(255, 16, 218, 76), Color.fromARGB(255, 65, 50, 232)],
+          begin: Alignment.topCenter,end: Alignment.bottomCenter,
+        ),
+      );
+
   BoxDecoration borderBox() => BoxDecoration(
       border: Border.all(width: 1), borderRadius: BorderRadius.circular(10));
 

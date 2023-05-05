@@ -94,8 +94,9 @@ class AppController extends GetxController {
   RxBool displayAll = true.obs;
   RxList<bool> displayAddFriends = <bool>[].obs;
   RxBool roomPublic = false.obs;
-
   RxBool tabFavorit = false.obs;
+
+  RxList<ChatModel> commentChatModels = <ChatModel>[].obs;
 
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
