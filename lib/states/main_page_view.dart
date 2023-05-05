@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/states/add_product.dart';
+import 'package:realpost/states/comment_chat.dart';
 import 'package:realpost/states/display_profile.dart';
 import 'package:realpost/states/full_screen_image.dart';
 import 'package:realpost/states/list_friend.dart';
@@ -337,29 +338,30 @@ class _MainPageViewState extends State<MainPageView> {
     return Positioned(
       right: 0,
       top: 70,
-      child: Container(
-        // width: 25,
-        child: DropdownButton(
-          elevation: 0,
-          underline: const SizedBox(),
-          iconSize: 0.0,
-          dropdownColor: AppConstant.bgColor,
-          items: widgets
-              .map(
-                (e) => DropdownMenuItem(
-                  child: e,
-                  value: e,
-                ),
-              )
-              .toList(),
-          hint: Container(padding: const EdgeInsets.all(4),
-            margin: const EdgeInsets.only(left: 28),
-            decoration: AppConstant().boxCurve(color: Colors.red.shade700),
-            child: Icon(Icons.menu, color: Colors.white,),
+      child: DropdownButton(
+        elevation: 0,
+        underline: const SizedBox(),
+        iconSize: 0.0,
+        dropdownColor: AppConstant.bgColor,
+        items: widgets
+            .map(
+              (e) => DropdownMenuItem(
+                child: e,
+                value: e,
+              ),
+            )
+            .toList(),
+        hint: Container(
+          padding: const EdgeInsets.all(4),
+          margin: const EdgeInsets.only(left: 28),
+          decoration: AppConstant().boxCurve(color: Colors.red.shade700),
+          child: const Icon(
+            Icons.menu,
+            color: Colors.white,
           ),
-          value: null,
-          onChanged: (value) {},
         ),
+        value: null,
+        onChanged: (value) {},
       ),
     );
   }
@@ -666,9 +668,9 @@ class _MainPageViewState extends State<MainPageView> {
                           children: [
                             WidgetIconButton(
                               pressFunc: () {
-                                print('index chat --> $index');
+                               
                                 print(
-                                    'docIdChat ---> ${appController.docIdChats[index]}');
+                                    '##5may docIdChat ---> ${appController.docIdChats[index]}');
                                 AppService().addFavorite(
                                     docIdChat: appController.docIdChats[index],
                                     chatModel: appController.chatModels[index]);
@@ -679,9 +681,16 @@ class _MainPageViewState extends State<MainPageView> {
                             WidgetText(
                                 text: appController.chatModels[index].favorit
                                     .toString()),
-                            const Icon(
-                              Icons.comment,
-                              color: Colors.white,
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            InkWell(onTap: () {
+                              Get.to( CommentChat(docIdChat: appController.docIdChats[index],));
+                            },
+                              child: const Icon(
+                                Icons.comment,
+                                color: Colors.white,
+                              ),
                             ),
                           ],
                         )
@@ -697,7 +706,7 @@ class _MainPageViewState extends State<MainPageView> {
                         },
                         child: Container(
                           decoration: AppConstant()
-                              .boxChatGuest(bgColor: Colors.grey.shade700),
+                              .gradientColor(),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

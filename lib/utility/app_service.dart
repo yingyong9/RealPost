@@ -36,6 +36,47 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
+  Future<void> insertCommentChat(
+      {required String docIdChat, required ChatModel commentChatModel}) async {
+    await FirebaseFirestore.instance
+        .collection('room')
+        .doc(
+            appController.docIdRooms[appController.indexBodyMainPageView.value])
+        .collection('chat')
+        .doc(docIdChat)
+        .collection('comment')
+        .doc()
+        .set(commentChatModel.toMap());
+  }
+
+  Future<void> readCommentChat({required String docIdChat}) async {
+    if (appController.commentChatModels.isNotEmpty) {
+      appController.commentChatModels.clear();
+    }
+
+    FirebaseFirestore.instance
+        .collection('room')
+        .doc(
+            appController.docIdRooms[appController.indexBodyMainPageView.value])
+        .collection('chat')
+        .doc(docIdChat)
+        .collection('comment')
+        .orderBy('timestamp')
+        .snapshots()
+        .listen((event) {
+      if (event.docs.isNotEmpty) {
+        if (appController.commentChatModels.isNotEmpty) {
+          appController.commentChatModels.clear();
+        }
+
+        for (var element in event.docs) {
+          ChatModel commentChatModel = ChatModel.fromMap(element.data());
+          appController.commentChatModels.add(commentChatModel);
+        }
+      }
+    });
+  }
+
   Future<void> addFavorite(
       {required String docIdChat, required ChatModel chatModel}) async {
     Map<String, dynamic> map = chatModel.toMap();
