@@ -837,6 +837,8 @@ class AppService {
 
   Future<ChatModel> createChatModel(
       {String? urlBigImage, String? urlRealPost}) async {
+    print('createChatmethod work');
+    print('xFiles ---> ${appController.xFiles.length}');
     ChatModel chatModel;
 
     if (appController.xFiles.isEmpty) {
@@ -864,6 +866,7 @@ class AppService {
           urlBigImage: urlBigImage ?? '');
     } else {
       //มี album
+      print('มี album');
 
       var albums = await processUploadMultiPhoto();
 

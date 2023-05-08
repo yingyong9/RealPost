@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppConstant {
-  static int amountLoadPage = 20;
+  static int amountLoadPage = 1;
 
   static String conditionTh =
       'ข้อตกลงและเงื่อนไขการใช้งาน: \n \n 1. แอปนี้เป็นแพลตฟอร์มสำหรับโพสต์เฉพาะเรื่องอาหาร เช่น อาหาร ของกิน พืช ผลไม้ ข้าว ของเกษตรทุกชนิด ขนม นม เนย และอื่นๆที่เกี่ยวข้องกับอาหารเท่านั้น\n 2. แอพไม่อนุญาตให้โพสต์เรื่องการเมือง ความเชื่อศาสนา ความรุนแรง หรือสินค้าที่ไม่เกี่ยวกับอาหาร เช่น ยา อาหารเสริม วิตามิน และสิ่งอื่นๆที่ไม่เกี่ยวข้องกับอาหาร\n 3. ผู้ใช้ตกลงว่าจะไม่โพสต์ข้อมูลที่ละเมิดลิขสิทธิ์ ทรัพย์สินทางปัญญา หรือกฎหมาย และจะไม่โพสต์เนื้อหาที่ไม่เหมาะสม หรือก่อให้เกิดความไม่สงบสุขในชุมชน\n 4. แอปไม่มีส่วนเกี่ยวข้องกับผู้ใช้และไม่มีส่วนรับผิดชอบใดๆเกี่ยวกับความเสียหายหรือการสูญเสียที่เกิดขึ้นจากการใช้งานแอป\n 5.  การใช้งานแอปถือเป็นการยอมรับข้อตกลงและเงื่อนไขการใช้งานทั้งหมด\n \n หากคุณเห็นด้วยกับข้อตกลงและเงื่อนไขการใช้งานทั้งหมด โปรดกด "OK" เพื่อยืนยัน หากไม่เห็นด้วย โปรดกด "Cancel" และหยุดการใช้งานแอปนี้';
@@ -13,7 +13,8 @@ class AppConstant {
   static String secret = '6ee4cbc8611eaa7c3e4ed60b071badf7';
   static Color spColor = const Color(0xff512da8);
   static Color dark = Colors.white;
-  static Color bgColor = const Color.fromARGB(255, 1, 50, 50);
+  // static Color bgColor = const Color.fromARGB(255, 1, 50, 50);
+  static Color bgColor = Colors.black;
   static Color lightColor = const Color.fromARGB(255, 1, 88, 79);
   static Color spcialColor = Colors.white;
   static Color grey = const Color.fromARGB(255, 164, 159, 159);
@@ -29,9 +30,12 @@ class AppConstant {
 
   BoxDecoration gradientColor() => BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color.fromARGB(255, 234, 43, 215), Color.fromARGB(255, 114, 50, 232)],
+          colors: [
+            Color.fromARGB(255, 234, 43, 215),
+            Color.fromARGB(255, 114, 50, 232)
+          ],
           // colors: [Color.fromARGB(255, 16, 218, 76), Color.fromARGB(255, 65, 50, 232)],
-          begin: Alignment.topCenter,end: Alignment.bottomCenter,
+          begin: Alignment.topCenter, end: Alignment.bottomCenter,
         ),
       );
 

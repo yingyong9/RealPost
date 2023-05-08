@@ -380,7 +380,7 @@ class AppController extends GetxController {
     await FirebaseFirestore.instance
         .collection('room')
         .orderBy('timestamp', descending: true)
-        .limit(AppConstant.amountLoadPage) //limit 20
+        .limit(AppConstant.amountLoadPage) 
         .get()
         .then((value) async {
       for (var element in value.docs) {
