@@ -22,6 +22,7 @@ import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_content_form.dart';
+import 'package:realpost/widgets/widget_content_form_spcial.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
@@ -81,81 +82,103 @@ class _MainPageViewState extends State<MainPageView> {
                             behavior: HitTestBehavior.opaque,
                             onTap: () => FocusScope.of(context)
                                 .requestFocus(FocusScopeNode()),
-                            child: PageView(
-                              children: appController.roomModels
-                                  .map(
-                                    (element) => SizedBox(
-                                      width: boxConstraints.maxWidth,
-                                      height: boxConstraints.maxHeight,
-                                      child: Stack(
-                                        children: [
-                                          contentTop(element, boxConstraints,
-                                              appController),
-                                          displayForm(
-                                              boxConstraints, appController),
-                                          ((appController.displayPanel.value) &&
-                                                  (appController
-                                                      .displayAll.value))
-                                              ? rightMenu(appController,
-                                                  boxConstraints:
-                                                      boxConstraints)
-                                              : const SizedBox(),
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
-                              // controller: pageViewController,
-                              controller: appController.pageControllers.last,
-                              scrollDirection: Axis.vertical,
+                            child: Stack(
+                              children: [
+                                SizedBox(
+                                  height: boxConstraints.maxHeight - 100,
+                                  child: PageView(
+                                    children: appController.roomModels
+                                        .map(
+                                          (element) => SizedBox(
+                                            width: boxConstraints.maxWidth,
+                                            height: boxConstraints.maxHeight,
+                                            child: Stack(
+                                              children: [
+                                                contentTop(
+                                                    element,
+                                                    boxConstraints,
+                                                    appController),
 
-                              onPageChanged: (value) {
-                                appController.indexBodyMainPageView.value =
-                                    value;
+                                                // ((appController.displayPanel
+                                                //             .value) &&
+                                                //         (appController
+                                                //             .displayAll.value))
+                                                //     ? rightMenu(appController,
+                                                //         boxConstraints:
+                                                //             boxConstraints)
+                                                //     : const SizedBox(),
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                        .toList(),
+                                    // controller: pageViewController,
+                                    controller:
+                                        appController.pageControllers.last,
+                                    scrollDirection: Axis.vertical,
 
-                                appController.amountSalse.value = 1;
-                                appController.haveUserLoginInComment.value =
-                                    false;
-                                appController.readAllChat(
-                                    docIdRoom: appController.docIdRooms[
-                                        appController
-                                            .indexBodyMainPageView.value]);
-                                AppService().readAllChatOwner(
-                                    docIdRoom: appController.docIdRooms[
-                                        appController
-                                            .indexBodyMainPageView.value]);
+                                    onPageChanged: (value) {
+                                      appController
+                                          .indexBodyMainPageView.value = value;
 
-                                if (appController.docIdRoomChooses.isNotEmpty) {
-                                  appController.docIdRoomChooses.clear();
-                                }
-
-                                appController.docIdRoomChooses.add(appController
-                                        .docIdRooms[
-                                    appController.indexBodyMainPageView.value]);
-
-                                appController.processReadCommentSalses();
-
-                                if (appController.indexBodyMainPageView.value ==
-                                    0) {
-                                  AppService().initialSetup(context: context);
-                                  secondLoad = true;
-                                }
-
-                                if ((appController
-                                            .indexBodyMainPageView.value >=
-                                        (AppConstant.amountLoadPage - 1)) &&
-                                    secondLoad) {
-                                  secondLoad = false;
-                                  print(
-                                      '##30april docIdRoom ที่อยู่ในเงื่อนไข --> ${appController.documentSnapshots[appController.indexBodyMainPageView.value].id}');
-                                  appController.readAllRoomStartDocument(
-                                      documentSnapshot:
-                                          appController.documentSnapshots[
+                                      appController.amountSalse.value = 1;
+                                      appController
+                                          .haveUserLoginInComment.value = false;
+                                      appController.readAllChat(
+                                          docIdRoom: appController.docIdRooms[
                                               appController
                                                   .indexBodyMainPageView
                                                   .value]);
-                                }
-                              },
+                                      AppService().readAllChatOwner(
+                                          docIdRoom: appController.docIdRooms[
+                                              appController
+                                                  .indexBodyMainPageView
+                                                  .value]);
+
+                                      if (appController
+                                          .docIdRoomChooses.isNotEmpty) {
+                                        appController.docIdRoomChooses.clear();
+                                      }
+
+                                      appController.docIdRoomChooses.add(
+                                          appController.docIdRooms[appController
+                                              .indexBodyMainPageView.value]);
+
+                                      appController.processReadCommentSalses();
+
+                                      if (appController
+                                              .indexBodyMainPageView.value ==
+                                          0) {
+                                        AppService()
+                                            .initialSetup(context: context);
+                                        secondLoad = true;
+                                      }
+
+                                      if ((appController.indexBodyMainPageView
+                                                  .value >=
+                                              (AppConstant.amountLoadPage -
+                                                  1)) &&
+                                          secondLoad) {
+                                        secondLoad = false;
+                                        print(
+                                            '##30april docIdRoom ที่อยู่ในเงื่อนไข --> ${appController.documentSnapshots[appController.indexBodyMainPageView.value].id}');
+                                        appController.readAllRoomStartDocument(
+                                            documentSnapshot:
+                                                appController.documentSnapshots[
+                                                    appController
+                                                        .indexBodyMainPageView
+                                                        .value]);
+                                      }
+                                    },
+                                  ),
+                                ),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    WidgetContentFormSpcial(),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
               );
@@ -187,22 +210,6 @@ class _MainPageViewState extends State<MainPageView> {
         : const SizedBox();
   }
 
-  Positioned displayForm(
-      BoxConstraints boxConstraints, AppController appController) {
-    return Positioned(
-      bottom: 0,
-      child: WidgetContentForm(
-        boxConstraints: boxConstraints,
-        appController: appController,
-        textEditingController: textEditingController,
-        docId:
-            appController.docIdRooms[appController.indexBodyMainPageView.value],
-        roomModel:
-            appController.roomModels[appController.indexBodyMainPageView.value],
-      ),
-    );
-  }
-
   Positioned displayAddGroup() {
     return Positioned(
       right: 32,
@@ -232,8 +239,8 @@ class _MainPageViewState extends State<MainPageView> {
         // displayImageRoom(boxConstraints, appController: appController),
 
         displayListChat(appController, boxConstraints),
-        displayRealText(appController: appController),
-        displayRoomText(appController, boxConstraints),
+        // displayRealText(appController: appController),
+        // displayRoomText(appController, boxConstraints),
       ],
     );
   }
@@ -616,10 +623,10 @@ class _MainPageViewState extends State<MainPageView> {
   Positioned displayListMessage(
       BoxConstraints boxConstraints, AppController appController) {
     return Positioned(
-      top: boxConstraints.maxHeight * 0.15,
+      // top: boxConstraints.maxHeight * 0.15,
       child: SizedBox(
         width: boxConstraints.maxWidth * 0.9,
-        height: boxConstraints.maxHeight * 0.7,
+        height: boxConstraints.maxHeight,
         child: ListView.builder(
           reverse: true,
           shrinkWrap: true,
@@ -664,36 +671,6 @@ class _MainPageViewState extends State<MainPageView> {
                             }
                           },
                         ),
-                        Column(
-                          children: [
-                            WidgetIconButton(
-                              pressFunc: () {
-                               
-                                print(
-                                    '##5may docIdChat ---> ${appController.docIdChats[index]}');
-                                AppService().addFavorite(
-                                    docIdChat: appController.docIdChats[index],
-                                    chatModel: appController.chatModels[index]);
-                              },
-                              iconData: Icons.favorite,
-                              splashRadius: 25,
-                            ),
-                            WidgetText(
-                                text: appController.chatModels[index].favorit
-                                    .toString()),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            InkWell(onTap: () {
-                              Get.to( CommentChat(docIdChat: appController.docIdChats[index],));
-                            },
-                              child: const Icon(
-                                Icons.comment,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        )
                       ],
                     ),
                     SizedBox(
@@ -705,8 +682,7 @@ class _MainPageViewState extends State<MainPageView> {
                               url: appController.chatModels[index].message);
                         },
                         child: Container(
-                          decoration: AppConstant()
-                              .gradientColor(),
+                          // decoration: AppConstant().gradientColor(),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -774,6 +750,7 @@ class _MainPageViewState extends State<MainPageView> {
                                     text: appController
                                         .chatModels[index].message),
                               ),
+                              scoreButton(appController, index),
                             ],
                           ),
                         ),
@@ -782,13 +759,52 @@ class _MainPageViewState extends State<MainPageView> {
                   ],
                 ),
                 const SizedBox(
-                  height: 36,
+                  height: 5,
                 ),
               ],
             );
           },
         ),
       ),
+    );
+  }
+
+  Widget scoreButton(AppController appController, int index) {
+    return Row(
+      children: [
+        WidgetImage(
+          path: 'images/arrowup.jpg',
+          size: 25,
+          tapFunc: () {
+            AppService().addFavorite(
+                docIdChat: appController.docIdChats[index],
+                chatModel: appController.chatModels[index]);
+          },
+        ),
+        const SizedBox(width: 10,),
+        WidgetText(text: appController.chatModels[index].favorit.toString()),
+        const SizedBox(width: 10,),
+         WidgetImage(
+          path: 'images/arrowdown.jpg',
+          size: 25,
+          tapFunc: () {
+            // AppService().addFavorite(
+            //     docIdChat: appController.docIdChats[index],
+            //     chatModel: appController.chatModels[index]);
+          },
+        ),
+        const SizedBox(width: 20,),
+         WidgetImage(
+          path: 'images/comment.jpg',
+          size: 25,
+          tapFunc: () {
+             Get.to(CommentChat(
+              docIdChat: appController.docIdChats[index],
+            ));
+          },
+        ),
+       
+      ],
     );
   }
 

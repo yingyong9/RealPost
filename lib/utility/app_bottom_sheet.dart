@@ -41,10 +41,12 @@ class AppBottomSheet {
           builder: (AppController appController) {
             return Container(
               decoration: BoxDecoration(color: AppConstant.bgColor),
-              height: 356,
+              constraints: BoxConstraints(maxHeight: 356, minHeight: 150),
+              // height: 356,
+              // height: 100,
               child: Stack(
                 children: [
-                  Column(
+                  Column(mainAxisSize: MainAxisSize.min,
                     children: [
                       const SizedBox(
                         height: 16,
@@ -61,7 +63,7 @@ class AppBottomSheet {
                               height: 200,
                             )
                           : appController.fileRealPosts.isEmpty
-                              ? const SizedBox(height: 200)
+                              ? const SizedBox()
                               : Image.file(
                                   appController.fileRealPosts[0],
                                   width: 200,
@@ -87,16 +89,6 @@ class AppBottomSheet {
 
                               print(
                                   '##26april  chatModel ---> ${chatModel.toMap()}');
-
-                              // AppService()
-                              //     .processInsertChat(
-                              //   chatModel: chatModel,
-                              //   docIdRoom: appController.docIdRooms[
-                              //       appController.indexBodyMainPageView.value],
-                              // )
-                              //     .then((value) async {
-                              //   Get.back();
-                              // });
                             },
                           ),
                         ),
@@ -201,9 +193,9 @@ class AppBottomSheet {
                                               appController
                                                   .indexBodyMainPageView.value])
                                       .then((value) {
-                                        Get.back();
-                                         Get.back();
-                                      });
+                                    Get.back();
+                                    Get.back();
+                                  });
                                 });
                               });
                             },
