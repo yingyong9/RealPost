@@ -637,7 +637,9 @@ class _MainPageViewState extends State<MainPageView> {
                     Row(
                       children: [
                         displayAvatarPost(appController, index),
-                        const SizedBox(width: 8,),
+                        const SizedBox(
+                          width: 8,
+                        ),
                         WidgetText(
                           text: appController.chatModels[index].disPlayName,
                           textStyle: AppConstant().h3Style(color: Colors.white),
@@ -652,7 +654,9 @@ class _MainPageViewState extends State<MainPageView> {
                     ),
                     displayImageChat(appController, index),
                     scoreButton(appController, index),
-                    const SizedBox(height: 16,),
+                    const SizedBox(
+                      height: 16,
+                    ),
                   ],
                 ),
               ),
@@ -746,11 +750,11 @@ class _MainPageViewState extends State<MainPageView> {
               : 'images/arrowup.jpg',
           size: 35,
           tapFunc: () {
-            appController.processUps[index] = !appController.processUps[index];
             AppService().addFavorite(
                 docIdChat: appController.docIdChats[index],
                 chatModel: appController.chatModels[index],
-                increse: true);
+                increse: true,
+                index: index);
           },
         ),
         const SizedBox(
@@ -764,16 +768,17 @@ class _MainPageViewState extends State<MainPageView> {
           width: 10,
         ),
         WidgetImage(
-          path: appController.processDown.value
+          path: appController.processDowns[index]
               ? 'images/bluedown.jpg'
               : 'images/arrowdown.jpg',
           size: 35,
           tapFunc: () {
-            appController.processDown.value = !appController.processDown.value;
+            
             AppService().addFavorite(
                 docIdChat: appController.docIdChats[index],
                 chatModel: appController.chatModels[index],
-                increse: false);
+                increse: false,
+                index: index);
           },
         ),
         const SizedBox(

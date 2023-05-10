@@ -30,17 +30,13 @@ class AppController extends GetxController {
   RxList<String> docIdRooms = <String>[].obs;
   RxList<String> docIdRoomChooses = <String>[].obs;
   RxList<UserModel> userModelAtRooms = <UserModel>[].obs;
-
   RxList<List<ChatModel>> listChatModels = <List<ChatModel>>[].obs;
   RxList<List<String>> listDocIdChats = <List<String>>[].obs;
-
   RxList<ChatModel> lastChatModelLogins = <ChatModel>[].obs;
   RxList<StampModel> stampModels = <StampModel>[].obs;
   RxList<String> emojiAddRoomChooses = <String>[].obs;
-
   RxList<ChatModel> chatModels = <ChatModel>[].obs;
   RxList<String> docIdChats = <String>[].obs;
-
   RxList<String> addressMaps = <String>[].obs;
   RxBool load = true.obs;
   RxBool shareLocation = false.obs;
@@ -97,10 +93,10 @@ class AppController extends GetxController {
   RxBool tabFavorit = false.obs;
   RxList<ChatModel> commentChatModels = <ChatModel>[].obs;
   RxString docIdChatTapFavorite = ''.obs;
-
   RxBool processUp = false.obs;
 
   RxList<bool> processUps = <bool>[].obs;
+  RxList<bool> processDowns = <bool>[].obs;
 
   RxBool processDown = false.obs;
 
@@ -429,6 +425,7 @@ class AppController extends GetxController {
               chatModels.add(chatModel);
 
               processUps.add(false);
+              processDowns.add(false);
 
               if ((chatModel.uidChat == user!.uid) && check) {
                 check = false;
