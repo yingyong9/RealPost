@@ -381,14 +381,13 @@ class AppController extends GetxController {
 
     await FirebaseFirestore.instance
         .collection('room')
-        .orderBy('timestamp', descending: true)
-        .limit(AppConstant.amountLoadPage)
+        .doc('JtsxAUXHFypOPE5tdU6E')
         .get()
         .then((value) async {
-      for (var element in value.docs) {
-        RoomModel model = RoomModel.fromMap(element.data());
+     
+        RoomModel model = RoomModel.fromMap(value.data()!);
         roomModels.add(model);
-        docIdRooms.add(element.id);
+        docIdRooms.add(value.id);
 
         UserModel? userModel =
             await AppService().findUserModel(uid: model.uidCreate);
@@ -411,7 +410,7 @@ class AppController extends GetxController {
 
         FirebaseFirestore.instance
             .collection('room')
-            .doc(element.id)
+            .doc(value.id)
             .collection('chat')
             .orderBy('timestamp')
             .snapshots()
@@ -438,7 +437,7 @@ class AppController extends GetxController {
           lastChatModelLogins.add(lateChatModel!);
         });
         // indexPage++;
-      }
+      
     });
   }
 

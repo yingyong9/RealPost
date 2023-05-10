@@ -86,81 +86,9 @@ class _MainPageViewState extends State<MainPageView> {
                               children: [
                                 SizedBox(
                                   height: boxConstraints.maxHeight - 100,
-                                  child: PageView(
-                                    children: appController.roomModels
-                                        .map(
-                                          (element) => SizedBox(
-                                            width: boxConstraints.maxWidth,
-                                            height: boxConstraints.maxHeight,
-                                            child: Stack(
-                                              children: [
-                                                displayListMessage(
+                                  child: displayListMessage(
                                                     boxConstraints,
                                                     appController),
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                        .toList(),
-                                    // controller: pageViewController,
-                                    controller:
-                                        appController.pageControllers.last,
-                                    scrollDirection: Axis.vertical,
-
-                                    onPageChanged: (value) {
-                                      appController
-                                          .indexBodyMainPageView.value = value;
-
-                                      appController.amountSalse.value = 1;
-                                      appController
-                                          .haveUserLoginInComment.value = false;
-                                      appController.readAllChat(
-                                          docIdRoom: appController.docIdRooms[
-                                              appController
-                                                  .indexBodyMainPageView
-                                                  .value]);
-                                      AppService().readAllChatOwner(
-                                          docIdRoom: appController.docIdRooms[
-                                              appController
-                                                  .indexBodyMainPageView
-                                                  .value]);
-
-                                      if (appController
-                                          .docIdRoomChooses.isNotEmpty) {
-                                        appController.docIdRoomChooses.clear();
-                                      }
-
-                                      appController.docIdRoomChooses.add(
-                                          appController.docIdRooms[appController
-                                              .indexBodyMainPageView.value]);
-
-                                      appController.processReadCommentSalses();
-
-                                      if (appController
-                                              .indexBodyMainPageView.value ==
-                                          0) {
-                                        AppService()
-                                            .initialSetup(context: context);
-                                        secondLoad = true;
-                                      }
-
-                                      if ((appController.indexBodyMainPageView
-                                                  .value >=
-                                              (AppConstant.amountLoadPage -
-                                                  1)) &&
-                                          secondLoad) {
-                                        secondLoad = false;
-                                        print(
-                                            '##30april docIdRoom ที่อยู่ในเงื่อนไข --> ${appController.documentSnapshots[appController.indexBodyMainPageView.value].id}');
-                                        appController.readAllRoomStartDocument(
-                                            documentSnapshot:
-                                                appController.documentSnapshots[
-                                                    appController
-                                                        .indexBodyMainPageView
-                                                        .value]);
-                                      }
-                                    },
-                                  ),
                                 ),
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.end,
@@ -610,59 +538,57 @@ class _MainPageViewState extends State<MainPageView> {
           );
   }
 
-  Positioned displayListMessage(
+  Widget displayListMessage(
       BoxConstraints boxConstraints, AppController appController) {
-    return Positioned(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        width: boxConstraints.maxWidth,
-        height: boxConstraints.maxHeight,
-        child: ListView.builder(
-          reverse: true,
-          shrinkWrap: true,
-          physics: const ScrollPhysics(),
-          itemCount: appController.chatModels.length,
-          itemBuilder: (context, index) {
-            return SizedBox(
-              width: boxConstraints.maxWidth,
-              child: InkWell(
-                onTap: () {
-                  print('##30april you tap Bubble');
-                  AppService().processLunchUrl(
-                      url: appController.chatModels[index].message);
-                },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        displayAvatarPost(appController, index),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        WidgetText(
-                          text: appController.chatModels[index].disPlayName,
-                          textStyle: AppConstant().h3Style(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 12),
-                      child: WidgetText(
-                          text: appController.chatModels[index].message),
-                    ),
-                    displayImageChat(appController, index),
-                    scoreButton(appController, index),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                  ],
-                ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      width: boxConstraints.maxWidth,
+      height: boxConstraints.maxHeight,
+      child: ListView.builder(
+        reverse: true,
+        shrinkWrap: true,
+        physics: const ScrollPhysics(),
+        itemCount: appController.chatModels.length,
+        itemBuilder: (context, index) {
+          return SizedBox(
+            width: boxConstraints.maxWidth,
+            child: InkWell(
+              onTap: () {
+                print('##30april you tap Bubble');
+                AppService().processLunchUrl(
+                    url: appController.chatModels[index].message);
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      displayAvatarPost(appController, index),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      WidgetText(
+                        text: appController.chatModels[index].disPlayName,
+                        textStyle: AppConstant().h3Style(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 12),
+                    child: WidgetText(
+                        text: appController.chatModels[index].message),
+                  ),
+                  displayImageChat(appController, index),
+                  scoreButton(appController, index),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                ],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
