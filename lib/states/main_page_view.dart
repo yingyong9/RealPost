@@ -773,37 +773,61 @@ class _MainPageViewState extends State<MainPageView> {
     return Row(
       children: [
         WidgetImage(
-          path: 'images/arrowup.jpg',
-          size: 25,
+          path: appController.processUps[index]
+              ? 'images/redup.jpg'
+              : 'images/arrowup.jpg',
+          size: 35,
           tapFunc: () {
+            appController.processUps[index] = !appController.processUps[index];
             AppService().addFavorite(
                 docIdChat: appController.docIdChats[index],
-                chatModel: appController.chatModels[index]);
+                chatModel: appController.chatModels[index],
+                increse: true);
           },
         ),
-        const SizedBox(width: 10,),
-        WidgetText(text: appController.chatModels[index].favorit.toString()),
-        const SizedBox(width: 10,),
-         WidgetImage(
-          path: 'images/arrowdown.jpg',
-          size: 25,
+        const SizedBox(
+          width: 10,
+        ),
+        WidgetText(
+          text: appController.chatModels[index].favorit.toString(),
+          textStyle: AppConstant().h3Style(size: 20),
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        WidgetImage(
+          path: appController.processDown.value
+              ? 'images/bluedown.jpg'
+              : 'images/arrowdown.jpg',
+          size: 35,
           tapFunc: () {
-            // AppService().addFavorite(
-            //     docIdChat: appController.docIdChats[index],
-            //     chatModel: appController.chatModels[index]);
+            appController.processDown.value = !appController.processDown.value;
+            AppService().addFavorite(
+                docIdChat: appController.docIdChats[index],
+                chatModel: appController.chatModels[index],
+                increse: false);
           },
         ),
-        const SizedBox(width: 20,),
-         WidgetImage(
+        const SizedBox(
+          width: 20,
+        ),
+        WidgetImage(
           path: 'images/comment.jpg',
-          size: 25,
+          size: 35,
           tapFunc: () {
-             Get.to(CommentChat(
+            Get.to(CommentChat(
               docIdChat: appController.docIdChats[index],
             ));
           },
         ),
-       
+        const SizedBox(
+          width: 20,
+        ),
+        WidgetImage(
+          path: 'images/present.jpg',
+          size: 35,
+          tapFunc: () {},
+        ),
       ],
     );
   }

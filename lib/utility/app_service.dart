@@ -78,9 +78,33 @@ class AppService {
   }
 
   Future<void> addFavorite(
-      {required String docIdChat, required ChatModel chatModel}) async {
+      {required String docIdChat,
+      required ChatModel chatModel,
+      required bool increse}) async {
     Map<String, dynamic> map = chatModel.toMap();
-    map['favorit'] = map['favorit'] + 1;
+
+    print('##9may you tap addFavorite at docIdChat ---> $docIdChat');
+
+    bool currentIncrese = increse;
+
+    if (appController.docIdChatTapFavorite.isEmpty) {
+      appController.docIdChatTapFavorite.value = docIdChat;
+    } else {
+      if (appController.docIdChatTapFavorite.value == docIdChat) {
+        // กดซ้ำ
+        print('##9may กดซ้ำ');
+        currentIncrese = !currentIncrese;
+        appController.docIdChatTapFavorite.value = '';
+      } else {
+        appController.docIdChatTapFavorite.value = docIdChat;
+      }
+    }
+
+    if (currentIncrese) {
+      map['favorit'] = map['favorit'] + 1;
+    } else {
+      map['favorit'] = map['favorit'] - 1;
+    }
 
     await FirebaseFirestore.instance
         .collection('room')

@@ -95,8 +95,14 @@ class AppController extends GetxController {
   RxList<bool> displayAddFriends = <bool>[].obs;
   RxBool roomPublic = false.obs;
   RxBool tabFavorit = false.obs;
-
   RxList<ChatModel> commentChatModels = <ChatModel>[].obs;
+  RxString docIdChatTapFavorite = ''.obs;
+
+  RxBool processUp = false.obs;
+
+  RxList<bool> processUps = <bool>[].obs;
+
+  RxBool processDown = false.obs;
 
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
@@ -380,7 +386,7 @@ class AppController extends GetxController {
     await FirebaseFirestore.instance
         .collection('room')
         .orderBy('timestamp', descending: true)
-        .limit(AppConstant.amountLoadPage) 
+        .limit(AppConstant.amountLoadPage)
         .get()
         .then((value) async {
       for (var element in value.docs) {
@@ -421,6 +427,8 @@ class AppController extends GetxController {
 
               ChatModel chatModel = ChatModel.fromMap(element2.data());
               chatModels.add(chatModel);
+
+              processUps.add(false);
 
               if ((chatModel.uidChat == user!.uid) && check) {
                 check = false;
