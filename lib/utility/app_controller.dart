@@ -30,17 +30,13 @@ class AppController extends GetxController {
   RxList<String> docIdRooms = <String>[].obs;
   RxList<String> docIdRoomChooses = <String>[].obs;
   RxList<UserModel> userModelAtRooms = <UserModel>[].obs;
-
   RxList<List<ChatModel>> listChatModels = <List<ChatModel>>[].obs;
   RxList<List<String>> listDocIdChats = <List<String>>[].obs;
-
   RxList<ChatModel> lastChatModelLogins = <ChatModel>[].obs;
   RxList<StampModel> stampModels = <StampModel>[].obs;
   RxList<String> emojiAddRoomChooses = <String>[].obs;
-
   RxList<ChatModel> chatModels = <ChatModel>[].obs;
   RxList<String> docIdChats = <String>[].obs;
-
   RxList<String> addressMaps = <String>[].obs;
   RxBool load = true.obs;
   RxBool shareLocation = false.obs;
@@ -95,8 +91,14 @@ class AppController extends GetxController {
   RxList<bool> displayAddFriends = <bool>[].obs;
   RxBool roomPublic = false.obs;
   RxBool tabFavorit = false.obs;
-
   RxList<ChatModel> commentChatModels = <ChatModel>[].obs;
+  RxString docIdChatTapFavorite = ''.obs;
+  RxBool processUp = false.obs;
+
+  RxList<bool> processUps = <bool>[].obs;
+  RxList<bool> processDowns = <bool>[].obs;
+
+  RxBool processDown = false.obs;
 
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
@@ -379,14 +381,13 @@ class AppController extends GetxController {
 
     await FirebaseFirestore.instance
         .collection('room')
-        .orderBy('timestamp', descending: true)
-        .limit(AppConstant.amountLoadPage) 
+        .doc('JtsxAUXHFypOPE5tdU6E')
         .get()
         .then((value) async {
-      for (var element in value.docs) {
-        RoomModel model = RoomModel.fromMap(element.data());
+     
+        RoomModel model = RoomModel.fromMap(value.data()!);
         roomModels.add(model);
-        docIdRooms.add(element.id);
+        docIdRooms.add(value.id);
 
         UserModel? userModel =
             await AppService().findUserModel(uid: model.uidCreate);
@@ -409,7 +410,7 @@ class AppController extends GetxController {
 
         FirebaseFirestore.instance
             .collection('room')
-            .doc(element.id)
+            .doc(value.id)
             .collection('chat')
             .orderBy('timestamp')
             .snapshots()
@@ -422,6 +423,9 @@ class AppController extends GetxController {
               ChatModel chatModel = ChatModel.fromMap(element2.data());
               chatModels.add(chatModel);
 
+              processUps.add(false);
+              processDowns.add(false);
+
               if ((chatModel.uidChat == user!.uid) && check) {
                 check = false;
                 lateChatModel = chatModel;
@@ -433,7 +437,7 @@ class AppController extends GetxController {
           lastChatModelLogins.add(lateChatModel!);
         });
         // indexPage++;
-      }
+      
     });
   }
 

@@ -86,91 +86,9 @@ class _MainPageViewState extends State<MainPageView> {
                               children: [
                                 SizedBox(
                                   height: boxConstraints.maxHeight - 100,
-                                  child: PageView(
-                                    children: appController.roomModels
-                                        .map(
-                                          (element) => SizedBox(
-                                            width: boxConstraints.maxWidth,
-                                            height: boxConstraints.maxHeight,
-                                            child: Stack(
-                                              children: [
-                                                contentTop(
-                                                    element,
+                                  child: displayListMessage(
                                                     boxConstraints,
                                                     appController),
-
-                                                // ((appController.displayPanel
-                                                //             .value) &&
-                                                //         (appController
-                                                //             .displayAll.value))
-                                                //     ? rightMenu(appController,
-                                                //         boxConstraints:
-                                                //             boxConstraints)
-                                                //     : const SizedBox(),
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                        .toList(),
-                                    // controller: pageViewController,
-                                    controller:
-                                        appController.pageControllers.last,
-                                    scrollDirection: Axis.vertical,
-
-                                    onPageChanged: (value) {
-                                      appController
-                                          .indexBodyMainPageView.value = value;
-
-                                      appController.amountSalse.value = 1;
-                                      appController
-                                          .haveUserLoginInComment.value = false;
-                                      appController.readAllChat(
-                                          docIdRoom: appController.docIdRooms[
-                                              appController
-                                                  .indexBodyMainPageView
-                                                  .value]);
-                                      AppService().readAllChatOwner(
-                                          docIdRoom: appController.docIdRooms[
-                                              appController
-                                                  .indexBodyMainPageView
-                                                  .value]);
-
-                                      if (appController
-                                          .docIdRoomChooses.isNotEmpty) {
-                                        appController.docIdRoomChooses.clear();
-                                      }
-
-                                      appController.docIdRoomChooses.add(
-                                          appController.docIdRooms[appController
-                                              .indexBodyMainPageView.value]);
-
-                                      appController.processReadCommentSalses();
-
-                                      if (appController
-                                              .indexBodyMainPageView.value ==
-                                          0) {
-                                        AppService()
-                                            .initialSetup(context: context);
-                                        secondLoad = true;
-                                      }
-
-                                      if ((appController.indexBodyMainPageView
-                                                  .value >=
-                                              (AppConstant.amountLoadPage -
-                                                  1)) &&
-                                          secondLoad) {
-                                        secondLoad = false;
-                                        print(
-                                            '##30april docIdRoom ที่อยู่ในเงื่อนไข --> ${appController.documentSnapshots[appController.indexBodyMainPageView.value].id}');
-                                        appController.readAllRoomStartDocument(
-                                            documentSnapshot:
-                                                appController.documentSnapshots[
-                                                    appController
-                                                        .indexBodyMainPageView
-                                                        .value]);
-                                      }
-                                    },
-                                  ),
                                 ),
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.end,
@@ -620,152 +538,132 @@ class _MainPageViewState extends State<MainPageView> {
           );
   }
 
-  Positioned displayListMessage(
+  Widget displayListMessage(
       BoxConstraints boxConstraints, AppController appController) {
-    return Positioned(
-      // top: boxConstraints.maxHeight * 0.15,
-      child: SizedBox(
-        width: boxConstraints.maxWidth * 0.9,
-        height: boxConstraints.maxHeight,
-        child: ListView.builder(
-          reverse: true,
-          shrinkWrap: true,
-          physics: const ScrollPhysics(),
-          itemCount: appController.chatModels.length,
-          itemBuilder: (context, index) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      children: [
-                        WidgetSqueerAvatar(
-                          urlImage: appController.chatModels[index].urlAvatar,
-                          size: 30,
-                          pressFunc: () {
-                            if (appController.chatModels[index].uidChat
-                                    .toString() !=
-                                appController.mainUid.toString()) {
-                              if (appController
-                                  .roomModels[
-                                      appController.indexBodyMainPageView.value]
-                                  .roomPublic) {
-                                //Public
-                                Get.to(PrivateChat(
-                                    uidFriend: appController
-                                        .chatModels[index].uidChat));
-                              } else {
-                                //Private
-                                if (appController.chatModels[index].uidChat ==
-                                    appController
-                                        .roomModels[appController
-                                            .indexBodyMainPageView.value]
-                                        .uidCreate) {
-                                  Get.to(PrivateChat(
-                                      uidFriend: appController
-                                          .chatModels[index].uidChat));
-                                }
-                              }
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      width: boxConstraints.maxWidth * 0.9 - 48,
-                      child: InkWell(
-                        onTap: () {
-                          print('##30april you tap Bubble');
-                          AppService().processLunchUrl(
-                              url: appController.chatModels[index].message);
-                        },
-                        child: Container(
-                          // decoration: AppConstant().gradientColor(),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              appController
-                                      .chatModels[index].urlRealPost.isEmpty
-                                  ? const SizedBox()
-                                  : Container(
-                                      margin: const EdgeInsets.only(bottom: 8),
-                                      child: WidgetImageInternet(
-                                        urlImage: appController
-                                            .chatModels[index].urlRealPost,
-                                        boxFit: BoxFit.cover,
-                                        tapFunc: () {
-                                          print(
-                                              'You tap image url ===> ${appController.chatModels[index].urlRealPost}');
-                                          Get.to(FullScreenImage(
-                                                  urlImage: appController
-                                                      .chatModels[index]
-                                                      .urlRealPost))!
-                                              .then((value) {
-                                            //Check Time ว่าเป็น today ????
-                                            if (AppService().compareCurrentTime(
-                                                otherDatetime: appController
-                                                    .roomModels[appController
-                                                        .indexBodyMainPageView
-                                                        .value]
-                                                    .timestamp
-                                                    .toDate())) {
-                                              //Status Real
-                                              print('##29 Status Real');
-                                            } else {
-                                              //update time post
-                                              print('##29 update Time post');
-                                              Map<String, dynamic> map =
-                                                  appController
-                                                      .roomModels[appController
-                                                          .indexBodyMainPageView
-                                                          .value]
-                                                      .toMap();
-
-                                              map['timestamp'] =
-                                                  Timestamp.fromDate(
-                                                      DateTime.now());
-                                              AppService()
-                                                  .processUpdateRoom(
-                                                      docIdRoom: appController
-                                                              .docIdRooms[
-                                                          appController
-                                                              .indexBodyMainPageView
-                                                              .value],
-                                                      data: map)
-                                                  .then((value) {
-                                                // AppService().initialSetup(context: context);
-                                                Restart.restartApp();
-                                              });
-                                            }
-                                          });
-                                        },
-                                      ),
-                                    ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 12),
-                                child: WidgetText(
-                                    text: appController
-                                        .chatModels[index].message),
-                              ),
-                              scoreButton(appController, index),
-                            ],
-                          ),
-                        ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      width: boxConstraints.maxWidth,
+      height: boxConstraints.maxHeight,
+      child: ListView.builder(
+        reverse: true,
+        shrinkWrap: true,
+        physics: const ScrollPhysics(),
+        itemCount: appController.chatModels.length,
+        itemBuilder: (context, index) {
+          return SizedBox(
+            width: boxConstraints.maxWidth,
+            child: InkWell(
+              onTap: () {
+                print('##30april you tap Bubble');
+                AppService().processLunchUrl(
+                    url: appController.chatModels[index].message);
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      displayAvatarPost(appController, index),
+                      const SizedBox(
+                        width: 8,
                       ),
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-              ],
-            );
-          },
-        ),
+                      WidgetText(
+                        text: appController.chatModels[index].disPlayName,
+                        textStyle: AppConstant().h3Style(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 12),
+                    child: WidgetText(
+                        text: appController.chatModels[index].message),
+                  ),
+                  displayImageChat(appController, index),
+                  scoreButton(appController, index),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
+    );
+  }
+
+  Widget displayImageChat(AppController appController, int index) {
+    return appController.chatModels[index].urlRealPost.isEmpty
+        ? const SizedBox()
+        : Container(
+            margin: const EdgeInsets.only(bottom: 8),
+            child: WidgetImageInternet(
+              urlImage: appController.chatModels[index].urlRealPost,
+              boxFit: BoxFit.cover,
+              tapFunc: () {
+                print(
+                    'You tap image url ===> ${appController.chatModels[index].urlRealPost}');
+                Get.to(FullScreenImage(
+                        urlImage: appController.chatModels[index].urlRealPost))!
+                    .then((value) {
+                  //Check Time ว่าเป็น today ????
+                  if (AppService().compareCurrentTime(
+                      otherDatetime: appController
+                          .roomModels[appController.indexBodyMainPageView.value]
+                          .timestamp
+                          .toDate())) {
+                    //Status Real
+                    print('##29 Status Real');
+                  } else {
+                    //update time post
+                    print('##29 update Time post');
+                    Map<String, dynamic> map = appController
+                        .roomModels[appController.indexBodyMainPageView.value]
+                        .toMap();
+
+                    map['timestamp'] = Timestamp.fromDate(DateTime.now());
+                    AppService()
+                        .processUpdateRoom(
+                            docIdRoom: appController.docIdRooms[
+                                appController.indexBodyMainPageView.value],
+                            data: map)
+                        .then((value) {
+                      // AppService().initialSetup(context: context);
+                      Restart.restartApp();
+                    });
+                  }
+                });
+              },
+            ),
+          );
+  }
+
+  WidgetSqueerAvatar displayAvatarPost(AppController appController, int index) {
+    return WidgetSqueerAvatar(
+      urlImage: appController.chatModels[index].urlAvatar,
+      size: 30,
+      pressFunc: () {
+        if (appController.chatModels[index].uidChat.toString() !=
+            appController.mainUid.toString()) {
+          if (appController
+              .roomModels[appController.indexBodyMainPageView.value]
+              .roomPublic) {
+            //Public
+            Get.to(PrivateChat(
+                uidFriend: appController.chatModels[index].uidChat));
+          } else {
+            //Private
+            if (appController.chatModels[index].uidChat ==
+                appController
+                    .roomModels[appController.indexBodyMainPageView.value]
+                    .uidCreate) {
+              Get.to(PrivateChat(
+                  uidFriend: appController.chatModels[index].uidChat));
+            }
+          }
+        }
+      },
     );
   }
 
@@ -773,37 +671,62 @@ class _MainPageViewState extends State<MainPageView> {
     return Row(
       children: [
         WidgetImage(
-          path: 'images/arrowup.jpg',
-          size: 25,
+          path: appController.processUps[index]
+              ? 'images/redup.jpg'
+              : 'images/arrowup.jpg',
+          size: 35,
           tapFunc: () {
             AppService().addFavorite(
                 docIdChat: appController.docIdChats[index],
-                chatModel: appController.chatModels[index]);
+                chatModel: appController.chatModels[index],
+                increse: true,
+                index: index);
           },
         ),
-        const SizedBox(width: 10,),
-        WidgetText(text: appController.chatModels[index].favorit.toString()),
-        const SizedBox(width: 10,),
-         WidgetImage(
-          path: 'images/arrowdown.jpg',
-          size: 25,
+        const SizedBox(
+          width: 10,
+        ),
+        WidgetText(
+          text: appController.chatModels[index].favorit.toString(),
+          textStyle: AppConstant().h3Style(size: 20),
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        WidgetImage(
+          path: appController.processDowns[index]
+              ? 'images/bluedown.jpg'
+              : 'images/arrowdown.jpg',
+          size: 35,
           tapFunc: () {
-            // AppService().addFavorite(
-            //     docIdChat: appController.docIdChats[index],
-            //     chatModel: appController.chatModels[index]);
+            
+            AppService().addFavorite(
+                docIdChat: appController.docIdChats[index],
+                chatModel: appController.chatModels[index],
+                increse: false,
+                index: index);
           },
         ),
-        const SizedBox(width: 20,),
-         WidgetImage(
+        const SizedBox(
+          width: 20,
+        ),
+        WidgetImage(
           path: 'images/comment.jpg',
-          size: 25,
+          size: 35,
           tapFunc: () {
-             Get.to(CommentChat(
+            Get.to(CommentChat(
               docIdChat: appController.docIdChats[index],
             ));
           },
         ),
-       
+        const SizedBox(
+          width: 20,
+        ),
+        WidgetImage(
+          path: 'images/present.jpg',
+          size: 35,
+          tapFunc: () {},
+        ),
       ],
     );
   }
