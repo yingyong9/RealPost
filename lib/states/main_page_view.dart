@@ -575,7 +575,8 @@ class _MainPageViewState extends State<MainPageView> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                     child: WidgetText(
-                        text: appController.chatModels[index].message),
+                        text: appController.chatModels[index].message, textStyle: AppConstant().h3Style(color: Colors.white, size: 20,
+                                        fontWeight: FontWeight.bold),),
                   ),
                   displayImageChat(appController, index),
                   scoreButton(appController, index),
@@ -713,7 +714,7 @@ class _MainPageViewState extends State<MainPageView> {
           tapFunc: () {
             Get.to(CommentChat(
               docIdChat: appController.docIdChats[index],
-              chatModel: appController.chatModels[index],
+              chatModel: appController.chatModels[index], index: index,
             ));
           },
         ),
