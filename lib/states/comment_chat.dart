@@ -6,8 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:realpost/models/chat_model.dart';
 
+import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
@@ -20,9 +20,11 @@ class CommentChat extends StatefulWidget {
   const CommentChat({
     Key? key,
     required this.docIdChat,
+    required this.chatModel,
   }) : super(key: key);
 
   final String docIdChat;
+  final ChatModel chatModel;
 
   @override
   State<CommentChat> createState() => _CommentChatState();
@@ -59,7 +61,8 @@ class _CommentChatState extends State<CommentChat> {
                           : ListView.builder(
                               itemCount: appController.commentChatModels.length,
                               itemBuilder: (context, index) => Padding(
-                                padding: const EdgeInsets.only(left: 16, bottom: 10),
+                                padding:
+                                    const EdgeInsets.only(left: 16, bottom: 10),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [

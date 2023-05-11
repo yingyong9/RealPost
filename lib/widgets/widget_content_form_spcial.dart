@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -29,7 +31,7 @@ class _WidgetContentFormSpcialState extends State<WidgetContentFormSpcial> {
           print(appController.mainUid.value);
           return Container(
             decoration: BoxDecoration(color: AppConstant.bgColor),
-            constraints: BoxConstraints(
+            constraints: const BoxConstraints(
               maxHeight: 356,
               // minHeight: 150,
             ),
@@ -51,30 +53,6 @@ class _WidgetContentFormSpcialState extends State<WidgetContentFormSpcial> {
                                 width: 200,
                                 height: 200,
                               ),
-                    // SizedBox(
-                    //   height: 50,
-                    //   child: ListView.builder(
-                    //     scrollDirection: Axis.horizontal,
-                    //     shrinkWrap: true,
-                    //     physics: const ClampingScrollPhysics(),
-                    //     itemCount: appController.stampModels.length,
-                    //     itemBuilder: (context, index) => WidgetImageInternet(
-                    //       urlImage: appController.stampModels[index].url,
-                    //       tapFunc: () async {
-                    //         appController.urlRealPostChooses
-                    //             .add(appController.stampModels[index].url);
-
-                    //         ChatModel chatModel = await AppService()
-                    //             .createChatModel(
-                    //                 urlRealPost:
-                    //                     appController.urlRealPostChooses.last);
-
-                    //         print(
-                    //             '##26april  chatModel ---> ${chatModel.toMap()}');
-                    //       },
-                    //     ),
-                    //   ),
-                    // ),
                     const Divider(
                       color: Colors.white,
                       thickness: 1,
@@ -172,47 +150,6 @@ class _WidgetContentFormSpcialState extends State<WidgetContentFormSpcial> {
                               // ไม่ถ่ายภาพ และ ไม่เขียนข้อความ
                               print('ไม่ถ่ายภาพ และ ไม่เขียนข้อความ');
                             }
-
-                            // //upload
-                            // await AppService()
-                            //     .processUploadPhoto(
-                            //         file: appController.fileRealPosts.last,
-                            //         path: 'realpost')
-                            //     .then((value) async {
-                            //   print(
-                            //       '##26april url ของภาพที่ อัพโหลดไป ---> $value');
-
-                            //   if (appController.urlRealPostChooses.isNotEmpty) {
-                            //     appController.urlRealPostChooses.clear();
-                            //   }
-
-                            //   appController.urlRealPostChooses
-                            //       .add(value.toString());
-
-                            // print(
-                            //     '##26april chatModel for insert ---->>> ${chatModel.toMap()}');
-
-                            //   //Insert CollectionChat --> chat
-                            //   AppService()
-                            //       .processInsertChat(
-                            //     chatModel: chatModel,
-                            //     docIdRoom: appController.docIdRooms[
-                            //         appController.indexBodyMainPageView.value],
-                            //   )
-                            //       .then((value) async {
-                            //     AppService()
-                            //         .processInsertChat(
-                            //             collectionChat: 'chatOwner',
-                            //             chatModel: chatModel,
-                            //             docIdRoom: appController.docIdRooms[
-                            //                 appController
-                            //                     .indexBodyMainPageView.value])
-                            //         .then((value) {
-                            //       Get.back();
-                            //       Get.back();
-                            //     });
-                            //   });
-                            // });
                           }, // end Send
                         ),
                       ],
