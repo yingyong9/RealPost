@@ -70,7 +70,6 @@ class _MainPageViewState extends State<MainPageView> {
             init: AppController(),
             builder: (AppController appController) {
               print('##9april ---> ${appController.chatOwnerModels.length}');
-
               return SafeArea(
                 child: appController.noRoom.value
                     ? const WidgetProgessAnimation()
@@ -87,8 +86,7 @@ class _MainPageViewState extends State<MainPageView> {
                                 SizedBox(
                                   height: boxConstraints.maxHeight - 100,
                                   child: displayListMessage(
-                                                    boxConstraints,
-                                                    appController),
+                                      boxConstraints, appController),
                                 ),
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.end,
@@ -574,10 +572,11 @@ class _MainPageViewState extends State<MainPageView> {
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 12),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                     child: WidgetText(
-                        text: appController.chatModels[index].message),
+                        text: appController.chatModels[index].message, textStyle: AppConstant().h3Style(color: Colors.white, size: 20,
+                                        fontWeight: FontWeight.bold),),
                   ),
                   displayImageChat(appController, index),
                   scoreButton(appController, index),
@@ -699,7 +698,6 @@ class _MainPageViewState extends State<MainPageView> {
               : 'images/arrowdown.jpg',
           size: 35,
           tapFunc: () {
-            
             AppService().addFavorite(
                 docIdChat: appController.docIdChats[index],
                 chatModel: appController.chatModels[index],
@@ -716,6 +714,7 @@ class _MainPageViewState extends State<MainPageView> {
           tapFunc: () {
             Get.to(CommentChat(
               docIdChat: appController.docIdChats[index],
+              chatModel: appController.chatModels[index], index: index,
             ));
           },
         ),

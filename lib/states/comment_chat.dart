@@ -6,23 +6,30 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:realpost/models/chat_model.dart';
 
+import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
+import 'package:realpost/widgets/widget_bubble.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
+import 'package:realpost/widgets/widget_image_internet.dart';
+import 'package:realpost/widgets/widget_score_faverite.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
 class CommentChat extends StatefulWidget {
   const CommentChat({
     Key? key,
     required this.docIdChat,
+    required this.chatModel,
+    required this.index,
   }) : super(key: key);
 
   final String docIdChat;
+  final ChatModel chatModel;
+  final int index;
 
   @override
   State<CommentChat> createState() => _CommentChatState();
@@ -54,36 +61,68 @@ class _CommentChatState extends State<CommentChat> {
                   height: boxConstraints.maxHeight,
                   child: Stack(
                     children: [
-                      appController.commentChatModels.isEmpty
-                          ? const SizedBox()
-                          : ListView.builder(
-                              itemCount: appController.commentChatModels.length,
-                              itemBuilder: (context, index) => Padding(
-                                padding: const EdgeInsets.only(left: 16, bottom: 10),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    WidgetCircularImage(
-                                        urlImage: appController
-                                            .commentChatModels[index]
-                                            .urlAvatar),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        BubbleSpecialThree(
-                                            color: Colors.blue.shade900,
-                                            textStyle: AppConstant()
-                                                .h3Style(color: Colors.white),
-                                            isSender: false,
-                                            text:
-                                                '${appController.commentChatModels[index].disPlayName} : \n${appController.commentChatModels[index].message}'),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
+                      SizedBox(
+                        height: boxConstraints.maxHeight - 70,
+                        child: ListView(
+                          children: [
+                            widget.chatModel.message.isEmpty
+                                ? const SizedBox()
+                                : WidgetText(
+                                    text: widget.chatModel.message,
+                                    textStyle: AppConstant().h3Style(
+                                        color: Colors.white,
+                                        size: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                            const SizedBox(
+                              height: 16,
                             ),
+                            widget.chatModel.urlRealPost.isEmpty
+                                ? const SizedBox()
+                                : WidgetImageInternet(
+                                    urlImage: widget.chatModel.urlRealPost,
+                                    height: boxConstraints.maxWidth * 0.75,
+                                    boxFit: BoxFit.cover,
+                                  ),
+                            WidgetScoreFaverite(index: widget.index),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            appController.commentChatModels.isEmpty
+                                ? const SizedBox()
+                                : ListView.builder(
+                                    physics: const ScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount:
+                                        appController.commentChatModels.length,
+                                    itemBuilder: (context, index) => Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 16, bottom: 10),
+                                      child: Container(decoration: AppConstant().boxBlack(color: Color.fromARGB(255, 26, 22, 22)),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            WidgetCircularImage(
+                                                urlImage: appController
+                                                    .commentChatModels[index]
+                                                    .urlAvatar),
+                                                    const SizedBox(width: 8,),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                WidgetText(text: '${appController.commentChatModels[index].disPlayName} : \n${appController.commentChatModels[index].message}'),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                          ],
+                        ),
+                      ),
                       Positioned(
                         bottom: 10,
                         child: SizedBox(
