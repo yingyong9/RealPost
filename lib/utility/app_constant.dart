@@ -21,12 +21,19 @@ class AppConstant {
   static Color bgGrey = const Color.fromARGB(255, 240, 236, 236);
   static Color bgChat = Colors.white;
 
+  static Color realBg = const Color.fromARGB(255, 21, 20, 20);
+  static Color realMid = Color.fromARGB(255, 38, 36, 36);
+  static Color realFront = Color.fromARGB(255, 137, 129, 129);
+
   static String appName = 'Real Post.';
   static String urlAvatar =
       'https://firebasestorage.googleapis.com/v0/b/realpost-19dd3.appspot.com/o/icon%2FReal%20post3.png?alt=media&token=ac968787-b252-4157-9f55-75b2ebec354a';
 
   static String pagePhoneNumber = '/phoneNumber';
   static String pageMainHome = '/mainHome';
+
+  BoxDecoration realBox() => BoxDecoration(
+      color: AppConstant.realBg, borderRadius: BorderRadius.circular(10));
 
   BoxDecoration gradientColor() => BoxDecoration(
         gradient: LinearGradient(

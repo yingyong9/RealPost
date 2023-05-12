@@ -62,6 +62,7 @@ class _WidgetContentFormSpcialState extends State<WidgetContentFormSpcial> {
                       children: [
                         WidgetIconButton(
                           iconData: Icons.add_a_photo,
+                          color: AppConstant.realFront,
                           pressFunc: () async {
                             if (appController.fileRealPosts.isNotEmpty) {
                               appController.fileRealPosts.clear();
@@ -95,12 +96,14 @@ class _WidgetContentFormSpcialState extends State<WidgetContentFormSpcial> {
                             }
                           },
                           iconData: Icons.add_photo_alternate,
+                          color: AppConstant.realFront,
                         ),
                         Expanded(
                           child: WidgetForm(
+                            textStyle:
+                                AppConstant().h3Style(color: Colors.white),
                             controller: textEditingController,
-                            fillColor: Colors.grey.shade300,
-                            maginBottom: 4,
+                            fillColor: AppConstant.realMid,
                             height: 40,
                             changeFunc: (p0) {
                               appController.messageChats.add(p0.trim());
@@ -108,7 +111,7 @@ class _WidgetContentFormSpcialState extends State<WidgetContentFormSpcial> {
                           ),
                         ),
                         WidgetIconButton(
-                          iconData: Icons.send,
+                          iconData: Icons.send,color: AppConstant.realFront,
                           pressFunc: () async {
                             if ((appController.fileRealPosts.isNotEmpty) ||
                                 (appController.messageChats.isNotEmpty)) {

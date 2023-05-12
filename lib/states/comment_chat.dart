@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
 import 'package:chat_bubbles/bubbles/bubble_special_one.dart';
 import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
 import 'package:chat_bubbles/bubbles/bubble_special_two.dart';
@@ -37,6 +37,7 @@ class CommentChat extends StatefulWidget {
 
 class _CommentChatState extends State<CommentChat> {
   TextEditingController textEditingController = TextEditingController();
+  AppController controller = Get.put(AppController());
 
   @override
   void initState() {
@@ -48,7 +49,16 @@ class _CommentChatState extends State<CommentChat> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppConstant.bgColor,
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: WidgetText(
+          text: widget.chatModel.disPlayName,
+          textStyle: AppConstant().h2Style(),
+        ),
+        actions: [
+          WidgetCircularImage(
+              urlImage: controller.userModelsLogin.last.urlAvatar!)
+        ],
+      ),
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints boxConstraints) {
           return GetX(
@@ -65,26 +75,44 @@ class _CommentChatState extends State<CommentChat> {
                         height: boxConstraints.maxHeight - 70,
                         child: ListView(
                           children: [
-                            widget.chatModel.message.isEmpty
-                                ? const SizedBox()
-                                : WidgetText(
-                                    text: widget.chatModel.message,
-                                    textStyle: AppConstant().h3Style(
-                                        color: Colors.white,
-                                        size: 20,
-                                        fontWeight: FontWeight.bold),
+                            Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 8),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 16),
+                              decoration: AppConstant().realBox(),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  widget.chatModel.message.isEmpty
+                                      ? const SizedBox()
+                                      : WidgetText(
+                                          text: widget.chatModel.message,
+                                          textStyle: AppConstant().h3Style(
+                                              color: Colors.white,
+                                              size: 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                  const SizedBox(
+                                    height: 16,
                                   ),
-                            const SizedBox(
-                              height: 16,
+                                  widget.chatModel.urlRealPost.isEmpty
+                                      ? const SizedBox()
+                                      : WidgetImageInternet(
+                                          urlImage:
+                                              widget.chatModel.urlRealPost,
+                                          height:
+                                              boxConstraints.maxWidth * 0.75,
+                                          width: boxConstraints.maxWidth,
+                                          boxFit: BoxFit.cover,
+                                        ),
+                                  WidgetScoreFaverite(index: widget.index),
+                                  const SizedBox(
+                                    height: 16,
+                                  ),
+                                ],
+                              ),
                             ),
-                            widget.chatModel.urlRealPost.isEmpty
-                                ? const SizedBox()
-                                : WidgetImageInternet(
-                                    urlImage: widget.chatModel.urlRealPost,
-                                    height: boxConstraints.maxWidth * 0.75,
-                                    boxFit: BoxFit.cover,
-                                  ),
-                            WidgetScoreFaverite(index: widget.index),
                             const SizedBox(
                               height: 16,
                             ),
@@ -98,23 +126,42 @@ class _CommentChatState extends State<CommentChat> {
                                     itemBuilder: (context, index) => Padding(
                                       padding: const EdgeInsets.only(
                                           left: 16, bottom: 10),
-                                      child: Container(decoration: AppConstant().boxBlack(color: Color.fromARGB(255, 26, 22, 22)),
-                                        child: Row(
+                                      child: Container(
+                                        decoration: AppConstant().boxBlack(
+                                            color: const Color.fromARGB(
+                                                255, 26, 22, 22)),
+                                        child: Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.end,
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            WidgetCircularImage(
-                                                urlImage: appController
-                                                    .commentChatModels[index]
-                                                    .urlAvatar),
-                                                    const SizedBox(width: 8,),
-                                            Column(
+                                            Row(
                                               crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.center,
                                               children: [
-                                                WidgetText(text: '${appController.commentChatModels[index].disPlayName} : \n${appController.commentChatModels[index].message}'),
+                                                WidgetCircularImage(
+                                                  urlImage: appController
+                                                      .commentChatModels[index]
+                                                      .urlAvatar,
+                                                  radius: 15,
+                                                ),
+                                                const SizedBox(
+                                                  width: 8,
+                                                ),
+                                                WidgetText(
+                                                    text: appController
+                                                        .commentChatModels[
+                                                            index]
+                                                        .disPlayName),
                                               ],
                                             ),
+                                            WidgetText(
+                                              text: appController
+                                                  .commentChatModels[index]
+                                                  .message,
+                                              textStyle: AppConstant()
+                                                  .h3Style(size: 16),
+                                            ),
+                                            WidgetScoreFaverite(index: index),
                                           ],
                                         ),
                                       ),
@@ -127,7 +174,7 @@ class _CommentChatState extends State<CommentChat> {
                         bottom: 10,
                         child: SizedBox(
                           width: boxConstraints.maxWidth,
-                          child: WidgetForm(
+                          child: WidgetForm(fillColor: AppConstant.realMid,
                             controller: textEditingController,
                             hint: 'Comment',
                             hintStyle:

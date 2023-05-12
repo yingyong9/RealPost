@@ -46,11 +46,12 @@ class WidgetForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: maginTop ?? 0.0, bottom: maginBottom ?? 0.0),
+    return SizedBox(
+      // margin: EdgeInsets.only(top: maginTop ?? 0.0, bottom: maginBottom ?? 0.0),
       width: width,
       height: height,
-      child: TextFormField(textAlign: textAlign ?? TextAlign.start,
+      child: TextFormField(
+        textAlign: textAlign ?? TextAlign.start,
         controller: controller,
         keyboardType: textInputType,
         inputFormatters: textInputFormatters,
@@ -58,21 +59,19 @@ class WidgetForm extends StatelessWidget {
         autofocus: autoFocus ?? false,
         style: textStyle,
         decoration: InputDecoration(
-          contentPadding: height != null
-              ? const EdgeInsets.symmetric(horizontal: 8, vertical: 4)
-              : null,
+          contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
           label: labelWidget,
           hintStyle: hintStyle,
           suffixIcon: suffixIcon,
           hintText: hint,
           filled: true,
           fillColor: fillColor,
-          enabledBorder: inputBorder ??
-              UnderlineInputBorder(
-                  borderSide: BorderSide(color: AppConstant.dark)),
-          focusedBorder: inputBorder ??
-              UnderlineInputBorder(
-                  borderSide: BorderSide(color: AppConstant.dark)),
+          // enabledBorder: inputBorder ??
+          //     UnderlineInputBorder(
+          //         borderSide: BorderSide(color: AppConstant.dark)),
+          // focusedBorder: inputBorder ??
+          //     UnderlineInputBorder(
+          //         borderSide: BorderSide(color: AppConstant.dark)),
         ),
       ),
     );
