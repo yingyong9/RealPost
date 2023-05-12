@@ -548,7 +548,10 @@ class _MainPageViewState extends State<MainPageView> {
         physics: const ScrollPhysics(),
         itemCount: appController.chatModels.length,
         itemBuilder: (context, index) {
-          return SizedBox(
+          return Container(
+            margin: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+            decoration: AppConstant().realBox(),
             width: boxConstraints.maxWidth,
             child: InkWell(
               onTap: () {
@@ -561,7 +564,8 @@ class _MainPageViewState extends State<MainPageView> {
                 children: [
                   Row(
                     children: [
-                      displayAvatarPost(appController, index),
+                      // displayAvatarPost(appController, index),
+                      WidgetCircularImage(urlImage: appController.chatModels[index].urlAvatar, radius: 15,),
                       const SizedBox(
                         width: 8,
                       ),
@@ -575,8 +579,12 @@ class _MainPageViewState extends State<MainPageView> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                     child: WidgetText(
-                        text: appController.chatModels[index].message, textStyle: AppConstant().h3Style(color: Colors.white, size: 20,
-                                        fontWeight: FontWeight.bold),),
+                      text: appController.chatModels[index].message,
+                      textStyle: AppConstant().h3Style(
+                          color: Colors.white,
+                          size: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                   displayImageChat(appController, index),
                   scoreButton(appController, index),
@@ -687,7 +695,7 @@ class _MainPageViewState extends State<MainPageView> {
         ),
         WidgetText(
           text: appController.chatModels[index].favorit.toString(),
-          textStyle: AppConstant().h3Style(size: 20),
+          textStyle: AppConstant().h3Style(size: 20, color: AppConstant.realFront),
         ),
         const SizedBox(
           width: 10,
@@ -714,18 +722,19 @@ class _MainPageViewState extends State<MainPageView> {
           tapFunc: () {
             Get.to(CommentChat(
               docIdChat: appController.docIdChats[index],
-              chatModel: appController.chatModels[index], index: index,
+              chatModel: appController.chatModels[index],
+              index: index,
             ));
           },
         ),
         const SizedBox(
           width: 20,
         ),
-        WidgetImage(
-          path: 'images/present.jpg',
-          size: 35,
-          tapFunc: () {},
-        ),
+        // WidgetImage(
+        //   path: 'images/present.jpg',
+        //   size: 35,
+        //   tapFunc: () {},
+        // ),
       ],
     );
   }

@@ -42,7 +42,7 @@ class WidgetScoreFaverite extends StatelessWidget {
               ),
               WidgetText(
                 text: appController.chatModels[index].favorit.toString(),
-                textStyle: AppConstant().h3Style(size: 20),
+                textStyle: AppConstant().h3Style(size: 20, color: AppConstant.realFront),
               ),
               const SizedBox(
                 width: 10,
@@ -76,11 +76,11 @@ class WidgetScoreFaverite extends StatelessWidget {
               const SizedBox(
                 width: 20,
               ),
-              WidgetImage(
-                path: 'images/present.jpg',
-                size: 35,
-                tapFunc: () {},
-              ),
+              // WidgetImage(
+              //   path: 'images/present.jpg',
+              //   size: 35,
+              //   tapFunc: () {},
+              // ),
             ],
           );
         });
