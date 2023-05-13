@@ -526,84 +526,62 @@ class AppService {
       if (value.statusCode == 200) {
         //Everything OK
         print('##28feb verifyOTP Success phone ที่กรอก ---> $phoneNumber');
-        UserModel? havePhoneUserModel;
+        readAllUserModel().then((value) async {
+          UserModel? havePhoneUserModel;
 
-        bool havePhone = false;
+          bool havePhone = false;
 
-        for (var element in appController.userModels) {
-          if (element.phoneNumber == phoneNumber) {
-            havePhone = true;
-            havePhoneUserModel = element;
+          print(
+              '##13may userModels.length ---->>>${appController.userModels.length}');
+
+          for (var element in appController.userModels) {
+            if (element.phoneNumber == phoneNumber) {
+              havePhone = true;
+              havePhoneUserModel = element;
+            }
           }
-        }
-        print('##28feb havePhone = $havePhone');
+          print('##13may havePhone = $havePhone');
 
-        if (havePhone) {
-          print('##28feb เคยเอาเบอร์นี่ไปสมัครแล้ว');
-          print('##28feb havePhoneModel ---> ${havePhoneUserModel!.toMap()}');
+          if (havePhone) {
+            print('##13may เคยเอาเบอร์นี่ไปสมัครแล้ว');
+            print('##13may havePhoneModel ---> ${havePhoneUserModel!.toMap()}');
 
-          await FirebaseAuth.instance
-              .signInWithEmailAndPassword(
-                  email: havePhoneUserModel.email!,
-                  password: havePhoneUserModel.password!)
-              .then((value) {
-            appController.mainUid.value = value.user!.uid;
-            Get.offAllNamed('/mainPageView');
-          });
-        } else {
-          print('##21mar เบอร์ใหม่');
+            await FirebaseAuth.instance
+                .signInWithEmailAndPassword(
+                    email: havePhoneUserModel.email!,
+                    password: havePhoneUserModel.password!)
+                .then((value) {
+              appController.mainUid.value = value.user!.uid;
+              Get.offAllNamed('/mainPageView');
+            });
+          } else {
+            print('##13may เบอร์ใหม่');
 
-          AppDialog(context: context).normalDialog(
-            title: 'Terms and Conditions',
-            leadingWidget: const WidgetImage(
-              path: 'images/icon2.png',
-              size: 80,
-            ),
-            contentWidget: ListView(
-              children: [
-                WidgetText(
-                  text: AppConstant.conditionTh,
-                  textStyle: AppConstant().h3Style(color: Colors.black),
-                ),
-                WidgetText(
-                  text: AppConstant.conditionEn,
-                  textStyle: AppConstant().h3Style(color: Colors.black),
-                ),
-              ],
-            ),
-            actions: <Widget>[
-              WidgetTextButton(
-                text: 'OK',
-                pressFunc: () async {
-                  print('##22mar ต่อไปก็ไป สมัครสมาชิกใหม่');
+             print('##13may ต่อไปก็ไป สมัครสมาชิกใหม่');
 
-                  String email = 'phone$phoneNumber@realpost.com';
-                  String password = '123456';
+                    String email = 'phone$phoneNumber@realpost.com';
+                    String password = '123456';
 
-                  await FirebaseAuth.instance
-                      .createUserWithEmailAndPassword(
-                          email: email, password: password)
-                      .then((value) {
-                    String uidUser = value.user!.uid;
-                    appController.mainUid.value = uidUser;
-                    print('##28feb uidUser ---> $uidUser');
-                    Get.offAll(DisplayName(
-                        uidLogin: uidUser,
-                        phoneNumber: phoneNumber,
-                        email: email,
-                        password: password));
-                  });
-                },
-              ),
-              WidgetTextButton(
-                text: 'Cancel',
-                pressFunc: () {
-                  exit(0);
-                },
-              ),
-            ],
-          );
-        }
+                    await FirebaseAuth.instance
+                        .createUserWithEmailAndPassword(
+                            email: email, password: password)
+                        .then((value) {
+                      String uidUser = value.user!.uid;
+                      appController.mainUid.value = uidUser;
+                      print('##13may uidUser ---> $uidUser');
+                      Get.offAll(DisplayName(
+                          uidLogin: uidUser,
+                          phoneNumber: phoneNumber,
+                          email: email,
+                          password: password));
+                    }).catchError((onError) {
+                      print(
+                          '##13may onError on create new accoount ---> ${onError.message}');
+                    });
+
+           
+          }
+        });
       } else {
         appController.showFalseOTP.value = true;
 
