@@ -63,44 +63,52 @@ class _MainPageViewState extends State<MainPageView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppConstant.bgColor,
-      body: LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
-        return GetX(
-            init: AppController(),
-            builder: (AppController appController) {
-              print('##9april ---> ${appController.chatOwnerModels.length}');
-              return SafeArea(
-                child: appController.noRoom.value
-                    ? const WidgetProgessAnimation()
-                    : ((appController.roomModels.isEmpty) &&
-                            (appController.userModels.isEmpty) &&
-                            (appController.userModelAtRooms.isEmpty))
-                        ? const SizedBox()
-                        : GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: () => FocusScope.of(context)
-                                .requestFocus(FocusScopeNode()),
-                            child: Stack(
-                              children: [
-                                SizedBox(
-                                  height: boxConstraints.maxHeight - 100,
-                                  child: displayListMessage(
-                                      boxConstraints, appController),
-                                ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    WidgetContentFormSpcial(),
-                                  ],
-                                ),
-                              ],
+    return LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
+      return Scaffold(
+          backgroundColor: AppConstant.bgColor,
+          // appBar: AppBar(
+          //   // leading: ((controller.roomModels.isEmpty) &&
+          //   //         (controller.userModels.isEmpty) &&
+          //   //         (controller.userModelAtRooms.isEmpty))
+          //   //     ? const SizedBox()
+          //   //     : rightMenu(controller, boxConstraints: boxConstraints),
+          //   //     // : WidgetText(text: 'Appbar'),
+          // ),
+          body: GetX(
+              init: AppController(),
+              builder: (AppController appController) {
+                print('##9april ---> ${appController.chatOwnerModels.length}');
+                return SafeArea(
+                  child: appController.noRoom.value
+                      ? const WidgetProgessAnimation()
+                      : ((appController.roomModels.isEmpty) &&
+                              (appController.userModels.isEmpty) &&
+                              (appController.userModelAtRooms.isEmpty))
+                          ? const SizedBox()
+                          : GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () => FocusScope.of(context)
+                                  .requestFocus(FocusScopeNode()),
+                              child: Stack(
+                                children: [
+                                  SizedBox(
+                                    height: boxConstraints.maxHeight - 100,
+                                    child: displayListMessage(
+                                        boxConstraints, appController),
+                                  ),
+                                  rightMenu(controller, boxConstraints: boxConstraints),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: const [
+                                      WidgetContentFormSpcial(),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-              );
-            });
-      }),
-    );
+                );
+              }));
+    });
   }
 
   Widget contentMidforSalse(
@@ -251,16 +259,16 @@ class _MainPageViewState extends State<MainPageView> {
       {required BoxConstraints boxConstraints}) {
     var widgets = <Widget>[
       firstMenu(),
-      secondMenu(),
-      thirdMenu(),
-      forthMenu(appController: appController),
-      fifMenu(appController: appController),
-      sixMenu(boxConstraints: boxConstraints),
+      // secondMenu(),
+      // thirdMenu(),
+      // forthMenu(appController: appController),
+      // fifMenu(appController: appController),
+      // sixMenu(boxConstraints: boxConstraints),
     ];
 
     return Positioned(
-      right: 0,
-      top: 70,
+      // right: 0,
+      // top: 70,
       child: DropdownButton(
         elevation: 0,
         underline: const SizedBox(),
@@ -275,9 +283,9 @@ class _MainPageViewState extends State<MainPageView> {
             )
             .toList(),
         hint: Container(
-          padding: const EdgeInsets.all(4),
-          margin: const EdgeInsets.only(left: 28),
-          decoration: AppConstant().boxCurve(color: Colors.red.shade700),
+          // padding: const EdgeInsets.all(4),
+          // margin: const EdgeInsets.only(left: 28),
+          // decoration: AppConstant().boxCurve(color: Colors.red.shade700),
           child: const Icon(
             Icons.menu,
             color: Colors.white,
@@ -565,7 +573,10 @@ class _MainPageViewState extends State<MainPageView> {
                   Row(
                     children: [
                       // displayAvatarPost(appController, index),
-                      WidgetCircularImage(urlImage: appController.chatModels[index].urlAvatar, radius: 15,),
+                      WidgetCircularImage(
+                        urlImage: appController.chatModels[index].urlAvatar,
+                        radius: 15,
+                      ),
                       const SizedBox(
                         width: 8,
                       ),
@@ -611,36 +622,43 @@ class _MainPageViewState extends State<MainPageView> {
               tapFunc: () {
                 print(
                     'You tap image url ===> ${appController.chatModels[index].urlRealPost}');
-                Get.to(FullScreenImage(
-                        urlImage: appController.chatModels[index].urlRealPost))!
-                    .then((value) {
-                  //Check Time ว่าเป็น today ????
-                  if (AppService().compareCurrentTime(
-                      otherDatetime: appController
-                          .roomModels[appController.indexBodyMainPageView.value]
-                          .timestamp
-                          .toDate())) {
-                    //Status Real
-                    print('##29 Status Real');
-                  } else {
-                    //update time post
-                    print('##29 update Time post');
-                    Map<String, dynamic> map = appController
-                        .roomModels[appController.indexBodyMainPageView.value]
-                        .toMap();
 
-                    map['timestamp'] = Timestamp.fromDate(DateTime.now());
-                    AppService()
-                        .processUpdateRoom(
-                            docIdRoom: appController.docIdRooms[
-                                appController.indexBodyMainPageView.value],
-                            data: map)
-                        .then((value) {
-                      // AppService().initialSetup(context: context);
-                      Restart.restartApp();
-                    });
-                  }
-                });
+               Get.to(CommentChat(
+              docIdChat: appController.docIdChats[index],
+              chatModel: appController.chatModels[index],
+              index: index,
+            ));
+
+                // Get.to(FullScreenImage(
+                //         urlImage: appController.chatModels[index].urlRealPost))!
+                //     .then((value) {
+                //   //Check Time ว่าเป็น today ????
+                //   if (AppService().compareCurrentTime(
+                //       otherDatetime: appController
+                //           .roomModels[appController.indexBodyMainPageView.value]
+                //           .timestamp
+                //           .toDate())) {
+                //     //Status Real
+                //     print('##29 Status Real');
+                //   } else {
+                //     //update time post
+                //     print('##29 update Time post');
+                //     Map<String, dynamic> map = appController
+                //         .roomModels[appController.indexBodyMainPageView.value]
+                //         .toMap();
+
+                //     map['timestamp'] = Timestamp.fromDate(DateTime.now());
+                //     AppService()
+                //         .processUpdateRoom(
+                //             docIdRoom: appController.docIdRooms[
+                //                 appController.indexBodyMainPageView.value],
+                //             data: map)
+                //         .then((value) {
+                //       // AppService().initialSetup(context: context);
+                //       Restart.restartApp();
+                //     });
+                //   }
+                // });
               },
             ),
           );
@@ -695,7 +713,8 @@ class _MainPageViewState extends State<MainPageView> {
         ),
         WidgetText(
           text: appController.chatModels[index].favorit.toString(),
-          textStyle: AppConstant().h3Style(size: 20, color: AppConstant.realFront),
+          textStyle:
+              AppConstant().h3Style(size: 20, color: AppConstant.realFront),
         ),
         const SizedBox(
           width: 10,
