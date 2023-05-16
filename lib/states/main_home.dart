@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:realpost/bodys/body_discovery.dart';
 import 'package:realpost/bodys/body_me.dart';
@@ -7,9 +6,7 @@ import 'package:realpost/states/add_room.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
-import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
-import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
 class MainHome extends StatefulWidget {

@@ -11,7 +11,6 @@ import 'package:realpost/models/room_model.dart';
 import 'package:realpost/states/add_product.dart';
 import 'package:realpost/states/comment_chat.dart';
 import 'package:realpost/states/display_profile.dart';
-import 'package:realpost/states/full_screen_image.dart';
 import 'package:realpost/states/list_friend.dart';
 import 'package:realpost/states/private_chat.dart';
 import 'package:realpost/states/tab_price.dart';
@@ -21,7 +20,6 @@ import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
-import 'package:realpost/widgets/widget_content_form.dart';
 import 'package:realpost/widgets/widget_content_form_spcial.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
@@ -30,7 +28,6 @@ import 'package:realpost/widgets/widget_progress_animation.dart';
 import 'package:realpost/widgets/widget_squeer_avatar.dart';
 import 'package:realpost/widgets/widget_text.dart';
 import 'package:badges/badges.dart' as badges;
-import 'package:restart_app/restart_app.dart';
 
 class MainPageView extends StatefulWidget {
   const MainPageView({super.key});

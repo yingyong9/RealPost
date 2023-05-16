@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:realpost/utility/app_constant.dart';
-import 'package:realpost/widgets/widget_text.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class MainWebView extends StatefulWidget {

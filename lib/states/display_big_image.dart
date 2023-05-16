@@ -7,7 +7,6 @@ import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/states/chat_page.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
-import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
