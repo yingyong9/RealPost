@@ -1,9 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
 
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -397,7 +395,7 @@ class AppDialog {
 
                     print(
                         'geoPoint model --> ${appController.roomModels[appController.indexBodyMainPageView.value].geoPoint!.latitude}');
-                    var geoPoint = map['geoPoint'].toString();
+                    // var geoPoint = map['geoPoint'].toString();
 
                     GeoPoint userGeoPoint = GeoPoint(
                         appController.positions.last.latitude,
@@ -943,6 +941,7 @@ class AppDialog {
         child: GridView.builder(
           findChildIndexCallback: (key) {
             print('key ==> $key');
+            return null;
           },
           itemCount: appController.stampModels.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

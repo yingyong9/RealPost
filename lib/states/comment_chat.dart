@@ -1,17 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
-import 'package:chat_bubbles/bubbles/bubble_special_one.dart';
-import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
-import 'package:chat_bubbles/bubbles/bubble_special_two.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
-import 'package:realpost/widgets/widget_bubble.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
@@ -42,7 +37,15 @@ class _CommentChatState extends State<CommentChat> {
   @override
   void initState() {
     super.initState();
-    AppService().readCommentChat(docIdChat: widget.docIdChat);
+    AppService().readCommentChat(docIdChat: widget.docIdChat).then((value) {
+      // print(
+      //     '##16may docIdChat ---> ${widget.docIdChat} readCommentChat finish  chatModel ---> ${widget.chatModel.toMap()}');
+
+      AppService().increaseDecrestTraffic(
+          docIdChat: widget.docIdChat,
+          increase: true,
+          chatModel: widget.chatModel);
+    });
   }
 
   @override
@@ -174,7 +177,8 @@ class _CommentChatState extends State<CommentChat> {
                         bottom: 10,
                         child: SizedBox(
                           width: boxConstraints.maxWidth,
-                          child: WidgetForm(fillColor: AppConstant.realMid,
+                          child: WidgetForm(
+                            fillColor: AppConstant.realMid,
                             controller: textEditingController,
                             hint: 'Comment',
                             hintStyle:

@@ -42,7 +42,8 @@ class WidgetScoreFaverite extends StatelessWidget {
               ),
               WidgetText(
                 text: appController.chatModels[index].favorit.toString(),
-                textStyle: AppConstant().h3Style(size: 20, color: AppConstant.realFront),
+                textStyle: AppConstant()
+                    .h3Style(size: 20, color: AppConstant.realFront),
               ),
               const SizedBox(
                 width: 10,
@@ -60,27 +61,22 @@ class WidgetScoreFaverite extends StatelessWidget {
                       index: index);
                 },
               ),
+            
               const SizedBox(
                 width: 20,
               ),
-              WidgetImage(
-                path: 'images/comment.jpg',
-                size: 35,
-                tapFunc: () {
-                  // Get.to(CommentChat(
-                  //   docIdChat: appController.docIdChats[index],
-                  //   chatModel: appController.chatModels[index],
-                  // ));
-                },
-              ),
+             
+              WidgetText(text: 'จำนวนคนในห้อง', textStyle: AppConstant()
+                    .h3Style(size: 10, color: AppConstant.realFront),),
               const SizedBox(
                 width: 20,
               ),
-              // WidgetImage(
-              //   path: 'images/present.jpg',
-              //   size: 35,
-              //   tapFunc: () {},
-              // ),
+              WidgetText(
+                text: appController.chatModels[index].traffic.toString(),
+                textStyle: AppConstant()
+                    .h3Style(size: 20, color: AppConstant.realFront),
+              )
+             
             ],
           );
         });

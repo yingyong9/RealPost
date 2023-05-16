@@ -17,6 +17,7 @@ class ChatModel {
   final String? urlBigImage;
   final bool? readed;
   final int? favorit;
+  final int? traffic;
 
   ChatModel({
     required this.message,
@@ -32,6 +33,7 @@ class ChatModel {
     this.urlBigImage,
     this.readed,
     this.favorit,
+    this.traffic,
   });
 
   Map<String, dynamic> toMap() {
@@ -49,6 +51,7 @@ class ChatModel {
       'urlBigImage': urlBigImage,
       'readed': readed,
       'favorit': favorit,
+      'traffic': traffic,
     };
   }
 
@@ -62,11 +65,13 @@ class ChatModel {
       urlRealPost: (map['urlRealPost'] ?? '') as String,
       article: map['article'] != null ? map['article'] as String : null,
       link: map['link'] != null ? map['link'] as String : null,
-      geoPoint: map['geoPoint'] ?? const GeoPoint(0, 0) ,
+      geoPoint: map['geoPoint'] ?? const GeoPoint(0, 0),
       albums: List<String>.from(map['albums'] ?? []),
-      urlBigImage: map['urlBigImage'] != null ? map['urlBigImage'] as String : null,
+      urlBigImage:
+          map['urlBigImage'] != null ? map['urlBigImage'] as String : null,
       readed: map['readed'] ?? false,
       favorit: map['favorit'] ?? 0,
+      traffic: map['traffic']?? 0,
     );
   }
 
@@ -78,10 +83,12 @@ class ChatModel {
   //     urlRealPost: (map['urlRealPost'] ?? '') as String,
   //     article: map['article'] != null ? map['article'] as String : null,
   //     link: map['link'] != null ? map['link'] as String : null,
-  //     geoPoint: map['geoPoint'] ?? const GeoPoint(0, 0) ,
+  //     geoPoint: map['geoPoint'] ?? const GeoPoint(0, 0),
   //     albums: List<String>.from(map['albums'] ?? []),
-  //     urlBigImage: map['urlBigImage'] != null ? map['urlBigImage'] as String : null,
+  //     urlBigImage:
+  //         map['urlBigImage'] != null ? map['urlBigImage'] as String : null,
   //     readed: map['readed'] ?? false,
+  //     favorit: map['favorit'] ?? 0,
 
   String toJson() => json.encode(toMap());
 

@@ -11,7 +11,6 @@ import 'package:realpost/models/room_model.dart';
 import 'package:realpost/states/add_product.dart';
 import 'package:realpost/states/comment_chat.dart';
 import 'package:realpost/states/display_profile.dart';
-import 'package:realpost/states/full_screen_image.dart';
 import 'package:realpost/states/list_friend.dart';
 import 'package:realpost/states/private_chat.dart';
 import 'package:realpost/states/tab_price.dart';
@@ -21,7 +20,6 @@ import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
-import 'package:realpost/widgets/widget_content_form.dart';
 import 'package:realpost/widgets/widget_content_form_spcial.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
@@ -30,7 +28,6 @@ import 'package:realpost/widgets/widget_progress_animation.dart';
 import 'package:realpost/widgets/widget_squeer_avatar.dart';
 import 'package:realpost/widgets/widget_text.dart';
 import 'package:badges/badges.dart' as badges;
-import 'package:restart_app/restart_app.dart';
 
 class MainPageView extends StatefulWidget {
   const MainPageView({super.key});
@@ -96,7 +93,8 @@ class _MainPageViewState extends State<MainPageView> {
                                     child: displayListMessage(
                                         boxConstraints, appController),
                                   ),
-                                  rightMenu(controller, boxConstraints: boxConstraints),
+                                  rightMenu(controller,
+                                      boxConstraints: boxConstraints),
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: const [
@@ -623,11 +621,17 @@ class _MainPageViewState extends State<MainPageView> {
                 print(
                     'You tap image url ===> ${appController.chatModels[index].urlRealPost}');
 
-               Get.to(CommentChat(
-              docIdChat: appController.docIdChats[index],
-              chatModel: appController.chatModels[index],
-              index: index,
-            ));
+                Get.to(CommentChat(
+                  docIdChat: appController.docIdChats[index],
+                  chatModel: appController.chatModels[index],
+                  index: index,
+                ))!
+                    .then((value) {
+                  AppService().increaseDecrestTraffic(
+                      docIdChat: appController.docIdChats[index],
+                      increase: false,
+                      chatModel: appController.chatModels[index]);
+                });
 
                 // Get.to(FullScreenImage(
                 //         urlImage: appController.chatModels[index].urlRealPost))!
@@ -735,25 +739,18 @@ class _MainPageViewState extends State<MainPageView> {
         const SizedBox(
           width: 20,
         ),
-        WidgetImage(
-          path: 'images/comment.jpg',
-          size: 35,
-          tapFunc: () {
-            Get.to(CommentChat(
-              docIdChat: appController.docIdChats[index],
-              chatModel: appController.chatModels[index],
-              index: index,
-            ));
-          },
-        ),
-        const SizedBox(
-          width: 20,
-        ),
-        // WidgetImage(
-        //   path: 'images/present.jpg',
-        //   size: 35,
-        //   tapFunc: () {},
-        // ),
+
+         WidgetText(text: 'จำนวนคนในห้อง', textStyle: AppConstant()
+                    .h3Style(size: 10, color: AppConstant.realFront),),
+              const SizedBox(
+                width: 20,
+              ),
+              WidgetText(
+                text: appController.chatModels[index].traffic.toString(),
+                textStyle: AppConstant()
+                    .h3Style(size: 20, color: AppConstant.realFront),
+              )
+       
       ],
     );
   }

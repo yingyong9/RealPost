@@ -36,6 +36,27 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
+  Future<void> increaseDecrestTraffic(
+      {required String docIdChat,
+      required bool increase,
+      required ChatModel chatModel}) async {
+    Map<String, dynamic> map = chatModel.toMap();
+    print('##16may before traffic --> ${map['traffic']}');
+    if (increase) {
+      map['traffic'] = map['traffic'] + 1;
+    } else {
+      map['traffic'] = map['traffic'] - 1;
+    }
+    print('##16may after traffic --> ${map['traffic']}');
+
+    await FirebaseFirestore.instance
+        .collection('room')
+        .doc('JtsxAUXHFypOPE5tdU6E')
+        .collection('chat')
+        .doc(docIdChat)
+        .update(map);
+  }
+
   Future<void> insertCommentChat(
       {required String docIdChat, required ChatModel commentChatModel}) async {
     await FirebaseFirestore.instance
@@ -557,29 +578,27 @@ class AppService {
           } else {
             print('##13may เบอร์ใหม่');
 
-             print('##13may ต่อไปก็ไป สมัครสมาชิกใหม่');
+            print('##13may ต่อไปก็ไป สมัครสมาชิกใหม่');
 
-                    String email = 'phone$phoneNumber@realpost.com';
-                    String password = '123456';
+            String email = 'phone$phoneNumber@realpost.com';
+            String password = '123456';
 
-                    await FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                            email: email, password: password)
-                        .then((value) {
-                      String uidUser = value.user!.uid;
-                      appController.mainUid.value = uidUser;
-                      print('##13may uidUser ---> $uidUser');
-                      Get.offAll(DisplayName(
-                          uidLogin: uidUser,
-                          phoneNumber: phoneNumber,
-                          email: email,
-                          password: password));
-                    }).catchError((onError) {
-                      print(
-                          '##13may onError on create new accoount ---> ${onError.message}');
-                    });
-
-           
+            await FirebaseAuth.instance
+                .createUserWithEmailAndPassword(
+                    email: email, password: password)
+                .then((value) {
+              String uidUser = value.user!.uid;
+              appController.mainUid.value = uidUser;
+              print('##13may uidUser ---> $uidUser');
+              Get.offAll(DisplayName(
+                  uidLogin: uidUser,
+                  phoneNumber: phoneNumber,
+                  email: email,
+                  password: password));
+            }).catchError((onError) {
+              print(
+                  '##13may onError on create new accoount ---> ${onError.message}');
+            });
           }
         });
       } else {
