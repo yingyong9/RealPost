@@ -37,7 +37,15 @@ class _CommentChatState extends State<CommentChat> {
   @override
   void initState() {
     super.initState();
-    AppService().readCommentChat(docIdChat: widget.docIdChat);
+    AppService().readCommentChat(docIdChat: widget.docIdChat).then((value) {
+      // print(
+      //     '##16may docIdChat ---> ${widget.docIdChat} readCommentChat finish  chatModel ---> ${widget.chatModel.toMap()}');
+
+      AppService().increaseDecrestTraffic(
+          docIdChat: widget.docIdChat,
+          increase: true,
+          chatModel: widget.chatModel);
+    });
   }
 
   @override
@@ -169,7 +177,8 @@ class _CommentChatState extends State<CommentChat> {
                         bottom: 10,
                         child: SizedBox(
                           width: boxConstraints.maxWidth,
-                          child: WidgetForm(fillColor: AppConstant.realMid,
+                          child: WidgetForm(
+                            fillColor: AppConstant.realMid,
                             controller: textEditingController,
                             hint: 'Comment',
                             hintStyle:
