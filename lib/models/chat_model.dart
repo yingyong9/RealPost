@@ -18,6 +18,7 @@ class ChatModel {
   final bool? readed;
   final int? favorit;
   final int? traffic;
+  final bool? checkInOwnerChat;
 
   ChatModel({
     required this.message,
@@ -34,6 +35,7 @@ class ChatModel {
     this.readed,
     this.favorit,
     this.traffic,
+    this.checkInOwnerChat,
   });
 
   Map<String, dynamic> toMap() {
@@ -52,6 +54,7 @@ class ChatModel {
       'readed': readed,
       'favorit': favorit,
       'traffic': traffic,
+      'checkInOwnerChat': checkInOwnerChat,
     };
   }
 
@@ -72,6 +75,7 @@ class ChatModel {
       readed: map['readed'] ?? false,
       favorit: map['favorit'] ?? 0,
       traffic: map['traffic']?? 0,
+      checkInOwnerChat: map['checkInOwnerChat'] ?? false ,
     );
   }
 
@@ -89,6 +93,7 @@ class ChatModel {
   //         map['urlBigImage'] != null ? map['urlBigImage'] as String : null,
   //     readed: map['readed'] ?? false,
   //     favorit: map['favorit'] ?? 0,
+  //     traffic: map['traffic']?? 0,
 
   String toJson() => json.encode(toMap());
 

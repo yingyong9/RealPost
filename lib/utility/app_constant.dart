@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AppConstant {
+  static String docIdRoomData = 'JtsxAUXHFypOPE5tdU6E';
+
   static int amountLoadPage = 1;
 
   static String conditionTh =
