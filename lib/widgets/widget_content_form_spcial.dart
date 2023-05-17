@@ -9,8 +9,8 @@ import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
+import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
-import 'package:realpost/widgets/widget_text.dart';
 
 class WidgetContentFormSpcial extends StatefulWidget {
   const WidgetContentFormSpcial({super.key});
@@ -110,9 +110,10 @@ class _WidgetContentFormSpcialState extends State<WidgetContentFormSpcial> {
                             },
                           ),
                         ),
-                        WidgetIconButton(
-                          iconData: Icons.send,color: AppConstant.realFront,
-                          pressFunc: () async {
+                        WidgetImage(
+                          path: 'images/rocket.png',
+                          size: 48,
+                          tapFunc: () async {
                             if ((appController.fileRealPosts.isNotEmpty) ||
                                 (appController.messageChats.isNotEmpty)) {
                               if (appController.fileRealPosts.isNotEmpty) {
@@ -153,7 +154,7 @@ class _WidgetContentFormSpcialState extends State<WidgetContentFormSpcial> {
                               // ไม่ถ่ายภาพ และ ไม่เขียนข้อความ
                               print('ไม่ถ่ายภาพ และ ไม่เขียนข้อความ');
                             }
-                          }, // end Send
+                          },
                         ),
                       ],
                     ),

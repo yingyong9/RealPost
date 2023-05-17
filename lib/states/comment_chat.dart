@@ -7,9 +7,11 @@ import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
+import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
+import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_score_faverite.dart';
 import 'package:realpost/widgets/widget_text.dart';
@@ -38,14 +40,14 @@ class _CommentChatState extends State<CommentChat> {
   void initState() {
     super.initState();
     AppService().readCommentChat(docIdChat: widget.docIdChat).then((value) {
-      // print(
-      //     '##16may docIdChat ---> ${widget.docIdChat} readCommentChat finish  chatModel ---> ${widget.chatModel.toMap()}');
-
       AppService().increaseDecrestTraffic(
           docIdChat: widget.docIdChat,
           increase: true,
           chatModel: widget.chatModel);
     });
+
+    AppService().checkInOwnerChat(
+        docIdChat: widget.docIdChat, chatModel: widget.chatModel);
   }
 
   @override
@@ -53,9 +55,13 @@ class _CommentChatState extends State<CommentChat> {
     return Scaffold(
       backgroundColor: AppConstant.bgColor,
       appBar: AppBar(
-        title: WidgetText(
-          text: widget.chatModel.disPlayName,
-          textStyle: AppConstant().h2Style(),
+        title: Row(
+          children: [
+            WidgetText(
+              text: widget.chatModel.disPlayName,
+              textStyle: AppConstant().h2Style(),
+            ),
+          ],
         ),
         actions: [
           WidgetCircularImage(
@@ -68,7 +74,7 @@ class _CommentChatState extends State<CommentChat> {
               init: AppController(),
               builder: (AppController appController) {
                 print(
-                    'commentChats -----> ${appController.commentChatModels.length}');
+                    '##17may chatModel -----> ${appController.chatModels[widget.index].toMap()}');
                 return SizedBox(
                   width: boxConstraints.maxWidth,
                   height: boxConstraints.maxHeight,
@@ -78,6 +84,13 @@ class _CommentChatState extends State<CommentChat> {
                         height: boxConstraints.maxHeight - 70,
                         child: ListView(
                           children: [
+                            appController
+                                    .chatModels[widget.index].checkInOwnerChat!
+                                ? WidgetButton(
+                                    label: 'Live',
+                                    pressFunc: () {},
+                                  )
+                                : const SizedBox(),
                             Container(
                               margin: const EdgeInsets.symmetric(horizontal: 8),
                               padding: const EdgeInsets.symmetric(
@@ -175,18 +188,39 @@ class _CommentChatState extends State<CommentChat> {
                       ),
                       Positioned(
                         bottom: 10,
-                        child: SizedBox(
-                          width: boxConstraints.maxWidth,
-                          child: WidgetForm(
-                            fillColor: AppConstant.realMid,
-                            controller: textEditingController,
-                            hint: 'Comment',
-                            hintStyle:
-                                AppConstant().h3Style(color: Colors.white),
-                            textStyle:
-                                AppConstant().h3Style(color: Colors.white),
-                            suffixIcon: WidgetIconButton(
-                              pressFunc: () {
+                        child: Row(
+                          children: [
+                            WidgetIconButton(
+                              pressFunc: () {},
+                              iconData: Icons.add_a_photo,
+                              color: AppConstant.realFront,
+                            ),
+                            WidgetIconButton(
+                              pressFunc: () {},
+                              iconData: Icons.add_photo_alternate,
+                              color: AppConstant.realFront,
+                            ),
+                            SizedBox(
+                              width: 200,
+                              child: WidgetForm(
+                                fillColor: AppConstant.realMid,
+                                controller: textEditingController,
+                                hint: 'Comment',
+                                hintStyle:
+                                    AppConstant().h3Style(color: Colors.white),
+                                textStyle:
+                                    AppConstant().h3Style(color: Colors.white),
+                                suffixIcon: Row(mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    WidgetImage(path: 'images/emoj.jpg', size: 36,),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            WidgetImage(
+                              path: 'images/rocket.png',
+                              size: 48,
+                              tapFunc: () {
                                 if (textEditingController.text.isNotEmpty) {
                                   ChatModel chatModel = ChatModel(
                                       message: textEditingController.text,
@@ -211,9 +245,8 @@ class _CommentChatState extends State<CommentChat> {
                                   });
                                 }
                               },
-                              iconData: Icons.send,
                             ),
-                          ),
+                          ],
                         ),
                       ),
                     ],
