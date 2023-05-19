@@ -94,11 +94,14 @@ class AppController extends GetxController {
   RxList<ChatModel> commentChatModels = <ChatModel>[].obs;
   RxString docIdChatTapFavorite = ''.obs;
   RxBool processUp = false.obs;
-
   RxList<bool> processUps = <bool>[].obs;
   RxList<bool> processDowns = <bool>[].obs;
-
   RxBool processDown = false.obs;
+
+  RxList<String> urlImageComments = <String>[].obs;
+  RxList<File> fileImageComments = <File>[].obs;
+
+  RxBool checkIn = true.obs;
 
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
@@ -384,60 +387,58 @@ class AppController extends GetxController {
         .doc('JtsxAUXHFypOPE5tdU6E')
         .get()
         .then((value) async {
-     
-        RoomModel model = RoomModel.fromMap(value.data()!);
-        roomModels.add(model);
-        docIdRooms.add(value.id);
+      RoomModel model = RoomModel.fromMap(value.data()!);
+      roomModels.add(model);
+      docIdRooms.add(value.id);
 
-        UserModel? userModel =
-            await AppService().findUserModel(uid: model.uidCreate);
-        if (userModel != null) {
-          userModelAtRooms.add(userModel);
-        }
+      UserModel? userModel =
+          await AppService().findUserModel(uid: model.uidCreate);
+      if (userModel != null) {
+        userModelAtRooms.add(userModel);
+      }
 
-        await AppService()
-            .findPatnerFriend(uidCheckFriend: model.uidCreate)
-            .then((value) {
-          displayAddFriends.add(value);
-        });
+      await AppService()
+          .findPatnerFriend(uidCheckFriend: model.uidCreate)
+          .then((value) {
+        displayAddFriends.add(value);
+      });
 
-        var chatModels = <ChatModel>[];
-        ChatModel? lateChatModel;
-        var user = FirebaseAuth.instance.currentUser;
-        bool check = true;
+      var chatModels = <ChatModel>[];
+      ChatModel? lateChatModel;
+      var user = FirebaseAuth.instance.currentUser;
+      bool check = true;
 
-        var docIdChats = <String>[];
+      var docIdChats = <String>[];
 
-        FirebaseFirestore.instance
-            .collection('room')
-            .doc(value.id)
-            .collection('chat')
-            .orderBy('timestamp')
-            .snapshots()
-            .listen((event) {
-          if (event.docs.isEmpty) {
-          } else {
-            for (var element2 in event.docs) {
-              docIdChats.add(element2.id);
+      FirebaseFirestore.instance
+          .collection('room')
+          .doc(value.id)
+          .collection('chat')
+          .orderBy('timestamp')
+          .snapshots()
+          .listen((event) {
+        if (event.docs.isEmpty) {
+        } else {
+          for (var element2 in event.docs) {
+            docIdChats.add(element2.id);
 
-              ChatModel chatModel = ChatModel.fromMap(element2.data());
-              chatModels.add(chatModel);
+            ChatModel chatModel = ChatModel.fromMap(element2.data());
+            chatModels.add(chatModel);
 
-              processUps.add(false);
-              processDowns.add(false);
+            processUps.add(false);
+            processDowns.add(false);
 
-              if ((chatModel.uidChat == user!.uid) && check) {
-                check = false;
-                lateChatModel = chatModel;
-              }
+            if ((chatModel.uidChat == user!.uid) && check) {
+              check = false;
+              lateChatModel = chatModel;
             }
           }
-          listChatModels.add(chatModels);
-          listDocIdChats.add(docIdChats);
-          lastChatModelLogins.add(lateChatModel!);
-        });
-        // indexPage++;
-      
+        }
+        listChatModels.add(chatModels);
+        listDocIdChats.add(docIdChats);
+        lastChatModelLogins.add(lateChatModel!);
+      });
+      // indexPage++;
     });
   }
 

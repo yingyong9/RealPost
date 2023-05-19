@@ -36,33 +36,37 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
-  void checkInOwnerChat(
-      {required String docIdChat, required ChatModel chatModel}) {
-    // if (appController.mainUid.toString() == chatModel.uidChat) {
-    //   //Owner Check In
-    //   print('##17may Owner CheckIn at docIdChat ---> $docIdChat');
+  Future<void> checkInOwnerChat(
+      {required String docIdChat, required ChatModel chatModel, required bool checkIn}) async {
 
-    //   Map<String, dynamic> map = chatModel.toMap();
-    //   map['checkInOwnerChat'] = true;
-    //   ChatModel updateChagModel = ChatModel.fromMap(map);
-    //   processUpdateChat(docIdChat: docIdChat, chatModel: updateChagModel);
-    // }
+    if (appController.mainUid.toString() == chatModel.uidChat) {
+      //Owner Check In
+      print('##18may Owner CheckIn at docIdChat ---> $docIdChat');
+
+      Map<String, dynamic> map = chatModel.toMap();
+      map['checkInOwnerChat'] = checkIn;
+      ChatModel updateChagModel = ChatModel.fromMap(map);
+
+      print('##18may updateChangMOdel ---> ${updateChagModel.toMap()}');
+
+      processUpdateChat(docIdChat: docIdChat, chatModel: updateChagModel);
+    }
   }
 
-  // Future<void> processUpdateChat(
-  //     {required String docIdChat, required ChatModel chatModel}) async {
-  //   print('##17may chatModel ---> ${chatModel.toMap()}');
+  Future<void> processUpdateChat(
+      {required String docIdChat, required ChatModel chatModel}) async {
+    // print('##17may chatModel ---> ${chatModel.toMap()}');
 
-  //   await FirebaseFirestore.instance
-  //       .collection('room')
-  //       .doc(AppConstant.docIdRoomData)
-  //       .collection('chat')
-  //       .doc(docIdChat)
-  //       .update(chatModel.toMap())
-  //       .then((value) {
-  //     print('##17may processUpdateChat Success');
-  //   });
-  // }
+    await FirebaseFirestore.instance
+        .collection('room')
+        .doc(AppConstant.docIdRoomData)
+        .collection('chat')
+        .doc(docIdChat)
+        .update(chatModel.toMap())
+        .then((value) {
+      print('##18may processUpdateChat Success');
+    });
+  }
 
   Future<void> increaseDecrestTraffic(
       {required String docIdChat,
