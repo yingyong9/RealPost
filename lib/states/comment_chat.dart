@@ -2,8 +2,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:realpost/models/chat_model.dart';
+import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
@@ -44,10 +46,14 @@ class _CommentChatState extends State<CommentChat> {
           docIdChat: widget.docIdChat,
           increase: true,
           chatModel: widget.chatModel);
-    });
 
-    AppService().checkInOwnerChat(
-        docIdChat: widget.docIdChat, chatModel: widget.chatModel);
+      print('##18may readCommentChat Work');
+
+      AppService().checkInOwnerChat(
+          docIdChat: widget.docIdChat,
+          chatModel: widget.chatModel,
+          checkIn: controller.checkIn.value);
+    });
   }
 
   @override
@@ -55,6 +61,20 @@ class _CommentChatState extends State<CommentChat> {
     return Scaffold(
       backgroundColor: AppConstant.bgColor,
       appBar: AppBar(
+        leading: WidgetIconButton(
+          iconData: Icons.arrow_back,
+          pressFunc: () {
+            controller.checkIn.value = false;
+            AppService()
+                .checkInOwnerChat(
+                    docIdChat: widget.docIdChat,
+                    chatModel: widget.chatModel,
+                    checkIn: controller.checkIn.value)
+                .then((value) {
+              Get.back();
+            });
+          },
+        ),
         title: Row(
           children: [
             WidgetText(
@@ -84,13 +104,13 @@ class _CommentChatState extends State<CommentChat> {
                         height: boxConstraints.maxHeight - 70,
                         child: ListView(
                           children: [
-                            appController
-                                    .chatModels[widget.index].checkInOwnerChat!
-                                ? WidgetButton(
-                                    label: 'Live',
-                                    pressFunc: () {},
-                                  )
-                                : const SizedBox(),
+                            // appController
+                            //         .chatModels[widget.index].checkInOwnerChat!
+                            //     ? WidgetButton(
+                            //         label: 'Live',
+                            //         pressFunc: () {},
+                            //       )
+                            //     : const SizedBox(),
                             Container(
                               margin: const EdgeInsets.symmetric(horizontal: 8),
                               padding: const EdgeInsets.symmetric(
@@ -137,6 +157,7 @@ class _CommentChatState extends State<CommentChat> {
                                 : ListView.builder(
                                     physics: const ScrollPhysics(),
                                     shrinkWrap: true,
+                                    reverse: true,
                                     itemCount:
                                         appController.commentChatModels.length,
                                     itemBuilder: (context, index) => Padding(
@@ -170,6 +191,20 @@ class _CommentChatState extends State<CommentChat> {
                                                         .disPlayName),
                                               ],
                                             ),
+                                            appController
+                                                    .commentChatModels[index]
+                                                    .urlRealPost
+                                                    .isEmpty
+                                                ? const SizedBox()
+                                                : WidgetImageInternet(
+                                                    urlImage: appController
+                                                        .commentChatModels[
+                                                            index]
+                                                        .urlRealPost,
+                                                    width: 180,
+                                                    height: 150,
+                                                    boxFit: BoxFit.cover,
+                                                  ),
                                             WidgetText(
                                               text: appController
                                                   .commentChatModels[index]
@@ -191,12 +226,48 @@ class _CommentChatState extends State<CommentChat> {
                         child: Row(
                           children: [
                             WidgetIconButton(
-                              pressFunc: () {},
+                              pressFunc: () {
+                                AppService()
+                                    .processTakePhoto(
+                                        source: ImageSource.camera)
+                                    .then((value) {
+                                  AppService()
+                                      .processUploadPhoto(
+                                          file: value!, path: 'comment')
+                                      .then((value) {
+                                    String urlImageComment = value!;
+                                    print(
+                                        '##18may urlImageComment --> $urlImageComment');
+
+                                    AppBottomSheet().dipsplayImage(
+                                        urlImage: urlImageComment,
+                                        docIdChat: widget.docIdChat);
+                                  });
+                                });
+                              },
                               iconData: Icons.add_a_photo,
                               color: AppConstant.realFront,
                             ),
                             WidgetIconButton(
-                              pressFunc: () {},
+                              pressFunc: () {
+                                AppService()
+                                    .processTakePhoto(
+                                        source: ImageSource.gallery)
+                                    .then((value) {
+                                  AppService()
+                                      .processUploadPhoto(
+                                          file: value!, path: 'comment')
+                                      .then((value) {
+                                    String urlImageComment = value!;
+                                    print(
+                                        '##18may urlImageComment --> $urlImageComment');
+
+                                    AppBottomSheet().dipsplayImage(
+                                        urlImage: urlImageComment,
+                                        docIdChat: widget.docIdChat);
+                                  });
+                                });
+                              },
                               iconData: Icons.add_photo_alternate,
                               color: AppConstant.realFront,
                             ),
@@ -210,9 +281,13 @@ class _CommentChatState extends State<CommentChat> {
                                     AppConstant().h3Style(color: Colors.white),
                                 textStyle:
                                     AppConstant().h3Style(color: Colors.white),
-                                suffixIcon: Row(mainAxisSize: MainAxisSize.min,
+                                suffixIcon: Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    WidgetImage(path: 'images/emoj.jpg', size: 36,),
+                                    WidgetImage(
+                                      path: 'images/emoj.jpg',
+                                      size: 36,
+                                    ),
                                   ],
                                 ),
                               ),

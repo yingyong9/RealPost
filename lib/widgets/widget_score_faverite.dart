@@ -66,16 +66,16 @@ class WidgetScoreFaverite extends StatelessWidget {
                 width: 20,
               ),
              
-              WidgetText(text: 'จำนวนคนในห้อง', textStyle: AppConstant()
-                    .h3Style(size: 10, color: AppConstant.realFront),),
-              const SizedBox(
-                width: 20,
-              ),
-              WidgetText(
-                text: appController.chatModels[index].traffic.toString(),
-                textStyle: AppConstant()
-                    .h3Style(size: 20, color: AppConstant.realFront),
-              )
+              // WidgetText(text: 'จำนวนคนในห้อง', textStyle: AppConstant()
+              //       .h3Style(size: 10, color: AppConstant.realFront),),
+              // const SizedBox(
+              //   width: 20,
+              // ),
+              // WidgetText(
+              //   text: appController.chatModels[index].traffic.toString(),
+              //   textStyle: AppConstant()
+              //       .h3Style(size: 20, color: AppConstant.realFront),
+              // )
              
             ],
           );

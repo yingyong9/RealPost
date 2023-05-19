@@ -584,6 +584,7 @@ class _MainPageViewState extends State<MainPageView> {
                       ),
                     ],
                   ),
+                   displayImageChat(appController, index),
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
@@ -595,7 +596,7 @@ class _MainPageViewState extends State<MainPageView> {
                           fontWeight: FontWeight.bold),
                     ),
                   ),
-                  displayImageChat(appController, index),
+                 
                   scoreButton(appController, index),
                   const SizedBox(
                     height: 16,
@@ -627,42 +628,13 @@ class _MainPageViewState extends State<MainPageView> {
                   index: index,
                 ))!
                     .then((value) {
+                  
+
                   AppService().increaseDecrestTraffic(
                       docIdChat: appController.docIdChats[index],
                       increase: false,
                       chatModel: appController.chatModels[index]);
                 });
-
-                // Get.to(FullScreenImage(
-                //         urlImage: appController.chatModels[index].urlRealPost))!
-                //     .then((value) {
-                //   //Check Time ว่าเป็น today ????
-                //   if (AppService().compareCurrentTime(
-                //       otherDatetime: appController
-                //           .roomModels[appController.indexBodyMainPageView.value]
-                //           .timestamp
-                //           .toDate())) {
-                //     //Status Real
-                //     print('##29 Status Real');
-                //   } else {
-                //     //update time post
-                //     print('##29 update Time post');
-                //     Map<String, dynamic> map = appController
-                //         .roomModels[appController.indexBodyMainPageView.value]
-                //         .toMap();
-
-                //     map['timestamp'] = Timestamp.fromDate(DateTime.now());
-                //     AppService()
-                //         .processUpdateRoom(
-                //             docIdRoom: appController.docIdRooms[
-                //                 appController.indexBodyMainPageView.value],
-                //             data: map)
-                //         .then((value) {
-                //       // AppService().initialSetup(context: context);
-                //       Restart.restartApp();
-                //     });
-                //   }
-                // });
               },
             ),
           );
@@ -739,18 +711,19 @@ class _MainPageViewState extends State<MainPageView> {
         const SizedBox(
           width: 20,
         ),
-
-         WidgetText(text: 'จำนวนคนในห้อง', textStyle: AppConstant()
-                    .h3Style(size: 10, color: AppConstant.realFront),),
-              const SizedBox(
-                width: 20,
-              ),
-              WidgetText(
-                text: appController.chatModels[index].traffic.toString(),
-                textStyle: AppConstant()
-                    .h3Style(size: 20, color: AppConstant.realFront),
-              )
-       
+        WidgetText(
+          text: 'จำนวนคนในห้อง',
+          textStyle:
+              AppConstant().h3Style(size: 10, color: AppConstant.realFront),
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        WidgetText(
+          text: appController.chatModels[index].traffic.toString(),
+          textStyle:
+              AppConstant().h3Style(size: 20, color: AppConstant.realFront),
+        )
       ],
     );
   }

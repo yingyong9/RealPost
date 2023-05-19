@@ -27,6 +27,120 @@ import 'package:realpost/widgets/widget_text.dart';
 class AppBottomSheet {
   AppController appController = Get.put(AppController());
 
+  void dipsplayImage({required String urlImage, required String docIdChat}) {
+    TextEditingController textEditingController = TextEditingController();
+
+    Get.bottomSheet(
+      Container(
+        decoration: AppConstant().boxCurve(color: AppConstant.realBg),
+        width: double.infinity,
+        height: 250,
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                WidgetImageInternet(
+                  urlImage: urlImage,
+                  height: 200,
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                WidgetIconButton(
+                  pressFunc: () {
+                    Get.back();
+                    AppService()
+                        .processTakePhoto(source: ImageSource.camera)
+                        .then((value) {
+                      AppService()
+                          .processUploadPhoto(file: value!, path: 'comment')
+                          .then((value) {
+                        String urlImageComment = value!;
+                        print('##18may urlImageComment --> $urlImageComment');
+
+                        // AppBottomSheet()
+                        //     .dipsplayImage(urlImage: urlImageComment);
+                      });
+                    });
+                  },
+                  iconData: Icons.add_a_photo,
+                  color: AppConstant.realFront,
+                ),
+                WidgetIconButton(
+                  pressFunc: () {
+                    Get.back();
+                    AppService()
+                        .processTakePhoto(source: ImageSource.gallery)
+                        .then((value) {
+                      AppService()
+                          .processUploadPhoto(file: value!, path: 'comment')
+                          .then((value) {
+                        String urlImageComment = value!;
+                        print('##18may urlImageComment --> $urlImageComment');
+
+                        // AppBottomSheet()
+                        //     .dipsplayImage(urlImage: urlImageComment);
+                      });
+                    });
+                  },
+                  iconData: Icons.add_photo_alternate,
+                  color: AppConstant.realFront,
+                ),
+                SizedBox(
+                  width: 200,
+                  child: WidgetForm(
+                    fillColor: AppConstant.realMid,
+                    controller: textEditingController,
+                    hint: 'Comment',
+                    hintStyle: AppConstant().h3Style(color: Colors.white),
+                    textStyle: AppConstant().h3Style(color: Colors.white),
+                    suffixIcon: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        WidgetImage(
+                          path: 'images/emoj.jpg',
+                          size: 36,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                WidgetImage(
+                  path: 'images/rocket.png',
+                  size: 48,
+                  tapFunc: () {
+                    ChatModel chatModel = ChatModel(
+                        message: textEditingController.text,
+                        timestamp: Timestamp.fromDate(DateTime.now()),
+                        uidChat: appController.mainUid.value,
+                        disPlayName:
+                            appController.userModelsLogin.last.displayName!,
+                        urlAvatar:
+                            appController.userModelsLogin.last.urlAvatar!,
+                        urlRealPost: urlImage,
+                        albums: []);
+
+                    print('##18may chatModel ---> ${chatModel.toMap()}');
+
+                    AppService()
+                        .insertCommentChat(
+                            docIdChat: docIdChat, commentChatModel: chatModel)
+                        .then((value) {
+                      textEditingController.text = '';
+                      Get.back();
+                    });
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),isScrollControlled: true
+    );
+  }
+
   void realGestBottonSheet() {
     AppController controller = Get.put(AppController());
     if ((controller.fileRealPosts.isNotEmpty) ||
@@ -46,7 +160,8 @@ class AppBottomSheet {
               // height: 100,
               child: Stack(
                 children: [
-                  Column(mainAxisSize: MainAxisSize.min,
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       const SizedBox(
                         height: 16,
