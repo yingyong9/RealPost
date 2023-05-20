@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, sort_child_properties_last
+// ignore_for_file: avoid_print, sort_child_properties_last, prefer_const_constructors
 
 import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,6 +18,7 @@ import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
+import 'package:realpost/widgets/widget_amount_comment.dart';
 import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_content_form_spcial.dart';
@@ -80,7 +81,7 @@ class _MainPageViewState extends State<MainPageView> {
                       ? const WidgetProgessAnimation()
                       : ((appController.roomModels.isEmpty) &&
                               (appController.userModels.isEmpty) &&
-                              (appController.userModelAtRooms.isEmpty))
+                              (appController.userModelAtRooms.isEmpty) )
                           ? const SizedBox()
                           : GestureDetector(
                               behavior: HitTestBehavior.opaque,
@@ -549,7 +550,7 @@ class _MainPageViewState extends State<MainPageView> {
       width: boxConstraints.maxWidth,
       height: boxConstraints.maxHeight,
       child: ListView.builder(
-        reverse: true,
+        reverse: false,
         shrinkWrap: true,
         physics: const ScrollPhysics(),
         itemCount: appController.chatModels.length,
@@ -584,7 +585,7 @@ class _MainPageViewState extends State<MainPageView> {
                       ),
                     ],
                   ),
-                   displayImageChat(appController, index),
+                  
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
@@ -596,7 +597,9 @@ class _MainPageViewState extends State<MainPageView> {
                           fontWeight: FontWeight.bold),
                     ),
                   ),
-                 
+
+                   displayImageChat(appController, index),
+                
                   scoreButton(appController, index),
                   const SizedBox(
                     height: 16,
@@ -723,7 +726,11 @@ class _MainPageViewState extends State<MainPageView> {
           text: appController.chatModels[index].traffic.toString(),
           textStyle:
               AppConstant().h3Style(size: 20, color: AppConstant.realFront),
-        )
+              
+        ), const SizedBox(
+          width: 20,
+        ),
+        WidgetAmountComment(amountComment: 12,),
       ],
     );
   }

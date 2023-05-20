@@ -37,6 +37,7 @@ class AppController extends GetxController {
   RxList<String> emojiAddRoomChooses = <String>[].obs;
   RxList<ChatModel> chatModels = <ChatModel>[].obs;
   RxList<String> docIdChats = <String>[].obs;
+  RxList<int> amountComments = <int>[].obs;
   RxList<String> addressMaps = <String>[].obs;
   RxBool load = true.obs;
   RxBool shareLocation = false.obs;
@@ -321,9 +322,20 @@ class AppController extends GetxController {
 
         for (var element in event.docs) {
           ChatModel model = ChatModel.fromMap(element.data());
-          print('##8jan chatModel ==> ${model.toMap()}');
+          // print('##8jan chatModel ==> ${model.toMap()}');
           chatModels.add(model);
           docIdChats.add(element.id);
+
+          FirebaseFirestore.instance
+              .collection('room')
+              .doc(AppConstant.docIdRoomData)
+              .collection('chat')
+              .doc(element.id)
+              .collection('comment')
+              .get()
+              .then((value) {
+            amountComments.add(value.docs.length);
+          });
 
           if (model.geoPoint!.latitude != 0) {
             String apiPath =
@@ -420,6 +432,18 @@ class AppController extends GetxController {
         if (event.docs.isEmpty) {
         } else {
           for (var element2 in event.docs) {
+            // FirebaseFirestore.instance
+            //     .collection('room')
+            //     .doc(value.id)
+            //     .collection('chat')
+            //     .doc(element2.id)
+            //     .collection('comment')
+            //     .get()
+            //     .then((value) {
+            //   int amountComment = value.docs.length;
+            //   print('##20may amountComment --> $amountComment');
+            // });
+
             docIdChats.add(element2.id);
 
             ChatModel chatModel = ChatModel.fromMap(element2.data());
@@ -438,7 +462,6 @@ class AppController extends GetxController {
         listDocIdChats.add(docIdChats);
         lastChatModelLogins.add(lateChatModel!);
       });
-      // indexPage++;
     });
   }
 
