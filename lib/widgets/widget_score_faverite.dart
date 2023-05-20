@@ -6,6 +6,7 @@ import 'package:realpost/utility/app_constant.dart';
 
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
+import 'package:realpost/widgets/widget_amount_comment.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
@@ -65,17 +66,21 @@ class WidgetScoreFaverite extends StatelessWidget {
               const SizedBox(
                 width: 20,
               ),
+
              
-              // WidgetText(text: 'จำนวนคนในห้อง', textStyle: AppConstant()
-              //       .h3Style(size: 10, color: AppConstant.realFront),),
-              // const SizedBox(
-              //   width: 20,
-              // ),
-              // WidgetText(
-              //   text: appController.chatModels[index].traffic.toString(),
-              //   textStyle: AppConstant()
-              //       .h3Style(size: 20, color: AppConstant.realFront),
-              // )
+             
+              WidgetText(text: 'จำนวนคนในห้อง', textStyle: AppConstant()
+                    .h3Style(size: 10, color: AppConstant.realFront),),
+              const SizedBox(
+                width: 20,
+              ),
+              WidgetText(
+                text: appController.chatModels[index].traffic.toString(),
+                textStyle: AppConstant()
+                    .h3Style(size: 20, color: AppConstant.realFront),
+              ),
+
+               WidgetAmountComment(amountComment: appController.amountComments[index],),
              
             ],
           );
