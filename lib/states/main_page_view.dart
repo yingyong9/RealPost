@@ -81,7 +81,7 @@ class _MainPageViewState extends State<MainPageView> {
                       ? const WidgetProgessAnimation()
                       : ((appController.roomModels.isEmpty) &&
                               (appController.userModels.isEmpty) &&
-                              (appController.userModelAtRooms.isEmpty) )
+                              (appController.userModelAtRooms.isEmpty))
                           ? const SizedBox()
                           : GestureDetector(
                               behavior: HitTestBehavior.opaque,
@@ -583,23 +583,65 @@ class _MainPageViewState extends State<MainPageView> {
                         text: appController.chatModels[index].disPlayName,
                         textStyle: AppConstant().h3Style(color: Colors.white),
                       ),
+                      const Spacer(),
+                      WidgetButton(
+                        label: AppService().checkJoin(uidOwnerRoom: appController.chatModels[index].uidChat) ? 'UnJoin' : 'Join',
+                        pressFunc: () {
+                          //flowering --> เราไปตามเขา, flower ---> คนที่ตามเรา เพื่อรับ message ตอนเรา Post
+                          String uidOwnerRoom =
+                              appController.chatModels[index].uidChat;
+
+                          String uidLogin = appController.mainUid.value;
+
+                          print(
+                              'uidOwnerRoom --> $uidOwnerRoom, uidLogin = $uidLogin');
+
+                          if (AppService().checkJoin(uidOwnerRoom: appController.chatModels[index].uidChat)) {
+                            // unJoin
+                          } else {
+                            AppService().processJoin(uidFollowing: uidOwnerRoom);
+                          }
+                        },
+                        bgColor:   AppService().checkJoin(uidOwnerRoom: appController.chatModels[index].uidChat) ? Colors.black:  Colors.blue,
+                        circular: 20,
+                      ),
                     ],
                   ),
-                  
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                    child: WidgetText(
-                      text: appController.chatModels[index].message,
-                      textStyle: AppConstant().h3Style(
-                          color: Colors.white,
-                          size: 20,
-                          fontWeight: FontWeight.bold),
+                  InkWell(
+                    onTap: () {
+                      Get.to(CommentChat(
+                        docIdChat: appController.docIdChats[index],
+                        chatModel: appController.chatModels[index],
+                        index: index,
+                      ))!
+                          .then((value) {
+                        AppService().increaseDecrestTraffic(
+                            docIdChat: appController.docIdChats[index],
+                            increase: false,
+                            chatModel: appController.chatModels[index]);
+                      });
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 12),
+                          child: WidgetText(
+                            text: AppService().cutWord(
+                                string: appController.chatModels[index].message,
+                                word: 60),
+                            textStyle: AppConstant().h3Style(
+                                color: Colors.white,
+                                size: 20,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        displayImageChat(appController, index),
+                      ],
                     ),
                   ),
-
-                   displayImageChat(appController, index),
-                
                   scoreButton(appController, index),
                   const SizedBox(
                     height: 16,
@@ -621,24 +663,6 @@ class _MainPageViewState extends State<MainPageView> {
             child: WidgetImageInternet(
               urlImage: appController.chatModels[index].urlRealPost,
               boxFit: BoxFit.cover,
-              tapFunc: () {
-                print(
-                    'You tap image url ===> ${appController.chatModels[index].urlRealPost}');
-
-                Get.to(CommentChat(
-                  docIdChat: appController.docIdChats[index],
-                  chatModel: appController.chatModels[index],
-                  index: index,
-                ))!
-                    .then((value) {
-                  
-
-                  AppService().increaseDecrestTraffic(
-                      docIdChat: appController.docIdChats[index],
-                      increase: false,
-                      chatModel: appController.chatModels[index]);
-                });
-              },
             ),
           );
   }
@@ -726,11 +750,13 @@ class _MainPageViewState extends State<MainPageView> {
           text: appController.chatModels[index].traffic.toString(),
           textStyle:
               AppConstant().h3Style(size: 20, color: AppConstant.realFront),
-              
-        ), const SizedBox(
+        ),
+        const SizedBox(
           width: 20,
         ),
-        WidgetAmountComment(amountComment: 12,),
+        WidgetAmountComment(
+          amountComment: 12,
+        ),
       ],
     );
   }
