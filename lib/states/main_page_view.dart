@@ -625,7 +625,7 @@ class _MainPageViewState extends State<MainPageView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Padding(
+                        appController.chatModels[index].message.isEmpty ?  const SizedBox() : Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 12),
                           child: WidgetText(
@@ -643,9 +643,7 @@ class _MainPageViewState extends State<MainPageView> {
                     ),
                   ),
                   scoreButton(appController, index),
-                  const SizedBox(
-                    height: 16,
-                  ),
+                 
                 ],
               ),
             ),
@@ -698,50 +696,50 @@ class _MainPageViewState extends State<MainPageView> {
   Widget scoreButton(AppController appController, int index) {
     return Row(
       children: [
-        WidgetImage(
-          path: appController.processUps[index]
-              ? 'images/redup.jpg'
-              : 'images/arrowup.jpg',
-          size: 35,
-          tapFunc: () {
-            AppService().addFavorite(
-                docIdChat: appController.docIdChats[index],
-                chatModel: appController.chatModels[index],
-                increse: true,
-                index: index);
-          },
-        ),
-        const SizedBox(
-          width: 10,
-        ),
-        WidgetText(
-          text: appController.chatModels[index].favorit.toString(),
-          textStyle:
-              AppConstant().h3Style(size: 20, color: AppConstant.realFront),
-        ),
-        const SizedBox(
-          width: 10,
-        ),
-        WidgetImage(
-          path: appController.processDowns[index]
-              ? 'images/bluedown.jpg'
-              : 'images/arrowdown.jpg',
-          size: 35,
-          tapFunc: () {
-            AppService().addFavorite(
-                docIdChat: appController.docIdChats[index],
-                chatModel: appController.chatModels[index],
-                increse: false,
-                index: index);
-          },
-        ),
+        // WidgetImage(
+        //   path: appController.processUps[index]
+        //       ? 'images/redup.jpg'
+        //       : 'images/arrowup.jpg',
+        //   size: 35,
+        //   tapFunc: () {
+        //     AppService().addFavorite(
+        //         docIdChat: appController.docIdChats[index],
+        //         chatModel: appController.chatModels[index],
+        //         increse: true,
+        //         index: index);
+        //   },
+        // ),
+        // const SizedBox(
+        //   width: 10,
+        // ),
+        // WidgetText(
+        //   text: appController.chatModels[index].favorit.toString(),
+        //   textStyle:
+        //       AppConstant().h3Style(size: 20, color: AppConstant.realFront),
+        // ),
+        // const SizedBox(
+        //   width: 10,
+        // ),
+        // WidgetImage(
+        //   path: appController.processDowns[index]
+        //       ? 'images/bluedown.jpg'
+        //       : 'images/arrowdown.jpg',
+        //   size: 35,
+        //   tapFunc: () {
+        //     AppService().addFavorite(
+        //         docIdChat: appController.docIdChats[index],
+        //         chatModel: appController.chatModels[index],
+        //         increse: false,
+        //         index: index);
+        //   },
+        // ),
         const SizedBox(
           width: 20,
         ),
         WidgetText(
           text: 'จำนวนคนในห้อง',
           textStyle:
-              AppConstant().h3Style(size: 10, color: AppConstant.realFront),
+              AppConstant().h3Style(size: 15, color: AppConstant.realFront),
         ),
         const SizedBox(
           width: 20,
@@ -749,7 +747,7 @@ class _MainPageViewState extends State<MainPageView> {
         WidgetText(
           text: appController.chatModels[index].traffic.toString(),
           textStyle:
-              AppConstant().h3Style(size: 20, color: AppConstant.realFront),
+              AppConstant().h3Style(size: 15, color: AppConstant.realFront),
         ),
         const SizedBox(
           width: 20,

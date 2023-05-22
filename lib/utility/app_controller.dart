@@ -35,8 +35,11 @@ class AppController extends GetxController {
   RxList<ChatModel> lastChatModelLogins = <ChatModel>[].obs;
 
   RxList<StampModel> stampModels = <StampModel>[].obs;
+  RxList<bool> tapStamps = <bool>[].obs;
   RxList<String> emojiAddRoomChooses = <String>[].obs;
-  
+  RxBool displayListEmoji = false.obs;
+  RxList<String> urlEmojiChooses = <String>[].obs;
+
   RxList<ChatModel> chatModels = <ChatModel>[].obs;
   RxList<String> docIdChats = <String>[].obs;
   RxList<int> amountComments = <int>[].obs;
@@ -362,12 +365,14 @@ class AppController extends GetxController {
   Future<void> readAllStamp() async {
     if (stampModels.isNotEmpty) {
       stampModels.clear();
+      tapStamps.clear();
     }
 
     await FirebaseFirestore.instance.collection('stamp').get().then((value) {
       for (var element in value.docs) {
         StampModel model = StampModel.fromMap(element.data());
         stampModels.add(model);
+        tapStamps.add(false);
       }
     });
   }
