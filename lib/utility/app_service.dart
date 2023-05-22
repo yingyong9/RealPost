@@ -42,6 +42,8 @@ class AppService {
     return result;
   }
 
+  void processUnJoin(){}
+
   Future<void> processJoin({required String uidFollowing}) async {
     //ส่วนของการเพิ่ม Follower คนที่ตามเรา
     var userModelFollowing = await findUserModel(uid: uidFollowing);

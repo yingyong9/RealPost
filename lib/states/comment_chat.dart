@@ -287,6 +287,9 @@ class _CommentChatState extends State<CommentChat> {
                                     WidgetImage(
                                       path: 'images/emoj.jpg',
                                       size: 36,
+                                      tapFunc: () {
+                                        print('Click Emoji ${appController.stampModels.length}');
+                                      },
                                     ),
                                   ],
                                 ),

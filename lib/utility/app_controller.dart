@@ -33,8 +33,10 @@ class AppController extends GetxController {
   RxList<List<ChatModel>> listChatModels = <List<ChatModel>>[].obs;
   RxList<List<String>> listDocIdChats = <List<String>>[].obs;
   RxList<ChatModel> lastChatModelLogins = <ChatModel>[].obs;
+
   RxList<StampModel> stampModels = <StampModel>[].obs;
   RxList<String> emojiAddRoomChooses = <String>[].obs;
+  
   RxList<ChatModel> chatModels = <ChatModel>[].obs;
   RxList<String> docIdChats = <String>[].obs;
   RxList<int> amountComments = <int>[].obs;
