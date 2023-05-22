@@ -14,6 +14,7 @@ class WidgetButton extends StatelessWidget {
     this.textColor,
     this.circular,
     this.labelStyle,
+    this.iconWidget,
   }) : super(key: key);
 
   final String label;
@@ -23,22 +24,25 @@ class WidgetButton extends StatelessWidget {
   final Color? textColor;
   final double? circular;
   final TextStyle? labelStyle;
+  final Widget? iconWidget;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
-      child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: bgColor,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(circular ?? 10)),
-          ),
-          onPressed: pressFunc,
-          child: WidgetText(
-            text: label,
-            textStyle: labelStyle ?? AppConstant().h2Style(color: textColor),
-          )),
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: bgColor,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(circular ?? 10)),
+        ),
+        onPressed: pressFunc,
+        label: WidgetText(
+          text: label,
+          textStyle: labelStyle ?? AppConstant().h2Style(color: textColor),
+        ),
+        icon: iconWidget ?? const SizedBox(),
+      ),
     );
   }
 }

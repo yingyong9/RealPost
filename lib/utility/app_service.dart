@@ -36,9 +36,54 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
-  Future<void> checkInOwnerChat(
-      {required String docIdChat, required ChatModel chatModel, required bool checkIn}) async {
+  bool checkJoin({required String uidOwnerRoom}) {
+    var result =
+        appController.userModelsLogin.last.followings.contains(uidOwnerRoom);
+    return result;
+  }
 
+  void processUnJoin(){}
+
+  Future<void> processJoin({required String uidFollowing}) async {
+    //ส่วนของการเพิ่ม Follower คนที่ตามเรา
+    var userModelFollowing = await findUserModel(uid: uidFollowing);
+    if (userModelFollowing != null) {
+      Map<String, dynamic> mapFollowing = userModelFollowing.toMap();
+      var followers = mapFollowing['followers'];
+      followers.add(appController.mainUid.value);
+      print('followers ---> $followers');
+
+      await FirebaseFirestore.instance
+          .collection('user')
+          .doc(uidFollowing)
+          .update(mapFollowing)
+          .then((value) {
+        print('ส่วนของการเพิ่ม Follower คนที่ตามเรา');
+      });
+    }
+
+    //ส่วนของการเพิ่ม Following คนที่ตามเราตามเขา
+    Map<String, dynamic> mapFollowering =
+        appController.userModelsLogin.last.toMap();
+
+    var following = mapFollowering['followings'];
+    following.add(uidFollowing);
+    print('following ---> $following');
+
+    // mapFollowering['following'].add(uidFollowing);
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc(appController.mainUid.value)
+        .update(mapFollowering)
+        .then((value) {
+      print('ส่วนของการเพิ่ม Following คนที่ตามเราตามเขา');
+    });
+  }
+
+  Future<void> checkInOwnerChat(
+      {required String docIdChat,
+      required ChatModel chatModel,
+      required bool checkIn}) async {
     if (appController.mainUid.toString() == chatModel.uidChat) {
       //Owner Check In
       print('##18may Owner CheckIn at docIdChat ---> $docIdChat');

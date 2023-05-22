@@ -10,6 +10,8 @@ class UserModel {
   final String? password;
   final String? token;
   final String? idReal;
+  final List<String> followers;
+  final List<String> followings;
 
   UserModel({
     this.displayName,
@@ -20,6 +22,8 @@ class UserModel {
     this.password,
     this.token,
     this.idReal,
+    required this.followers,
+    required this.followings,
   });
 
   Map<String, dynamic> toMap() {
@@ -32,19 +36,23 @@ class UserModel {
       'password': password,
       'token': token,
       'idReal': idReal,
+      'followers': followers,
+      'followings': followings,
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      displayName: map['displayName'] ?? '',
-      urlAvatar: map['urlAvatar'] ?? '',
-      phoneNumber: map['phoneNumber'] ?? '',
-      uidUser: map['uidUser'] ?? '',
-      email: map['email'] ?? '',
-      password: map['password'] ?? '',
-      token: map['token'] ?? '',
-      idReal: map['idReal'] ?? '',
+      displayName: map['displayName'] != null ? map['displayName'] as String : null,
+      urlAvatar: map['urlAvatar'] != null ? map['urlAvatar'] as String : null,
+      phoneNumber: map['phoneNumber'] != null ? map['phoneNumber'] as String : null,
+      uidUser: map['uidUser'] != null ? map['uidUser'] as String : null,
+      email: map['email'] != null ? map['email'] as String : null,
+      password: map['password'] != null ? map['password'] as String : null,
+      token: map['token'] != null ? map['token'] as String : null,
+      idReal: map['idReal'] != null ? map['idReal'] as String : null,
+      followers: List<String>.from(map['followers'] ?? []),
+      followings: List<String>.from(map['followings'] ?? []),
     );
   }
 

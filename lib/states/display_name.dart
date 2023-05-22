@@ -77,7 +77,9 @@ class _DisplayNameState extends State<DisplayName> {
                       uidUser: widget.uidLogin,
                       email: widget.email,
                       password: widget.password,
-                      idReal: widget.uidLogin.substring(0,10),
+                      idReal: widget.uidLogin.substring(0, 10),
+                      followers: [],
+                      followings: [],
                     );
 
                     await FirebaseFirestore.instance
