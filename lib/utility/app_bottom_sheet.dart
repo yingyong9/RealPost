@@ -120,7 +120,7 @@ class AppBottomSheet {
                         urlAvatar:
                             appController.userModelsLogin.last.urlAvatar!,
                         urlRealPost: urlImage,
-                        albums: []);
+                        albums: [], urlMultiImages: []);
 
                     print('##18may chatModel ---> ${chatModel.toMap()}');
 

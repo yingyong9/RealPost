@@ -1,5 +1,8 @@
 // ignore_for_file: avoid_print
 
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,6 +14,7 @@ import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
+import 'package:realpost/widgets/widget_text.dart';
 
 class WidgetContentFormSpcial extends StatefulWidget {
   const WidgetContentFormSpcial({super.key});
@@ -40,19 +44,39 @@ class _WidgetContentFormSpcialState extends State<WidgetContentFormSpcial> {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    appController.urlRealPostChooses.isNotEmpty
-                        ? WidgetImageInternet(
-                            urlImage: appController.urlRealPostChooses.last,
-                            width: 200,
+                    appController.xFiles.isNotEmpty
+                        ? Container(
                             height: 200,
+                            child: GridView.builder(
+                              itemCount: appController.xFiles.length,
+                              physics: const ScrollPhysics(),
+                              shrinkWrap: true,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3,
+                                      crossAxisSpacing: 4,
+                                      mainAxisSpacing: 4),
+                              itemBuilder: (context, index) => Image.file(
+                                File(appController.xFiles[index].path),
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           )
-                        : appController.fileRealPosts.isEmpty
-                            ? const SizedBox()
-                            : Image.file(
-                                appController.fileRealPosts[0],
+                        : appController.urlRealPostChooses.isNotEmpty
+                            ? WidgetImageInternet(
+                                urlImage: appController.urlRealPostChooses.last,
                                 width: 200,
                                 height: 200,
-                              ),
+                              )
+                            : appController.fileRealPosts.isEmpty
+                                ? const SizedBox()
+                                : Image.file(
+                                    appController.fileRealPosts[0],
+                                    width: 200,
+                                    height: 200,
+                                  ),
                     const Divider(
                       color: Colors.white,
                       thickness: 1,
@@ -81,19 +105,27 @@ class _WidgetContentFormSpcialState extends State<WidgetContentFormSpcial> {
                         ),
                         WidgetIconButton(
                           pressFunc: () async {
-                            if (appController.fileRealPosts.isNotEmpty) {
-                              appController.fileRealPosts.clear();
-                            }
+                            AppService()
+                                .processChooseMultiImageChat()
+                                .then((value) {
+                              print(
+                                  '##23may xFiles ---> ${appController.xFiles.length}');
+                            });
 
-                            if (appController.urlRealPostChooses.isNotEmpty) {
-                              appController.urlRealPostChooses.clear();
-                            }
+                            // feture เก่า
+                            // if (appController.fileRealPosts.isNotEmpty) {
+                            //   appController.fileRealPosts.clear();
+                            // }
 
-                            var result = await AppService()
-                                .processTakePhoto(source: ImageSource.gallery);
-                            if (result != null) {
-                              appController.fileRealPosts.add(result);
-                            }
+                            // if (appController.urlRealPostChooses.isNotEmpty) {
+                            //   appController.urlRealPostChooses.clear();
+                            // }
+
+                            // var result = await AppService()
+                            //     .processTakePhoto(source: ImageSource.gallery);
+                            // if (result != null) {
+                            //   appController.fileRealPosts.add(result);
+                            // }
                           },
                           iconData: Icons.add_photo_alternate,
                           color: AppConstant.realFront,
@@ -115,7 +147,8 @@ class _WidgetContentFormSpcialState extends State<WidgetContentFormSpcial> {
                           size: 48,
                           tapFunc: () async {
                             if ((appController.fileRealPosts.isNotEmpty) ||
-                                (appController.messageChats.isNotEmpty)) {
+                                (appController.messageChats.isNotEmpty) ||
+                                (appController.xFiles.isNotEmpty)) {
                               if (appController.fileRealPosts.isNotEmpty) {
                                 //มีการถ่ายภาพ
                                 var urlImage = await AppService()
@@ -135,6 +168,35 @@ class _WidgetContentFormSpcialState extends State<WidgetContentFormSpcial> {
                                     .then((value) {
                                   appController.fileRealPosts.clear();
                                   textEditingController.text = '';
+                                });
+                              } else if (appController.xFiles.isNotEmpty) {
+                                AppService()
+                                    .processUploadMultiImageChat()
+                                    .then((value) {
+                                  print('Work ????? ===> $value');
+
+                                  ChatModel chatModel = ChatModel(
+                                      message: textEditingController.text,
+                                      timestamp:
+                                          Timestamp.fromDate(DateTime.now()),
+                                      uidChat: appController.mainUid.value,
+                                      disPlayName: appController
+                                          .userModelsLogin.last.displayName!,
+                                      urlAvatar: appController
+                                          .userModelsLogin.last.urlAvatar!,
+                                      urlRealPost: value[0],
+                                      albums: [],
+                                      urlMultiImages: value);
+
+                                  AppService()
+                                      .processInsertChat(
+                                          chatModel: chatModel,
+                                          docIdRoom:
+                                              appController.docIdRooms[0])
+                                      .then((value) {
+                                    textEditingController.text = '';
+                                    appController.xFiles.clear();
+                                  });
                                 });
                               } else {
                                 //ไม่มีถ่ายภาพ
