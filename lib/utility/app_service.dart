@@ -42,7 +42,7 @@ class AppService {
     return result;
   }
 
-  void processUnJoin(){}
+  void processUnJoin() {}
 
   Future<void> processJoin({required String uidFollowing}) async {
     //ส่วนของการเพิ่ม Follower คนที่ตามเรา
@@ -964,7 +964,8 @@ class AppService {
                   appController.positions[0].longitude)
               : null,
           albums: [],
-          urlBigImage: urlBigImage ?? '');
+          urlBigImage: urlBigImage ?? '',
+          urlMultiImages: [], up: 0);
     } else {
       //มี album
       print('มี album');
@@ -991,7 +992,8 @@ class AppService {
                   appController.positions[0].longitude)
               : null,
           albums: albums,
-          urlBigImage: urlBigImage ?? '');
+          urlBigImage: urlBigImage ?? '',
+          urlMultiImages: [], up: 0);
     }
 
     print(
@@ -1012,6 +1014,20 @@ class AppService {
         Get.snackbar(
             'คุณเลือกภาพเกินที่กำหนด', 'เราอนุญาติให้เลือกภาพไม่เกิน 9 รูป');
       }
+    });
+  }
+
+  Future<void> processChooseMultiImageChat() async {
+    AppController appController = Get.put(AppController());
+
+    if (appController.xFiles.isNotEmpty) {
+      appController.xFiles.clear();
+    }
+
+    await ImagePicker()
+        .pickMultiImage(maxWidth: 800, maxHeight: 800)
+        .then((value) {
+      appController.xFiles.addAll(value);
     });
   }
 
@@ -1202,8 +1218,19 @@ class AppService {
           await processUploadPhoto(file: file, path: path ?? 'albums');
       albums.add(url!);
     }
-
     return albums;
+  }
+  Future<List<String>> processUploadMultiImageChat() async {
+    AppController appController = Get.put(AppController());
+    var urlMultiImageChats = <String>[];
+
+    for (var element in appController.xFiles) {
+      File file = File(element.path);
+      String? url =
+          await processUploadPhoto(file: file, path:  'chat');
+      urlMultiImageChats.add(url!);
+    }
+    return urlMultiImageChats;
   }
 
   Future<String?> processUploadPhoto(

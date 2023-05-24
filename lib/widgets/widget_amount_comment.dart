@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:realpost/utility/app_constant.dart';
+import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
 class WidgetAmountComment extends StatelessWidget {
@@ -17,13 +18,10 @@ class WidgetAmountComment extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(
-          Icons.comment,
-          color: AppConstant.realFront,
-        ),
-        const SizedBox(
-          width: 8,
-        ),
+       const WidgetImage(path: 'images/comment.jpg',size: 36,),
+        // const SizedBox(
+        //   width: 2,
+        // ),
         WidgetText(
           text: amountComment.toString(),
           textStyle: AppConstant().h3Style(color: AppConstant.realFront),

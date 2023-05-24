@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:realpost/models/chat_model.dart';
+import 'package:realpost/states/display_photo_view.dart';
 import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
@@ -102,13 +103,6 @@ class _CommentChatState extends State<CommentChat> {
                         height: boxConstraints.maxHeight - 70,
                         child: ListView(
                           children: [
-                            // appController
-                            //         .chatModels[widget.index].checkInOwnerChat!
-                            //     ? WidgetButton(
-                            //         label: 'Live',
-                            //         pressFunc: () {},
-                            //       )
-                            //     : const SizedBox(),
                             Container(
                               margin: const EdgeInsets.symmetric(horizontal: 8),
                               padding: const EdgeInsets.symmetric(
@@ -130,16 +124,42 @@ class _CommentChatState extends State<CommentChat> {
                                   const SizedBox(
                                     height: 16,
                                   ),
-                                  widget.chatModel.urlRealPost.isEmpty
-                                      ? const SizedBox()
-                                      : WidgetImageInternet(
-                                          urlImage:
-                                              widget.chatModel.urlRealPost,
-                                          height:
-                                              boxConstraints.maxWidth * 0.75,
-                                          width: boxConstraints.maxWidth,
-                                          boxFit: BoxFit.cover,
-                                        ),
+                                  widget.chatModel.urlMultiImages.isNotEmpty
+                                      ? ListView.builder(
+                                          physics: const ScrollPhysics(),
+                                          shrinkWrap: true,
+                                          itemCount: widget
+                                              .chatModel.urlMultiImages.length,
+                                          itemBuilder: (context, index) =>
+                                              Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: WidgetImageInternet(
+                                              urlImage: widget.chatModel
+                                                  .urlMultiImages[index],
+                                              tapFunc: () {
+                                                Get.to(DisplayPhotoView(
+                                                    urlImage: widget.chatModel
+                                                            .urlMultiImages[
+                                                        index]));
+                                              },
+                                            ),
+                                          ),
+                                        )
+                                      : widget.chatModel.urlRealPost.isEmpty
+                                          ? const SizedBox()
+                                          : WidgetImageInternet(
+                                              urlImage:
+                                                  widget.chatModel.urlRealPost,
+                                              height: boxConstraints.maxWidth *
+                                                  0.75,
+                                              width: boxConstraints.maxWidth,
+                                              boxFit: BoxFit.cover,
+                                              tapFunc: () {
+                                                Get.to(DisplayPhotoView(
+                                                    urlImage: widget.chatModel
+                                                        .urlRealPost));
+                                              },
+                                            ),
                                   WidgetScoreFaverite(index: widget.index),
                                   const SizedBox(
                                     height: 16,
@@ -220,7 +240,8 @@ class _CommentChatState extends State<CommentChat> {
                                                   iconWidget: const Icon(
                                                     Icons.turn_left,
                                                     color: Colors.white,
-                                                  ),bgColor: Colors.black,
+                                                  ),
+                                                  bgColor: Colors.black,
                                                 ),
                                               ],
                                             )
@@ -282,8 +303,6 @@ class _CommentChatState extends State<CommentChat> {
                                             file: value!, path: 'comment')
                                         .then((value) {
                                       String urlImageComment = value!;
-                                      print(
-                                          '##18may urlImageComment --> $urlImageComment');
 
                                       AppBottomSheet().dipsplayImage(
                                           urlImage: urlImageComment,
@@ -305,8 +324,6 @@ class _CommentChatState extends State<CommentChat> {
                                             file: value!, path: 'comment')
                                         .then((value) {
                                       String urlImageComment = value!;
-                                      print(
-                                          '##18may urlImageComment --> $urlImageComment');
 
                                       AppBottomSheet().dipsplayImage(
                                           urlImage: urlImageComment,
@@ -349,7 +366,9 @@ class _CommentChatState extends State<CommentChat> {
                                 path: 'images/rocket.png',
                                 size: 48,
                                 tapFunc: () {
-                                  if ((textEditingController.text.isNotEmpty)|| (appController.urlEmojiChooses.isNotEmpty)) {
+                                  if ((textEditingController.text.isNotEmpty) ||
+                                      (appController
+                                          .urlEmojiChooses.isNotEmpty)) {
                                     ChatModel chatModel = ChatModel(
                                         message: textEditingController.text,
                                         timestamp:
@@ -364,7 +383,8 @@ class _CommentChatState extends State<CommentChat> {
                                             ? ''
                                             : appController
                                                 .urlEmojiChooses.last,
-                                        albums: []);
+                                        albums: [],
+                                        urlMultiImages: [], up: 0);
 
                                     print(
                                         'chatModel ---> ${chatModel.toMap()}');

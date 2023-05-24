@@ -22,6 +22,7 @@ import 'package:realpost/widgets/widget_amount_comment.dart';
 import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_content_form_spcial.dart';
+import 'package:realpost/widgets/widget_display_up.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
@@ -64,14 +65,6 @@ class _MainPageViewState extends State<MainPageView> {
     return LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
       return Scaffold(
           backgroundColor: AppConstant.bgColor,
-          // appBar: AppBar(
-          //   // leading: ((controller.roomModels.isEmpty) &&
-          //   //         (controller.userModels.isEmpty) &&
-          //   //         (controller.userModelAtRooms.isEmpty))
-          //   //     ? const SizedBox()
-          //   //     : rightMenu(controller, boxConstraints: boxConstraints),
-          //   //     // : WidgetText(text: 'Appbar'),
-          // ),
           body: GetX(
               init: AppController(),
               builder: (AppController appController) {
@@ -585,7 +578,11 @@ class _MainPageViewState extends State<MainPageView> {
                       ),
                       const Spacer(),
                       WidgetButton(
-                        label: AppService().checkJoin(uidOwnerRoom: appController.chatModels[index].uidChat) ? 'UnJoin' : 'Join',
+                        label: AppService().checkJoin(
+                                uidOwnerRoom:
+                                    appController.chatModels[index].uidChat)
+                            ? 'UnJoin'
+                            : 'Join',
                         pressFunc: () {
                           //flowering --> เราไปตามเขา, flower ---> คนที่ตามเรา เพื่อรับ message ตอนเรา Post
                           String uidOwnerRoom =
@@ -596,13 +593,20 @@ class _MainPageViewState extends State<MainPageView> {
                           print(
                               'uidOwnerRoom --> $uidOwnerRoom, uidLogin = $uidLogin');
 
-                          if (AppService().checkJoin(uidOwnerRoom: appController.chatModels[index].uidChat)) {
+                          if (AppService().checkJoin(
+                              uidOwnerRoom:
+                                  appController.chatModels[index].uidChat)) {
                             // unJoin
                           } else {
-                            AppService().processJoin(uidFollowing: uidOwnerRoom);
+                            AppService()
+                                .processJoin(uidFollowing: uidOwnerRoom);
                           }
                         },
-                        bgColor:   AppService().checkJoin(uidOwnerRoom: appController.chatModels[index].uidChat) ? Colors.black:  Colors.blue,
+                        bgColor: AppService().checkJoin(
+                                uidOwnerRoom:
+                                    appController.chatModels[index].uidChat)
+                            ? Colors.black
+                            : Colors.blue,
                         circular: 20,
                       ),
                     ],
@@ -625,25 +629,27 @@ class _MainPageViewState extends State<MainPageView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        appController.chatModels[index].message.isEmpty ?  const SizedBox() : Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 12),
-                          child: WidgetText(
-                            text: AppService().cutWord(
-                                string: appController.chatModels[index].message,
-                                word: 60),
-                            textStyle: AppConstant().h3Style(
-                                color: Colors.white,
-                                size: 20,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
+                        appController.chatModels[index].message.isEmpty
+                            ? const SizedBox()
+                            : Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 12),
+                                child: WidgetText(
+                                  text: AppService().cutWord(
+                                      string: appController
+                                          .chatModels[index].message,
+                                      word: 60),
+                                  textStyle: AppConstant().h3Style(
+                                      color: Colors.white,
+                                      size: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
                         displayImageChat(appController, index),
                       ],
                     ),
                   ),
                   scoreButton(appController, index),
-                 
                 ],
               ),
             ),
@@ -696,53 +702,12 @@ class _MainPageViewState extends State<MainPageView> {
   Widget scoreButton(AppController appController, int index) {
     return Row(
       children: [
-        // WidgetImage(
-        //   path: appController.processUps[index]
-        //       ? 'images/redup.jpg'
-        //       : 'images/arrowup.jpg',
-        //   size: 35,
-        //   tapFunc: () {
-        //     AppService().addFavorite(
-        //         docIdChat: appController.docIdChats[index],
-        //         chatModel: appController.chatModels[index],
-        //         increse: true,
-        //         index: index);
-        //   },
-        // ),
-        // const SizedBox(
-        //   width: 10,
-        // ),
-        // WidgetText(
-        //   text: appController.chatModels[index].favorit.toString(),
-        //   textStyle:
-        //       AppConstant().h3Style(size: 20, color: AppConstant.realFront),
-        // ),
-        // const SizedBox(
-        //   width: 10,
-        // ),
-        // WidgetImage(
-        //   path: appController.processDowns[index]
-        //       ? 'images/bluedown.jpg'
-        //       : 'images/arrowdown.jpg',
-        //   size: 35,
-        //   tapFunc: () {
-        //     AppService().addFavorite(
-        //         docIdChat: appController.docIdChats[index],
-        //         chatModel: appController.chatModels[index],
-        //         increse: false,
-        //         index: index);
-        //   },
-        // ),
-        const SizedBox(
-          width: 20,
-        ),
-        WidgetText(
-          text: 'จำนวนคนในห้อง',
-          textStyle:
-              AppConstant().h3Style(size: 15, color: AppConstant.realFront),
+        WidgetImage(
+          path: 'images/graph.jpg',
+          size: 36,
         ),
         const SizedBox(
-          width: 20,
+          width: 5,
         ),
         WidgetText(
           text: appController.chatModels[index].traffic.toString(),
@@ -750,11 +715,22 @@ class _MainPageViewState extends State<MainPageView> {
               AppConstant().h3Style(size: 15, color: AppConstant.realFront),
         ),
         const SizedBox(
-          width: 20,
+          width: 30,
         ),
         WidgetAmountComment(
           amountComment: 12,
         ),
+        const SizedBox(
+          width: 30,
+        ),
+        WidgetImage(
+          path: 'images/up.jpg',
+          size: 36,
+        ),
+        const SizedBox(
+          width: 5,
+        ),
+        WidgetDisplayUp(indexChat: index,),
       ],
     );
   }
