@@ -186,7 +186,7 @@ class _WidgetContentFormSpcialState extends State<WidgetContentFormSpcial> {
                                           .userModelsLogin.last.urlAvatar!,
                                       urlRealPost: value[0],
                                       albums: [],
-                                      urlMultiImages: value);
+                                      urlMultiImages: value, up: 0);
 
                                   AppService()
                                       .processInsertChat(

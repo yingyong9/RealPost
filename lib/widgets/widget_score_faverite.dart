@@ -76,7 +76,7 @@ class WidgetScoreFaverite extends StatelessWidget {
               const SizedBox(
                 width: 5,
               ),
-              WidgetDisplayUp(),
+              WidgetDisplayUp(indexChat: index,),
             ],
           );
         });

@@ -20,6 +20,7 @@ class ChatModel {
   final int? traffic;
   final bool? checkInOwnerChat;
   final List<String> urlMultiImages;
+  final int up;
 
   ChatModel({
     required this.message,
@@ -38,6 +39,7 @@ class ChatModel {
     this.traffic,
     this.checkInOwnerChat,
     required this.urlMultiImages,
+    required this.up,
   });
 
   Map<String, dynamic> toMap() {
@@ -58,6 +60,7 @@ class ChatModel {
       'traffic': traffic,
       'checkInOwnerChat': checkInOwnerChat,
       'urlMultiImages': urlMultiImages,
+      'up': up,
     };
   }
 
@@ -80,6 +83,7 @@ class ChatModel {
       traffic: map['traffic']?? 0,
       checkInOwnerChat: map['checkInOwnerChat'] ?? false ,
       urlMultiImages: List<String>.from(map['urlMultiImages'] ?? []),
+      up: (map['up'] ?? 0) as int,
     );
   }
 

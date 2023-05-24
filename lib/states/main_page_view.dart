@@ -65,14 +65,6 @@ class _MainPageViewState extends State<MainPageView> {
     return LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
       return Scaffold(
           backgroundColor: AppConstant.bgColor,
-          // appBar: AppBar(
-          //   // leading: ((controller.roomModels.isEmpty) &&
-          //   //         (controller.userModels.isEmpty) &&
-          //   //         (controller.userModelAtRooms.isEmpty))
-          //   //     ? const SizedBox()
-          //   //     : rightMenu(controller, boxConstraints: boxConstraints),
-          //   //     // : WidgetText(text: 'Appbar'),
-          // ),
           body: GetX(
               init: AppController(),
               builder: (AppController appController) {
@@ -738,7 +730,7 @@ class _MainPageViewState extends State<MainPageView> {
         const SizedBox(
           width: 5,
         ),
-        WidgetDisplayUp(),
+        WidgetDisplayUp(indexChat: index,),
       ],
     );
   }

@@ -965,7 +965,7 @@ class AppService {
               : null,
           albums: [],
           urlBigImage: urlBigImage ?? '',
-          urlMultiImages: []);
+          urlMultiImages: [], up: 0);
     } else {
       //มี album
       print('มี album');
@@ -993,7 +993,7 @@ class AppService {
               : null,
           albums: albums,
           urlBigImage: urlBigImage ?? '',
-          urlMultiImages: []);
+          urlMultiImages: [], up: 0);
     }
 
     print(

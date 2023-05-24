@@ -384,7 +384,7 @@ class _CommentChatState extends State<CommentChat> {
                                             : appController
                                                 .urlEmojiChooses.last,
                                         albums: [],
-                                        urlMultiImages: []);
+                                        urlMultiImages: [], up: 0);
 
                                     print(
                                         'chatModel ---> ${chatModel.toMap()}');
