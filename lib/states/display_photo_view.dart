@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
 
 class DisplayPhotoView extends StatelessWidget {
@@ -13,8 +14,13 @@ class DisplayPhotoView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PhotoView(
-        imageProvider: NetworkImage(urlImage),
+      body: InkWell(
+        onTap: () {
+          Get.back();
+        },
+        child: PhotoView(
+          imageProvider: NetworkImage(urlImage),
+        ),
       ),
     );
   }
