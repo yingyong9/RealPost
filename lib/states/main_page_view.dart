@@ -54,6 +54,7 @@ class _MainPageViewState extends State<MainPageView> {
     AppService().initialSetup(context: context);
     AppService().aboutNoti(context: context);
     AppService().freshUserModelLogin();
+    AppService().readStatData();
   }
 
   Future<void> trySignOut() async {
@@ -68,7 +69,9 @@ class _MainPageViewState extends State<MainPageView> {
           body: GetX(
               init: AppController(),
               builder: (AppController appController) {
-                print('##9april ---> ${appController.chatOwnerModels.length}');
+                print(
+                    '##26may statDataModel ---> ${appController.statDataModels.length}');
+
                 return SafeArea(
                   child: appController.noRoom.value
                       ? const WidgetProgessAnimation()
@@ -555,7 +558,7 @@ class _MainPageViewState extends State<MainPageView> {
             width: boxConstraints.maxWidth,
             child: InkWell(
               onTap: () {
-                print('##30april you tap Bubble');
+                print('##25may you tap Bubble');
                 AppService().processLunchUrl(
                     url: appController.chatModels[index].message);
               },
@@ -612,17 +615,18 @@ class _MainPageViewState extends State<MainPageView> {
                     ],
                   ),
                   InkWell(
-                    onTap: () {
-                      Get.to(CommentChat(
-                        docIdChat: appController.docIdChats[index],
-                        chatModel: appController.chatModels[index],
-                        index: index,
-                      ))!
+                    onTap: () async {
+                      print('##26may you click');
+                      AppService()
+                          .increaseValueGraph(
+                              docIdChat: appController.docIdChats[index],
+                              chatModel: appController.chatModels[index])
                           .then((value) {
-                        AppService().increaseDecrestTraffic(
-                            docIdChat: appController.docIdChats[index],
-                            increase: false,
-                            chatModel: appController.chatModels[index]);
+                        Get.to(CommentChat(
+                          docIdChat: appController.docIdChats[index],
+                          chatModel: appController.chatModels[index],
+                          index: index,
+                        ));
                       });
                     },
                     child: Column(
@@ -710,7 +714,8 @@ class _MainPageViewState extends State<MainPageView> {
           width: 5,
         ),
         WidgetText(
-          text: appController.chatModels[index].traffic.toString(),
+          // text: appController.statDataModels[0].amountGraph.toString(),
+          text: appController.chatModels[index].amountGraph.toString(),
           textStyle:
               AppConstant().h3Style(size: 15, color: AppConstant.realFront),
         ),
@@ -718,7 +723,7 @@ class _MainPageViewState extends State<MainPageView> {
           width: 30,
         ),
         WidgetAmountComment(
-          amountComment: 12,
+          amountComment: appController.chatModels[index].amountComment,
         ),
         const SizedBox(
           width: 30,
@@ -730,7 +735,9 @@ class _MainPageViewState extends State<MainPageView> {
         const SizedBox(
           width: 5,
         ),
-        WidgetDisplayUp(indexChat: index,),
+        WidgetDisplayUp(
+          indexChat: index,
+        ),
       ],
     );
   }

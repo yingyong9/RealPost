@@ -19,9 +19,7 @@ class WidgetAmountComment extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
        const WidgetImage(path: 'images/comment.jpg',size: 36,),
-        // const SizedBox(
-        //   width: 2,
-        // ),
+       
         WidgetText(
           text: amountComment.toString(),
           textStyle: AppConstant().h3Style(color: AppConstant.realFront),

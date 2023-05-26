@@ -20,6 +20,7 @@ import 'package:realpost/models/otp_require_thaibulk.dart';
 import 'package:realpost/models/private_chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/salse_group_model.dart';
+import 'package:realpost/models/stat_data_model.dart';
 import 'package:realpost/models/user_model.dart';
 import 'package:realpost/states/display_name.dart';
 import 'package:realpost/states/private_chat.dart';
@@ -35,6 +36,88 @@ import 'package:url_launcher/url_launcher.dart';
 
 class AppService {
   AppController appController = Get.put(AppController());
+
+  Future<void> readStatData() async {
+    FirebaseFirestore.instance
+        .collection('statdata')
+        .snapshots()
+        .listen((event) {
+      if (appController.statDataModels.isNotEmpty) {
+        appController.statDataModels.clear();
+      }
+
+      for (var element in event.docs) {
+        StatDataModel statDataModel = StatDataModel.fromMap(element.data());
+        appController.statDataModels.add(statDataModel);
+      }
+    });
+  }
+
+  Future<void> increaseValueGraph(
+      {required String docIdChat, required ChatModel chatModel}) async {
+    print('##26may you click docIdChat --> $docIdChat');
+    print('##26may chatModel --> ${chatModel.amountGraph}');
+
+    int amountGraphInt = chatModel.amountGraph;
+    amountGraphInt++;
+    Map<String, dynamic> map = chatModel.toMap();
+    map['amountGraph'] = amountGraphInt;
+    ChatModel newChatModel = ChatModel.fromMap(map);
+    print('##26may newChatModel ---> ${newChatModel.amountGraph}');
+
+    await FirebaseFirestore.instance
+        .collection('room')
+        .doc(AppConstant.docIdRoomData)
+        .collection('chat')
+        .doc(docIdChat)
+        .update(newChatModel.toMap())
+        .then((value) {
+      print('##26may update Success');
+    });
+  }
+
+  Future<void> increaseValueComment(
+      {required String docIdChat, required ChatModel chatModel}) async {
+   
+
+    int amountCommentInt = chatModel.amountComment;
+    amountCommentInt++;
+    Map<String, dynamic> map = chatModel.toMap();
+    map['amountComment'] = amountCommentInt;
+    ChatModel newChatModel = ChatModel.fromMap(map);
+   
+
+    await FirebaseFirestore.instance
+        .collection('room')
+        .doc(AppConstant.docIdRoomData)
+        .collection('chat')
+        .doc(docIdChat)
+        .update(newChatModel.toMap())
+        .then((value) {
+      print('##26may update Success');
+    });
+  }
+  Future<void> increaseValueUp(
+      {required String docIdChat, required ChatModel chatModel}) async {
+   
+
+    int upInt = chatModel.up;
+    upInt++;
+    Map<String, dynamic> map = chatModel.toMap();
+    map['up'] = upInt;
+    ChatModel newChatModel = ChatModel.fromMap(map);
+   
+
+    await FirebaseFirestore.instance
+        .collection('room')
+        .doc(AppConstant.docIdRoomData)
+        .collection('chat')
+        .doc(docIdChat)
+        .update(newChatModel.toMap())
+        .then((value) {
+      print('##26may update Success');
+    });
+  }
 
   bool checkJoin({required String uidOwnerRoom}) {
     var result =
@@ -138,8 +221,7 @@ class AppService {
       {required String docIdChat, required ChatModel commentChatModel}) async {
     await FirebaseFirestore.instance
         .collection('room')
-        .doc(
-            appController.docIdRooms[appController.indexBodyMainPageView.value])
+        .doc(AppConstant.docIdRoomData)
         .collection('chat')
         .doc(docIdChat)
         .collection('comment')
@@ -948,24 +1030,28 @@ class AppService {
       print('##20mar WorkHere');
 
       chatModel = ChatModel(
-          message: appController.messageChats.isEmpty
-              ? ''
-              : appController.messageChats.last,
-          timestamp: Timestamp.fromDate(DateTime.now()),
-          uidChat: appController.mainUid.value,
-          urlRealPost: urlRealPost ?? '',
-          disPlayName: appController.userModelsLogin.last.displayName!,
-          urlAvatar: appController.userModelsLogin.last.urlAvatar ??
-              AppConstant.urlAvatar,
-          article: '',
-          link: '',
-          geoPoint: appController.shareLocation.value
-              ? GeoPoint(appController.positions[0].latitude,
-                  appController.positions[0].longitude)
-              : null,
-          albums: [],
-          urlBigImage: urlBigImage ?? '',
-          urlMultiImages: [], up: 0);
+        message: appController.messageChats.isEmpty
+            ? ''
+            : appController.messageChats.last,
+        timestamp: Timestamp.fromDate(DateTime.now()),
+        uidChat: appController.mainUid.value,
+        urlRealPost: urlRealPost ?? '',
+        disPlayName: appController.userModelsLogin.last.displayName!,
+        urlAvatar: appController.userModelsLogin.last.urlAvatar ??
+            AppConstant.urlAvatar,
+        article: '',
+        link: '',
+        geoPoint: appController.shareLocation.value
+            ? GeoPoint(appController.positions[0].latitude,
+                appController.positions[0].longitude)
+            : null,
+        albums: [],
+        urlBigImage: urlBigImage ?? '',
+        urlMultiImages: [],
+        up: 0,
+        amountComment: 0,
+        amountGraph: 0,
+      );
     } else {
       //มี album
       print('มี album');
@@ -973,27 +1059,31 @@ class AppService {
       var albums = await processUploadMultiPhoto();
 
       chatModel = ChatModel(
-          message: appController.messageChats.isEmpty
-              ? ''
-              : appController.messageChats.last,
-          timestamp: Timestamp.fromDate(DateTime.now()),
-          uidChat: FirebaseAuth.instance.currentUser!.uid,
-          urlRealPost: appController.urlRealPostChooses.isEmpty
-              ? ''
-              : appController.urlRealPostChooses[0],
-          disPlayName: appController.userModels[0].displayName!,
-          urlAvatar: appController.userModels[0].urlAvatar!.isEmpty
-              ? appController.urlAvatarChooses[0]
-              : appController.userModels[0].urlAvatar!,
-          article: appController.articleControllers[0].text,
-          link: appController.links.isEmpty ? '' : appController.links.last,
-          geoPoint: appController.shareLocation.value
-              ? GeoPoint(appController.positions[0].latitude,
-                  appController.positions[0].longitude)
-              : null,
-          albums: albums,
-          urlBigImage: urlBigImage ?? '',
-          urlMultiImages: [], up: 0);
+        message: appController.messageChats.isEmpty
+            ? ''
+            : appController.messageChats.last,
+        timestamp: Timestamp.fromDate(DateTime.now()),
+        uidChat: FirebaseAuth.instance.currentUser!.uid,
+        urlRealPost: appController.urlRealPostChooses.isEmpty
+            ? ''
+            : appController.urlRealPostChooses[0],
+        disPlayName: appController.userModels[0].displayName!,
+        urlAvatar: appController.userModels[0].urlAvatar!.isEmpty
+            ? appController.urlAvatarChooses[0]
+            : appController.userModels[0].urlAvatar!,
+        article: appController.articleControllers[0].text,
+        link: appController.links.isEmpty ? '' : appController.links.last,
+        geoPoint: appController.shareLocation.value
+            ? GeoPoint(appController.positions[0].latitude,
+                appController.positions[0].longitude)
+            : null,
+        albums: albums,
+        urlBigImage: urlBigImage ?? '',
+        urlMultiImages: [],
+        up: 0,
+        amountComment: 0,
+        amountGraph: 0,
+      );
     }
 
     print(
@@ -1220,14 +1310,14 @@ class AppService {
     }
     return albums;
   }
+
   Future<List<String>> processUploadMultiImageChat() async {
     AppController appController = Get.put(AppController());
     var urlMultiImageChats = <String>[];
 
     for (var element in appController.xFiles) {
       File file = File(element.path);
-      String? url =
-          await processUploadPhoto(file: file, path:  'chat');
+      String? url = await processUploadPhoto(file: file, path: 'chat');
       urlMultiImageChats.add(url!);
     }
     return urlMultiImageChats;

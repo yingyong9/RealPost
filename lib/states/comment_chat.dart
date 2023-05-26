@@ -93,7 +93,7 @@ class _CommentChatState extends State<CommentChat> {
               init: AppController(),
               builder: (AppController appController) {
                 print(
-                    '##17may chatModel -----> ${appController.chatModels[widget.index].toMap()}');
+                    '##27may chatModel comment -----> ${appController.chatModels.length}');
                 return SizedBox(
                   width: boxConstraints.maxWidth,
                   height: boxConstraints.maxHeight,
@@ -160,7 +160,10 @@ class _CommentChatState extends State<CommentChat> {
                                                         .urlRealPost));
                                               },
                                             ),
-                                  WidgetScoreFaverite(index: widget.index),
+                                  WidgetScoreFaverite(
+                                    index: widget.index,
+                                    chatModel: widget.chatModel,
+                                  ),
                                   const SizedBox(
                                     height: 16,
                                   ),
@@ -370,21 +373,24 @@ class _CommentChatState extends State<CommentChat> {
                                       (appController
                                           .urlEmojiChooses.isNotEmpty)) {
                                     ChatModel chatModel = ChatModel(
-                                        message: textEditingController.text,
-                                        timestamp:
-                                            Timestamp.fromDate(DateTime.now()),
-                                        uidChat: appController.mainUid.value,
-                                        disPlayName: appController
-                                            .userModelsLogin.last.displayName!,
-                                        urlAvatar: appController
-                                            .userModelsLogin.last.urlAvatar!,
-                                        urlRealPost: appController
-                                                .urlEmojiChooses.isEmpty
-                                            ? ''
-                                            : appController
-                                                .urlEmojiChooses.last,
-                                        albums: [],
-                                        urlMultiImages: [], up: 0);
+                                      message: textEditingController.text,
+                                      timestamp:
+                                          Timestamp.fromDate(DateTime.now()),
+                                      uidChat: appController.mainUid.value,
+                                      disPlayName: appController
+                                          .userModelsLogin.last.displayName!,
+                                      urlAvatar: appController
+                                          .userModelsLogin.last.urlAvatar!,
+                                      urlRealPost: appController
+                                              .urlEmojiChooses.isEmpty
+                                          ? ''
+                                          : appController.urlEmojiChooses.last,
+                                      albums: [],
+                                      urlMultiImages: [],
+                                      up: 0,
+                                      amountComment: 0,
+                                      amountGraph: 0,
+                                    );
 
                                     print(
                                         'chatModel ---> ${chatModel.toMap()}');
@@ -394,6 +400,10 @@ class _CommentChatState extends State<CommentChat> {
                                             docIdChat: widget.docIdChat,
                                             commentChatModel: chatModel)
                                         .then((value) {
+                                      AppService().increaseValueComment(
+                                          docIdChat: widget.docIdChat,
+                                          chatModel: widget.chatModel);
+
                                       textEditingController.text = '';
                                       appController.urlAvatarChooses.clear();
                                       clearAllTabStamp(appController);

@@ -176,17 +176,21 @@ class _WidgetContentFormSpcialState extends State<WidgetContentFormSpcial> {
                                   print('Work ????? ===> $value');
 
                                   ChatModel chatModel = ChatModel(
-                                      message: textEditingController.text,
-                                      timestamp:
-                                          Timestamp.fromDate(DateTime.now()),
-                                      uidChat: appController.mainUid.value,
-                                      disPlayName: appController
-                                          .userModelsLogin.last.displayName!,
-                                      urlAvatar: appController
-                                          .userModelsLogin.last.urlAvatar!,
-                                      urlRealPost: value[0],
-                                      albums: [],
-                                      urlMultiImages: value, up: 0);
+                                    message: textEditingController.text,
+                                    timestamp:
+                                        Timestamp.fromDate(DateTime.now()),
+                                    uidChat: appController.mainUid.value,
+                                    disPlayName: appController
+                                        .userModelsLogin.last.displayName!,
+                                    urlAvatar: appController
+                                        .userModelsLogin.last.urlAvatar!,
+                                    urlRealPost: value[0],
+                                    albums: [],
+                                    urlMultiImages: value,
+                                    up: 0,
+                                    amountComment: 0,
+                                    amountGraph: 0,
+                                  );
 
                                   AppService()
                                       .processInsertChat(

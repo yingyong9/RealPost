@@ -27,7 +27,7 @@ class _WidgetDisplayUpState extends State<WidgetDisplayUp> {
           print('##24may indexChat --> ${widget.indexChat} chatModels ---> ${appController.chatModels.length}');
           return WidgetText(
             // text: appController.chatModels[widget.indexChat].up.toString(),
-            text: '123',
+            text: appController.chatModels[widget.indexChat].up.toString(),
             textStyle:
                 AppConstant().h3Style(size: 15, color: AppConstant.realFront),
           );

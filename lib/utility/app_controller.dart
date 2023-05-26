@@ -18,6 +18,7 @@ import 'package:realpost/models/private_chat_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/salse_group_model.dart';
 import 'package:realpost/models/stamp_model.dart';
+import 'package:realpost/models/stat_data_model.dart';
 import 'package:realpost/models/time_group_model.dart';
 import 'package:realpost/models/user_model.dart';
 import 'package:realpost/utility/app_constant.dart';
@@ -108,6 +109,8 @@ class AppController extends GetxController {
   RxList<File> fileImageComments = <File>[].obs;
 
   RxBool checkIn = true.obs;
+
+  RxList<StatDataModel> statDataModels = <StatDataModel>[].obs;
 
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
