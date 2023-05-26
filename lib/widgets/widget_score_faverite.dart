@@ -2,10 +2,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/states/comment_chat.dart';
 import 'package:realpost/utility/app_constant.dart';
-
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_amount_comment.dart';
@@ -17,9 +17,11 @@ class WidgetScoreFaverite extends StatelessWidget {
   const WidgetScoreFaverite({
     Key? key,
     required this.index,
+    required this.chatModel,
   }) : super(key: key);
 
   final int index;
+  final ChatModel chatModel;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,8 @@ class WidgetScoreFaverite extends StatelessWidget {
                 width: 20,
               ),
               WidgetAmountComment(
-                amountComment: appController.amountComments[index],
+                // amountComment: chatModel.amountComment,
+                amountComment: appController.chatModels[index].amountComment,
               ),
               const SizedBox(
                 width: 20,
@@ -69,14 +72,22 @@ class WidgetScoreFaverite extends StatelessWidget {
                       .processUpdateChat(
                           docIdChat: docIdChat, chatModel: chatModel)
                       .then((value) {
-                    Get.back();
+                    AppService()
+                        .increaseValueUp(
+                            docIdChat: appController.docIdChats[index],
+                            chatModel: this.chatModel)
+                        .then((value) {
+                      Get.back();
+                    });
                   });
                 },
               ),
               const SizedBox(
                 width: 5,
               ),
-              WidgetDisplayUp(indexChat: index,),
+              WidgetDisplayUp(
+                indexChat: index,
+              ),
             ],
           );
         });
