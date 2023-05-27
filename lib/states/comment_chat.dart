@@ -178,7 +178,7 @@ class _CommentChatState extends State<CommentChat> {
                                 : ListView.builder(
                                     physics: const ScrollPhysics(),
                                     shrinkWrap: true,
-                                    reverse: true,
+                                    reverse: false,
                                     itemCount:
                                         appController.commentChatModels.length,
                                     itemBuilder: (context, index) => Padding(

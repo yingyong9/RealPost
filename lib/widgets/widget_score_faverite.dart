@@ -57,29 +57,7 @@ class WidgetScoreFaverite extends StatelessWidget {
                 path: 'images/up.jpg',
                 size: 36,
                 tapFunc: () {
-                  String docIdChat = appController.docIdChats[index];
-                  print('docIdChat --> $docIdChat');
-
-                  Map<String, dynamic> map =
-                      appController.chatModels[index].toMap();
-
-                  map['timestamp'] = Timestamp.fromDate(DateTime.now());
-                  ChatModel chatModel = ChatModel.fromMap(map);
-
-                  print('chatModel New ---> ${chatModel.toMap()}');
-
-                  AppService()
-                      .processUpdateChat(
-                          docIdChat: docIdChat, chatModel: chatModel)
-                      .then((value) {
-                    AppService()
-                        .increaseValueUp(
-                            docIdChat: appController.docIdChats[index],
-                            chatModel: this.chatModel)
-                        .then((value) {
-                      Get.back();
-                    });
-                  });
+                  increaseUpMehod(appController).then((value) {});
                 },
               ),
               const SizedBox(
@@ -91,5 +69,12 @@ class WidgetScoreFaverite extends StatelessWidget {
             ],
           );
         });
+  }
+
+  Future<void> increaseUpMehod(AppController appController) async {
+    AppService()
+        .increaseValueUp(
+            docIdChat: appController.docIdChats[index], chatModel: chatModel)
+        .then((value) {});
   }
 }

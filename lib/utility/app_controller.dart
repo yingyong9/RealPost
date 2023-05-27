@@ -406,7 +406,7 @@ class AppController extends GetxController {
 
     await FirebaseFirestore.instance
         .collection('room')
-        .doc('JtsxAUXHFypOPE5tdU6E')
+        .doc(AppConstant.docIdRoomData)
         .get()
         .then((value) async {
       RoomModel model = RoomModel.fromMap(value.data()!);
