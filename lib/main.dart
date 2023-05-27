@@ -14,6 +14,7 @@ import 'package:realpost/states/phone_number.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
+import 'package:upgrader/upgrader.dart';
 
 var getPages = <GetPage<dynamic>>[
   GetPage(
@@ -40,12 +41,14 @@ Future<void> main() async {
   HttpOverrides.global = MyHttpOverride();
   WidgetsFlutterBinding.ensureInitialized();
 
+  await Upgrader.clearSavedSettings();
+
   // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
   await Firebase.initializeApp().then((value) {
     AppController appController = Get.put(AppController());
     // AppService().readAllUserModel().then((value) {
-     
+
     // });
 
     FirebaseAuth.instance.authStateChanges().listen((event) async {

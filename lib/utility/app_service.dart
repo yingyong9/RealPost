@@ -78,14 +78,11 @@ class AppService {
 
   Future<void> increaseValueComment(
       {required String docIdChat, required ChatModel chatModel}) async {
-   
-
     int amountCommentInt = chatModel.amountComment;
     amountCommentInt++;
     Map<String, dynamic> map = chatModel.toMap();
     map['amountComment'] = amountCommentInt;
     ChatModel newChatModel = ChatModel.fromMap(map);
-   
 
     await FirebaseFirestore.instance
         .collection('room')
@@ -97,16 +94,24 @@ class AppService {
       print('##26may update Success');
     });
   }
+
   Future<void> increaseValueUp(
       {required String docIdChat, required ChatModel chatModel}) async {
-   
+    print('##27may docIdChat --> $docIdChat');
+    print('##27may up before --> ${chatModel.up}');
 
     int upInt = chatModel.up;
-    upInt++;
+    print('##27may upInt before --> $upInt');
+
+    upInt = upInt + 1;
+    print('##27may upInt after --> $upInt');
+
     Map<String, dynamic> map = chatModel.toMap();
     map['up'] = upInt;
+    map['timestamp'] = Timestamp.fromDate(DateTime.now());
     ChatModel newChatModel = ChatModel.fromMap(map);
-   
+
+    print('##27may up after --> ${newChatModel.up}');
 
     await FirebaseFirestore.instance
         .collection('room')
@@ -116,6 +121,7 @@ class AppService {
         .update(newChatModel.toMap())
         .then((value) {
       print('##26may update Success');
+      Get.back();
     });
   }
 
