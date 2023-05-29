@@ -94,6 +94,9 @@ class _CommentChatState extends State<CommentChat> {
               builder: (AppController appController) {
                 print(
                     '##27may chatModel comment -----> ${appController.chatModels.length}');
+                print(
+                    '##29may multiImage ---> ${widget.chatModel.urlMultiImages.length}');
+                print('##29may docIdComment ---> ${widget.docIdChat}');
                 return SizedBox(
                   width: boxConstraints.maxWidth,
                   height: boxConstraints.maxHeight,
@@ -226,6 +229,43 @@ class _CommentChatState extends State<CommentChat> {
                                                     height: 150,
                                                     boxFit: BoxFit.cover,
                                                   ),
+                                            appController
+                                                    .commentChatModels[index]
+                                                    .urlMultiImages
+                                                    .isEmpty
+                                                ? const SizedBox()
+                                                : ListView.builder(
+                                                    physics:
+                                                        const ScrollPhysics(),
+                                                    shrinkWrap: true,
+                                                    itemCount: appController
+                                                        .commentChatModels[
+                                                            index]
+                                                        .urlMultiImages
+                                                        .length,
+                                                    itemBuilder:
+                                                        (context, index2) =>
+                                                            Row(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child:
+                                                              WidgetImageInternet(
+                                                            urlImage: appController
+                                                                .commentChatModels[
+                                                                    index]
+                                                                .urlMultiImages[index2],
+                                                            width: 180,
+                                                            height: 150,
+                                                            boxFit:
+                                                                BoxFit.cover,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
                                             WidgetText(
                                               text: appController
                                                   .commentChatModels[index]
@@ -319,20 +359,29 @@ class _CommentChatState extends State<CommentChat> {
                               WidgetIconButton(
                                 pressFunc: () {
                                   AppService()
-                                      .processTakePhoto(
-                                          source: ImageSource.gallery)
+                                      .processChooseMultiImageChat()
                                       .then((value) {
-                                    AppService()
-                                        .processUploadPhoto(
-                                            file: value!, path: 'comment')
-                                        .then((value) {
-                                      String urlImageComment = value!;
-
-                                      AppBottomSheet().dipsplayImage(
-                                          urlImage: urlImageComment,
-                                          docIdChat: widget.docIdChat);
-                                    });
+                                    print(
+                                        '##29may xFiles ---> ${controller.xFiles.length}');
+                                    AppBottomSheet().bottomSheetMultiImage(
+                                        docIdChat: widget.docIdChat);
                                   });
+
+                                  // AppService()
+                                  //     .processTakePhoto(
+                                  //         source: ImageSource.gallery)
+                                  //     .then((value) {
+                                  //   AppService()
+                                  //       .processUploadPhoto(
+                                  //           file: value!, path: 'comment')
+                                  //       .then((value) {
+                                  //     String urlImageComment = value!;
+
+                                  //     AppBottomSheet().dipsplayImage(
+                                  //         urlImage: urlImageComment,
+                                  //         docIdChat: widget.docIdChat);
+                                  //   });
+                                  // });
                                 },
                                 iconData: Icons.add_photo_alternate,
                                 color: AppConstant.realFront,

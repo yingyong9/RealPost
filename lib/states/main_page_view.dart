@@ -55,6 +55,8 @@ class _MainPageViewState extends State<MainPageView> {
     AppService().aboutNoti(context: context);
     AppService().freshUserModelLogin();
     AppService().readStatData();
+
+    // AppService().readChatForDelete();
   }
 
   Future<void> trySignOut() async {

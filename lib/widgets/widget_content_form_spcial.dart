@@ -14,6 +14,7 @@ import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
+import 'package:realpost/widgets/widget_multiimage_gridview.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
 class WidgetContentFormSpcial extends StatefulWidget {
@@ -45,25 +46,7 @@ class _WidgetContentFormSpcialState extends State<WidgetContentFormSpcial> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     appController.xFiles.isNotEmpty
-                        ? Container(
-                            height: 200,
-                            child: GridView.builder(
-                              itemCount: appController.xFiles.length,
-                              physics: const ScrollPhysics(),
-                              shrinkWrap: true,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
-                                      crossAxisSpacing: 4,
-                                      mainAxisSpacing: 4),
-                              itemBuilder: (context, index) => Image.file(
-                                File(appController.xFiles[index].path),
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          )
+                        ? const MultiImageGridView()
                         : appController.urlRealPostChooses.isNotEmpty
                             ? WidgetImageInternet(
                                 urlImage: appController.urlRealPostChooses.last,
@@ -111,21 +94,6 @@ class _WidgetContentFormSpcialState extends State<WidgetContentFormSpcial> {
                               print(
                                   '##23may xFiles ---> ${appController.xFiles.length}');
                             });
-
-                            // feture เก่า
-                            // if (appController.fileRealPosts.isNotEmpty) {
-                            //   appController.fileRealPosts.clear();
-                            // }
-
-                            // if (appController.urlRealPostChooses.isNotEmpty) {
-                            //   appController.urlRealPostChooses.clear();
-                            // }
-
-                            // var result = await AppService()
-                            //     .processTakePhoto(source: ImageSource.gallery);
-                            // if (result != null) {
-                            //   appController.fileRealPosts.add(result);
-                            // }
                           },
                           iconData: Icons.add_photo_alternate,
                           color: AppConstant.realFront,

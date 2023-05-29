@@ -37,6 +37,34 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
+  Future<void> readChatForDelete() async {
+    await FirebaseFirestore.instance
+        .collection('room')
+        .doc(AppConstant.docIdRoomData)
+        .collection('chat')
+        .orderBy('timestamp')
+        .get()
+        .then((value) async {
+      int i = 0;
+      for (var element in value.docs) {
+        String docIdChat = element.id;
+
+        if (i < 500) {
+          print('##27may docIdChat --> $docIdChat');
+
+          await FirebaseFirestore.instance
+              .collection('room')
+              .doc(AppConstant.docIdRoomData)
+              .collection('chat')
+              .doc(docIdChat)
+              .delete();
+        }
+
+        i++;
+      }
+    });
+  }
+
   Future<void> readStatData() async {
     FirebaseFirestore.instance
         .collection('statdata')
