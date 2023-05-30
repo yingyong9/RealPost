@@ -57,7 +57,6 @@ Future<void> main() async {
         runApp(const MyApp());
       } else {
         appController.mainUid.value = event.uid;
-        print('##17april mainUid ---> ${appController.mainUid}');
         keyPage = '/mainPageView';
         runApp(const MyApp());
       }
