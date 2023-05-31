@@ -11,6 +11,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:realpost/models/address_map_model.dart';
+import 'package:realpost/models/answer_model.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/comment_salse_model.dart';
 import 'package:realpost/models/group_product_model.dart';
@@ -99,18 +100,18 @@ class AppController extends GetxController {
   RxBool roomPublic = false.obs;
   RxBool tabFavorit = false.obs;
   RxList<ChatModel> commentChatModels = <ChatModel>[].obs;
+  RxList<String> docIdCommentChats = <String>[].obs;
   RxString docIdChatTapFavorite = ''.obs;
   RxBool processUp = false.obs;
   RxList<bool> processUps = <bool>[].obs;
   RxList<bool> processDowns = <bool>[].obs;
   RxBool processDown = false.obs;
-
   RxList<String> urlImageComments = <String>[].obs;
   RxList<File> fileImageComments = <File>[].obs;
-
   RxBool checkIn = true.obs;
-
   RxList<StatDataModel> statDataModels = <StatDataModel>[].obs;
+
+  RxList<List<AnswerModel>> listAnswerModels = <List<AnswerModel>>[].obs;
 
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {

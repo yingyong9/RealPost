@@ -9,6 +9,7 @@ import 'package:realpost/states/display_photo_view.dart';
 import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
+import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
@@ -42,6 +43,9 @@ class _CommentChatState extends State<CommentChat> {
   @override
   void initState() {
     super.initState();
+
+    controller.listAnswerModels.clear;
+
     AppService().readCommentChat(docIdChat: widget.docIdChat).then((value) {
       AppService().increaseDecrestTraffic(
           docIdChat: widget.docIdChat,
@@ -93,10 +97,8 @@ class _CommentChatState extends State<CommentChat> {
               init: AppController(),
               builder: (AppController appController) {
                 print(
-                    '##27may chatModel comment -----> ${appController.chatModels.length}');
-                print(
-                    '##29may multiImage ---> ${widget.chatModel.urlMultiImages.length}');
-                print('##29may docIdComment ---> ${widget.docIdChat}');
+                    '##31may listAnswerModels -----> ${appController.listAnswerModels.length}');
+
                 return SizedBox(
                   width: boxConstraints.maxWidth,
                   height: boxConstraints.maxHeight,
@@ -273,13 +275,45 @@ class _CommentChatState extends State<CommentChat> {
                                               textStyle: AppConstant()
                                                   .h3Style(size: 16),
                                             ),
+                                            appController
+                                                    .listAnswerModels[index]
+                                                    .isEmpty
+                                                ? const SizedBox()
+                                                : Container(margin: const EdgeInsets.only(left: 32),
+                                                  child: ListView.builder(
+                                                      physics:
+                                                          const ScrollPhysics(),
+                                                      shrinkWrap: true,
+                                                      itemCount: appController
+                                                          .listAnswerModels[index]
+                                                          .length,
+                                                      itemBuilder: (context,
+                                                              index3) =>
+                                                          // WidgetText(
+                                                          //     text: appController
+                                                          //         .listAnswerModels[
+                                                          //             index]
+                                                          //             [index3]
+                                                          //         .answer),
+                                                          WidgetText(text: 'index = $index, index3 = $index3')
+                                                    ),
+                                                ),
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.end,
                                               children: [
                                                 WidgetButton(
-                                                  label: 'ตอบ',
-                                                  pressFunc: () {},
+                                                  label: 'สนทนา',
+                                                  pressFunc: () {
+                                                    AppDialog(context: context)
+                                                        .answerDialog(
+                                                            docIdComment:
+                                                                appController
+                                                                        .docIdCommentChats[
+                                                                    index],
+                                                            docIdChat: widget
+                                                                .docIdChat);
+                                                  },
                                                   iconWidget: const Icon(
                                                     Icons.turn_left,
                                                     color: Colors.white,
@@ -364,24 +398,9 @@ class _CommentChatState extends State<CommentChat> {
                                     print(
                                         '##29may xFiles ---> ${controller.xFiles.length}');
                                     AppBottomSheet().bottomSheetMultiImage(
-                                        docIdChat: widget.docIdChat);
+                                        docIdChat: widget.docIdChat,
+                                        context: context);
                                   });
-
-                                  // AppService()
-                                  //     .processTakePhoto(
-                                  //         source: ImageSource.gallery)
-                                  //     .then((value) {
-                                  //   AppService()
-                                  //       .processUploadPhoto(
-                                  //           file: value!, path: 'comment')
-                                  //       .then((value) {
-                                  //     String urlImageComment = value!;
-
-                                  //     AppBottomSheet().dipsplayImage(
-                                  //         urlImage: urlImageComment,
-                                  //         docIdChat: widget.docIdChat);
-                                  //   });
-                                  // });
                                 },
                                 iconData: Icons.add_photo_alternate,
                                 color: AppConstant.realFront,
@@ -421,6 +440,8 @@ class _CommentChatState extends State<CommentChat> {
                                   if ((textEditingController.text.isNotEmpty) ||
                                       (appController
                                           .urlEmojiChooses.isNotEmpty)) {
+                                    AppDialog(context: context).dialogProcess();
+
                                     ChatModel chatModel = ChatModel(
                                       message: textEditingController.text,
                                       timestamp:
@@ -449,6 +470,8 @@ class _CommentChatState extends State<CommentChat> {
                                             docIdChat: widget.docIdChat,
                                             commentChatModel: chatModel)
                                         .then((value) {
+                                      Get.back();
+
                                       AppService().increaseValueComment(
                                           docIdChat: widget.docIdChat,
                                           chatModel: widget.chatModel);

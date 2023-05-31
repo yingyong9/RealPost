@@ -13,6 +13,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:realpost/models/answer_model.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/comment_salse_model.dart';
 import 'package:realpost/models/friend_model.dart';
@@ -36,6 +37,22 @@ import 'package:url_launcher/url_launcher.dart';
 
 class AppService {
   AppController appController = Get.put(AppController());
+
+  Future<void> insertAnswer(
+      {required AnswerModel answerModel,
+      required String docIdChat,
+      required String docIdComment}) async {
+    await FirebaseFirestore.instance
+        .collection('room')
+        .doc(AppConstant.docIdRoomData)
+        .collection('chat')
+        .doc(docIdChat)
+        .collection('comment')
+        .doc(docIdComment)
+        .collection('answer')
+        .doc()
+        .set(answerModel.toMap());
+  }
 
   Future<void> readChatForDelete() async {
     await FirebaseFirestore.instance
@@ -264,29 +281,62 @@ class AppService {
   }
 
   Future<void> readCommentChat({required String docIdChat}) async {
+    print('##31may readCommentChat Work');
+
     if (appController.commentChatModels.isNotEmpty) {
       appController.commentChatModels.clear();
+      appController.docIdCommentChats.clear();
+      appController.listAnswerModels.clear();
     }
 
     FirebaseFirestore.instance
         .collection('room')
-        .doc(
-            appController.docIdRooms[appController.indexBodyMainPageView.value])
+        .doc(AppConstant.docIdRoomData)
         .collection('chat')
         .doc(docIdChat)
         .collection('comment')
         .orderBy('timestamp')
         .snapshots()
-        .listen((event) {
+        .listen((event) async {
+
       if (event.docs.isNotEmpty) {
         if (appController.commentChatModels.isNotEmpty) {
           appController.commentChatModels.clear();
+          appController.docIdCommentChats.clear();
+          appController.listAnswerModels.clear();
         }
 
+        var answerModels = <AnswerModel>[];
+
+        //for1
         for (var element in event.docs) {
           ChatModel commentChatModel = ChatModel.fromMap(element.data());
           appController.commentChatModels.add(commentChatModel);
-        }
+          appController.docIdCommentChats.add(element.id);
+
+          FirebaseFirestore.instance
+              .collection('room')
+              .doc(AppConstant.docIdRoomData)
+              .collection('chat')
+              .doc(docIdChat)
+              .collection('comment')
+              .doc(element.id)
+              .collection('answer')
+              .snapshots()
+              .listen((event) {
+            
+
+            if (event.docs.isEmpty) {
+              appController.listAnswerModels.add([]);
+            } else {
+              for (var element in event.docs) {
+                AnswerModel answerModel = AnswerModel.fromMap(element.data());
+                answerModels.add(answerModel);
+              } //for2
+              appController.listAnswerModels.add(answerModels);
+            }
+          });
+        } // for1
       }
     });
   }

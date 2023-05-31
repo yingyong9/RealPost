@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
+import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
@@ -100,6 +101,9 @@ class _WidgetContentFormSpcialState extends State<WidgetContentFormSpcial> {
                         ),
                         Expanded(
                           child: WidgetForm(
+                            hint: 'Post',
+                            hintStyle: AppConstant()
+                                .h3Style(color: AppConstant.realFront),
                             textStyle:
                                 AppConstant().h3Style(color: Colors.white),
                             controller: textEditingController,
@@ -117,6 +121,7 @@ class _WidgetContentFormSpcialState extends State<WidgetContentFormSpcial> {
                             if ((appController.fileRealPosts.isNotEmpty) ||
                                 (appController.messageChats.isNotEmpty) ||
                                 (appController.xFiles.isNotEmpty)) {
+                              AppDialog(context: context).dialogProcess();
                               if (appController.fileRealPosts.isNotEmpty) {
                                 //มีการถ่ายภาพ
                                 var urlImage = await AppService()
@@ -136,6 +141,7 @@ class _WidgetContentFormSpcialState extends State<WidgetContentFormSpcial> {
                                     .then((value) {
                                   appController.fileRealPosts.clear();
                                   textEditingController.text = '';
+                                  Get.back();
                                 });
                               } else if (appController.xFiles.isNotEmpty) {
                                 AppService()
@@ -168,6 +174,7 @@ class _WidgetContentFormSpcialState extends State<WidgetContentFormSpcial> {
                                       .then((value) {
                                     textEditingController.text = '';
                                     appController.xFiles.clear();
+                                    Get.back();
                                   });
                                 });
                               } else {
@@ -182,12 +189,14 @@ class _WidgetContentFormSpcialState extends State<WidgetContentFormSpcial> {
                                         docIdRoom: appController.docIdRooms[0])
                                     .then((value) {
                                   textEditingController.text = '';
+                                  Get.back();
                                 });
                               }
-                            } else {
-                              // ไม่ถ่ายภาพ และ ไม่เขียนข้อความ
-                              print('ไม่ถ่ายภาพ และ ไม่เขียนข้อความ');
-                            }
+                            } // if1
+                            // else {
+                            //   // ไม่ถ่ายภาพ และ ไม่เขียนข้อความ
+                            //   print('ไม่ถ่ายภาพ และ ไม่เขียนข้อความ');
+                            // }
                           },
                         ),
                       ],
