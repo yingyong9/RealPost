@@ -281,9 +281,12 @@ class AppService {
   }
 
   Future<void> readCommentChat({required String docIdChat}) async {
+    print('##31may readCommentChat Work');
+
     if (appController.commentChatModels.isNotEmpty) {
       appController.commentChatModels.clear();
       appController.docIdCommentChats.clear();
+      appController.listAnswerModels.clear();
     }
 
     FirebaseFirestore.instance
@@ -295,6 +298,7 @@ class AppService {
         .orderBy('timestamp')
         .snapshots()
         .listen((event) async {
+
       if (event.docs.isNotEmpty) {
         if (appController.commentChatModels.isNotEmpty) {
           appController.commentChatModels.clear();
@@ -304,6 +308,7 @@ class AppService {
 
         var answerModels = <AnswerModel>[];
 
+        //for1
         for (var element in event.docs) {
           ChatModel commentChatModel = ChatModel.fromMap(element.data());
           appController.commentChatModels.add(commentChatModel);
@@ -317,15 +322,17 @@ class AppService {
               .collection('comment')
               .doc(element.id)
               .collection('answer')
-              .get()
-              .then((value) {
-            if (value.docs.isEmpty) {
+              .snapshots()
+              .listen((event) {
+            
+
+            if (event.docs.isEmpty) {
               appController.listAnswerModels.add([]);
             } else {
-              for (var element in value.docs) {
+              for (var element in event.docs) {
                 AnswerModel answerModel = AnswerModel.fromMap(element.data());
                 answerModels.add(answerModel);
-              } //for 2
+              } //for2
               appController.listAnswerModels.add(answerModels);
             }
           });

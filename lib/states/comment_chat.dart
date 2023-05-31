@@ -288,13 +288,14 @@ class _CommentChatState extends State<CommentChat> {
                                                           .listAnswerModels[index]
                                                           .length,
                                                       itemBuilder: (context,
-                                                              index2) =>
-                                                          WidgetText(
-                                                              text: appController
-                                                                  .listAnswerModels[
-                                                                      index]
-                                                                      [index2]
-                                                                  .answer),
+                                                              index3) =>
+                                                          // WidgetText(
+                                                          //     text: appController
+                                                          //         .listAnswerModels[
+                                                          //             index]
+                                                          //             [index3]
+                                                          //         .answer),
+                                                          WidgetText(text: 'index = $index, index3 = $index3')
                                                     ),
                                                 ),
                                             Row(
@@ -302,7 +303,7 @@ class _CommentChatState extends State<CommentChat> {
                                                   MainAxisAlignment.end,
                                               children: [
                                                 WidgetButton(
-                                                  label: 'ตอบ',
+                                                  label: 'สนทนา',
                                                   pressFunc: () {
                                                     AppDialog(context: context)
                                                         .answerDialog(
