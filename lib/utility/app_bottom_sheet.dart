@@ -13,6 +13,7 @@ import 'package:realpost/states/add_product.dart';
 import 'package:realpost/states/private_chat.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
+import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/utility/app_snackbar.dart';
 import 'package:realpost/widgets/widget_button.dart';
@@ -28,7 +29,8 @@ import 'package:realpost/widgets/widget_text.dart';
 class AppBottomSheet {
   AppController appController = Get.put(AppController());
 
-  Future<void> bottomSheetMultiImage({required String docIdChat}) async {
+  Future<void> bottomSheetMultiImage(
+      {required String docIdChat, required BuildContext context}) async {
     TextEditingController textEditingController = TextEditingController();
     Get.bottomSheet(
         Container(
@@ -46,7 +48,8 @@ class AppBottomSheet {
               ),
               Positioned(
                 bottom: 0,
-                child: rocketAddComment(textEditingController, docIdChat),
+                child: rocketAddComment(textEditingController, docIdChat,
+                    context: context),
               ),
             ],
           ),
@@ -172,7 +175,8 @@ class AppBottomSheet {
   }
 
   Row rocketAddComment(
-      TextEditingController textEditingController, String docIdChat) {
+      TextEditingController textEditingController, String docIdChat,
+      {required BuildContext context}) {
     return Row(
       children: [
         WidgetIconButton(
@@ -232,6 +236,8 @@ class AppBottomSheet {
           path: 'images/rocket.png',
           size: 48,
           tapFunc: () async {
+            AppDialog(context: context).dialogProcess();
+
             await AppService().processUploadMultiPhoto().then((value) {
               var albums = value;
               print('##29may albums ---> $albums');
@@ -258,6 +264,7 @@ class AppBottomSheet {
                   .then((value) {
                 textEditingController.text = '';
                 appController.xFiles.clear();
+                Get.back();
                 Get.back();
               });
             });

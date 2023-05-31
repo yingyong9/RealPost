@@ -1,10 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
 
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:realpost/models/answer_model.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/comment_salse_model.dart';
 import 'package:realpost/models/room_model.dart';
@@ -33,6 +33,50 @@ class AppDialog {
   AppDialog({
     required this.context,
   });
+
+  void answerDialog({required String docIdComment, required String docIdChat}) {
+    TextEditingController textEditingController = TextEditingController();
+    AppController appController = Get.put(AppController());
+
+    Get.dialog(
+      AlertDialog(
+        content: WidgetForm(
+          controller: textEditingController,
+          hint: 'Answer',
+        ),
+        actions: [
+          WidgetButton(
+            label: 'Answer',
+            pressFunc: () {
+              AnswerModel answerModel = AnswerModel(
+                  answer: textEditingController.text,
+                  avatarAnswer: appController.userModelsLogin.last.urlAvatar!,
+                  nameAnswer: appController.userModelsLogin.last.displayName!,
+                  uidAnswer: appController.mainUid.value,
+                  timestamp: Timestamp.fromDate(DateTime.now()));
+
+              print('##30may answerModel --> ${answerModel.toMap()}');
+              print('##30may docIdComment ---> $docIdComment');
+
+              AppService()
+                  .insertAnswer(
+                      answerModel: answerModel,
+                      docIdChat: docIdChat,
+                      docIdComment: docIdComment)
+                  .then((value) {
+                print('##30may Success Insert Answer');
+                Get.back();
+              });
+            },
+          ),
+          WidgetTextButton(
+            text: 'Cancel',
+            pressFunc: () => Get.back(),
+          )
+        ],
+      ),
+    );
+  }
 
   void dialogProcess() {
     Get.dialog(WillPopScope(
