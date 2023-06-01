@@ -298,7 +298,6 @@ class AppService {
         .orderBy('timestamp')
         .snapshots()
         .listen((event) async {
-
       if (event.docs.isNotEmpty) {
         if (appController.commentChatModels.isNotEmpty) {
           appController.commentChatModels.clear();
@@ -306,10 +305,10 @@ class AppService {
           appController.listAnswerModels.clear();
         }
 
-        var answerModels = <AnswerModel>[];
-
         //for1
         for (var element in event.docs) {
+          var answerModels = <AnswerModel>[];
+
           ChatModel commentChatModel = ChatModel.fromMap(element.data());
           appController.commentChatModels.add(commentChatModel);
           appController.docIdCommentChats.add(element.id);
@@ -324,7 +323,7 @@ class AppService {
               .collection('answer')
               .snapshots()
               .listen((event) {
-            
+            // readCommentChat(docIdChat: docIdChat);
 
             if (event.docs.isEmpty) {
               appController.listAnswerModels.add([]);
