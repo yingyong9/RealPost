@@ -65,6 +65,7 @@ class AppDialog {
                       docIdComment: docIdComment)
                   .then((value) {
                 print('##30may Success Insert Answer');
+                AppService().readCommentChat(docIdChat: docIdChat);
                 Get.back();
               });
             },

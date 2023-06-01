@@ -19,6 +19,7 @@ import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_score_faverite.dart';
 import 'package:realpost/widgets/widget_text.dart';
+import 'package:realpost/widgets/widget_text_rich.dart';
 
 class CommentChat extends StatefulWidget {
   const CommentChat({
@@ -276,28 +277,55 @@ class _CommentChatState extends State<CommentChat> {
                                                   .h3Style(size: 16),
                                             ),
                                             appController
-                                                    .listAnswerModels[index]
-                                                    .isEmpty
+                                                    .listAnswerModels.isEmpty
                                                 ? const SizedBox()
-                                                : Container(margin: const EdgeInsets.only(left: 32),
-                                                  child: ListView.builder(
-                                                      physics:
-                                                          const ScrollPhysics(),
-                                                      shrinkWrap: true,
-                                                      itemCount: appController
-                                                          .listAnswerModels[index]
-                                                          .length,
-                                                      itemBuilder: (context,
-                                                              index3) =>
-                                                          // WidgetText(
-                                                          //     text: appController
-                                                          //         .listAnswerModels[
-                                                          //             index]
-                                                          //             [index3]
-                                                          //         .answer),
-                                                          WidgetText(text: 'index = $index, index3 = $index3')
-                                                    ),
-                                                ),
+                                                : appController
+                                                        .listAnswerModels[index]
+                                                        .isEmpty
+                                                    ? const SizedBox()
+                                                    : Container(
+                                                        margin: const EdgeInsets
+                                                            .only(left: 32, top: 8),
+                                                        child: ListView.builder(
+                                                          physics:
+                                                              const ScrollPhysics(),
+                                                          shrinkWrap: true,
+                                                          itemCount: appController
+                                                              .listAnswerModels[
+                                                                  index]
+                                                              .length,
+                                                          itemBuilder: (context,
+                                                              index3) {
+                                                            print(
+                                                                '##1june index = $index, index3 = $index3');
+                                                            print(
+                                                                '##1june listAnswerModles at index = $index ==> ${appController.listAnswerModels[index].length}');
+                                                            return Padding(
+                                                              padding: const EdgeInsets.only(bottom: 12),
+                                                              child: Row(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  WidgetCircularImage(
+                                                                    urlImage: appController
+                                                                        .listAnswerModels[
+                                                                            index]
+                                                                            [
+                                                                            index3]
+                                                                        .avatarAnswer,
+                                                                    radius: 12,
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 8,
+                                                                  ),
+                                                                  Expanded(child: WidgetTextRich(head: appController.listAnswerModels[index][index3].nameAnswer, value: appController.listAnswerModels[index][index3].answer)),
+                                                                ],
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                      ),
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.end,
