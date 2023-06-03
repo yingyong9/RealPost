@@ -9,7 +9,7 @@ class UpgradeAlertPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: UpgradeAlert(
-        child: MainPageView(),
+        child: const MainPageView(),
       ),
     );
   }
