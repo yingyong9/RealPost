@@ -24,6 +24,7 @@ import 'package:realpost/models/salse_group_model.dart';
 import 'package:realpost/models/stat_data_model.dart';
 import 'package:realpost/models/user_model.dart';
 import 'package:realpost/states/display_name.dart';
+import 'package:realpost/states/main_page_view.dart';
 import 'package:realpost/states/private_chat.dart';
 import 'package:realpost/states/take_photo_only.dart';
 import 'package:realpost/utility/app_constant.dart';
@@ -419,11 +420,19 @@ class AppService {
 
   Future<void> processSendNotiAllUser(
       {required String title, required String body}) async {
-    await FirebaseFirestore.instance.collection('user').get().then((value) {
+    await FirebaseFirestore.instance
+        .collection('user')
+        .get()
+        .then((value) async {
       for (var element in value.docs) {
         UserModel userModel = UserModel.fromMap(element.data());
         if (userModel.uidUser != appController.mainUid.toString()) {
           processSentNoti(title: title, body: body, token: userModel.token!);
+
+          // await Future.delayed(Duration(seconds: 5), () {
+          //    print('##2june token --> ${userModel.token}');
+
+          // });
         }
       }
     });
@@ -609,7 +618,8 @@ class AppService {
                   text: 'ดู',
                   pressFunc: () {
                     Get.back();
-                    Get.to(PrivateChat(uidFriend: uidFriend));
+                    // Get.to(PrivateChat(uidFriend: uidFriend));
+                    // Get.offAll(const MainPageView());
                   },
                 ),
                 WidgetTextButton(
@@ -622,7 +632,8 @@ class AppService {
             );
           } else {
             //OnOpenApp
-            Get.to(PrivateChat(uidFriend: uidFriend));
+            // Get.to(PrivateChat(uidFriend: uidFriend));
+
           }
         }
       });
@@ -645,10 +656,10 @@ class AppService {
                 text: 'ดู',
                 pressFunc: () {
                   Get.back();
-                  appController.indexBodyMainPageView.value =
-                      int.parse(bodys.last.trim());
-                  appController.pageControllers.last
-                      .jumpToPage(appController.indexBodyMainPageView.value);
+                  // appController.indexBodyMainPageView.value =
+                  //     int.parse(bodys.last.trim());
+                  // appController.pageControllers.last
+                  //     .jumpToPage(appController.indexBodyMainPageView.value);
                 },
               ),
               WidgetTextButton(
@@ -1336,27 +1347,9 @@ class AppService {
         .then((value) async {
       print('##20mar Process Insert Chat Success');
 
-      await FirebaseFirestore.instance
-          .collection('room')
-          .doc(docIdRoom)
-          .get()
-          .then((value) async {
-        RoomModel roomModel = RoomModel.fromMap(value.data()!);
-        UserModel? userModel = await findUserModel(uid: roomModel.uidCreate);
-        print('##20mar token ที่จะส่ง noti ---> ${userModel!.token}');
-
-        if (collection != null) {
-          if ((userModel.token!.isNotEmpty) &&
-              (appController.mainUid.toString() !=
-                  roomModel.uidCreate.toString())) {
-            processSentNoti(
-                title: 'มีคนพูดถึงคุณ',
-                body:
-                    '${appController.messageChats.last} %23${appController.indexBodyMainPageView.value}',
-                token: userModel.token!);
-          }
-        }
-      });
+      processSendNotiAllUser(
+          title: 'มีโพสใหม่ ของคุณ ${chatModel.disPlayName}',
+          body: '${chatModel.message}  %233');
 
       appController.shareLocation.value = false;
       appController.messageChats.clear();
