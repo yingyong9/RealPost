@@ -23,6 +23,7 @@ import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/salse_group_model.dart';
 import 'package:realpost/models/stat_data_model.dart';
 import 'package:realpost/models/user_model.dart';
+import 'package:realpost/states/comment_chat.dart';
 import 'package:realpost/states/display_name.dart';
 import 'package:realpost/states/main_page_view.dart';
 import 'package:realpost/states/private_chat.dart';
@@ -428,11 +429,6 @@ class AppService {
         UserModel userModel = UserModel.fromMap(element.data());
         if (userModel.uidUser != appController.mainUid.toString()) {
           processSentNoti(title: title, body: body, token: userModel.token!);
-
-          // await Future.delayed(Duration(seconds: 5), () {
-          //    print('##2june token --> ${userModel.token}');
-
-          // });
         }
       }
     });
@@ -565,6 +561,8 @@ class AppService {
     }
 
     FirebaseMessaging.onMessage.listen((event) {
+      print('##5june onMessage Work body --> ${event.notification!.body!}');
+
       activeReceiveNoti(
           title: event.notification!.title!,
           body: event.notification!.body!,
@@ -586,98 +584,67 @@ class AppService {
       required String body,
       required bool statusOnMessage,
       required BuildContext context}) async {
-    print('##24mar title --> $title, body --> $body');
-    var bodys = body.split('#');
-    print('##3april bodys index --> ${bodys.last}');
+    if (body.contains('#')) {
+      var bodys = body.split('#');
 
-    if (bodys.last.length > 5) {
-      //Go to Private Chat
-      print('##3april Tag type uidUser');
+      print('##5june bodys last ---> ${bodys.last}');
 
-      await FirebaseFirestore.instance
-          .collection('user')
-          .where('idReal', isEqualTo: bodys.last)
-          .get()
-          .then((value) {
-        for (var element in value.docs) {
-          String uidFriend = element.id;
-          print('##3april uidFriend --> $uidFriend');
+      try {
+        int indexChat = int.parse(bodys.last);
 
-          if (statusOnMessage) {
-            //OnMessage
-            AppDialog(context: context).normalDialog(
-              title: 'มีข้อความ',
-              leadingWidget:
-                  const WidgetImage(path: 'images/icon.png', size: 80),
-              contentWidget: WidgetText(
-                text: body,
-                textStyle: AppConstant().h3Style(color: Colors.black),
-              ),
-              actions: [
-                WidgetTextButton(
-                  text: 'ดู',
-                  pressFunc: () {
-                    Get.back();
-                    // Get.to(PrivateChat(uidFriend: uidFriend));
-                    // Get.offAll(const MainPageView());
-                  },
-                ),
-                WidgetTextButton(
-                  text: 'ไว้ภายหลัง',
-                  pressFunc: () {
-                    Get.back();
-                  },
-                )
-              ],
-            );
-          } else {
-            //OnOpenApp
-            // Get.to(PrivateChat(uidFriend: uidFriend));
+        print('##5june  indexChat ---> $indexChat');
 
-          }
-        }
-      });
-    } else {
-      //Go to Page View
-      if (statusOnMessage) {
-        // From OnMessage
-
-        if (appController.indexBodyMainPageView.value !=
-            int.parse(bodys.last)) {
-          AppDialog(context: context).normalDialog(
-            title: title,
-            leadingWidget: const WidgetImage(path: 'images/icon.png', size: 80),
-            contentWidget: WidgetText(
-              text: body,
-              textStyle: AppConstant().h3Style(color: Colors.black),
+        AppDialog(context: context).normalDialog(
+          title: title,
+          leadingWidget: const WidgetImage(path: 'images/icon.png', size: 80),
+          contentWidget: WidgetText(
+            text: body,
+            textStyle: AppConstant().h3Style(color: Colors.black),
+          ),
+          actions: [
+            WidgetTextButton(
+              text: 'ดู',
+              pressFunc: () {
+                Get.back();
+                Get.to(CommentChat(
+                    docIdChat: appController.docIdChats[indexChat], chatModel: appController.chatModels[indexChat], index: indexChat));
+              },
             ),
-            actions: [
-              WidgetTextButton(
-                text: 'ดู',
-                pressFunc: () {
-                  Get.back();
-                  // appController.indexBodyMainPageView.value =
-                  //     int.parse(bodys.last.trim());
-                  // appController.pageControllers.last
-                  //     .jumpToPage(appController.indexBodyMainPageView.value);
-                },
-              ),
-              WidgetTextButton(
-                text: 'ไว้ภายหลัง',
-                pressFunc: () {
-                  Get.back();
-                },
-              )
-            ],
-          );
-        }
-      } else {
-        //From OpenApp
-        appController.indexBodyMainPageView.value =
-            int.parse(bodys.last.trim());
-        appController.pageControllers.last
-            .jumpToPage(appController.indexBodyMainPageView.value);
-      } // end if
+            WidgetTextButton(
+              text: 'ไว้ภายหลัง',
+              pressFunc: () {
+                Get.back();
+              },
+            )
+          ],
+        );
+      } on Exception catch (e) {
+        print('error at activeReceiveNoti --> $e');
+      }
+    } else {
+      AppDialog(context: context).normalDialog(
+        title: title,
+        leadingWidget: const WidgetImage(path: 'images/icon.png', size: 80),
+        contentWidget: WidgetText(
+          text: body,
+          textStyle: AppConstant().h3Style(color: Colors.black),
+        ),
+        actions: [
+          WidgetTextButton(
+            text: 'ดู',
+            pressFunc: () {
+              Get.back();
+              Get.offAll(const MainPageView());
+            },
+          ),
+          WidgetTextButton(
+            text: 'ไว้ภายหลัง',
+            pressFunc: () {
+              Get.back();
+            },
+          )
+        ],
+      );
     }
   }
 
@@ -1349,7 +1316,7 @@ class AppService {
 
       processSendNotiAllUser(
           title: 'มีโพสใหม่ ของคุณ ${chatModel.disPlayName}',
-          body: '${chatModel.message}  %233');
+          body: '${chatModel.message}');
 
       appController.shareLocation.value = false;
       appController.messageChats.clear();
@@ -1361,10 +1328,13 @@ class AppService {
       {required String title,
       required String body,
       required String token}) async {
+    print('##5june body --> $body');
+    print('##5june token processSentNoti ---> $token');
+
     String urlApi =
         'https://www.androidthai.in.th/realpost/apiNotiRealPost.php?isAdd=true&token=$token&body=$body&title=$title';
     await Dio().get(urlApi).then((value) {
-      print('Sent Noti Success');
+      print('##5june Sent Noti Success');
     });
   }
 
