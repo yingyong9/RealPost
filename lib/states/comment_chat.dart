@@ -276,56 +276,69 @@ class _CommentChatState extends State<CommentChat> {
                                               textStyle: AppConstant()
                                                   .h3Style(size: 16),
                                             ),
-                                            appController
-                                                    .listAnswerModels.isEmpty
-                                                ? const SizedBox()
-                                                : appController
-                                                        .listAnswerModels[index]
-                                                        .isEmpty
-                                                    ? const SizedBox()
-                                                    : Container(
-                                                        margin: const EdgeInsets
-                                                            .only(left: 32, top: 8),
-                                                        child: ListView.builder(
-                                                          physics:
-                                                              const ScrollPhysics(),
-                                                          shrinkWrap: true,
-                                                          itemCount: appController
-                                                              .listAnswerModels[
-                                                                  index]
-                                                              .length,
-                                                          itemBuilder: (context,
-                                                              index3) {
-                                                            print(
-                                                                '##1june index = $index, index3 = $index3');
-                                                            print(
-                                                                '##1june listAnswerModles at index = $index ==> ${appController.listAnswerModels[index].length}');
-                                                            return Padding(
-                                                              padding: const EdgeInsets.only(bottom: 12),
-                                                              child: Row(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  WidgetCircularImage(
-                                                                    urlImage: appController
-                                                                        .listAnswerModels[
-                                                                            index]
-                                                                            [
-                                                                            index3]
-                                                                        .avatarAnswer,
-                                                                    radius: 12,
-                                                                  ),
-                                                                  const SizedBox(
-                                                                    width: 8,
-                                                                  ),
-                                                                  Expanded(child: WidgetTextRich(head: appController.listAnswerModels[index][index3].nameAnswer, value: appController.listAnswerModels[index][index3].answer)),
-                                                                ],
-                                                              ),
-                                                            );
-                                                          },
-                                                        ),
-                                                      ),
+                                            // appController
+                                            //         .listAnswerModels.isEmpty
+                                            //     ? const SizedBox()
+                                            //     : appController
+                                            //             .listAnswerModels[index]
+                                            //             .isEmpty
+                                            //         ? const SizedBox()
+                                            //         : Container(
+                                            //             margin: const EdgeInsets
+                                            //                     .only(
+                                            //                 left: 32, top: 8),
+                                            //             child: ListView.builder(
+                                            //               physics:
+                                            //                   const ScrollPhysics(),
+                                            //               shrinkWrap: true,
+                                            //               itemCount: appController
+                                            //                   .listAnswerModels[
+                                            //                       index]
+                                            //                   .length,
+                                            //               itemBuilder: (context,
+                                            //                   index3) {
+                                            //                 print(
+                                            //                     '##1june index = $index, index3 = $index3');
+                                            //                 print(
+                                            //                     '##1june listAnswerModles at index = $index ==> ${appController.listAnswerModels[index].length}');
+                                            //                 return Padding(
+                                            //                   padding:
+                                            //                       const EdgeInsets
+                                            //                               .only(
+                                            //                           bottom:
+                                            //                               12),
+                                            //                   child: Row(
+                                            //                     crossAxisAlignment:
+                                            //                         CrossAxisAlignment
+                                            //                             .start,
+                                            //                     children: [
+                                            //                       WidgetCircularImage(
+                                            //                         urlImage: appController
+                                            //                             .listAnswerModels[
+                                            //                                 index]
+                                            //                                 [
+                                            //                                 index3]
+                                            //                             .avatarAnswer,
+                                            //                         radius: 12,
+                                            //                       ),
+                                            //                       const SizedBox(
+                                            //                         width: 8,
+                                            //                       ),
+                                            //                       Expanded(
+                                            //                           child: WidgetTextRich(
+                                            //                               head: appController
+                                            //                                   .listAnswerModels[index][
+                                            //                                       index3]
+                                            //                                   .nameAnswer,
+                                            //                               value: appController
+                                            //                                   .listAnswerModels[index][index3]
+                                            //                                   .answer)),
+                                            //                     ],
+                                            //                   ),
+                                            //                 );
+                                            //               },
+                                            //             ),
+                                            //           ),
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.end,
@@ -465,6 +478,9 @@ class _CommentChatState extends State<CommentChat> {
                                 path: 'images/rocket.png',
                                 size: 48,
                                 tapFunc: () {
+                                  print(
+                                      '##4june uidCreate ---> ${widget.chatModel.uidChat}');
+
                                   if ((textEditingController.text.isNotEmpty) ||
                                       (appController
                                           .urlEmojiChooses.isNotEmpty)) {
@@ -497,18 +513,35 @@ class _CommentChatState extends State<CommentChat> {
                                         .insertCommentChat(
                                             docIdChat: widget.docIdChat,
                                             commentChatModel: chatModel)
-                                        .then((value) {
-                                      Get.back();
+                                        .then((value) async {
+                                      await AppService()
+                                          .findUserModel(
+                                              uid: widget.chatModel.uidChat)
+                                          .then((value) {
+                                        print(
+                                            '##4june userModel ของเจ้าของ post --> ${value!.toMap()}');
 
-                                      AppService().increaseValueComment(
-                                          docIdChat: widget.docIdChat,
-                                          chatModel: widget.chatModel);
+                                        AppService()
+                                            .processSentNoti(
+                                                title: 'คุณมี Comment ใหม่',
+                                                body:
+                                                    '${textEditingController.text}%23${widget.index}',
+                                                token: value!.token!)
+                                            .then((value) {
+                                          Get.back();
 
-                                      textEditingController.text = '';
-                                      appController.urlAvatarChooses.clear();
-                                      clearAllTabStamp(appController);
-                                      appController.displayListEmoji.value =
-                                          false;
+                                          AppService().increaseValueComment(
+                                              docIdChat: widget.docIdChat,
+                                              chatModel: widget.chatModel);
+
+                                          textEditingController.text = '';
+                                          appController.urlAvatarChooses
+                                              .clear();
+                                          clearAllTabStamp(appController);
+                                          appController.displayListEmoji.value =
+                                              false;
+                                        });
+                                      });
                                     });
                                   }
                                 },
