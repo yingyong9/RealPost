@@ -59,9 +59,7 @@ class _MainPageViewState extends State<MainPageView> {
     // AppService().readChatForDelete();
   }
 
-  Future<void> trySignOut() async {
-    await FirebaseAuth.instance.signOut();
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -582,38 +580,38 @@ class _MainPageViewState extends State<MainPageView> {
                         textStyle: AppConstant().h3Style(color: Colors.white),
                       ),
                       const Spacer(),
-                      WidgetButton(
-                        label: AppService().checkJoin(
-                                uidOwnerRoom:
-                                    appController.chatModels[index].uidChat)
-                            ? 'UnJoin'
-                            : 'Join',
-                        pressFunc: () {
-                          //flowering --> เราไปตามเขา, flower ---> คนที่ตามเรา เพื่อรับ message ตอนเรา Post
-                          String uidOwnerRoom =
-                              appController.chatModels[index].uidChat;
+                      // WidgetButton(
+                      //   label: AppService().checkJoin(
+                      //           uidOwnerRoom:
+                      //               appController.chatModels[index].uidChat)
+                      //       ? 'UnJoin'
+                      //       : 'Join',
+                      //   pressFunc: () {
+                      //     //flowering --> เราไปตามเขา, flower ---> คนที่ตามเรา เพื่อรับ message ตอนเรา Post
+                      //     String uidOwnerRoom =
+                      //         appController.chatModels[index].uidChat;
 
-                          String uidLogin = appController.mainUid.value;
+                      //     String uidLogin = appController.mainUid.value;
 
-                          print(
-                              'uidOwnerRoom --> $uidOwnerRoom, uidLogin = $uidLogin');
+                      //     print(
+                      //         'uidOwnerRoom --> $uidOwnerRoom, uidLogin = $uidLogin');
 
-                          if (AppService().checkJoin(
-                              uidOwnerRoom:
-                                  appController.chatModels[index].uidChat)) {
-                            // unJoin
-                          } else {
-                            AppService()
-                                .processJoin(uidFollowing: uidOwnerRoom);
-                          }
-                        },
-                        bgColor: AppService().checkJoin(
-                                uidOwnerRoom:
-                                    appController.chatModels[index].uidChat)
-                            ? Colors.black
-                            : Colors.blue,
-                        circular: 20,
-                      ),
+                      //     if (AppService().checkJoin(
+                      //         uidOwnerRoom:
+                      //             appController.chatModels[index].uidChat)) {
+                      //       // unJoin
+                      //     } else {
+                      //       AppService()
+                      //           .processJoin(uidFollowing: uidOwnerRoom);
+                      //     }
+                      //   },
+                      //   bgColor: AppService().checkJoin(
+                      //           uidOwnerRoom:
+                      //               appController.chatModels[index].uidChat)
+                      //       ? Colors.black
+                      //       : Colors.blue,
+                      //   circular: 20,
+                      // ),
                     ],
                   ),
                   InkWell(
