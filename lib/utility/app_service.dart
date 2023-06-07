@@ -53,7 +53,10 @@ class AppService {
         .doc(docIdComment)
         .collection('answer')
         .doc()
-        .set(answerModel.toMap());
+        .set(answerModel.toMap())
+        .then((value) {
+      print('##6june ---> Success at insertAnser');
+    });
   }
 
   Future<void> readChatForDelete() async {
@@ -288,7 +291,7 @@ class AppService {
     if (appController.commentChatModels.isNotEmpty) {
       appController.commentChatModels.clear();
       appController.docIdCommentChats.clear();
-      appController.listAnswerModels.clear();
+      
     }
 
     FirebaseFirestore.instance
@@ -297,9 +300,12 @@ class AppService {
         .collection('chat')
         .doc(docIdChat)
         .collection('comment')
-        .orderBy('timestamp')
+        .orderBy('timestamp', descending: false)
         .snapshots()
         .listen((event) async {
+
+           
+
       if (event.docs.isNotEmpty) {
         if (appController.commentChatModels.isNotEmpty) {
           appController.commentChatModels.clear();
@@ -309,34 +315,39 @@ class AppService {
 
         //for1
         for (var element in event.docs) {
+
+           print('##7june docComment ----> ${element.id}');
+
           var answerModels = <AnswerModel>[];
 
           ChatModel commentChatModel = ChatModel.fromMap(element.data());
           appController.commentChatModels.add(commentChatModel);
           appController.docIdCommentChats.add(element.id);
 
-          FirebaseFirestore.instance
-              .collection('room')
-              .doc(AppConstant.docIdRoomData)
-              .collection('chat')
-              .doc(docIdChat)
-              .collection('comment')
-              .doc(element.id)
-              .collection('answer')
-              .snapshots()
-              .listen((event) {
-            // readCommentChat(docIdChat: docIdChat);
+          // FirebaseFirestore.instance
+          //     .collection('room')
+          //     .doc(AppConstant.docIdRoomData)
+          //     .collection('chat')
+          //     .doc(docIdChat)
+          //     .collection('comment')
+          //     .doc(element.id)
+          //     .collection('answer')
+          //     .get()
+          //     .then((value) {
+          //   // readCommentChat(docIdChat: docIdChat);
 
-            if (event.docs.isEmpty) {
-              appController.listAnswerModels.add([]);
-            } else {
-              for (var element in event.docs) {
-                AnswerModel answerModel = AnswerModel.fromMap(element.data());
-                answerModels.add(answerModel);
-              } //for2
-              appController.listAnswerModels.add(answerModels);
-            }
-          });
+            
+
+          //   if (value.docs.isEmpty) {
+          //     appController.listAnswerModels.add([]);
+          //   } else {
+          //     for (var element in value.docs) {
+          //       AnswerModel answerModel = AnswerModel.fromMap(element.data());
+          //       answerModels.add(answerModel);
+          //     } //for2
+          //     appController.listAnswerModels.add(answerModels);
+          //   }
+          // });
         } // for1
       }
     });
@@ -607,7 +618,9 @@ class AppService {
               pressFunc: () {
                 Get.back();
                 Get.to(CommentChat(
-                    docIdChat: appController.docIdChats[indexChat], chatModel: appController.chatModels[indexChat], index: indexChat));
+                    docIdChat: appController.docIdChats[indexChat],
+                    chatModel: appController.chatModels[indexChat],
+                    index: indexChat));
               },
             ),
             WidgetTextButton(

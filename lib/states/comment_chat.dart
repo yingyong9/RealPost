@@ -64,41 +64,14 @@ class _CommentChatState extends State<CommentChat> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppConstant.bgColor,
-      appBar: AppBar(
-        leading: WidgetIconButton(
-          iconData: Icons.arrow_back,
-          pressFunc: () {
-            controller.checkIn.value = false;
-            AppService()
-                .checkInOwnerChat(
-                    docIdChat: widget.docIdChat,
-                    chatModel: widget.chatModel,
-                    checkIn: controller.checkIn.value)
-                .then((value) {
-              Get.back();
-            });
-          },
-        ),
-        title: Row(
-          children: [
-            WidgetText(
-              text: widget.chatModel.disPlayName,
-              textStyle: AppConstant().h2Style(),
-            ),
-          ],
-        ),
-        actions: [
-          WidgetCircularImage(
-              urlImage: controller.userModelsLogin.last.urlAvatar!)
-        ],
-      ),
+      appBar: mainAppBar(),
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints boxConstraints) {
           return GetX(
               init: AppController(),
               builder: (AppController appController) {
                 print(
-                    '##31may listAnswerModels -----> ${appController.listAnswerModels.length}');
+                    '##6june listAnswerModels -----> ${appController.listAnswerModels.length}');
 
                 return SizedBox(
                   width: boxConstraints.maxWidth,
@@ -106,7 +79,10 @@ class _CommentChatState extends State<CommentChat> {
                   child: Stack(
                     children: [
                       SizedBox(
-                        height: boxConstraints.maxHeight - 70,
+                        height: appController.userModelsLogin.last.uidUser ==
+                                widget.chatModel.uidChat
+                            ? boxConstraints.maxHeight - 70
+                            : boxConstraints.maxHeight,
                         child: ListView(
                           children: [
                             Container(
@@ -143,10 +119,9 @@ class _CommentChatState extends State<CommentChat> {
                                               urlImage: widget.chatModel
                                                   .urlMultiImages[index],
                                               tapFunc: () {
-                                                Get.to(DisplayPhotoView(
-                                                    urlImage: widget.chatModel
-                                                            .urlMultiImages[
-                                                        index]));
+                                                displayFullScreen(
+                                                    url: widget.chatModel
+                                                        .urlMultiImages[index]);
                                               },
                                             ),
                                           ),
@@ -161,9 +136,9 @@ class _CommentChatState extends State<CommentChat> {
                                               width: boxConstraints.maxWidth,
                                               boxFit: BoxFit.cover,
                                               tapFunc: () {
-                                                Get.to(DisplayPhotoView(
-                                                    urlImage: widget.chatModel
-                                                        .urlRealPost));
+                                                displayFullScreen(
+                                                    url: widget
+                                                        .chatModel.urlRealPost);
                                               },
                                             ),
                                   WidgetScoreFaverite(
@@ -184,7 +159,7 @@ class _CommentChatState extends State<CommentChat> {
                                 : ListView.builder(
                                     physics: const ScrollPhysics(),
                                     shrinkWrap: true,
-                                    reverse: false,
+                                    reverse: true,
                                     itemCount:
                                         appController.commentChatModels.length,
                                     itemBuilder: (context, index) => Padding(
@@ -231,6 +206,13 @@ class _CommentChatState extends State<CommentChat> {
                                                     width: 180,
                                                     height: 150,
                                                     boxFit: BoxFit.cover,
+                                                    tapFunc: () {
+                                                      displayFullScreen(
+                                                          url: appController
+                                                              .commentChatModels[
+                                                                  index]
+                                                              .urlRealPost);
+                                                    },
                                                   ),
                                             appController
                                                     .commentChatModels[index]
@@ -264,6 +246,13 @@ class _CommentChatState extends State<CommentChat> {
                                                             height: 150,
                                                             boxFit:
                                                                 BoxFit.cover,
+                                                            tapFunc: () {
+                                                              displayFullScreen(
+                                                                  url: appController
+                                                                      .commentChatModels[
+                                                                          index]
+                                                                      .urlMultiImages[index2]);
+                                                            },
                                                           ),
                                                         ),
                                                       ],
@@ -341,25 +330,56 @@ class _CommentChatState extends State<CommentChat> {
                                             //           ),
                                             Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.end,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
-                                                WidgetButton(
-                                                  label: 'สนทนา',
-                                                  pressFunc: () {
-                                                    AppDialog(context: context)
-                                                        .answerDialog(
-                                                            docIdComment:
-                                                                appController
-                                                                        .docIdCommentChats[
-                                                                    index],
-                                                            docIdChat: widget
-                                                                .docIdChat);
-                                                  },
-                                                  iconWidget: const Icon(
-                                                    Icons.turn_left,
-                                                    color: Colors.white,
-                                                  ),
-                                                  bgColor: Colors.black,
+                                                Row(
+                                                  children: [
+                                                    WidgetImage(
+                                                      path:
+                                                          'images/arrowup.jpg',
+                                                      size: 24,
+                                                    ),
+                                                    WidgetText(text: '5'),
+                                                    WidgetImage(
+                                                      path:
+                                                          'images/arrowdown.jpg',
+                                                      size: 24,
+                                                    ),
+                                                    WidgetText(text: '8'),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    WidgetIconButton(
+                                                      pressFunc: () {},
+                                                      iconData: Icons.pin_drop,
+                                                    ),
+                                                    WidgetIconButton(
+                                                      pressFunc: () {},
+                                                      iconData: Icons.chat,
+                                                    ),
+                                                    WidgetButton(
+                                                      label: 'สนทนา',
+                                                      pressFunc: () {
+                                                        AppDialog(
+                                                                context:
+                                                                    context)
+                                                            .answerDialog(
+                                                                docIdComment:
+                                                                    appController
+                                                                            .docIdCommentChats[
+                                                                        index],
+                                                                docIdChat: widget
+                                                                    .docIdChat);
+                                                      },
+                                                      iconWidget: const Icon(
+                                                        Icons.turn_left,
+                                                        color: Colors.white,
+                                                      ),
+                                                      bgColor: Colors.black,
+                                                    ),
+                                                  ],
                                                 ),
                                               ],
                                             )
@@ -372,190 +392,250 @@ class _CommentChatState extends State<CommentChat> {
                           ],
                         ),
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          appController.displayListEmoji.value
-                              ? SizedBox(
-                                  height: 80,
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    shrinkWrap: true,
-                                    physics: const ClampingScrollPhysics(),
-                                    itemCount: appController.stampModels.length,
-                                    itemBuilder: (context, index) => Container(
-                                      decoration: AppConstant().boxCurve(
-                                          color: appController.tapStamps[index]
-                                              ? Colors.red
-                                              : Colors.black),
-                                      padding: const EdgeInsets.only(left: 4),
-                                      child: WidgetImageInternet(
-                                          tapFunc: () {
-                                            clearAllTabStamp(appController);
+                      appController.userModelsLogin.last.uidUser ==
+                              widget.chatModel.uidChat
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                appController.displayListEmoji.value
+                                    ? SizedBox(
+                                        height: 80,
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          shrinkWrap: true,
+                                          physics:
+                                              const ClampingScrollPhysics(),
+                                          itemCount:
+                                              appController.stampModels.length,
+                                          itemBuilder: (context, index) =>
+                                              Container(
+                                            decoration: AppConstant().boxCurve(
+                                                color: appController
+                                                        .tapStamps[index]
+                                                    ? Colors.red
+                                                    : Colors.black),
+                                            padding:
+                                                const EdgeInsets.only(left: 4),
+                                            child: WidgetImageInternet(
+                                                tapFunc: () {
+                                                  clearAllTabStamp(
+                                                      appController);
 
-                                            appController.tapStamps[index] =
-                                                true;
-                                            appController.urlEmojiChooses.add(
-                                                appController
-                                                    .stampModels[index].url);
-                                            setState(() {});
-                                          },
-                                          width: 70,
-                                          urlImage: appController
-                                              .stampModels[index].url),
-                                    ),
-                                  ),
-                                )
-                              : const SizedBox(),
-                          Row(
-                            children: [
-                              WidgetIconButton(
-                                pressFunc: () {
-                                  AppService()
-                                      .processTakePhoto(
-                                          source: ImageSource.camera)
-                                      .then((value) {
-                                    AppService()
-                                        .processUploadPhoto(
-                                            file: value!, path: 'comment')
-                                        .then((value) {
-                                      String urlImageComment = value!;
-
-                                      AppBottomSheet().dipsplayImage(
-                                          urlImage: urlImageComment,
-                                          docIdChat: widget.docIdChat);
-                                    });
-                                  });
-                                },
-                                iconData: Icons.add_a_photo,
-                                color: AppConstant.realFront,
-                              ),
-                              WidgetIconButton(
-                                pressFunc: () {
-                                  AppService()
-                                      .processChooseMultiImageChat()
-                                      .then((value) {
-                                    print(
-                                        '##29may xFiles ---> ${controller.xFiles.length}');
-                                    AppBottomSheet().bottomSheetMultiImage(
-                                        docIdChat: widget.docIdChat,
-                                        context: context);
-                                  });
-                                },
-                                iconData: Icons.add_photo_alternate,
-                                color: AppConstant.realFront,
-                              ),
-                              SizedBox(
-                                width: 200,
-                                child: WidgetForm(
-                                  fillColor: AppConstant.realMid,
-                                  controller: textEditingController,
-                                  hint: 'Comment',
-                                  hintStyle: AppConstant()
-                                      .h3Style(color: Colors.white),
-                                  textStyle: AppConstant()
-                                      .h3Style(color: Colors.white),
-                                  suffixIcon: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      WidgetImage(
-                                        path: 'images/emoj.jpg',
-                                        size: 36,
-                                        tapFunc: () {
-                                          print(
-                                              'Click Emoji ${appController.stampModels.length}');
-                                          appController.displayListEmoji.value =
-                                              !appController
-                                                  .displayListEmoji.value;
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              WidgetImage(
-                                path: 'images/rocket.png',
-                                size: 48,
-                                tapFunc: () {
-                                  print(
-                                      '##4june uidCreate ---> ${widget.chatModel.uidChat}');
-
-                                  if ((textEditingController.text.isNotEmpty) ||
-                                      (appController
-                                          .urlEmojiChooses.isNotEmpty)) {
-                                    AppDialog(context: context).dialogProcess();
-
-                                    ChatModel chatModel = ChatModel(
-                                      message: textEditingController.text,
-                                      timestamp:
-                                          Timestamp.fromDate(DateTime.now()),
-                                      uidChat: appController.mainUid.value,
-                                      disPlayName: appController
-                                          .userModelsLogin.last.displayName!,
-                                      urlAvatar: appController
-                                          .userModelsLogin.last.urlAvatar!,
-                                      urlRealPost: appController
-                                              .urlEmojiChooses.isEmpty
-                                          ? ''
-                                          : appController.urlEmojiChooses.last,
-                                      albums: [],
-                                      urlMultiImages: [],
-                                      up: 0,
-                                      amountComment: 0,
-                                      amountGraph: 0,
-                                    );
-
-                                    print(
-                                        'chatModel ---> ${chatModel.toMap()}');
-
-                                    AppService()
-                                        .insertCommentChat(
-                                            docIdChat: widget.docIdChat,
-                                            commentChatModel: chatModel)
-                                        .then((value) async {
-                                      await AppService()
-                                          .findUserModel(
-                                              uid: widget.chatModel.uidChat)
-                                          .then((value) {
-                                        print(
-                                            '##4june userModel ของเจ้าของ post --> ${value!.toMap()}');
-
+                                                  appController
+                                                      .tapStamps[index] = true;
+                                                  appController.urlEmojiChooses
+                                                      .add(appController
+                                                          .stampModels[index]
+                                                          .url);
+                                                  setState(() {});
+                                                },
+                                                width: 70,
+                                                urlImage: appController
+                                                    .stampModels[index].url),
+                                          ),
+                                        ),
+                                      )
+                                    : const SizedBox(),
+                                Row(
+                                  children: [
+                                    WidgetIconButton(
+                                      pressFunc: () {
                                         AppService()
-                                            .processSentNoti(
-                                                title: 'คุณมี Comment ใหม่',
-                                                body:
-                                                    '${textEditingController.text}%23${widget.index}',
-                                                token: value!.token!)
+                                            .processTakePhoto(
+                                                source: ImageSource.camera)
                                             .then((value) {
-                                          Get.back();
+                                          AppService()
+                                              .processUploadPhoto(
+                                                  file: value!, path: 'comment')
+                                              .then((value) {
+                                            String urlImageComment = value!;
 
-                                          AppService().increaseValueComment(
-                                              docIdChat: widget.docIdChat,
-                                              chatModel: widget.chatModel);
-
-                                          textEditingController.text = '';
-                                          appController.urlAvatarChooses
-                                              .clear();
-                                          clearAllTabStamp(appController);
-                                          appController.displayListEmoji.value =
-                                              false;
+                                            AppBottomSheet().dipsplayImage(
+                                                urlImage: urlImageComment,
+                                                docIdChat: widget.docIdChat);
+                                          });
                                         });
-                                      });
-                                    });
-                                  }
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                                      },
+                                      iconData: Icons.add_a_photo,
+                                      color: AppConstant.realFront,
+                                    ),
+                                    WidgetIconButton(
+                                      pressFunc: () {
+                                        AppService()
+                                            .processChooseMultiImageChat()
+                                            .then((value) {
+                                          print(
+                                              '##29may xFiles ---> ${controller.xFiles.length}');
+                                          AppBottomSheet()
+                                              .bottomSheetMultiImage(
+                                                  docIdChat: widget.docIdChat,
+                                                  context: context);
+                                        });
+                                      },
+                                      iconData: Icons.add_photo_alternate,
+                                      color: AppConstant.realFront,
+                                    ),
+                                    SizedBox(
+                                      width: 200,
+                                      child: WidgetForm(
+                                        fillColor: AppConstant.realMid,
+                                        controller: textEditingController,
+                                        hint: 'Live Post',
+                                        hintStyle: AppConstant()
+                                            .h3Style(color: Colors.white),
+                                        textStyle: AppConstant()
+                                            .h3Style(color: Colors.white),
+                                        suffixIcon: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            WidgetImage(
+                                              path: 'images/emoj.jpg',
+                                              size: 36,
+                                              tapFunc: () {
+                                                print(
+                                                    'Click Emoji ${appController.stampModels.length}');
+                                                appController.displayListEmoji
+                                                        .value =
+                                                    !appController
+                                                        .displayListEmoji.value;
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    WidgetImage(
+                                      path: 'images/rocket.png',
+                                      size: 48,
+                                      tapFunc: () {
+                                        print(
+                                            '##4june uidCreate ---> ${widget.chatModel.uidChat}');
+
+                                        if ((textEditingController
+                                                .text.isNotEmpty) ||
+                                            (appController
+                                                .urlEmojiChooses.isNotEmpty)) {
+                                          AppDialog(context: context)
+                                              .dialogProcess();
+
+                                          ChatModel chatModel = ChatModel(
+                                            message: textEditingController.text,
+                                            timestamp: Timestamp.fromDate(
+                                                DateTime.now()),
+                                            uidChat:
+                                                appController.mainUid.value,
+                                            disPlayName: appController
+                                                .userModelsLogin
+                                                .last
+                                                .displayName!,
+                                            urlAvatar: appController
+                                                .userModelsLogin
+                                                .last
+                                                .urlAvatar!,
+                                            urlRealPost: appController
+                                                    .urlEmojiChooses.isEmpty
+                                                ? ''
+                                                : appController
+                                                    .urlEmojiChooses.last,
+                                            albums: [],
+                                            urlMultiImages: [],
+                                            up: 0,
+                                            amountComment: 0,
+                                            amountGraph: 0,
+                                          );
+
+                                          print(
+                                              'chatModel ---> ${chatModel.toMap()}');
+
+                                          AppService()
+                                              .insertCommentChat(
+                                                  docIdChat: widget.docIdChat,
+                                                  commentChatModel: chatModel)
+                                              .then((value) async {
+                                            await AppService()
+                                                .findUserModel(
+                                                    uid: widget
+                                                        .chatModel.uidChat)
+                                                .then((value) {
+                                              print(
+                                                  '##4june userModel ของเจ้าของ post --> ${value!.toMap()}');
+
+                                              AppService()
+                                                  .processSentNoti(
+                                                      title:
+                                                          'คุณมี Comment ใหม่',
+                                                      body:
+                                                          '${textEditingController.text}%23${widget.index}',
+                                                      token: value!.token!)
+                                                  .then((value) {
+                                                Get.back();
+
+                                                AppService()
+                                                    .increaseValueComment(
+                                                        docIdChat:
+                                                            widget.docIdChat,
+                                                        chatModel:
+                                                            widget.chatModel);
+
+                                                textEditingController.text = '';
+                                                appController.urlAvatarChooses
+                                                    .clear();
+                                                clearAllTabStamp(appController);
+                                                appController.displayListEmoji
+                                                    .value = false;
+                                              });
+                                            });
+                                          });
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )
+                          : const SizedBox(),
                     ],
                   ),
                 );
               });
         },
       ),
+    );
+  }
+
+  void displayFullScreen({required String url}) {
+    Get.to(DisplayPhotoView(urlImage: url));
+  }
+
+  AppBar mainAppBar() {
+    return AppBar(
+      leading: WidgetIconButton(
+        iconData: Icons.arrow_back,
+        pressFunc: () {
+          controller.checkIn.value = false;
+          AppService()
+              .checkInOwnerChat(
+                  docIdChat: widget.docIdChat,
+                  chatModel: widget.chatModel,
+                  checkIn: controller.checkIn.value)
+              .then((value) {
+            Get.back();
+          });
+        },
+      ),
+      title: Row(
+        children: [
+          WidgetText(
+            text: widget.chatModel.disPlayName,
+            textStyle: AppConstant().h2Style(),
+          ),
+        ],
+      ),
+      actions: [
+        WidgetCircularImage(
+            urlImage: controller.userModelsLogin.last.urlAvatar!)
+      ],
     );
   }
 

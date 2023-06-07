@@ -8,13 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:realpost/states/main_home.dart';
+import 'package:realpost/states/main_page_for_guest.dart';
 import 'package:realpost/states/main_page_view.dart';
 import 'package:realpost/states/main_web_view.dart';
 import 'package:realpost/states/phone_number.dart';
 import 'package:realpost/states/upgrade_alert_page.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
-import 'package:realpost/utility/app_service.dart';
 import 'package:upgrader/upgrader.dart';
 
 var getPages = <GetPage<dynamic>>[
@@ -38,6 +38,10 @@ var getPages = <GetPage<dynamic>>[
     name: '/upgradeAlertPage',
     page: () => const UpgradeAlertPage(),
   ),
+  GetPage(
+    name: '/mainPageForGuest',
+    page: () => const MainPageForGuest(),
+  )
 ];
 
 String? keyPage;
@@ -59,6 +63,7 @@ Future<void> main() async {
     FirebaseAuth.instance.authStateChanges().listen((event) async {
       if (event == null) {
         keyPage = AppConstant.pagePhoneNumber;
+        // keyPage = '/mainPageForGuest';
         runApp(const MyApp());
       } else {
         appController.mainUid.value = event.uid;

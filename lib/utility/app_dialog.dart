@@ -55,8 +55,9 @@ class AppDialog {
                   uidAnswer: appController.mainUid.value,
                   timestamp: Timestamp.fromDate(DateTime.now()));
 
-              print('##30may answerModel --> ${answerModel.toMap()}');
-              print('##30may docIdComment ---> $docIdComment');
+              print('##6june answerModel --> ${answerModel.toMap()}');
+              print('##6june docIdComment ---> $docIdComment');
+              print('##6june docIdChat ---> $docIdChat');
 
               AppService()
                   .insertAnswer(
@@ -64,8 +65,8 @@ class AppDialog {
                       docIdChat: docIdChat,
                       docIdComment: docIdComment)
                   .then((value) {
-                print('##30may Success Insert Answer');
-                AppService().readCommentChat(docIdChat: docIdChat);
+                print('##6june Success Insert Answer');
+                // AppService().readCommentChat(docIdChat: docIdChat);
                 Get.back();
               });
             },
