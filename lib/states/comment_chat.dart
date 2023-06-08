@@ -106,41 +106,41 @@ class _CommentChatState extends State<CommentChat> {
                                   const SizedBox(
                                     height: 16,
                                   ),
-                                  widget.chatModel.urlMultiImages.isNotEmpty
-                                      ? ListView.builder(
-                                          physics: const ScrollPhysics(),
-                                          shrinkWrap: true,
-                                          itemCount: widget
-                                              .chatModel.urlMultiImages.length,
-                                          itemBuilder: (context, index) =>
-                                              Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: WidgetImageInternet(
-                                              urlImage: widget.chatModel
-                                                  .urlMultiImages[index],
-                                              tapFunc: () {
-                                                displayFullScreen(
-                                                    url: widget.chatModel
-                                                        .urlMultiImages[index]);
-                                              },
-                                            ),
-                                          ),
-                                        )
-                                      : widget.chatModel.urlRealPost.isEmpty
-                                          ? const SizedBox()
-                                          : WidgetImageInternet(
-                                              urlImage:
-                                                  widget.chatModel.urlRealPost,
-                                              height: boxConstraints.maxWidth *
-                                                  0.75,
-                                              width: boxConstraints.maxWidth,
-                                              boxFit: BoxFit.cover,
-                                              tapFunc: () {
-                                                displayFullScreen(
-                                                    url: widget
-                                                        .chatModel.urlRealPost);
-                                              },
-                                            ),
+                                  // widget.chatModel.urlMultiImages.isNotEmpty
+                                  //     ? ListView.builder(
+                                  //         physics: const ScrollPhysics(),
+                                  //         shrinkWrap: true,
+                                  //         itemCount: widget
+                                  //             .chatModel.urlMultiImages.length,
+                                  //         itemBuilder: (context, index) =>
+                                  //             Padding(
+                                  //           padding: const EdgeInsets.all(8.0),
+                                  //           child: WidgetImageInternet(
+                                  //             urlImage: widget.chatModel
+                                  //                 .urlMultiImages[index],
+                                  //             tapFunc: () {
+                                  //               displayFullScreen(
+                                  //                   url: widget.chatModel
+                                  //                       .urlMultiImages[index]);
+                                  //             },
+                                  //           ),
+                                  //         ),
+                                  //       )
+                                  //     : widget.chatModel.urlRealPost.isEmpty
+                                  //         ? const SizedBox()
+                                  //         : WidgetImageInternet(
+                                  //             urlImage:
+                                  //                 widget.chatModel.urlRealPost,
+                                  //             height: boxConstraints.maxWidth *
+                                  //                 0.75,
+                                  //             width: boxConstraints.maxWidth,
+                                  //             boxFit: BoxFit.cover,
+                                  //             tapFunc: () {
+                                  //               displayFullScreen(
+                                  //                   url: widget
+                                  //                       .chatModel.urlRealPost);
+                                  //             },
+                                  //           ),
                                   WidgetScoreFaverite(
                                     index: widget.index,
                                     chatModel: widget.chatModel,
@@ -198,7 +198,7 @@ class _CommentChatState extends State<CommentChat> {
                                                     .urlRealPost
                                                     .isEmpty
                                                 ? const SizedBox()
-                                                : WidgetImageInternet(
+                                                : appController.commentChatModels[index].urlMultiImages.isEmpty ? WidgetImageInternet(
                                                     urlImage: appController
                                                         .commentChatModels[
                                                             index]
@@ -213,7 +213,7 @@ class _CommentChatState extends State<CommentChat> {
                                                                   index]
                                                               .urlRealPost);
                                                     },
-                                                  ),
+                                                  ) : const SizedBox(),
                                             appController
                                                     .commentChatModels[index]
                                                     .urlMultiImages
@@ -333,7 +333,7 @@ class _CommentChatState extends State<CommentChat> {
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: [
-                                                Row(
+                                                const Row(
                                                   children: [
                                                     WidgetImage(
                                                       path:
@@ -353,7 +353,7 @@ class _CommentChatState extends State<CommentChat> {
                                                   children: [
                                                     WidgetIconButton(
                                                       pressFunc: () {},
-                                                      iconData: Icons.pin_drop,
+                                                      iconData: Icons.shopping_cart,
                                                     ),
                                                     WidgetIconButton(
                                                       pressFunc: () {},
@@ -545,8 +545,7 @@ class _CommentChatState extends State<CommentChat> {
                                             amountGraph: 0,
                                           );
 
-                                          print(
-                                              'chatModel ---> ${chatModel.toMap()}');
+                                         
 
                                           AppService()
                                               .insertCommentChat(

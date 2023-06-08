@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_print
 
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +15,6 @@ import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_multiimage_gridview.dart';
-import 'package:realpost/widgets/widget_text.dart';
 
 class WidgetContentFormSpcial extends StatefulWidget {
   const WidgetContentFormSpcial({super.key});

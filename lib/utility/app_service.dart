@@ -282,7 +282,23 @@ class AppService {
         .doc(docIdChat)
         .collection('comment')
         .doc()
-        .set(commentChatModel.toMap());
+        .set(commentChatModel.toMap())
+        .then((value) {
+      String urlNewImage = '';
+
+      if (commentChatModel.urlRealPost.isNotEmpty) {
+        urlNewImage = commentChatModel.urlRealPost;
+      } else if (commentChatModel.urlMultiImages.isNotEmpty) {
+        urlNewImage = commentChatModel.urlMultiImages[0];
+      }
+
+      print('##8june urlNewImage ---> $urlNewImage');
+      
+
+
+
+
+    });
   }
 
   Future<void> readCommentChat({required String docIdChat}) async {
@@ -291,7 +307,6 @@ class AppService {
     if (appController.commentChatModels.isNotEmpty) {
       appController.commentChatModels.clear();
       appController.docIdCommentChats.clear();
-      
     }
 
     FirebaseFirestore.instance
@@ -303,9 +318,6 @@ class AppService {
         .orderBy('timestamp', descending: false)
         .snapshots()
         .listen((event) async {
-
-           
-
       if (event.docs.isNotEmpty) {
         if (appController.commentChatModels.isNotEmpty) {
           appController.commentChatModels.clear();
@@ -315,8 +327,7 @@ class AppService {
 
         //for1
         for (var element in event.docs) {
-
-           print('##7june docComment ----> ${element.id}');
+          print('##7june docComment ----> ${element.id}');
 
           var answerModels = <AnswerModel>[];
 
@@ -335,8 +346,6 @@ class AppService {
           //     .get()
           //     .then((value) {
           //   // readCommentChat(docIdChat: docIdChat);
-
-            
 
           //   if (value.docs.isEmpty) {
           //     appController.listAnswerModels.add([]);
@@ -1315,17 +1324,21 @@ class AppService {
       String? collectionChat}) async {
     AppController appController = Get.put(AppController());
 
-    print(
-        '##20mar @processInsertChat collection --> $collection, docIdRoom --> $docIdRoom, collectionChat ---> $collectionChat');
-
-    await FirebaseFirestore.instance
+    DocumentReference reference = FirebaseFirestore.instance
         .collection(collection ?? 'room')
         .doc(docIdRoom)
         .collection(collectionChat ?? 'chat')
-        .doc()
-        .set(chatModel.toMap())
-        .then((value) async {
-      print('##20mar Process Insert Chat Success');
+        .doc();
+
+    await reference.set(chatModel.toMap()).then((value) async {
+      String docIdChat = reference.id;
+
+      print('##8june docIdChat = $docIdChat');
+      AppService()
+          .insertCommentChat(docIdChat: docIdChat, commentChatModel: chatModel)
+          .then((value) {
+        print('##8june Add coment Success');
+      });
 
       processSendNotiAllUser(
           title: 'มีโพสใหม่ ของคุณ ${chatModel.disPlayName}',
