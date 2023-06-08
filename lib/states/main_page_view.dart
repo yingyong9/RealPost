@@ -2,7 +2,6 @@
 
 import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:get/get.dart';
@@ -580,38 +579,7 @@ class _MainPageViewState extends State<MainPageView> {
                         textStyle: AppConstant().h3Style(color: Colors.white),
                       ),
                       const Spacer(),
-                      // WidgetButton(
-                      //   label: AppService().checkJoin(
-                      //           uidOwnerRoom:
-                      //               appController.chatModels[index].uidChat)
-                      //       ? 'UnJoin'
-                      //       : 'Join',
-                      //   pressFunc: () {
-                      //     //flowering --> เราไปตามเขา, flower ---> คนที่ตามเรา เพื่อรับ message ตอนเรา Post
-                      //     String uidOwnerRoom =
-                      //         appController.chatModels[index].uidChat;
-
-                      //     String uidLogin = appController.mainUid.value;
-
-                      //     print(
-                      //         'uidOwnerRoom --> $uidOwnerRoom, uidLogin = $uidLogin');
-
-                      //     if (AppService().checkJoin(
-                      //         uidOwnerRoom:
-                      //             appController.chatModels[index].uidChat)) {
-                      //       // unJoin
-                      //     } else {
-                      //       AppService()
-                      //           .processJoin(uidFollowing: uidOwnerRoom);
-                      //     }
-                      //   },
-                      //   bgColor: AppService().checkJoin(
-                      //           uidOwnerRoom:
-                      //               appController.chatModels[index].uidChat)
-                      //       ? Colors.black
-                      //       : Colors.blue,
-                      //   circular: 20,
-                      // ),
+                     
                     ],
                   ),
                   InkWell(
