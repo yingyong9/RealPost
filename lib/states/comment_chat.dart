@@ -19,7 +19,8 @@ import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_score_faverite.dart';
 import 'package:realpost/widgets/widget_text.dart';
-import 'package:realpost/widgets/widget_text_rich.dart';
+
+import 'package:badges/badges.dart' as badges;
 
 class CommentChat extends StatefulWidget {
   const CommentChat({
@@ -198,22 +199,28 @@ class _CommentChatState extends State<CommentChat> {
                                                     .urlRealPost
                                                     .isEmpty
                                                 ? const SizedBox()
-                                                : appController.commentChatModels[index].urlMultiImages.isEmpty ? WidgetImageInternet(
-                                                    urlImage: appController
+                                                : appController
                                                         .commentChatModels[
                                                             index]
-                                                        .urlRealPost,
-                                                    width: 180,
-                                                    height: 150,
-                                                    boxFit: BoxFit.cover,
-                                                    tapFunc: () {
-                                                      displayFullScreen(
-                                                          url: appController
-                                                              .commentChatModels[
-                                                                  index]
-                                                              .urlRealPost);
-                                                    },
-                                                  ) : const SizedBox(),
+                                                        .urlMultiImages
+                                                        .isEmpty
+                                                    ? WidgetImageInternet(
+                                                        urlImage: appController
+                                                            .commentChatModels[
+                                                                index]
+                                                            .urlRealPost,
+                                                        width: 180,
+                                                        height: 150,
+                                                        boxFit: BoxFit.cover,
+                                                        tapFunc: () {
+                                                          displayFullScreen(
+                                                              url: appController
+                                                                  .commentChatModels[
+                                                                      index]
+                                                                  .urlRealPost);
+                                                        },
+                                                      )
+                                                    : const SizedBox(),
                                             appController
                                                     .commentChatModels[index]
                                                     .urlMultiImages
@@ -351,13 +358,19 @@ class _CommentChatState extends State<CommentChat> {
                                                 ),
                                                 Row(
                                                   children: [
-                                                    WidgetIconButton(
-                                                      pressFunc: () {},
-                                                      iconData: Icons.shopping_cart,
+                                                   appController.commentChatModels[index].phone!.isEmpty ? const SizedBox() : const WidgetImage(
+                                                      path: 'images/phone.jpg',
+                                                      size: 36,
                                                     ),
-                                                    WidgetIconButton(
-                                                      pressFunc: () {},
-                                                      iconData: Icons.chat,
+                                                    appController.commentChatModels[index].amount!.isEmpty ? const SizedBox() :  badges.Badge(
+                                                      badgeContent:
+                                                          WidgetText(text: appController.commentChatModels[index].amount ?? ''),
+                                                      child: const Icon(Icons.shopping_cart, color: Colors.white,),
+                                                    ),
+                                                    const SizedBox(width: 12,),
+                                                    appController.commentChatModels[index].line!.isEmpty ? const SizedBox() :  const WidgetImage(
+                                                      path: 'images/line.jpg',
+                                                      size: 36,
                                                     ),
                                                     WidgetButton(
                                                       label: 'สนทนา',
@@ -544,8 +557,6 @@ class _CommentChatState extends State<CommentChat> {
                                             amountComment: 0,
                                             amountGraph: 0,
                                           );
-
-                                         
 
                                           AppService()
                                               .insertCommentChat(
