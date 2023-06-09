@@ -32,24 +32,98 @@ class AppBottomSheet {
   Future<void> bottomSheetMultiImage(
       {required String docIdChat, required BuildContext context}) async {
     TextEditingController textEditingController = TextEditingController();
+    TextEditingController priceController = TextEditingController();
+    TextEditingController amountController = TextEditingController();
+    TextEditingController phoneController = TextEditingController();
+    TextEditingController lineController = TextEditingController();
+
     Get.bottomSheet(
         Container(
+          decoration: AppConstant().boxBlack(color: Colors.white),
           width: double.infinity,
-          height: 250,
-          child: Stack(
+          height: 400,
+          child: ListView(
             children: [
-              const MultiImageGridView(),
-              WidgetIconButton(
-                pressFunc: () {
-                  appController.xFiles.clear();
-                  Get.back();
-                },
-                iconData: Icons.arrow_back_ios,
+              Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: WidgetForm(
+                        controller: priceController,
+                        hint: 'ราคา',
+                        hintStyle: AppConstant().h3Style(color: Colors.white),
+                        fillColor: AppConstant.realMid,
+                        textStyle: AppConstant().h3Style(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: WidgetForm(
+                        controller: amountController,
+                        hint: 'จำนวนที่จะขาย',
+                        hintStyle: AppConstant().h3Style(color: Colors.white),
+                        fillColor: AppConstant.realMid,
+                        textStyle: AppConstant().h3Style(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              Positioned(
-                bottom: 0,
-                child: rocketAddComment(textEditingController, docIdChat,
-                    context: context),
+              Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: WidgetForm(
+                        controller: phoneController,
+                        hint: 'เบอร์โทร',
+                        hintStyle: AppConstant().h3Style(color: Colors.white),
+                        fillColor: AppConstant.realMid,
+                        textStyle: AppConstant().h3Style(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: WidgetForm(
+                        controller: lineController,
+                        hint: 'Line',
+                        hintStyle: AppConstant().h3Style(color: Colors.white),
+                        fillColor: AppConstant.realMid,
+                        textStyle: AppConstant().h3Style(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                width: double.infinity,
+                height: 250,
+                child: Stack(
+                  children: [
+                    const MultiImageGridView(),
+                    WidgetIconButton(
+                      pressFunc: () {
+                        appController.xFiles.clear();
+                        Get.back();
+                      },
+                      iconData: Icons.arrow_back_ios,
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      child: rocketAddComment(textEditingController, docIdChat,
+                          context: context,
+                          priceController: priceController,
+                          amountController: amountController,
+                          phoneController: phoneController,
+                          lineController: lineController),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -175,8 +249,14 @@ class AppBottomSheet {
   }
 
   Row rocketAddComment(
-      TextEditingController textEditingController, String docIdChat,
-      {required BuildContext context}) {
+    TextEditingController textEditingController,
+    String docIdChat, {
+    required BuildContext context,
+    required TextEditingController priceController,
+    required TextEditingController amountController,
+    required TextEditingController phoneController,
+    required TextEditingController lineController,
+  }) {
     return Row(
       children: [
         WidgetIconButton(
@@ -243,18 +323,21 @@ class AppBottomSheet {
               print('##29may albums ---> $albums');
 
               ChatModel chatModel = ChatModel(
-                message: textEditingController.text,
-                timestamp: Timestamp.fromDate(DateTime.now()),
-                uidChat: appController.mainUid.value,
-                disPlayName: appController.userModelsLogin.last.displayName!,
-                urlAvatar: appController.userModelsLogin.last.urlAvatar!,
-                urlRealPost: '',
-                albums: [],
-                urlMultiImages: albums,
-                up: 0,
-                amountComment: 0,
-                amountGraph: 0,
-              );
+                  message: textEditingController.text,
+                  timestamp: Timestamp.fromDate(DateTime.now()),
+                  uidChat: appController.mainUid.value,
+                  disPlayName: appController.userModelsLogin.last.displayName!,
+                  urlAvatar: appController.userModelsLogin.last.urlAvatar!,
+                  urlRealPost: '',
+                  albums: [],
+                  urlMultiImages: albums,
+                  up: 0,
+                  amountComment: 0,
+                  amountGraph: 0,
+                  price: priceController.text,
+                  amount: amountController.text,
+                  phone: phoneController.text,
+                  line: lineController.text);
 
               print('##29may chatModel ---> ${chatModel.toMap()}');
 

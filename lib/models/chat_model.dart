@@ -23,6 +23,10 @@ class ChatModel {
   final int up;
   final int amountComment;
   final int amountGraph;
+  final String? price;
+  final String? amount;
+  final String? phone;
+  final String? line;
 
   ChatModel({
     required this.message,
@@ -44,6 +48,10 @@ class ChatModel {
     required this.up,
     required this.amountComment,
     required this.amountGraph,
+    this.price,
+    this.amount,
+    this.phone,
+    this.line,
   });
 
   Map<String, dynamic> toMap() {
@@ -67,6 +75,10 @@ class ChatModel {
       'up': up,
       'amountComment': amountComment,
       'amountGraph': amountGraph,
+      'price': price,
+      'amount': amount,
+      'phone': phone,
+      'line': line,
     };
   }
 
@@ -92,6 +104,10 @@ class ChatModel {
       up: (map['up'] ?? 0) as int,
       amountComment: (map['amountComment'] ?? 0) as int,
       amountGraph: (map['amountGraph'] ?? 0) as int,
+      price: (map['price'] ?? '') as String,
+      amount: (map['amount'] ?? '') as String,
+      phone: (map['phone'] ?? '') as String,
+      line: (map['line'] ?? '') as String,
     );
   }
 
