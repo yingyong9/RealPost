@@ -180,13 +180,13 @@ class AppDialog {
         text: 'ที่จัดส่ง',
         textStyle: AppConstant().h2Style(color: Colors.black),
       ),
-      content: Column(
+      content: const Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           WidgetForm(
             hint: 'ที่อย่ :',
           ),
-          const SizedBox(
+          SizedBox(
             height: 16,
           ),
           WidgetForm(
@@ -219,18 +219,15 @@ class AppDialog {
           text: 'คุณต้องการเข้าร่วมซื้อสินค้า',
           textStyle: AppConstant().h2Style(color: Colors.black),
         ),
-        content: Container(
-          // height: 250,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              WidgetText(
-                text: roomModel.room,
-                textStyle: AppConstant().h3Style(color: Colors.black),
-              ),
-              WidgetChooseAmountSalse(),
-            ],
-          ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            WidgetText(
+              text: roomModel.room,
+              textStyle: AppConstant().h3Style(color: Colors.black),
+            ),
+            WidgetChooseAmountSalse(),
+          ],
         ),
         actions: [
           WidgetButton(

@@ -577,7 +577,7 @@ class _CommentChatState extends State<CommentChat> {
                                                           'คุณมี Comment ใหม่',
                                                       body:
                                                           '${textEditingController.text}%23${widget.index}',
-                                                      token: value!.token!)
+                                                      token: value.token!)
                                                   .then((value) {
                                                 Get.back();
 

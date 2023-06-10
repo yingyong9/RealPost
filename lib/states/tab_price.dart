@@ -10,13 +10,11 @@ import 'package:realpost/states/private_chat.dart';
 import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
-import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/widgets/calculate_price_and_time.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_display_price.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_text.dart';
-import 'package:realpost/widgets/widget_text_button.dart';
 
 class TabPrice extends StatefulWidget {
   const TabPrice({
@@ -205,9 +203,10 @@ class _TabPriceState extends State<TabPrice> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Container(alignment: Alignment.topLeft,
+              Container(
+                alignment: Alignment.topLeft,
                 width: boxConstraints.maxWidth * 0.5,
-                child: WidgetImage(
+                child: const WidgetImage(
                   path: 'images/icon2.png',
                   size: 36,
                 ),
@@ -216,42 +215,13 @@ class _TabPriceState extends State<TabPrice> {
                 onTap: () {
                   if (user!.uid != roomModel!.uidCreate) {
                     // appController.haveUserLoginInComment.value
-                    true
-                        ? AppBottomSheet().salseBottomSheet(
-                            roomModel: roomModel!,
-                            single: true,
-                            boxConstraints: boxConstraints,
-                            docIdRoom: widget.docIdRoom,
-                            context: context,
-                          )
-                        : AppDialog(context: context).normalDialog(
-                            title: 'ยินดีต้อนรับสู่ความสนุก',
-                            leadingWidget:
-                                const WidgetImage(path: 'images/avatar.png'),
-                            actions: [
-                              WidgetTextButton(
-                                text: 'เข้าร่วม',
-                                pressFunc: () {
-                                  Get.back();
-
-                                  AppBottomSheet().processAddNewCommentSalse(
-                                      appController.roomModels[appController
-                                          .indexBodyMainPageView.value],
-                                      appController,
-                                      appController.docIdRooms[appController
-                                          .indexBodyMainPageView.value],
-                                      true,
-                                      context);
-                                },
-                              ),
-                              WidgetTextButton(
-                                text: 'ยกเลิก',
-                                pressFunc: () {
-                                  Get.back();
-                                },
-                              )
-                            ],
-                          );
+                    AppBottomSheet().salseBottomSheet(
+                      roomModel: roomModel!,
+                      single: true,
+                      boxConstraints: boxConstraints,
+                      docIdRoom: widget.docIdRoom,
+                      context: context,
+                    );
                   }
                 },
                 child: ((appController.haveUserLoginInComment.value) &&

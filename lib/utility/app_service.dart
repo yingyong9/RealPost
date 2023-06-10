@@ -26,7 +26,6 @@ import 'package:realpost/models/user_model.dart';
 import 'package:realpost/states/comment_chat.dart';
 import 'package:realpost/states/display_name.dart';
 import 'package:realpost/states/main_page_view.dart';
-import 'package:realpost/states/private_chat.dart';
 import 'package:realpost/states/take_photo_only.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
@@ -329,34 +328,13 @@ class AppService {
         for (var element in event.docs) {
           print('##7june docComment ----> ${element.id}');
 
-          var answerModels = <AnswerModel>[];
+         
 
           ChatModel commentChatModel = ChatModel.fromMap(element.data());
           appController.commentChatModels.add(commentChatModel);
           appController.docIdCommentChats.add(element.id);
 
-          // FirebaseFirestore.instance
-          //     .collection('room')
-          //     .doc(AppConstant.docIdRoomData)
-          //     .collection('chat')
-          //     .doc(docIdChat)
-          //     .collection('comment')
-          //     .doc(element.id)
-          //     .collection('answer')
-          //     .get()
-          //     .then((value) {
-          //   // readCommentChat(docIdChat: docIdChat);
-
-          //   if (value.docs.isEmpty) {
-          //     appController.listAnswerModels.add([]);
-          //   } else {
-          //     for (var element in value.docs) {
-          //       AnswerModel answerModel = AnswerModel.fromMap(element.data());
-          //       answerModels.add(answerModel);
-          //     } //for2
-          //     appController.listAnswerModels.add(answerModels);
-          //   }
-          // });
+         
         } // for1
       }
     });
