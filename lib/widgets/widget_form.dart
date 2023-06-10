@@ -24,6 +24,7 @@ class WidgetForm extends StatelessWidget {
     this.inputBorder,
     this.textAlign,
     this.suffixIcon,
+    this.prefixIcon,
   }) : super(key: key);
 
   final String? hint;
@@ -43,6 +44,7 @@ class WidgetForm extends StatelessWidget {
   final InputBorder? inputBorder;
   final TextAlign? textAlign;
   final Widget? suffixIcon;
+  final Widget? prefixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +64,7 @@ class WidgetForm extends StatelessWidget {
           contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
           label: labelWidget,
           hintStyle: hintStyle,
-          suffixIcon: suffixIcon,
+          suffixIcon: suffixIcon,prefixIcon: prefixIcon,
           hintText: hint,
           filled: true,
           fillColor: fillColor,

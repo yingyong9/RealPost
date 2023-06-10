@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:realpost/states/comment_chat.dart';
 import 'package:realpost/states/main_home.dart';
 import 'package:realpost/states/main_page_for_guest.dart';
 import 'package:realpost/states/main_page_view.dart';
@@ -41,7 +42,7 @@ var getPages = <GetPage<dynamic>>[
   GetPage(
     name: '/mainPageForGuest',
     page: () => const MainPageForGuest(),
-  )
+  ), GetPage(name: '/commentChat', page: () => const CommentChat(),)
 ];
 
 String? keyPage;
@@ -67,7 +68,7 @@ Future<void> main() async {
         runApp(const MyApp());
       } else {
         appController.mainUid.value = event.uid;
-        keyPage = '/upgradeAlertPage';
+        keyPage = '/commentChat';
         runApp(const MyApp());
       }
     });

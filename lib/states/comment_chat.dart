@@ -25,14 +25,7 @@ import 'package:badges/badges.dart' as badges;
 class CommentChat extends StatefulWidget {
   const CommentChat({
     Key? key,
-    required this.docIdChat,
-    required this.chatModel,
-    required this.index,
   }) : super(key: key);
-
-  final String docIdChat;
-  final ChatModel chatModel;
-  final int index;
 
   @override
   State<CommentChat> createState() => _CommentChatState();
@@ -46,19 +39,12 @@ class _CommentChatState extends State<CommentChat> {
   void initState() {
     super.initState();
 
-    controller.listAnswerModels.clear;
+    AppService().initialSetup(context: context);
+    AppService().aboutNoti(context: context);
+    // AppService().freshUserModelLogin();
+    // AppService().readStatData();
 
-    AppService().readCommentChat(docIdChat: widget.docIdChat).then((value) {
-      AppService().increaseDecrestTraffic(
-          docIdChat: widget.docIdChat,
-          increase: true,
-          chatModel: widget.chatModel);
-
-      AppService().checkInOwnerChat(
-          docIdChat: widget.docIdChat,
-          chatModel: widget.chatModel,
-          checkIn: controller.checkIn.value);
-    });
+    AppService().readCommentChat(docIdChat: '0teBbEDSyimbXgvzYwGJ');
   }
 
   @override
@@ -72,342 +58,356 @@ class _CommentChatState extends State<CommentChat> {
               init: AppController(),
               builder: (AppController appController) {
                 print(
-                    '##6june listAnswerModels -----> ${appController.listAnswerModels.length}');
+                    '##10june commentChatModels -----> ${appController.commentChatModels.length}');
 
-                return SizedBox(
-                  width: boxConstraints.maxWidth,
-                  height: boxConstraints.maxHeight,
-                  child: Stack(
-                    children: [
-                      SizedBox(
-                        height: appController.userModelsLogin.last.uidUser ==
-                                widget.chatModel.uidChat
-                            ? boxConstraints.maxHeight - 70
-                            : boxConstraints.maxHeight,
-                        child: ListView(
+                return appController.chatModels.isEmpty
+                    ? const SizedBox()
+                    : SizedBox(
+                        width: boxConstraints.maxWidth,
+                        height: boxConstraints.maxHeight,
+                        child: Stack(
                           children: [
-                            Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 8),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 16),
-                              decoration: AppConstant().realBox(),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
+                            SizedBox(
+                              height: boxConstraints.maxHeight - 70,
+                              child: ListView(
                                 children: [
-                                  widget.chatModel.message.isEmpty
+                                  // Container(
+                                  //   margin: const EdgeInsets.symmetric(horizontal: 8),
+                                  //   padding: const EdgeInsets.symmetric(
+                                  //       horizontal: 16, vertical: 16),
+                                  //   decoration: AppConstant().realBox(),
+                                  //   child: Column(
+                                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                                  //     mainAxisSize: MainAxisSize.min,
+                                  //     children: [
+                                  //       appController.chatModels[0].message.isEmpty
+                                  //           ? const SizedBox()
+                                  //           : WidgetText(
+                                  //               text: appController
+                                  //                   .chatModels[0].message,
+                                  //               textStyle: AppConstant().h3Style(
+                                  //                   color: Colors.white,
+                                  //                   size: 20,
+                                  //                   fontWeight: FontWeight.bold),
+                                  //             ),
+                                  //       const SizedBox(
+                                  //         height: 16,
+                                  //       ),
+                                  //       WidgetScoreFaverite(
+                                  //         index: 0,
+                                  //         chatModel: appController.chatModels[0],
+                                  //       ),
+                                  //       const SizedBox(
+                                  //         height: 16,
+                                  //       ),
+                                  //     ],
+                                  //   ),
+                                  // ),
+                                  // const SizedBox(
+                                  //   height: 16,
+                                  // ),
+                                  appController.commentChatModels.isEmpty
                                       ? const SizedBox()
-                                      : WidgetText(
-                                          text: widget.chatModel.message,
-                                          textStyle: AppConstant().h3Style(
-                                              color: Colors.white,
-                                              size: 20,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                  const SizedBox(
-                                    height: 16,
-                                  ),
-                                  // widget.chatModel.urlMultiImages.isNotEmpty
-                                  //     ? ListView.builder(
-                                  //         physics: const ScrollPhysics(),
-                                  //         shrinkWrap: true,
-                                  //         itemCount: widget
-                                  //             .chatModel.urlMultiImages.length,
-                                  //         itemBuilder: (context, index) =>
-                                  //             Padding(
-                                  //           padding: const EdgeInsets.all(8.0),
-                                  //           child: WidgetImageInternet(
-                                  //             urlImage: widget.chatModel
-                                  //                 .urlMultiImages[index],
-                                  //             tapFunc: () {
-                                  //               displayFullScreen(
-                                  //                   url: widget.chatModel
-                                  //                       .urlMultiImages[index]);
-                                  //             },
-                                  //           ),
-                                  //         ),
-                                  //       )
-                                  //     : widget.chatModel.urlRealPost.isEmpty
-                                  //         ? const SizedBox()
-                                  //         : WidgetImageInternet(
-                                  //             urlImage:
-                                  //                 widget.chatModel.urlRealPost,
-                                  //             height: boxConstraints.maxWidth *
-                                  //                 0.75,
-                                  //             width: boxConstraints.maxWidth,
-                                  //             boxFit: BoxFit.cover,
-                                  //             tapFunc: () {
-                                  //               displayFullScreen(
-                                  //                   url: widget
-                                  //                       .chatModel.urlRealPost);
-                                  //             },
-                                  //           ),
-                                  WidgetScoreFaverite(
-                                    index: widget.index,
-                                    chatModel: widget.chatModel,
-                                  ),
-                                  const SizedBox(
-                                    height: 16,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 16,
-                            ),
-                            appController.commentChatModels.isEmpty
-                                ? const SizedBox()
-                                : ListView.builder(
-                                    physics: const ScrollPhysics(),
-                                    shrinkWrap: true,
-                                    reverse: true,
-                                    itemCount:
-                                        appController.commentChatModels.length,
-                                    itemBuilder: (context, index) => Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 16, bottom: 10),
-                                      child: Container(
-                                        decoration: AppConstant().boxBlack(
-                                            color: const Color.fromARGB(
-                                                255, 26, 22, 22)),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                WidgetCircularImage(
-                                                  urlImage: appController
-                                                      .commentChatModels[index]
-                                                      .urlAvatar,
-                                                  radius: 15,
-                                                ),
-                                                const SizedBox(
-                                                  width: 8,
-                                                ),
-                                                WidgetText(
-                                                    text: appController
-                                                        .commentChatModels[
-                                                            index]
-                                                        .disPlayName),
-                                              ],
-                                            ),
-                                            appController
-                                                    .commentChatModels[index]
-                                                    .urlRealPost
-                                                    .isEmpty
-                                                ? const SizedBox()
-                                                : appController
-                                                        .commentChatModels[
-                                                            index]
-                                                        .urlMultiImages
-                                                        .isEmpty
-                                                    ? WidgetImageInternet(
+                                      : ListView.builder(
+                                          physics: const ScrollPhysics(),
+                                          shrinkWrap: true,
+                                          reverse: true,
+                                          itemCount: appController
+                                              .commentChatModels.length,
+                                          itemBuilder: (context, index) =>
+                                              Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 16, bottom: 10),
+                                            child: Container(
+                                              decoration: AppConstant()
+                                                  .boxBlack(
+                                                      color:
+                                                          const Color.fromARGB(
+                                                              255, 26, 22, 22)),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      WidgetCircularImage(
                                                         urlImage: appController
                                                             .commentChatModels[
                                                                 index]
-                                                            .urlRealPost,
-                                                        width: 180,
-                                                        height: 150,
-                                                        boxFit: BoxFit.cover,
-                                                        tapFunc: () {
-                                                          displayFullScreen(
-                                                              url: appController
+                                                            .urlAvatar,
+                                                        radius: 15,
+                                                      ),
+                                                      const SizedBox(
+                                                        width: 8,
+                                                      ),
+                                                      WidgetText(
+                                                          text: appController
+                                                              .commentChatModels[
+                                                                  index]
+                                                              .disPlayName),
+                                                    ],
+                                                  ),
+                                                  appController
+                                                          .commentChatModels[
+                                                              index]
+                                                          .urlRealPost
+                                                          .isEmpty
+                                                      ? const SizedBox()
+                                                      : appController
+                                                              .commentChatModels[
+                                                                  index]
+                                                              .urlMultiImages
+                                                              .isEmpty
+                                                          ? WidgetImageInternet(
+                                                              urlImage: appController
                                                                   .commentChatModels[
                                                                       index]
-                                                                  .urlRealPost);
-                                                        },
-                                                      )
-                                                    : const SizedBox(),
-                                            appController
-                                                    .commentChatModels[index]
-                                                    .urlMultiImages
-                                                    .isEmpty
-                                                ? const SizedBox()
-                                                : ListView.builder(
-                                                    physics:
-                                                        const ScrollPhysics(),
-                                                    shrinkWrap: true,
-                                                    itemCount: appController
-                                                        .commentChatModels[
-                                                            index]
-                                                        .urlMultiImages
-                                                        .length,
-                                                    itemBuilder:
-                                                        (context, index2) =>
-                                                            Row(
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child:
-                                                              WidgetImageInternet(
-                                                            urlImage: appController
-                                                                .commentChatModels[
-                                                                    index]
-                                                                .urlMultiImages[index2],
-                                                            width: 180,
-                                                            height: 150,
-                                                            boxFit:
-                                                                BoxFit.cover,
-                                                            tapFunc: () {
-                                                              displayFullScreen(
-                                                                  url: appController
+                                                                  .urlRealPost,
+                                                              width: 180,
+                                                              height: 150,
+                                                              boxFit:
+                                                                  BoxFit.cover,
+                                                              tapFunc: () {
+                                                                displayFullScreen(
+                                                                    url: appController
+                                                                        .commentChatModels[
+                                                                            index]
+                                                                        .urlRealPost);
+                                                              },
+                                                            )
+                                                          : const SizedBox(),
+                                                  appController
+                                                          .commentChatModels[
+                                                              index]
+                                                          .urlMultiImages
+                                                          .isEmpty
+                                                      ? const SizedBox()
+                                                      : ListView.builder(
+                                                          physics:
+                                                              const ScrollPhysics(),
+                                                          shrinkWrap: true,
+                                                          itemCount: appController
+                                                              .commentChatModels[
+                                                                  index]
+                                                              .urlMultiImages
+                                                              .length,
+                                                          itemBuilder: (context,
+                                                                  index2) =>
+                                                              Row(
+                                                            children: [
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        8.0),
+                                                                child:
+                                                                    WidgetImageInternet(
+                                                                  urlImage: appController
                                                                       .commentChatModels[
                                                                           index]
-                                                                      .urlMultiImages[index2]);
-                                                            },
+                                                                      .urlMultiImages[index2],
+                                                                  width: 180,
+                                                                  height: 150,
+                                                                  boxFit: BoxFit
+                                                                      .cover,
+                                                                  tapFunc: () {
+                                                                    displayFullScreen(
+                                                                        url: appController
+                                                                            .commentChatModels[index]
+                                                                            .urlMultiImages[index2]);
+                                                                  },
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
                                                         ),
-                                                      ],
-                                                    ),
+                                                  WidgetText(
+                                                    text: appController
+                                                        .commentChatModels[
+                                                            index]
+                                                        .message,
+                                                    textStyle: AppConstant()
+                                                        .h3Style(size: 16),
                                                   ),
-                                            WidgetText(
-                                              text: appController
-                                                  .commentChatModels[index]
-                                                  .message,
-                                              textStyle: AppConstant()
-                                                  .h3Style(size: 16),
-                                            ),
-                                            // appController
-                                            //         .listAnswerModels.isEmpty
-                                            //     ? const SizedBox()
-                                            //     : appController
-                                            //             .listAnswerModels[index]
-                                            //             .isEmpty
-                                            //         ? const SizedBox()
-                                            //         : Container(
-                                            //             margin: const EdgeInsets
-                                            //                     .only(
-                                            //                 left: 32, top: 8),
-                                            //             child: ListView.builder(
-                                            //               physics:
-                                            //                   const ScrollPhysics(),
-                                            //               shrinkWrap: true,
-                                            //               itemCount: appController
-                                            //                   .listAnswerModels[
-                                            //                       index]
-                                            //                   .length,
-                                            //               itemBuilder: (context,
-                                            //                   index3) {
-                                            //                 print(
-                                            //                     '##1june index = $index, index3 = $index3');
-                                            //                 print(
-                                            //                     '##1june listAnswerModles at index = $index ==> ${appController.listAnswerModels[index].length}');
-                                            //                 return Padding(
-                                            //                   padding:
-                                            //                       const EdgeInsets
-                                            //                               .only(
-                                            //                           bottom:
-                                            //                               12),
-                                            //                   child: Row(
-                                            //                     crossAxisAlignment:
-                                            //                         CrossAxisAlignment
-                                            //                             .start,
-                                            //                     children: [
-                                            //                       WidgetCircularImage(
-                                            //                         urlImage: appController
-                                            //                             .listAnswerModels[
-                                            //                                 index]
-                                            //                                 [
-                                            //                                 index3]
-                                            //                             .avatarAnswer,
-                                            //                         radius: 12,
-                                            //                       ),
-                                            //                       const SizedBox(
-                                            //                         width: 8,
-                                            //                       ),
-                                            //                       Expanded(
-                                            //                           child: WidgetTextRich(
-                                            //                               head: appController
-                                            //                                   .listAnswerModels[index][
-                                            //                                       index3]
-                                            //                                   .nameAnswer,
-                                            //                               value: appController
-                                            //                                   .listAnswerModels[index][index3]
-                                            //                                   .answer)),
-                                            //                     ],
-                                            //                   ),
-                                            //                 );
-                                            //               },
-                                            //             ),
-                                            //           ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                const Row(
-                                                  children: [
-                                                    WidgetImage(
-                                                      path:
-                                                          'images/arrowup.jpg',
-                                                      size: 24,
-                                                    ),
-                                                    WidgetText(text: '5'),
-                                                    WidgetImage(
-                                                      path:
-                                                          'images/arrowdown.jpg',
-                                                      size: 24,
-                                                    ),
-                                                    WidgetText(text: '8'),
-                                                  ],
-                                                ),
-                                                Row(
-                                                  children: [
-                                                   appController.commentChatModels[index].phone!.isEmpty ? const SizedBox() : const WidgetImage(
-                                                      path: 'images/phone.jpg',
-                                                      size: 36,
-                                                    ),
-                                                    appController.commentChatModels[index].amount!.isEmpty ? const SizedBox() :  badges.Badge(
-                                                      badgeContent:
-                                                          WidgetText(text: appController.commentChatModels[index].amount ?? ''),
-                                                      child: const Icon(Icons.shopping_cart, color: Colors.white,),
-                                                    ),
-                                                    const SizedBox(width: 12,),
-                                                    appController.commentChatModels[index].line!.isEmpty ? const SizedBox() :  const WidgetImage(
-                                                      path: 'images/line.jpg',
-                                                      size: 36,
-                                                    ),
-                                                    WidgetButton(
-                                                      label: 'สนทนา',
-                                                      pressFunc: () {
-                                                        AppDialog(
-                                                                context:
-                                                                    context)
-                                                            .answerDialog(
-                                                                docIdComment:
-                                                                    appController
-                                                                            .docIdCommentChats[
-                                                                        index],
-                                                                docIdChat: widget
-                                                                    .docIdChat);
-                                                      },
-                                                      iconWidget: const Icon(
-                                                        Icons.turn_left,
-                                                        color: Colors.white,
+                                                  // appController
+                                                  //         .listAnswerModels.isEmpty
+                                                  //     ? const SizedBox()
+                                                  //     : appController
+                                                  //             .listAnswerModels[index]
+                                                  //             .isEmpty
+                                                  //         ? const SizedBox()
+                                                  //         : Container(
+                                                  //             margin: const EdgeInsets
+                                                  //                     .only(
+                                                  //                 left: 32, top: 8),
+                                                  //             child: ListView.builder(
+                                                  //               physics:
+                                                  //                   const ScrollPhysics(),
+                                                  //               shrinkWrap: true,
+                                                  //               itemCount: appController
+                                                  //                   .listAnswerModels[
+                                                  //                       index]
+                                                  //                   .length,
+                                                  //               itemBuilder: (context,
+                                                  //                   index3) {
+                                                  //                 print(
+                                                  //                     '##1june index = $index, index3 = $index3');
+                                                  //                 print(
+                                                  //                     '##1june listAnswerModles at index = $index ==> ${appController.listAnswerModels[index].length}');
+                                                  //                 return Padding(
+                                                  //                   padding:
+                                                  //                       const EdgeInsets
+                                                  //                               .only(
+                                                  //                           bottom:
+                                                  //                               12),
+                                                  //                   child: Row(
+                                                  //                     crossAxisAlignment:
+                                                  //                         CrossAxisAlignment
+                                                  //                             .start,
+                                                  //                     children: [
+                                                  //                       WidgetCircularImage(
+                                                  //                         urlImage: appController
+                                                  //                             .listAnswerModels[
+                                                  //                                 index]
+                                                  //                                 [
+                                                  //                                 index3]
+                                                  //                             .avatarAnswer,
+                                                  //                         radius: 12,
+                                                  //                       ),
+                                                  //                       const SizedBox(
+                                                  //                         width: 8,
+                                                  //                       ),
+                                                  //                       Expanded(
+                                                  //                           child: WidgetTextRich(
+                                                  //                               head: appController
+                                                  //                                   .listAnswerModels[index][
+                                                  //                                       index3]
+                                                  //                                   .nameAnswer,
+                                                  //                               value: appController
+                                                  //                                   .listAnswerModels[index][index3]
+                                                  //                                   .answer)),
+                                                  //                     ],
+                                                  //                   ),
+                                                  //                 );
+                                                  //               },
+                                                  //             ),
+                                                  //           ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      const Row(
+                                                        children: [
+                                                          WidgetImage(
+                                                            path:
+                                                                'images/arrowup.jpg',
+                                                            size: 24,
+                                                          ),
+                                                          WidgetText(text: '5'),
+                                                          WidgetImage(
+                                                            path:
+                                                                'images/arrowdown.jpg',
+                                                            size: 24,
+                                                          ),
+                                                          WidgetText(text: '8'),
+                                                        ],
                                                       ),
-                                                      bgColor: Colors.black,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            )
-                                            // WidgetScoreFaverite(index: index),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                          ],
-                        ),
-                      ),
-                      appController.userModelsLogin.last.uidUser ==
-                              widget.chatModel.uidChat
-                          ? Column(
+                                                      Row(
+                                                        children: [
+                                                          appController
+                                                                  .commentChatModels[
+                                                                      index]
+                                                                  .phone!
+                                                                  .isEmpty
+                                                              ? const SizedBox()
+                                                              : const WidgetImage(
+                                                                  path:
+                                                                      'images/phone.jpg',
+                                                                  size: 36,
+                                                                ),
+                                                          appController
+                                                                  .commentChatModels[
+                                                                      index]
+                                                                  .amount!
+                                                                  .isEmpty
+                                                              ? const SizedBox()
+                                                              : InkWell(
+                                                                  onTap: () {
+                                                                    AppDialog(
+                                                                            context:
+                                                                                context)
+                                                                        .buyDialog(
+                                                                            commentChatModel:
+                                                                                appController.commentChatModels[index]);
+                                                                  },
+                                                                  child: badges
+                                                                      .Badge(
+                                                                    badgeContent:
+                                                                        WidgetText(
+                                                                            text:
+                                                                                appController.commentChatModels[index].amount ?? ''),
+                                                                    child:
+                                                                        const Icon(
+                                                                      Icons
+                                                                          .shopping_cart,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                          const SizedBox(
+                                                            width: 12,
+                                                          ),
+                                                          appController
+                                                                  .commentChatModels[
+                                                                      index]
+                                                                  .line!
+                                                                  .isEmpty
+                                                              ? const SizedBox()
+                                                              : const WidgetImage(
+                                                                  path:
+                                                                      'images/line.jpg',
+                                                                  size: 36,
+                                                                ),
+                                                          WidgetButton(
+                                                            label: 'สนทนา',
+                                                            pressFunc: () {
+                                                              AppDialog(context: context).answerDialog(
+                                                                  docIdComment:
+                                                                      appController
+                                                                              .docIdCommentChats[
+                                                                          index],
+                                                                  docIdChat:
+                                                                      appController
+                                                                          .docIdChats[0]);
+                                                            },
+                                                            iconWidget:
+                                                                const Icon(
+                                                              Icons.turn_left,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                            bgColor:
+                                                                Colors.black,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  )
+                                                  // WidgetScoreFaverite(index: index),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                ],
+                              ),
+                            ),
+                            Column(
                               mainAxisAlignment: MainAxisAlignment.end,
                               mainAxisSize: MainAxisSize.max,
                               children: [
@@ -466,7 +466,8 @@ class _CommentChatState extends State<CommentChat> {
 
                                             AppBottomSheet().dipsplayImage(
                                                 urlImage: urlImageComment,
-                                                docIdChat: widget.docIdChat);
+                                                docIdChat: appController
+                                                    .docIdChats[0]);
                                           });
                                         });
                                       },
@@ -482,7 +483,8 @@ class _CommentChatState extends State<CommentChat> {
                                               '##29may xFiles ---> ${controller.xFiles.length}');
                                           AppBottomSheet()
                                               .bottomSheetMultiImage(
-                                                  docIdChat: widget.docIdChat,
+                                                  docIdChat: appController
+                                                      .docIdChats[0],
                                                   context: context);
                                         });
                                       },
@@ -523,7 +525,7 @@ class _CommentChatState extends State<CommentChat> {
                                       size: 48,
                                       tapFunc: () {
                                         print(
-                                            '##4june uidCreate ---> ${widget.chatModel.uidChat}');
+                                            '##4june uidCreate ---> ${appController.chatModels[0].uidChat}');
 
                                         if ((textEditingController
                                                 .text.isNotEmpty) ||
@@ -560,13 +562,14 @@ class _CommentChatState extends State<CommentChat> {
 
                                           AppService()
                                               .insertCommentChat(
-                                                  docIdChat: widget.docIdChat,
+                                                  docIdChat: appController
+                                                      .docIdChats[0],
                                                   commentChatModel: chatModel)
                                               .then((value) async {
                                             await AppService()
                                                 .findUserModel(
-                                                    uid: widget
-                                                        .chatModel.uidChat)
+                                                    uid: appController
+                                                        .chatModels[0].uidChat)
                                                 .then((value) {
                                               print(
                                                   '##4june userModel ของเจ้าของ post --> ${value!.toMap()}');
@@ -576,17 +579,17 @@ class _CommentChatState extends State<CommentChat> {
                                                       title:
                                                           'คุณมี Comment ใหม่',
                                                       body:
-                                                          '${textEditingController.text}%23${widget.index}',
-                                                      token: value!.token!)
+                                                          '${textEditingController.text}%230',
+                                                      token: value.token!)
                                                   .then((value) {
                                                 Get.back();
 
                                                 AppService()
                                                     .increaseValueComment(
-                                                        docIdChat:
-                                                            widget.docIdChat,
-                                                        chatModel:
-                                                            widget.chatModel);
+                                                        docIdChat: appController
+                                                            .docIdChats[0],
+                                                        chatModel: appController
+                                                            .chatModels[0]);
 
                                                 textEditingController.text = '';
                                                 appController.urlAvatarChooses
@@ -603,11 +606,10 @@ class _CommentChatState extends State<CommentChat> {
                                   ],
                                 ),
                               ],
-                            )
-                          : const SizedBox(),
-                    ],
-                  ),
-                );
+                            ),
+                          ],
+                        ),
+                      );
               });
         },
       ),
@@ -620,31 +622,22 @@ class _CommentChatState extends State<CommentChat> {
 
   AppBar mainAppBar() {
     return AppBar(
-      leading: WidgetIconButton(
-        iconData: Icons.arrow_back,
-        pressFunc: () {
-          controller.checkIn.value = false;
-          AppService()
-              .checkInOwnerChat(
-                  docIdChat: widget.docIdChat,
-                  chatModel: widget.chatModel,
-                  checkIn: controller.checkIn.value)
-              .then((value) {
-            Get.back();
-          });
-        },
-      ),
-      title: Row(
-        children: [
-          WidgetText(
-            text: widget.chatModel.disPlayName,
-            textStyle: AppConstant().h2Style(),
-          ),
-        ],
+      title: WidgetForm(
+        fillColor: AppConstant.realMid,
+        prefixIcon: Icon(
+          Icons.search,
+          color: AppConstant.realFront,
+        ),
+        textStyle: AppConstant().h3Style(),
+        height: 40,
       ),
       actions: [
-        WidgetCircularImage(
-            urlImage: controller.userModelsLogin.last.urlAvatar!)
+        Obx(() {
+          return controller.userModelsLogin.isEmpty
+              ? const SizedBox()
+              : WidgetCircularImage(
+                  urlImage: controller.userModelsLogin.last.urlAvatar!);
+        })
       ],
     );
   }
