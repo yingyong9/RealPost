@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class AppConstant {
   // static String docIdRoomData = 'vua1KoyJNdYKPiys8oY3';
-  static String docIdRoomData = 'JtsxAUXHFypOPE5tdU6E'; 
+  static String docIdRoomData = 'JtsxAUXHFypOPE5tdU6E';
+  static String docIdChat = '0teBbEDSyimbXgvzYwGJ';
 
   static int amountLoadPage = 1;
 

@@ -10,6 +10,7 @@ import 'package:realpost/models/comment_salse_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/salse_group_model.dart';
 import 'package:realpost/models/user_model.dart';
+import 'package:realpost/states/comment_chat.dart';
 import 'package:realpost/states/emoji_page.dart';
 import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
@@ -33,6 +34,55 @@ class AppDialog {
   AppDialog({
     required this.context,
   });
+
+  void buyDialog({required ChatModel commentChatModel}) {
+    Get.dialog(AlertDialog(
+      title: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          WidgetImageInternet(
+            urlImage: commentChatModel.urlMultiImages[0],
+            width: 60,
+            height: 60,
+            boxFit: BoxFit.cover,
+          ),
+          const SizedBox(
+            width: 12,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              WidgetText(
+                text: commentChatModel.message,
+                textStyle: AppConstant().h3Style(
+                    color: Colors.black, size: 16, fontWeight: FontWeight.bold),
+              ),
+              Row(
+                children: [
+                  WidgetText(
+                    text: '฿${commentChatModel.price.toString()}',
+                    textStyle: AppConstant().h3Style(color: Colors.black),
+                  ),
+                 
+                  WidgetIconButton(
+                    pressFunc: () {},
+                    iconData: Icons.remove_circle,
+                    color: Colors.black,
+                  ),
+                  WidgetText(text: '1', textStyle: AppConstant().h3Style(color: Colors.black),),
+                   WidgetIconButton(
+                    pressFunc: () {},
+                    iconData: Icons.add_circle,
+                    color: Colors.black,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    ));
+  }
 
   void answerDialog({required String docIdComment, required String docIdChat}) {
     TextEditingController textEditingController = TextEditingController();

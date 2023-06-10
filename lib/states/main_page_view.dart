@@ -50,12 +50,18 @@ class _MainPageViewState extends State<MainPageView> {
     controller.pageControllers.add(
         PageController(initialPage: controller.indexBodyMainPageView.value));
 
-    AppService().initialSetup(context: context);
+    AppService().initialSetup(context: context).then((value) {
+      // Get.to(CommentChat(
+      //                     docIdChat: controller.docIdChats[0],
+      //                     chatModel: controller.chatModels[0],
+      //                     index: 0,
+      //                   ));
+    });
     AppService().aboutNoti(context: context);
     AppService().freshUserModelLogin();
     AppService().readStatData();
 
-    // AppService().readChatForDelete();
+   
   }
 
   
@@ -591,9 +597,7 @@ class _MainPageViewState extends State<MainPageView> {
                               chatModel: appController.chatModels[index])
                           .then((value) {
                         Get.to(CommentChat(
-                          docIdChat: appController.docIdChats[index],
-                          chatModel: appController.chatModels[index],
-                          index: index,
+                         
                         ));
                       });
                     },

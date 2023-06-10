@@ -312,7 +312,7 @@ class AppService {
         .collection('room')
         .doc(AppConstant.docIdRoomData)
         .collection('chat')
-        .doc(docIdChat)
+        .doc(AppConstant.docIdChat)
         .collection('comment')
         .orderBy('timestamp', descending: false)
         .snapshots()
@@ -604,10 +604,8 @@ class AppService {
               text: 'ดู',
               pressFunc: () {
                 Get.back();
-                Get.to(CommentChat(
-                    docIdChat: appController.docIdChats[indexChat],
-                    chatModel: appController.chatModels[indexChat],
-                    index: indexChat));
+                Get.to(const CommentChat(
+                   ));
               },
             ),
             WidgetTextButton(
@@ -1015,8 +1013,7 @@ class AppService {
     AppService().freshUserModelLogin();
 
     appController.readAllRoom().then((value) {
-      print(
-          '##17april docIdRoom.length --> ${appController.docIdRooms.length}');
+     
 
       appController.noRoom.value = false;
 
