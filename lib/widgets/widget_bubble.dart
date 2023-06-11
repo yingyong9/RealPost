@@ -15,7 +15,7 @@ class WidgetBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     return BubbleNormal(
       text: string,
-      color: Color.fromARGB(255, 54, 47, 47),
+      color: const Color.fromARGB(255, 54, 47, 47),
       textStyle: AppConstant().h3Style(color: Colors.white),
     );
   }

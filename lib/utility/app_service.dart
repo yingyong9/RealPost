@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'dart:io';
 import 'dart:math';
@@ -39,22 +39,49 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
+  void readAnswer({required String docIdComment}) {
+    if (appController.answerChatModels.isNotEmpty) {
+      appController.answerChatModels.clear();
+    }
+
+    FirebaseFirestore.instance
+        .collection('room')
+        .doc(AppConstant.docIdRoomData)
+        .collection('chat')
+        .doc(AppConstant.docIdChat)
+        .collection('comment')
+        .doc(docIdComment)
+        .collection('answer')
+        .orderBy('timestamp')
+        .snapshots()
+        .listen((event) {
+      if (event.docs.isNotEmpty) {
+        if (appController.answerChatModels.isNotEmpty) {
+          appController.answerChatModels.clear();
+        }
+
+        for (var element in event.docs) {
+          ChatModel answerChatModel = ChatModel.fromMap(element.data());
+          appController.answerChatModels.add(answerChatModel);
+        }
+      }
+    });
+  }
+
   Future<void> insertAnswer(
-      {required AnswerModel answerModel,
-      required String docIdChat,
-      required String docIdComment}) async {
+      {required ChatModel chatModel, required String docIdComment}) async {
     await FirebaseFirestore.instance
         .collection('room')
         .doc(AppConstant.docIdRoomData)
         .collection('chat')
-        .doc(docIdChat)
+        .doc(AppConstant.docIdChat)
         .collection('comment')
         .doc(docIdComment)
         .collection('answer')
         .doc()
-        .set(answerModel.toMap())
+        .set(chatModel.toMap())
         .then((value) {
-      print('##6june ---> Success at insertAnser');
+      print('##11june ---> Success at insertAnser');
     });
   }
 
@@ -292,11 +319,6 @@ class AppService {
       }
 
       print('##8june urlNewImage ---> $urlNewImage');
-      
-
-
-
-
     });
   }
 
@@ -328,13 +350,9 @@ class AppService {
         for (var element in event.docs) {
           print('##7june docComment ----> ${element.id}');
 
-         
-
           ChatModel commentChatModel = ChatModel.fromMap(element.data());
           appController.commentChatModels.add(commentChatModel);
           appController.docIdCommentChats.add(element.id);
-
-         
         } // for1
       }
     });
@@ -604,8 +622,7 @@ class AppService {
               text: 'ดู',
               pressFunc: () {
                 Get.back();
-                Get.to(const CommentChat(
-                   ));
+                Get.to(const CommentChat());
               },
             ),
             WidgetTextButton(
@@ -1013,8 +1030,6 @@ class AppService {
     AppService().freshUserModelLogin();
 
     appController.readAllRoom().then((value) {
-     
-
       appController.noRoom.value = false;
 
       appController.processReadCommentSalses();
@@ -1317,7 +1332,7 @@ class AppService {
 
       processSendNotiAllUser(
           title: 'มีโพสใหม่ ของคุณ ${chatModel.disPlayName}',
-          body: '${chatModel.message}');
+          body: chatModel.message);
 
       appController.shareLocation.value = false;
       appController.messageChats.clear();

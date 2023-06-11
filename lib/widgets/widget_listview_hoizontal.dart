@@ -43,7 +43,6 @@ class _WidgetListViewHorizontalState extends State<WidgetListViewHorizontal> {
     return GetX(
         init: AppController(),
         builder: (AppController appController) {
-          print('tabChooses ---> ${appController.tabChooses.length}');
           return SizedBox(
             height: widget.height,
             child: ListView.builder(
@@ -64,8 +63,6 @@ class _WidgetListViewHorizontalState extends State<WidgetListViewHorizontal> {
                   tapFunc: () {
                     appController.displayPin.value = true;
 
-                    print(
-                        '##4april You tap index ---> $index  displayPin --> ${appController.displayPin}');
 
                     int i = 0;
                     for (var element in appController.tabChooses) {

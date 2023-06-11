@@ -45,7 +45,7 @@ class _AddRoomState extends State<AddRoom> {
       backgroundColor: AppConstant.bgColor,
       appBar: AppBar(
         title: const WidgetText(text: 'รูปที่คุณต้องการ'),
-        actions: [],
+       
       ),
       body: LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
         return GetX(
@@ -172,7 +172,7 @@ class _AddRoomState extends State<AddRoom> {
                   // appController.readAllRoom();
                   // Get.back();
 
-                  Get.offAll(MainPageView());
+                  Get.offAll(const MainPageView());
                 });
               }
             },

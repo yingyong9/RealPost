@@ -33,7 +33,6 @@ class _MainPageForGuestState extends State<MainPageForGuest> {
       backgroundColor: AppConstant.bgColor,
       body: LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
         return Obx(() {
-          print('##7june chatModels ---> ${appController.chatModels.length}');
           return appController.roomModels.isEmpty
               ? const WidgetProgessAnimation()
               : SizedBox(
@@ -158,7 +157,7 @@ class _MainPageForGuestState extends State<MainPageForGuest> {
   Widget scoreButton(AppController appController, int index) {
     return Row(
       children: [
-        WidgetImage(
+        const WidgetImage(
           path: 'images/graph.jpg',
           size: 36,
         ),
@@ -180,7 +179,7 @@ class _MainPageForGuestState extends State<MainPageForGuest> {
         const SizedBox(
           width: 30,
         ),
-        WidgetImage(
+        const WidgetImage(
           path: 'images/up.jpg',
           size: 36,
         ),

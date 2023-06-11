@@ -110,8 +110,9 @@ class AppController extends GetxController {
   RxList<File> fileImageComments = <File>[].obs;
   RxBool checkIn = true.obs;
   RxList<StatDataModel> statDataModels = <StatDataModel>[].obs;
-
   RxList<List<AnswerModel>> listAnswerModels = <List<AnswerModel>>[].obs;
+
+  RxList<ChatModel> answerChatModels = <ChatModel>[].obs;
 
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
@@ -266,7 +267,7 @@ class AppController extends GetxController {
 
             print('##12april docIdPrivateChat ---> ${docIdPrivateChats.last}');
 
-            await FirebaseFirestore.instance
+            FirebaseFirestore.instance
                 .collection('privatechat')
                 .doc(element.id)
                 .collection('chat')

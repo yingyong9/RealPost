@@ -6,6 +6,6 @@ class BodyMe extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WidgetText(text: 'This is Me');
+    return const WidgetText(text: 'This is Me');
   }
 }

@@ -56,8 +56,6 @@ class WidgetListMessageLogin extends StatelessWidget {
                   // myCondition = status ||
                   //     (appController.chatModels[index].uidChat == user!.uid);
 
-                  print(
-                      '##9jan status, myCondition ==> $status , $myCondition');
                   // print(
                   //     '##9jan uidLogin ==> ${user!.uid} ==== uidPost ==> ${appController.chatModels[index].uidChat}');
 

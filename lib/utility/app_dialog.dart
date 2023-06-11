@@ -10,7 +10,6 @@ import 'package:realpost/models/comment_salse_model.dart';
 import 'package:realpost/models/room_model.dart';
 import 'package:realpost/models/salse_group_model.dart';
 import 'package:realpost/models/user_model.dart';
-import 'package:realpost/states/comment_chat.dart';
 import 'package:realpost/states/emoji_page.dart';
 import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
@@ -109,16 +108,16 @@ class AppDialog {
               print('##6june docIdComment ---> $docIdComment');
               print('##6june docIdChat ---> $docIdChat');
 
-              AppService()
-                  .insertAnswer(
-                      answerModel: answerModel,
-                      docIdChat: docIdChat,
-                      docIdComment: docIdComment)
-                  .then((value) {
-                print('##6june Success Insert Answer');
-                // AppService().readCommentChat(docIdChat: docIdChat);
-                Get.back();
-              });
+              // AppService()
+              //     .insertAnswer(
+              //        chatModel: null,
+              //         docIdChat: docIdChat,
+              //         docIdComment: docIdComment)
+              //     .then((value) {
+              //   print('##6june Success Insert Answer');
+              //   // AppService().readCommentChat(docIdChat: docIdChat);
+              //   Get.back();
+              // });
             },
           ),
           WidgetTextButton(
@@ -276,7 +275,7 @@ class AppDialog {
               text: roomModel.room,
               textStyle: AppConstant().h3Style(color: Colors.black),
             ),
-            WidgetChooseAmountSalse(),
+            const WidgetChooseAmountSalse(),
           ],
         ),
         actions: [
@@ -694,7 +693,7 @@ class AppDialog {
                                   width: 200,
                                   height: 200,
                                 ),
-                      Container(
+                      SizedBox(
                         height: 50,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,

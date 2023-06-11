@@ -23,7 +23,6 @@ class _MainWebViewState extends State<MainWebView> {
       ..setBackgroundColor(Colors.white)
       ..setNavigationDelegate(NavigationDelegate(
         onProgress: (progress) {
-          print('You Press Screen');
         },
         onPageStarted: (url) {},
         onPageFinished: (url) {},

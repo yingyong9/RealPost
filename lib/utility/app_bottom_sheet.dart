@@ -371,7 +371,7 @@ class AppBottomSheet {
           builder: (AppController appController) {
             return Container(
               decoration: BoxDecoration(color: AppConstant.bgColor),
-              constraints: BoxConstraints(maxHeight: 356, minHeight: 150),
+              constraints: const BoxConstraints(maxHeight: 356, minHeight: 150),
               // height: 356,
               // height: 100,
               child: Stack(

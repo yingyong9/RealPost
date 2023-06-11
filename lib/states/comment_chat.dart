@@ -1,10 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:realpost/models/chat_model.dart';
+import 'package:realpost/states/answer_chat.dart';
 import 'package:realpost/states/display_photo_view.dart';
 import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
@@ -17,7 +19,6 @@ import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
-import 'package:realpost/widgets/widget_score_faverite.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
 import 'package:badges/badges.dart' as badges;
@@ -41,9 +42,6 @@ class _CommentChatState extends State<CommentChat> {
 
     AppService().initialSetup(context: context);
     AppService().aboutNoti(context: context);
-    // AppService().freshUserModelLogin();
-    // AppService().readStatData();
-
     AppService().readCommentChat(docIdChat: '0teBbEDSyimbXgvzYwGJ');
   }
 
@@ -71,41 +69,6 @@ class _CommentChatState extends State<CommentChat> {
                               height: boxConstraints.maxHeight - 70,
                               child: ListView(
                                 children: [
-                                  // Container(
-                                  //   margin: const EdgeInsets.symmetric(horizontal: 8),
-                                  //   padding: const EdgeInsets.symmetric(
-                                  //       horizontal: 16, vertical: 16),
-                                  //   decoration: AppConstant().realBox(),
-                                  //   child: Column(
-                                  //     crossAxisAlignment: CrossAxisAlignment.start,
-                                  //     mainAxisSize: MainAxisSize.min,
-                                  //     children: [
-                                  //       appController.chatModels[0].message.isEmpty
-                                  //           ? const SizedBox()
-                                  //           : WidgetText(
-                                  //               text: appController
-                                  //                   .chatModels[0].message,
-                                  //               textStyle: AppConstant().h3Style(
-                                  //                   color: Colors.white,
-                                  //                   size: 20,
-                                  //                   fontWeight: FontWeight.bold),
-                                  //             ),
-                                  //       const SizedBox(
-                                  //         height: 16,
-                                  //       ),
-                                  //       WidgetScoreFaverite(
-                                  //         index: 0,
-                                  //         chatModel: appController.chatModels[0],
-                                  //       ),
-                                  //       const SizedBox(
-                                  //         height: 16,
-                                  //       ),
-                                  //     ],
-                                  //   ),
-                                  // ),
-                                  // const SizedBox(
-                                  //   height: 16,
-                                  // ),
                                   appController.commentChatModels.isEmpty
                                       ? const SizedBox()
                                       : ListView.builder(
@@ -224,77 +187,34 @@ class _CommentChatState extends State<CommentChat> {
                                                             ],
                                                           ),
                                                         ),
-                                                  WidgetText(
-                                                    text: appController
+                                                  // WidgetText(
+                                                  //   text: appController
+                                                  //       .commentChatModels[
+                                                  //           index]
+                                                  //       .message,
+                                                  //   textStyle: AppConstant()
+                                                  //       .h3Style(size: 16),
+                                                  // ),
+
+                                                  ExpandableText(
+                                                    appController
                                                         .commentChatModels[
                                                             index]
                                                         .message,
-                                                    textStyle: AppConstant()
-                                                        .h3Style(size: 16),
+                                                    expandText: 'ดูเพิ่มเติม',
+                                                    collapseText: '... ย่อ',
+                                                    style:
+                                                        AppConstant().h3Style(),
+                                                    linkStyle: AppConstant()
+                                                        .h3Style(
+                                                            size: 19,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                    maxLines: 2,
+                                                    linkColor: Colors.white,
                                                   ),
-                                                  // appController
-                                                  //         .listAnswerModels.isEmpty
-                                                  //     ? const SizedBox()
-                                                  //     : appController
-                                                  //             .listAnswerModels[index]
-                                                  //             .isEmpty
-                                                  //         ? const SizedBox()
-                                                  //         : Container(
-                                                  //             margin: const EdgeInsets
-                                                  //                     .only(
-                                                  //                 left: 32, top: 8),
-                                                  //             child: ListView.builder(
-                                                  //               physics:
-                                                  //                   const ScrollPhysics(),
-                                                  //               shrinkWrap: true,
-                                                  //               itemCount: appController
-                                                  //                   .listAnswerModels[
-                                                  //                       index]
-                                                  //                   .length,
-                                                  //               itemBuilder: (context,
-                                                  //                   index3) {
-                                                  //                 print(
-                                                  //                     '##1june index = $index, index3 = $index3');
-                                                  //                 print(
-                                                  //                     '##1june listAnswerModles at index = $index ==> ${appController.listAnswerModels[index].length}');
-                                                  //                 return Padding(
-                                                  //                   padding:
-                                                  //                       const EdgeInsets
-                                                  //                               .only(
-                                                  //                           bottom:
-                                                  //                               12),
-                                                  //                   child: Row(
-                                                  //                     crossAxisAlignment:
-                                                  //                         CrossAxisAlignment
-                                                  //                             .start,
-                                                  //                     children: [
-                                                  //                       WidgetCircularImage(
-                                                  //                         urlImage: appController
-                                                  //                             .listAnswerModels[
-                                                  //                                 index]
-                                                  //                                 [
-                                                  //                                 index3]
-                                                  //                             .avatarAnswer,
-                                                  //                         radius: 12,
-                                                  //                       ),
-                                                  //                       const SizedBox(
-                                                  //                         width: 8,
-                                                  //                       ),
-                                                  //                       Expanded(
-                                                  //                           child: WidgetTextRich(
-                                                  //                               head: appController
-                                                  //                                   .listAnswerModels[index][
-                                                  //                                       index3]
-                                                  //                                   .nameAnswer,
-                                                  //                               value: appController
-                                                  //                                   .listAnswerModels[index][index3]
-                                                  //                                   .answer)),
-                                                  //                     ],
-                                                  //                   ),
-                                                  //                 );
-                                                  //               },
-                                                  //             ),
-                                                  //           ),
+
                                                   Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
@@ -376,14 +296,17 @@ class _CommentChatState extends State<CommentChat> {
                                                           WidgetButton(
                                                             label: 'สนทนา',
                                                             pressFunc: () {
-                                                              AppDialog(context: context).answerDialog(
-                                                                  docIdComment:
-                                                                      appController
-                                                                              .docIdCommentChats[
-                                                                          index],
-                                                                  docIdChat:
-                                                                      appController
-                                                                          .docIdChats[0]);
+                                                              Get.to(
+                                                                   AnswerChat(docIdComment: appController.docIdCommentChats[index],));
+
+                                                              // AppDialog(context: context).answerDialog(
+                                                              //     docIdComment:
+                                                              //         appController
+                                                              //                 .docIdCommentChats[
+                                                              //             index],
+                                                              //     docIdChat:
+                                                              //         appController
+                                                              //             .docIdChats[0]);
                                                             },
                                                             iconWidget:
                                                                 const Icon(
@@ -607,6 +530,19 @@ class _CommentChatState extends State<CommentChat> {
                                 ),
                               ],
                             ),
+
+
+
+
+
+
+
+
+
+
+
+
+                            
                           ],
                         ),
                       );
