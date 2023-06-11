@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, sort_child_properties_last, prefer_const_constructors
+// ignore_for_file: avoid_print, sort_child_properties_last, prefer_const_constructors, avoid_unnecessary_containers
 
 import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -185,7 +185,7 @@ class _MainPageViewState extends State<MainPageView> {
           const SizedBox(
             width: 8,
           ),
-          Container(
+          SizedBox(
             // decoration:
             //     AppConstant().boxChatGuest(bgColor: Colors.grey.shade700),
             width: boxConstraints.maxWidth * 0.6,
@@ -283,9 +283,7 @@ class _MainPageViewState extends State<MainPageView> {
             )
             .toList(),
         hint: Container(
-          // padding: const EdgeInsets.all(4),
-          // margin: const EdgeInsets.only(left: 28),
-          // decoration: AppConstant().boxCurve(color: Colors.red.shade700),
+         
           child: const Icon(
             Icons.menu,
             color: Colors.white,

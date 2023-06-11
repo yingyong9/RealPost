@@ -5,6 +5,6 @@ class BodyTotalPrice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text('total price');
+    return const Text('total price');
   }
 }

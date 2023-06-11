@@ -26,8 +26,8 @@ class AppConstant {
   static Color bgChat = Colors.white;
 
   static Color realBg = const Color.fromARGB(255, 21, 20, 20);
-  static Color realMid = Color.fromARGB(255, 38, 36, 36);
-  static Color realFront = Color.fromARGB(255, 137, 129, 129);
+  static Color realMid = const Color.fromARGB(255, 38, 36, 36);
+  static Color realFront = const Color.fromARGB(255, 137, 129, 129);
 
   static String appName = 'Real Post.';
   static String urlAvatar =
@@ -39,7 +39,7 @@ class AppConstant {
   BoxDecoration realBox() => BoxDecoration(
       color: AppConstant.realBg, borderRadius: BorderRadius.circular(10));
 
-  BoxDecoration gradientColor() => BoxDecoration(
+  BoxDecoration gradientColor() => const BoxDecoration(
         gradient: LinearGradient(
           colors: [
             Color.fromARGB(255, 234, 43, 215),

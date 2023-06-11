@@ -34,7 +34,6 @@ class _CalculatePriceAndTimeState extends State<CalculatePriceAndTime> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
-      print('##9mar maxWidth ---> ${widget.maxWidth}');
       return Container(
         margin: const EdgeInsets.only(top: 8),
         width: 200,
@@ -42,7 +41,7 @@ class _CalculatePriceAndTimeState extends State<CalculatePriceAndTime> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Container(
+            SizedBox(
               width: 200,
               child: Row(
                 // mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -56,8 +55,6 @@ class _CalculatePriceAndTimeState extends State<CalculatePriceAndTime> {
                   WidgetButton(
                     label: 'Pin',
                     pressFunc: () {
-                      print('docIdRoom =====> ${widget.docIdRoom}');
-                      print('boxConstaint ---> ${boxConstraints.maxWidth}');
 
                       AppBottomSheet().salseBottomSheet(
                         roomModel: widget.roomModel,

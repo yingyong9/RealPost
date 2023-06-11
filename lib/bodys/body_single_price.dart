@@ -6,11 +6,11 @@ class BodySinglePrice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
-      return Container(
+      return SizedBox(
         
         width: boxConstraints.maxWidth,
         height: boxConstraints.maxHeight,
-        child: Text('single Price'),
+        child: const Text('single Price'),
       );
     });
   }

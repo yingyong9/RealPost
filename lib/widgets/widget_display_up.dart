@@ -24,7 +24,6 @@ class _WidgetDisplayUpState extends State<WidgetDisplayUp> {
     return GetX(
         init: AppController(),
         builder: (AppController appController) {
-          print('##24may indexChat --> ${widget.indexChat} chatModels ---> ${appController.chatModels.length}');
           return WidgetText(
             // text: appController.chatModels[widget.indexChat].up.toString(),
             text: appController.chatModels[widget.indexChat].up.toString(),
