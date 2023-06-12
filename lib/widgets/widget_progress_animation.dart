@@ -6,12 +6,12 @@ class WidgetProgessAnimation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return Center(
-    //   child: LoadingAnimationWidget.flickr(
-    //       leftDotColor: Colors.pink, rightDotColor: Colors.blue, size: 60),
-    // );
     return Center(
-        child:
-            LoadingAnimationWidget.bouncingBall(color: Colors.white, size: 60));
+      child: LoadingAnimationWidget.flickr(
+          leftDotColor: Colors.red, rightDotColor: Colors.white, size: 50),
+    );
+    // return Center(
+    //     child:
+    //         LoadingAnimationWidget.bouncingBall(color: Colors.white, size: 60));
   }
 }

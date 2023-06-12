@@ -348,7 +348,7 @@ class AppService {
 
         //for1
         for (var element in event.docs) {
-          print('##7june docComment ----> ${element.id}');
+          // print('##7june docComment ----> ${element.id}');
 
           ChatModel commentChatModel = ChatModel.fromMap(element.data());
           appController.commentChatModels.add(commentChatModel);

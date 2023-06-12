@@ -19,6 +19,7 @@ import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
+import 'package:realpost/widgets/widget_progress_animation.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
 import 'package:badges/badges.dart' as badges;
@@ -59,7 +60,7 @@ class _CommentChatState extends State<CommentChat> {
                     '##10june commentChatModels -----> ${appController.commentChatModels.length}');
 
                 return appController.chatModels.isEmpty
-                    ? const SizedBox()
+                    ? const WidgetProgessAnimation()
                     : SizedBox(
                         width: boxConstraints.maxWidth,
                         height: boxConstraints.maxHeight,
@@ -294,7 +295,7 @@ class _CommentChatState extends State<CommentChat> {
                                                                   size: 36,
                                                                 ),
                                                           WidgetButton(
-                                                            label: 'สนทนา',
+                                                            label: appController.commentChatModels[index].readed! ? 'Stand by' :'สนทนา'  ,
                                                             pressFunc: () {
                                                               Get.to(
                                                                    AnswerChat(docIdComment: appController.docIdCommentChats[index],));
