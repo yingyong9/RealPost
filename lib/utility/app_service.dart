@@ -351,11 +351,13 @@ class AppService {
       appController.docIdCommentChats.clear();
     }
 
-    FirebaseFirestore.instance
+    DocumentReference documentReference = FirebaseFirestore.instance
         .collection('room')
         .doc(AppConstant.docIdRoomData)
         .collection('chat')
-        .doc(AppConstant.docIdChat)
+        .doc(AppConstant.docIdChat);
+
+    documentReference
         .collection('comment')
         .orderBy('timestamp', descending: false)
         .snapshots()
@@ -377,9 +379,25 @@ class AppService {
           appController.commentChatModels.add(commentChatModel);
           appController.docIdCommentChats.add(element.id);
 
-          
+          documentReference
+              .collection('comment')
+              .doc(element.id)
+              .collection('answer')
+              .get()
+              .then((value) {
+            if (value.docs.isNotEmpty) {
+              //have answer
 
-          appController.listAnswerModels.add(answerModels);
+              
+              // for (var element in value.docs) {
+              //   AnswerModel answerModel = AnswerModel.fromMap(element.data());
+              //   answerModels.add(answerModel);
+              // }
+              appController.listAnswerModels.add(answerModels);
+            } else {
+              appController.listAnswerModels.add(answerModels);
+            }
+          });
         } // for1
       }
     });

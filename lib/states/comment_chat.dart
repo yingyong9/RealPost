@@ -216,7 +216,9 @@ class _CommentChatState extends State<CommentChat> {
                                                     linkColor: Colors.white,
                                                   ),
 
-                                                  WidgetText(text: 'List Answer'),
+                                                  // WidgetText(
+                                                  //     text:
+                                                  //         'ขนาดของ Answer --> ${appController.listAnswerModels[index].length}'),
 
                                                   Row(
                                                     mainAxisAlignment:
