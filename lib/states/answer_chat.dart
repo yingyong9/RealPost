@@ -1,14 +1,14 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, unrelated_type_equality_checks
+// ignore_for_file: public_member_api_docs, sort_constructors_first, unrelated_type_equality_checks, avoid_print
 import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
-import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/utility/app_service.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_form.dart';
@@ -21,9 +21,11 @@ class AnswerChat extends StatefulWidget {
   const AnswerChat({
     Key? key,
     required this.docIdComment,
+    required this.commentChatModel,
   }) : super(key: key);
 
   final String docIdComment;
+  final ChatModel commentChatModel;
 
   @override
   State<AnswerChat> createState() => _AnswerChatState();
@@ -37,15 +39,32 @@ class _AnswerChatState extends State<AnswerChat> {
   @override
   void initState() {
     super.initState();
-    print('##11june docIdComment at AnswerChat ---> ${widget.docIdComment}');
+    print('##13june docIdComment at AnswerChat ---> ${widget.docIdComment}');
     AppService().readAnswer(docIdComment: widget.docIdComment);
+    AppService().checkOwnerComment(
+        docIdComment: widget.docIdComment,
+        commentChatModel: widget.commentChatModel,
+        readed: true);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppConstant.bgColor,
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: WidgetIconButton(
+          pressFunc: () {
+            AppService()
+                .checkOwnerComment(
+                    docIdComment: widget.docIdComment,
+                    commentChatModel: widget.commentChatModel,
+                    readed: false)
+                .then((value) => Get.back());
+          },
+          iconData:
+              GetPlatform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
+        ),
+      ),
       body: LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
         return SizedBox(
           width: boxConstraints.maxWidth,

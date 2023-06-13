@@ -39,6 +39,27 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
+  Future<void> checkOwnerComment(
+      {required String docIdComment,
+      required ChatModel commentChatModel,
+      required bool readed}) async {
+    if (appController.mainUid.value == commentChatModel.uidChat) {
+      Map<String, dynamic> map = commentChatModel.toMap();
+      map['readed'] = readed;
+      FirebaseFirestore.instance
+          .collection('room')
+          .doc(AppConstant.docIdRoomData)
+          .collection('chat')
+          .doc(AppConstant.docIdChat)
+          .collection('comment')
+          .doc(docIdComment)
+          .update(map)
+          .then((value) {
+        print('##13june Owner OK');
+      });
+    }
+  }
+
   void readAnswer({required String docIdComment}) {
     if (appController.answerChatModels.isNotEmpty) {
       appController.answerChatModels.clear();
@@ -330,11 +351,13 @@ class AppService {
       appController.docIdCommentChats.clear();
     }
 
-    FirebaseFirestore.instance
+    DocumentReference documentReference = FirebaseFirestore.instance
         .collection('room')
         .doc(AppConstant.docIdRoomData)
         .collection('chat')
-        .doc(AppConstant.docIdChat)
+        .doc(AppConstant.docIdChat);
+
+    documentReference
         .collection('comment')
         .orderBy('timestamp', descending: false)
         .snapshots()
@@ -346,6 +369,8 @@ class AppService {
           appController.listAnswerModels.clear();
         }
 
+        var answerModels = <AnswerModel>[];
+
         //for1
         for (var element in event.docs) {
           // print('##7june docComment ----> ${element.id}');
@@ -353,6 +378,26 @@ class AppService {
           ChatModel commentChatModel = ChatModel.fromMap(element.data());
           appController.commentChatModels.add(commentChatModel);
           appController.docIdCommentChats.add(element.id);
+
+          documentReference
+              .collection('comment')
+              .doc(element.id)
+              .collection('answer')
+              .get()
+              .then((value) {
+            if (value.docs.isNotEmpty) {
+              //have answer
+
+              
+              // for (var element in value.docs) {
+              //   AnswerModel answerModel = AnswerModel.fromMap(element.data());
+              //   answerModels.add(answerModel);
+              // }
+              appController.listAnswerModels.add(answerModels);
+            } else {
+              appController.listAnswerModels.add(answerModels);
+            }
+          });
         } // for1
       }
     });
