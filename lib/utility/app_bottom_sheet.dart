@@ -195,7 +195,7 @@ class AppBottomSheet {
                     child: WidgetForm(
                       fillColor: AppConstant.realMid,
                       controller: textEditingController,
-                      hint: 'Comment',
+                      hint: 'Real Post',
                       hintStyle: AppConstant().h3Style(color: Colors.white),
                       textStyle: AppConstant().h3Style(color: Colors.white),
                       suffixIcon: const Row(
@@ -298,7 +298,7 @@ class AppBottomSheet {
           child: WidgetForm(
             fillColor: AppConstant.realMid,
             controller: textEditingController,
-            hint: 'Comment',
+            hint: 'Real Post',
             hintStyle: AppConstant().h3Style(color: Colors.white),
             textStyle: AppConstant().h3Style(color: Colors.white),
             suffixIcon: const Row(

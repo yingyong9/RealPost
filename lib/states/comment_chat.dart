@@ -57,7 +57,7 @@ class _CommentChatState extends State<CommentChat> {
               init: AppController(),
               builder: (AppController appController) {
                 print(
-                    '##10june commentChatModels -----> ${appController.commentChatModels.length}');
+                    '##13june listAnserModels -----> ${appController.listAnswerModels.length}');
 
                 return appController.chatModels.isEmpty
                     ? const WidgetProgessAnimation()
@@ -216,6 +216,8 @@ class _CommentChatState extends State<CommentChat> {
                                                     linkColor: Colors.white,
                                                   ),
 
+                                                  WidgetText(text: 'List Answer'),
+
                                                   Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
@@ -295,10 +297,23 @@ class _CommentChatState extends State<CommentChat> {
                                                                   size: 36,
                                                                 ),
                                                           WidgetButton(
-                                                            label: appController.commentChatModels[index].readed! ? 'Stand by' :'สนทนา'  ,
+                                                            label: appController
+                                                                    .commentChatModels[
+                                                                        index]
+                                                                    .readed!
+                                                                ? 'Live Chat'
+                                                                : 'สนทนา',
                                                             pressFunc: () {
-                                                              Get.to(
-                                                                   AnswerChat(docIdComment: appController.docIdCommentChats[index],));
+                                                              Get.to(AnswerChat(
+                                                                docIdComment:
+                                                                    appController
+                                                                            .docIdCommentChats[
+                                                                        index],
+                                                                commentChatModel:
+                                                                    appController
+                                                                            .commentChatModels[
+                                                                        index],
+                                                              ));
 
                                                               // AppDialog(context: context).answerDialog(
                                                               //     docIdComment:
@@ -315,8 +330,12 @@ class _CommentChatState extends State<CommentChat> {
                                                               color:
                                                                   Colors.white,
                                                             ),
-                                                            bgColor:
-                                                                Colors.black,
+                                                            bgColor: appController
+                                                                    .commentChatModels[
+                                                                        index]
+                                                                    .readed!
+                                                                ? Colors.red
+                                                                : Colors.black,
                                                           ),
                                                         ],
                                                       ),
@@ -420,7 +439,7 @@ class _CommentChatState extends State<CommentChat> {
                                       child: WidgetForm(
                                         fillColor: AppConstant.realMid,
                                         controller: textEditingController,
-                                        hint: 'Live Post',
+                                        hint: 'Real Post',
                                         hintStyle: AppConstant()
                                             .h3Style(color: Colors.white),
                                         textStyle: AppConstant()
@@ -531,19 +550,6 @@ class _CommentChatState extends State<CommentChat> {
                                 ),
                               ],
                             ),
-
-
-
-
-
-
-
-
-
-
-
-
-                            
                           ],
                         ),
                       );
