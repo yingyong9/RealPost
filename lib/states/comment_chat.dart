@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,12 @@ class _CommentChatState extends State<CommentChat> {
               init: AppController(),
               builder: (AppController appController) {
                 print(
-                    '##13june listAnserModels -----> ${appController.listAnswerModels.length}');
+                    '##14june listAnserModels -----> ${appController.listAnswerModels.length}');
+                if (appController.listAnswerModels.isNotEmpty) {
+                  for (var element in appController.listAnswerModels) {
+                    print('##14june ans ---> $element');
+                  }
+                }
 
                 return appController.chatModels.isEmpty
                     ? const WidgetProgessAnimation()
@@ -216,9 +222,29 @@ class _CommentChatState extends State<CommentChat> {
                                                     linkColor: Colors.white,
                                                   ),
 
-                                                  // WidgetText(
-                                                  //     text:
-                                                  //         'ขนาดของ Answer --> ${appController.listAnswerModels[index].length}'),
+                                                  appController
+                                                          .commentChatModels[
+                                                              index]
+                                                          .answers!
+                                                          .isEmpty
+                                                      ? const SizedBox()
+                                                      : ListView.builder(
+                                                          physics:
+                                                              const ScrollPhysics(),
+                                                          shrinkWrap: true,
+                                                          itemCount: appController
+                                                              .commentChatModels[
+                                                                  index]
+                                                              .answers!
+                                                              .length,
+                                                          itemBuilder: (context,
+                                                                  index2) =>
+                                                              WidgetText(
+                                                                  text: appController
+                                                                      .commentChatModels[
+                                                                          index]
+                                                                      .answers![index2]),
+                                                        ),
 
                                                   Row(
                                                     mainAxisAlignment:

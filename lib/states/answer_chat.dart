@@ -35,16 +35,19 @@ class _AnswerChatState extends State<AnswerChat> {
   AppController appController = Get.put(AppController());
 
   var textEditingController = TextEditingController();
+  Map<String, dynamic> map = {};
 
   @override
   void initState() {
     super.initState();
-    print('##13june docIdComment at AnswerChat ---> ${widget.docIdComment}');
+    map = widget.commentChatModel.toMap();
     AppService().readAnswer(docIdComment: widget.docIdComment);
     AppService().checkOwnerComment(
         docIdComment: widget.docIdComment,
         commentChatModel: widget.commentChatModel,
-        readed: true);
+        readed: true, map: map);
+
+    
   }
 
   @override
@@ -58,7 +61,7 @@ class _AnswerChatState extends State<AnswerChat> {
                 .checkOwnerComment(
                     docIdComment: widget.docIdComment,
                     commentChatModel: widget.commentChatModel,
-                    readed: false)
+                    readed: false, map: map)
                 .then((value) => Get.back());
           },
           iconData:
@@ -275,40 +278,22 @@ class _AnswerChatState extends State<AnswerChat> {
                             chatModel: chatModel,
                             docIdComment: widget.docIdComment)
                         .then((value) {
-                      textEditingController.text = '';
+                      print('##14june map before $map');
+
+                      var answers = <String>[];
+                      answers.addAll(map['answers']);
+                      answers.add(textEditingController.text);
+                      map['answers'] = answers;
+
+                      print('##14june map after $map');
+
+                      AppService()
+                          .updateCommentChat(
+                              map: map, docIdComment: widget.docIdComment)
+                          .then((value) {
+                        textEditingController.text = '';
+                      });
                     });
-
-                    // AppService()
-                    //     .insertCommentChat(
-                    //         docIdChat: appController.docIdChats[0],
-                    //         commentChatModel: chatModel)
-                    //     .then((value) async {
-                    //   await AppService()
-                    //       .findUserModel(
-                    //           uid: appController.chatModels[0].uidChat)
-                    //       .then((value) {
-                    //     print(
-                    //         '##4june userModel ของเจ้าของ post --> ${value!.toMap()}');
-
-                    //     AppService()
-                    //         .processSentNoti(
-                    //             title: 'คุณมี Comment ใหม่',
-                    //             body: '${textEditingController.text}%230',
-                    //             token: value.token!)
-                    //         .then((value) {
-                    //       Get.back();
-
-                    //       AppService().increaseValueComment(
-                    //           docIdChat: appController.docIdChats[0],
-                    //           chatModel: appController.chatModels[0]);
-
-                    //       textEditingController.text = '';
-                    //       appController.urlAvatarChooses.clear();
-                    //       // clearAllTabStamp(appController);
-                    //       appController.displayListEmoji.value = false;
-                    //     });
-                    //   });
-                    // });
                   }
                 },
               ),
