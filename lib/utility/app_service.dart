@@ -39,12 +39,24 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
+  DocumentReference documentReference = FirebaseFirestore.instance
+      .collection('room')
+      .doc(AppConstant.docIdRoomData)
+      .collection('chat')
+      .doc(AppConstant.docIdChat);
+
+  Future<void> updateCommentChat(
+      {required Map<String, dynamic> map, required String docIdComment}) async {
+    documentReference.collection('comment').doc(docIdComment).update(map);
+  }
+
   Future<void> checkOwnerComment(
       {required String docIdComment,
       required ChatModel commentChatModel,
-      required bool readed}) async {
+      required bool readed, required Map<String, dynamic> map}) async {
+
     if (appController.mainUid.value == commentChatModel.uidChat) {
-      Map<String, dynamic> map = commentChatModel.toMap();
+      // Map<String, dynamic> map = commentChatModel.toMap();
       map['readed'] = readed;
       FirebaseFirestore.instance
           .collection('room')
@@ -60,7 +72,7 @@ class AppService {
     }
   }
 
-  void readAnswer({required String docIdComment}) {
+  Future<void> readAnswer({required String docIdComment}) async {
     if (appController.answerChatModels.isNotEmpty) {
       appController.answerChatModels.clear();
     }
@@ -111,7 +123,6 @@ class AppService {
         .collection('room')
         .doc(AppConstant.docIdRoomData)
         .collection('chat')
-        .orderBy('timestamp')
         .get()
         .then((value) async {
       int i = 0;
@@ -359,7 +370,7 @@ class AppService {
 
     documentReference
         .collection('comment')
-        .orderBy('timestamp', descending: false)
+        .orderBy('timestamp')
         .snapshots()
         .listen((event) async {
       if (event.docs.isNotEmpty) {
@@ -369,35 +380,33 @@ class AppService {
           appController.listAnswerModels.clear();
         }
 
-        var answerModels = <AnswerModel>[];
-
         //for1
         for (var element in event.docs) {
-          // print('##7june docComment ----> ${element.id}');
+          //  var answerModels = <AnswerModel>[];
 
           ChatModel commentChatModel = ChatModel.fromMap(element.data());
           appController.commentChatModels.add(commentChatModel);
           appController.docIdCommentChats.add(element.id);
 
-          documentReference
-              .collection('comment')
-              .doc(element.id)
-              .collection('answer')
-              .get()
-              .then((value) {
-            if (value.docs.isNotEmpty) {
-              //have answer
+          // documentReference
+          //     .collection('comment')
+          //     .doc(element.id)
+          //     .collection('answer')
+          //     .get()
+          //     .then((value) {
 
-              
-              // for (var element in value.docs) {
-              //   AnswerModel answerModel = AnswerModel.fromMap(element.data());
-              //   answerModels.add(answerModel);
-              // }
-              appController.listAnswerModels.add(answerModels);
-            } else {
-              appController.listAnswerModels.add(answerModels);
-            }
-          });
+          //   if (value.docs.isNotEmpty) {
+          //     //have answer
+
+          //     for (var element in value.docs) {
+          //       AnswerModel answerModel = AnswerModel.fromMap(element.data());
+          //       answerModels.add(answerModel);
+          //     }
+          //     appController.listAnswerModels.add(answerModels);
+          //   } else {
+          //     appController.listAnswerModels.add(answerModels);
+          //   }
+          // });
         } // for1
       }
     });

@@ -27,6 +27,7 @@ class ChatModel {
   final String? amount;
   final String? phone;
   final String? line;
+  final List<String>? answers;
 
   ChatModel({
     required this.message,
@@ -52,6 +53,7 @@ class ChatModel {
     this.amount,
     this.phone,
     this.line,
+     this.answers,
   });
 
   Map<String, dynamic> toMap() {
@@ -79,6 +81,7 @@ class ChatModel {
       'amount': amount,
       'phone': phone,
       'line': line,
+      'answers': answers,
     };
   }
 
@@ -108,6 +111,7 @@ class ChatModel {
       amount: (map['amount'] ?? '') as String,
       phone: (map['phone'] ?? '') as String,
       line: (map['line'] ?? '') as String,
+      answers: List<String>.from(map['answers'] ?? []),
     );
   }
 
