@@ -13,7 +13,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:realpost/models/answer_model.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/models/comment_salse_model.dart';
 import 'package:realpost/models/friend_model.dart';
