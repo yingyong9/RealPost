@@ -28,6 +28,9 @@ class ChatModel {
   final String? phone;
   final String? line;
   final List<String>? answers;
+  final List<String>? avatars;
+  final List<String>? names;
+  // final List<Timestamp>? timestamps;
 
   ChatModel({
     required this.message,
@@ -53,7 +56,9 @@ class ChatModel {
     this.amount,
     this.phone,
     this.line,
-     this.answers,
+    this.answers,
+    this.avatars,
+    this.names,
   });
 
   Map<String, dynamic> toMap() {
@@ -82,6 +87,8 @@ class ChatModel {
       'phone': phone,
       'line': line,
       'answers': answers,
+      'avatars': avatars,
+      'names': names,
     };
   }
 
@@ -112,6 +119,8 @@ class ChatModel {
       phone: (map['phone'] ?? '') as String,
       line: (map['line'] ?? '') as String,
       answers: List<String>.from(map['answers'] ?? []),
+      avatars: List<String>.from(map['avatars'] ?? []),
+      names: List<String>.from(map['names'] ?? []),
     );
   }
 

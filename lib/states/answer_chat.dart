@@ -278,12 +278,25 @@ class _AnswerChatState extends State<AnswerChat> {
                             chatModel: chatModel,
                             docIdComment: widget.docIdComment)
                         .then((value) {
+
                       print('##14june map before $map');
 
                       var answers = <String>[];
                       answers.addAll(map['answers']);
                       answers.add(textEditingController.text);
                       map['answers'] = answers;
+                      
+                      var avatars = <String>[];
+                      avatars.addAll(map['avatars']);
+                      avatars.add(appController.userModelsLogin.last.urlAvatar!);
+                      map['avatars'] = avatars;
+
+                      var names = <String>[];
+                      names.addAll(map['names']);
+                      names.add(appController.userModelsLogin.last.displayName!);
+                      map['names'] = names;
+
+
 
                       print('##14june map after $map');
 

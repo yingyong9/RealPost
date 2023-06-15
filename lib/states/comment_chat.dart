@@ -228,22 +228,67 @@ class _CommentChatState extends State<CommentChat> {
                                                           .answers!
                                                           .isEmpty
                                                       ? const SizedBox()
-                                                      : ListView.builder(
-                                                          physics:
-                                                              const ScrollPhysics(),
-                                                          shrinkWrap: true,
-                                                          itemCount: appController
-                                                              .commentChatModels[
-                                                                  index]
-                                                              .answers!
-                                                              .length,
-                                                          itemBuilder: (context,
-                                                                  index2) =>
-                                                              WidgetText(
-                                                                  text: appController
-                                                                      .commentChatModels[
-                                                                          index]
-                                                                      .answers![index2]),
+                                                      : Container(
+                                                          height: 150,
+                                                          // constraints:  BoxConstraints(maxHeight: 150),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8),
+                                                          decoration: AppConstant()
+                                                              .boxBlack(
+                                                                  color: Colors
+                                                                      .white),
+                                                          child:
+                                                              ListView.builder(
+                                                            physics:
+                                                                const ScrollPhysics(),
+                                                            shrinkWrap: true,
+                                                            itemCount: appController
+                                                                .commentChatModels[
+                                                                    index]
+                                                                .answers!
+                                                                .length,
+                                                            itemBuilder: (context,
+                                                                    index2) =>
+                                                                Row(crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                appController
+                                                                        .commentChatModels[
+                                                                            index]
+                                                                        .avatars!
+                                                                        .isEmpty
+                                                                    ? const SizedBox()
+                                                                    : WidgetCircularImage(
+                                                                        urlImage: appController
+                                                                            .commentChatModels[index]
+                                                                            .avatars![index2], radius: 15,),
+                                                                            const SizedBox(width: 4,),
+                                                                appController
+                                                                        .commentChatModels[
+                                                                            index]
+                                                                        .names!
+                                                                        .isEmpty
+                                                                    ? const SizedBox()
+                                                                    : WidgetText(
+                                                                        text: '${appController.commentChatModels[index].names![index2]} : ',
+                                                                        textStyle:
+                                                                            AppConstant().h3Style(color: Colors.red),
+                                                                      ),
+                                                                Expanded(
+                                                                  child: WidgetText(
+                                                                    text: appController
+                                                                        .commentChatModels[
+                                                                            index]
+                                                                        .answers![index2],
+                                                                    textStyle: AppConstant()
+                                                                        .h3Style(
+                                                                            color:
+                                                                                Colors.black),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
                                                         ),
 
                                                   Row(
