@@ -30,7 +30,8 @@ class ChatModel {
   final List<String>? answers;
   final List<String>? avatars;
   final List<String>? names;
-  // final List<Timestamp>? timestamps;
+  final List<String>? imageSingle;
+  
 
   ChatModel({
     required this.message,
@@ -59,6 +60,7 @@ class ChatModel {
     this.answers,
     this.avatars,
     this.names,
+    this.imageSingle,
   });
 
   Map<String, dynamic> toMap() {
@@ -89,6 +91,7 @@ class ChatModel {
       'answers': answers,
       'avatars': avatars,
       'names': names,
+      'imageSingle': imageSingle,
     };
   }
 
@@ -121,6 +124,7 @@ class ChatModel {
       answers: List<String>.from(map['answers'] ?? []),
       avatars: List<String>.from(map['avatars'] ?? []),
       names: List<String>.from(map['names'] ?? []),
+      imageSingle: List<String>.from(map['names'] ?? []),
     );
   }
 
