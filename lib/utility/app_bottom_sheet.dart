@@ -44,34 +44,34 @@ class AppBottomSheet {
           height: 400,
           child: ListView(
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: WidgetForm(
-                        controller: priceController,
-                        hint: 'ราคา',
-                        hintStyle: AppConstant().h3Style(color: Colors.white),
-                        fillColor: AppConstant.realMid,
-                        textStyle: AppConstant().h3Style(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: WidgetForm(
-                        controller: amountController,
-                        hint: 'จำนวนที่จะขาย',
-                        hintStyle: AppConstant().h3Style(color: Colors.white),
-                        fillColor: AppConstant.realMid,
-                        textStyle: AppConstant().h3Style(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              // Row(
+              //   children: [
+              //     Expanded(
+              //       child: Padding(
+              //         padding: const EdgeInsets.all(8.0),
+              //         child: WidgetForm(
+              //           controller: priceController,
+              //           hint: 'ราคา',
+              //           hintStyle: AppConstant().h3Style(color: Colors.white),
+              //           fillColor: AppConstant.realMid,
+              //           textStyle: AppConstant().h3Style(color: Colors.white),
+              //         ),
+              //       ),
+              //     ),
+              //     Expanded(
+              //       child: Padding(
+              //         padding: const EdgeInsets.all(8.0),
+              //         child: WidgetForm(
+              //           controller: amountController,
+              //           hint: 'จำนวนที่จะขาย',
+              //           hintStyle: AppConstant().h3Style(color: Colors.white),
+              //           fillColor: AppConstant.realMid,
+              //           textStyle: AppConstant().h3Style(color: Colors.white),
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // ),
               Row(
                 children: [
                   Expanded(

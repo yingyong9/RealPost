@@ -20,7 +20,8 @@ class ChatModel {
   final int? traffic;
   final bool? checkInOwnerChat;
   final List<String> urlMultiImages;
-  final int up;
+  final int? up;
+  final int? down;
   final int amountComment;
   final int amountGraph;
   final String? price;
@@ -30,7 +31,7 @@ class ChatModel {
   final List<String>? answers;
   final List<String>? avatars;
   final List<String>? names;
-  // final List<Timestamp>? timestamps;
+  final List<String>? imageSingle;
 
   ChatModel({
     required this.message,
@@ -49,7 +50,8 @@ class ChatModel {
     this.traffic,
     this.checkInOwnerChat,
     required this.urlMultiImages,
-    required this.up,
+     this.up,
+     this.down,
     required this.amountComment,
     required this.amountGraph,
     this.price,
@@ -59,6 +61,7 @@ class ChatModel {
     this.answers,
     this.avatars,
     this.names,
+    this.imageSingle,
   });
 
   Map<String, dynamic> toMap() {
@@ -80,6 +83,7 @@ class ChatModel {
       'checkInOwnerChat': checkInOwnerChat,
       'urlMultiImages': urlMultiImages,
       'up': up,
+      'down': down,
       'amountComment': amountComment,
       'amountGraph': amountGraph,
       'price': price,
@@ -89,6 +93,7 @@ class ChatModel {
       'answers': answers,
       'avatars': avatars,
       'names': names,
+      'imageSingle': imageSingle,
     };
   }
 
@@ -112,6 +117,7 @@ class ChatModel {
       checkInOwnerChat: map['checkInOwnerChat'] ?? false,
       urlMultiImages: List<String>.from(map['urlMultiImages'] ?? []),
       up: (map['up'] ?? 0) as int,
+      down: (map['down'] ?? 0) as int,
       amountComment: (map['amountComment'] ?? 0) as int,
       amountGraph: (map['amountGraph'] ?? 0) as int,
       price: (map['price'] ?? '') as String,
@@ -121,6 +127,7 @@ class ChatModel {
       answers: List<String>.from(map['answers'] ?? []),
       avatars: List<String>.from(map['avatars'] ?? []),
       names: List<String>.from(map['names'] ?? []),
+      imageSingle: List<String>.from(map['names'] ?? []),
     );
   }
 
@@ -138,7 +145,21 @@ class ChatModel {
   //         map['urlBigImage'] != null ? map['urlBigImage'] as String : null,
   //     readed: map['readed'] ?? false,
   //     favorit: map['favorit'] ?? 0,
-  //     traffic: map['traffic']?? 0,
+  //     traffic: map['traffic'] ?? 0,
+  //     checkInOwnerChat: map['checkInOwnerChat'] ?? false,
+  //     urlMultiImages: List<String>.from(map['urlMultiImages'] ?? []),
+  //     up: (map['up'] ?? 0) as int,
+  // down: (map['down'] ?? 0) as int,
+  //     amountComment: (map['amountComment'] ?? 0) as int,
+  //     amountGraph: (map['amountGraph'] ?? 0) as int,
+  //     price: (map['price'] ?? '') as String,
+  //     amount: (map['amount'] ?? '') as String,
+  //     phone: (map['phone'] ?? '') as String,
+  //     line: (map['line'] ?? '') as String,
+  //     answers: List<String>.from(map['answers'] ?? []),
+  //     avatars: List<String>.from(map['avatars'] ?? []),
+  //     names: List<String>.from(map['names'] ?? []),
+  //     imageSingle: List<String>.from(map['names'] ?? []),
 
   String toJson() => json.encode(toMap());
 

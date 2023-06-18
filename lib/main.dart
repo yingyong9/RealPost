@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:realpost/states/comment_chat.dart';
+import 'package:realpost/states/delete_comment.dart';
 import 'package:realpost/states/main_home.dart';
 import 'package:realpost/states/main_page_for_guest.dart';
 import 'package:realpost/states/main_page_view.dart';
@@ -42,7 +43,15 @@ var getPages = <GetPage<dynamic>>[
   GetPage(
     name: '/mainPageForGuest',
     page: () => const MainPageForGuest(),
-  ), GetPage(name: '/commentChat', page: () => const CommentChat(),)
+  ),
+  GetPage(
+    name: '/commentChat',
+    page: () => const CommentChat(),
+  ),
+  GetPage(
+    name: '/deleteComment',
+    page: () => const DeleteComment(),
+  ),
 ];
 
 String? keyPage;
@@ -69,6 +78,7 @@ Future<void> main() async {
       } else {
         appController.mainUid.value = event.uid;
         keyPage = '/commentChat';
+        // keyPage = '/deleteComment';
         runApp(const MyApp());
       }
     });
@@ -101,7 +111,6 @@ class MyApp extends StatelessWidget {
 class MyHttpOverride extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
-    
     return super.createHttpClient(context)
       ..badCertificateCallback = (cert, host, port) => true;
   }
