@@ -52,8 +52,8 @@ class AppService {
   Future<void> checkOwnerComment(
       {required String docIdComment,
       required ChatModel commentChatModel,
-      required bool readed, required Map<String, dynamic> map}) async {
-
+      required bool readed,
+      required Map<String, dynamic> map}) async {
     if (appController.mainUid.value == commentChatModel.uidChat) {
       // Map<String, dynamic> map = commentChatModel.toMap();
       map['readed'] = readed;
@@ -353,9 +353,7 @@ class AppService {
     });
   }
 
-  Future<void> readCommentChat({required String docIdChat}) async {
-    print('##31may readCommentChat Work');
-
+  Future<void> readCommentChat() async {
     if (appController.commentChatModels.isNotEmpty) {
       appController.commentChatModels.clear();
       appController.docIdCommentChats.clear();
@@ -373,11 +371,11 @@ class AppService {
         .snapshots()
         .listen((event) async {
       if (event.docs.isNotEmpty) {
-        if (appController.commentChatModels.isNotEmpty) {
-          appController.commentChatModels.clear();
-          appController.docIdCommentChats.clear();
-          appController.listAnswerModels.clear();
-        }
+        // if (appController.commentChatModels.isNotEmpty) {
+        //   appController.commentChatModels.clear();
+        //   appController.docIdCommentChats.clear();
+        //   appController.listAnswerModels.clear();
+        // }
 
         //for1
         for (var element in event.docs) {
@@ -407,8 +405,34 @@ class AppService {
           //   }
           // });
         } // for1
+
+        // deleteComment();
       }
     });
+  }
+
+  Future<void> deleteComment() async {
+    print('##18june docIdComment -------------> ${appController.docIdCommentChats.length}');
+
+    int i = 0;
+    for (var element in appController.docIdCommentChats) {
+      print('##18june before delete docIdComment ----> $element');
+
+      if (i > 10) {
+        await FirebaseFirestore.instance.runTransaction((transaction) async {
+          transaction.delete(FirebaseFirestore.instance
+              .collection('room')
+              .doc(AppConstant.docIdRoomData)
+              .collection('chat')
+              .doc(AppConstant.docIdChat)
+              .collection('comment')
+              .doc(element));
+        });
+        print('##18june after delete docIdComment ----> $element');
+      }
+
+      i++;
+    }
   }
 
   Future<void> addFavorite(

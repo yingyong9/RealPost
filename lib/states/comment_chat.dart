@@ -44,7 +44,7 @@ class _CommentChatState extends State<CommentChat> {
 
     AppService().initialSetup(context: context);
     AppService().aboutNoti(context: context);
-    AppService().readCommentChat(docIdChat: '0teBbEDSyimbXgvzYwGJ');
+    AppService().readCommentChat();
   }
 
   @override
@@ -72,7 +72,9 @@ class _CommentChatState extends State<CommentChat> {
                         height: boxConstraints.maxHeight,
                         child: Stack(
                           children: [
-                            contentMain(appController: appController, boxConstraints: boxConstraints),
+                            contentMain(
+                                appController: appController,
+                                boxConstraints: boxConstraints),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.end,
                               mainAxisSize: MainAxisSize.max,
@@ -314,7 +316,9 @@ class _CommentChatState extends State<CommentChat> {
     }
   }
 
-  Widget contentMain({required AppController appController, required BoxConstraints boxConstraints}) {
+  Widget contentMain(
+      {required AppController appController,
+      required BoxConstraints boxConstraints}) {
     return SizedBox(
       height: boxConstraints.maxHeight - 70,
       child: ListView(
@@ -350,236 +354,221 @@ class _CommentChatState extends State<CommentChat> {
     );
   }
 
-  Row displayPanal(AppController appController, int index, BuildContext context) {
+  Row displayPanal(
+      AppController appController, int index, BuildContext context) {
     return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Row(
-                              children: [
-                                WidgetImage(
-                                  path: 'images/arrowup.jpg',
-                                  size: 24,
-                                ),
-                                WidgetText(text: '5'),
-                                WidgetImage(
-                                  path: 'images/arrowdown.jpg',
-                                  size: 24,
-                                ),
-                                WidgetText(text: '8'),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                appController.commentChatModels[index].phone!
-                                        .isEmpty
-                                    ? const SizedBox()
-                                    : const WidgetImage(
-                                        path: 'images/phone.jpg',
-                                        size: 36,
-                                      ),
-                                appController.commentChatModels[index].amount!
-                                        .isEmpty
-                                    ? const SizedBox()
-                                    : InkWell(
-                                        onTap: () {
-                                          AppDialog(context: context).buyDialog(
-                                              commentChatModel: appController
-                                                  .commentChatModels[index]);
-                                        },
-                                        child: badges.Badge(
-                                          badgeContent: WidgetText(
-                                              text: appController
-                                                      .commentChatModels[
-                                                          index]
-                                                      .amount ??
-                                                  ''),
-                                          child: const Icon(
-                                            Icons.shopping_cart,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                const SizedBox(
-                                  width: 12,
-                                ),
-                                appController.commentChatModels[index].line!
-                                        .isEmpty
-                                    ? const SizedBox()
-                                    : const WidgetImage(
-                                        path: 'images/line.jpg',
-                                        size: 36,
-                                      ),
-                                WidgetButton(
-                                  label: appController
-                                          .commentChatModels[index].readed!
-                                      ? 'Live Chat'
-                                      : 'สนทนา',
-                                  pressFunc: () {
-                                    Get.to(AnswerChat(
-                                      docIdComment: appController
-                                          .docIdCommentChats[index],
-                                      commentChatModel: appController
-                                          .commentChatModels[index],
-                                    ));
-                                  },
-                                  iconWidget: const Icon(
-                                    Icons.turn_left,
-                                    color: Colors.white,
-                                  ),
-                                  bgColor: appController
-                                          .commentChatModels[index].readed!
-                                      ? Colors.red
-                                      : Colors.black,
-                                ),
-                              ],
-                            ),
-                          ],
-                        );
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            const WidgetImage(
+              path: 'images/arrowup.jpg',
+              size: 24,
+            ),
+            const WidgetText(text: '5'),
+            const WidgetImage(
+              path: 'images/arrowdown.jpg',
+              size: 24,
+            ),
+            const WidgetText(text: '8'),
+            const SizedBox(
+              width: 8,
+            ),
+            InkWell(
+              onTap: () {
+                print(
+                    '##18june docIdcomment ---> ${appController.docIdCommentChats[index]}');
+
+                Map<String, dynamic> map =
+                    appController.commentChatModels[index].toMap();
+                map['timestamp'] = Timestamp.fromDate(DateTime.now());
+                AppService()
+                    .updateCommentChat(
+                        map: map,
+                        docIdComment: appController.docIdCommentChats[index])
+                    .then((value) {
+                  print('##18june Success');
+                });
+              },
+              child: const WidgetImage(
+                path: 'images/up.jpg',
+                size: 24,
+              ),
+            )
+          ],
+        ),
+        Row(
+          children: [
+            appController.commentChatModels[index].phone!.isEmpty
+                ? const SizedBox()
+                : const WidgetImage(
+                    path: 'images/phone.jpg',
+                    size: 33,
+                  ),
+            appController.commentChatModels[index].amount!.isEmpty
+                ? const SizedBox()
+                : InkWell(
+                    onTap: () {
+                      AppDialog(context: context).buyDialog(
+                          commentChatModel:
+                              appController.commentChatModels[index]);
+                    },
+                    child: badges.Badge(
+                      badgeContent: WidgetText(
+                          text: appController.commentChatModels[index].amount ??
+                              ''),
+                      child: const Icon(
+                        Icons.shopping_cart,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+            const SizedBox(
+              width: 12,
+            ),
+            appController.commentChatModels[index].line!.isEmpty
+                ? const SizedBox()
+                : const WidgetImage(
+                    path: 'images/line.jpg',
+                    size: 33,
+                  ),
+            WidgetButton(
+              label: 'Live Chat',
+              pressFunc: () {
+                Get.to(AnswerChat(
+                  docIdComment: appController.docIdCommentChats[index],
+                  commentChatModel: appController.commentChatModels[index],
+                ));
+              },
+              iconWidget: const Icon(
+                Icons.turn_left,
+                color: Colors.white,
+              ),
+              bgColor: Colors.red,
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   Widget answerList(AppController appController, int index) {
-    return appController
-                                .commentChatModels[index].answers!.isEmpty
-                            ? const SizedBox()
-                            : Container(
-                                height: 150,
-                                // constraints:  BoxConstraints(maxHeight: 150),
-                                padding: const EdgeInsets.all(8),
-                                decoration: AppConstant()
-                                    .boxBlack(color: Colors.white),
-                                child: ListView.builder(
-                                  physics: const ScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: appController
-                                      .commentChatModels[index]
-                                      .answers!
-                                      .length,
-                                  itemBuilder: (context, index2) => Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      appController.commentChatModels[index]
-                                              .avatars!.isEmpty
-                                          ? const SizedBox()
-                                          : WidgetCircularImage(
-                                              urlImage: appController
-                                                  .commentChatModels[index]
-                                                  .avatars![index2],
-                                              radius: 15,
-                                            ),
-                                      const SizedBox(
-                                        width: 4,
-                                      ),
-                                      appController.commentChatModels[index]
-                                              .names!.isEmpty
-                                          ? const SizedBox()
-                                          : WidgetText(
-                                              text:
-                                                  '${appController.commentChatModels[index].names![index2]} : ',
-                                              textStyle: AppConstant()
-                                                  .h3Style(color: Colors.red),
-                                            ),
-                                      Expanded(
-                                        child: WidgetText(
-                                          text: appController
-                                              .commentChatModels[index]
-                                              .answers![index2],
-                                          textStyle: AppConstant()
-                                              .h3Style(color: Colors.black),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
+    return appController.commentChatModels[index].answers!.isEmpty
+        ? const SizedBox()
+        : Container(
+            height: 150,
+            // constraints:  BoxConstraints(maxHeight: 150),
+            padding: const EdgeInsets.all(8),
+            decoration: AppConstant().boxBlack(color: Colors.white),
+            child: ListView.builder(
+              physics: const ScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: appController.commentChatModels[index].answers!.length,
+              itemBuilder: (context, index2) => Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  appController.commentChatModels[index].avatars!.isEmpty
+                      ? const SizedBox()
+                      : WidgetCircularImage(
+                          urlImage: appController
+                              .commentChatModels[index].avatars![index2],
+                          radius: 15,
+                        ),
+                  const SizedBox(
+                    width: 4,
+                  ),
+                  appController.commentChatModels[index].names!.isEmpty
+                      ? const SizedBox()
+                      : WidgetText(
+                          text:
+                              '${appController.commentChatModels[index].names![index2]} : ',
+                          textStyle: AppConstant().h3Style(color: Colors.red),
+                        ),
+                  Expanded(
+                    child: WidgetText(
+                      text: appController
+                          .commentChatModels[index].answers![index2],
+                      textStyle: AppConstant().h3Style(color: Colors.black),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
   }
 
   ExpandableText messageText(AppController appController, int index) {
     return ExpandableText(
-                          appController.commentChatModels[index].message,
-                          expandText: 'ดูเพิ่มเติม',
-                          collapseText: '... ย่อ',
-                          style: AppConstant().h3Style(),
-                          linkStyle: AppConstant()
-                              .h3Style(size: 19, fontWeight: FontWeight.bold),
-                          maxLines: 2,
-                          linkColor: Colors.white,
-                        );
+      appController.commentChatModels[index].message,
+      expandText: 'ดูเพิ่มเติม',
+      collapseText: '... ย่อ',
+      style: AppConstant().h3Style(),
+      linkStyle: AppConstant().h3Style(size: 19, fontWeight: FontWeight.bold),
+      maxLines: 2,
+      linkColor: Colors.white,
+    );
   }
 
   Widget multiImage(AppController appController, int index) {
-    return appController.commentChatModels[index].urlMultiImages
-                                .isEmpty
-                            ? const SizedBox()
-                            : ListView.builder(
-                                physics: const ScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: appController
-                                    .commentChatModels[index]
-                                    .urlMultiImages
-                                    .length,
-                                itemBuilder: (context, index2) => Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: WidgetImageInternet(
-                                        urlImage: appController
-                                            .commentChatModels[index]
-                                            .urlMultiImages[index2],
-                                        width: 180,
-                                        height: 150,
-                                        boxFit: BoxFit.cover,
-                                        tapFunc: () {
-                                          displayFullScreen(
-                                              url: appController
-                                                  .commentChatModels[index]
-                                                  .urlMultiImages[index2]);
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
+    return appController.commentChatModels[index].urlMultiImages.isEmpty
+        ? const SizedBox()
+        : ListView.builder(
+            physics: const ScrollPhysics(),
+            shrinkWrap: true,
+            itemCount:
+                appController.commentChatModels[index].urlMultiImages.length,
+            itemBuilder: (context, index2) => Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: WidgetImageInternet(
+                    urlImage: appController
+                        .commentChatModels[index].urlMultiImages[index2],
+                    width: 180,
+                    height: 150,
+                    boxFit: BoxFit.cover,
+                    tapFunc: () {
+                      displayFullScreen(
+                          url: appController
+                              .commentChatModels[index].urlMultiImages[index2]);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
   }
 
   Widget singleImage(AppController appController, int index) {
-    return appController
-                                .commentChatModels[index].urlRealPost.isEmpty
-                            ? const SizedBox()
-                            : appController.commentChatModels[index]
-                                    .urlMultiImages.isEmpty
-                                ? WidgetImageInternet(
-                                    urlImage: appController
-                                        .commentChatModels[index].urlRealPost,
-                                    width: 180,
-                                    height: 150,
-                                    boxFit: BoxFit.cover,
-                                    tapFunc: () {
-                                      displayFullScreen(
-                                          url: appController
-                                              .commentChatModels[index]
-                                              .urlRealPost);
-                                    },
-                                  )
-                                : const SizedBox();
+    return appController.commentChatModels[index].urlRealPost.isEmpty
+        ? const SizedBox()
+        : appController.commentChatModels[index].urlMultiImages.isEmpty
+            ? WidgetImageInternet(
+                urlImage: appController.commentChatModels[index].urlRealPost,
+                width: 180,
+                height: 150,
+                boxFit: BoxFit.cover,
+                tapFunc: () {
+                  displayFullScreen(
+                      url: appController.commentChatModels[index].urlRealPost);
+                },
+              )
+            : const SizedBox();
   }
 
   Row displayNameAvatar(AppController appController, int index) {
     return Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            WidgetCircularImage(
-                              urlImage: appController
-                                  .commentChatModels[index].urlAvatar,
-                              radius: 15,
-                            ),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            WidgetText(
-                                text: appController
-                                    .commentChatModels[index].disPlayName),
-                          ],
-                        );
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        WidgetCircularImage(
+          urlImage: appController.commentChatModels[index].urlAvatar,
+          radius: 15,
+        ),
+        const SizedBox(
+          width: 8,
+        ),
+        WidgetText(text: appController.commentChatModels[index].disPlayName),
+      ],
+    );
   }
 }
