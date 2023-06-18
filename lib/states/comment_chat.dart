@@ -361,16 +361,42 @@ class _CommentChatState extends State<CommentChat> {
       children: [
         Row(
           children: [
-            const WidgetImage(
-              path: 'images/arrowup.jpg',
-              size: 24,
+            InkWell(
+              onTap: () {
+                Map<String, dynamic> map =
+                    appController.commentChatModels[index].toMap();
+                int up = map['up'];
+                up++;
+                map['up'] = up;
+                AppService().updateCommentChat(
+                    map: map,
+                    docIdComment: appController.docIdCommentChats[index]);
+              },
+              child: const WidgetImage(
+                path: 'images/arrowup.jpg',
+                size: 24,
+              ),
             ),
-            const WidgetText(text: '5'),
-            const WidgetImage(
-              path: 'images/arrowdown.jpg',
-              size: 24,
+            WidgetText(
+                text: appController.commentChatModels[index].up.toString()),
+            InkWell(
+              onTap: () {
+                Map<String, dynamic> map =
+                    appController.commentChatModels[index].toMap();
+                int down = map['down'];
+                down--;
+                map['down'] = down;
+                AppService().updateCommentChat(
+                    map: map,
+                    docIdComment: appController.docIdCommentChats[index]);
+              },
+              child: const WidgetImage(
+                path: 'images/arrowdown.jpg',
+                size: 24,
+              ),
             ),
-            const WidgetText(text: '8'),
+            WidgetText(
+                text: appController.commentChatModels[index].down.toString(), textStyle: AppConstant().h3Style(color: Colors.red),),
             const SizedBox(
               width: 8,
             ),

@@ -207,7 +207,7 @@ class AppService {
     print('##27may docIdChat --> $docIdChat');
     print('##27may up before --> ${chatModel.up}');
 
-    int upInt = chatModel.up;
+    int upInt = chatModel.up!;
     print('##27may upInt before --> $upInt');
 
     upInt = upInt + 1;
