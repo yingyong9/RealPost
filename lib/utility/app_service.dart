@@ -331,12 +331,8 @@ class AppService {
   }
 
   Future<void> insertCommentChat(
-      {required String docIdChat, required ChatModel commentChatModel}) async {
+      { required ChatModel commentChatModel}) async {
     await FirebaseFirestore.instance
-        .collection('room')
-        .doc(AppConstant.docIdRoomData)
-        .collection('chat')
-        .doc(docIdChat)
         .collection('comment')
         .doc()
         .set(commentChatModel.toMap())
@@ -349,70 +345,35 @@ class AppService {
         urlNewImage = commentChatModel.urlMultiImages[0];
       }
 
-      print('##8june urlNewImage ---> $urlNewImage');
+     
     });
   }
 
   Future<void> readCommentChat() async {
-    if (appController.commentChatModels.isNotEmpty) {
-      appController.commentChatModels.clear();
-      appController.docIdCommentChats.clear();
-    }
-
-    DocumentReference documentReference = FirebaseFirestore.instance
-        .collection('room')
-        .doc(AppConstant.docIdRoomData)
-        .collection('chat')
-        .doc(AppConstant.docIdChat);
-
-    documentReference
+    FirebaseFirestore.instance
         .collection('comment')
         .orderBy('timestamp')
         .snapshots()
         .listen((event) async {
+     
+      if (appController.commentChatModels.isNotEmpty) {
+      appController.commentChatModels.clear();
+      appController.docIdCommentChats.clear();
+    }
+
       if (event.docs.isNotEmpty) {
-        // if (appController.commentChatModels.isNotEmpty) {
-        //   appController.commentChatModels.clear();
-        //   appController.docIdCommentChats.clear();
-        //   appController.listAnswerModels.clear();
-        // }
-
-        //for1
         for (var element in event.docs) {
-          //  var answerModels = <AnswerModel>[];
-
           ChatModel commentChatModel = ChatModel.fromMap(element.data());
           appController.commentChatModels.add(commentChatModel);
           appController.docIdCommentChats.add(element.id);
-
-          // documentReference
-          //     .collection('comment')
-          //     .doc(element.id)
-          //     .collection('answer')
-          //     .get()
-          //     .then((value) {
-
-          //   if (value.docs.isNotEmpty) {
-          //     //have answer
-
-          //     for (var element in value.docs) {
-          //       AnswerModel answerModel = AnswerModel.fromMap(element.data());
-          //       answerModels.add(answerModel);
-          //     }
-          //     appController.listAnswerModels.add(answerModels);
-          //   } else {
-          //     appController.listAnswerModels.add(answerModels);
-          //   }
-          // });
-        } // for1
-
-        // deleteComment();
+        }
       }
     });
   }
 
   Future<void> deleteComment() async {
-    print('##18june docIdComment -------------> ${appController.docIdCommentChats.length}');
+    print(
+        '##18june docIdComment -------------> ${appController.docIdCommentChats.length}');
 
     int i = 0;
     for (var element in appController.docIdCommentChats) {
@@ -1104,8 +1065,6 @@ class AppService {
   }
 
   Future<void> initialSetup({required BuildContext context}) async {
-    AppService().freshUserModelLogin();
-
     appController.readAllRoom().then((value) {
       appController.noRoom.value = false;
 
@@ -1402,7 +1361,7 @@ class AppService {
 
       print('##8june docIdChat = $docIdChat');
       AppService()
-          .insertCommentChat(docIdChat: docIdChat, commentChatModel: chatModel)
+          .insertCommentChat( commentChatModel: chatModel)
           .then((value) {
         print('##8june Add coment Success');
       });

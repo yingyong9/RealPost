@@ -215,7 +215,7 @@ class _AnswerChatState extends State<AnswerChat> {
                   AppService().processChooseMultiImageChat().then((value) {
                     print('##29may xFiles ---> ${appController.xFiles.length}');
                     AppBottomSheet().bottomSheetMultiImage(
-                        docIdChat: appController.docIdChats[0],
+                       
                         context: context);
                   });
                 },
