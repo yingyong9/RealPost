@@ -30,7 +30,7 @@ class AppBottomSheet {
   AppController appController = Get.put(AppController());
 
   Future<void> bottomSheetMultiImage(
-      {required String docIdChat, required BuildContext context}) async {
+      { required BuildContext context}) async {
     TextEditingController textEditingController = TextEditingController();
     TextEditingController priceController = TextEditingController();
     TextEditingController amountController = TextEditingController();
@@ -44,34 +44,7 @@ class AppBottomSheet {
           height: 400,
           child: ListView(
             children: [
-              // Row(
-              //   children: [
-              //     Expanded(
-              //       child: Padding(
-              //         padding: const EdgeInsets.all(8.0),
-              //         child: WidgetForm(
-              //           controller: priceController,
-              //           hint: 'ราคา',
-              //           hintStyle: AppConstant().h3Style(color: Colors.white),
-              //           fillColor: AppConstant.realMid,
-              //           textStyle: AppConstant().h3Style(color: Colors.white),
-              //         ),
-              //       ),
-              //     ),
-              //     Expanded(
-              //       child: Padding(
-              //         padding: const EdgeInsets.all(8.0),
-              //         child: WidgetForm(
-              //           controller: amountController,
-              //           hint: 'จำนวนที่จะขาย',
-              //           hintStyle: AppConstant().h3Style(color: Colors.white),
-              //           fillColor: AppConstant.realMid,
-              //           textStyle: AppConstant().h3Style(color: Colors.white),
-              //         ),
-              //       ),
-              //     ),
-              //   ],
-              // ),
+             
               Row(
                 children: [
                   Expanded(
@@ -115,7 +88,7 @@ class AppBottomSheet {
                     ),
                     Positioned(
                       bottom: 0,
-                      child: rocketAddComment(textEditingController, docIdChat,
+                      child: rocketAddComment(textEditingController, 
                           context: context,
                           priceController: priceController,
                           amountController: amountController,
@@ -233,7 +206,7 @@ class AppBottomSheet {
 
                       AppService()
                           .insertCommentChat(
-                              docIdChat: docIdChat, commentChatModel: chatModel)
+                              commentChatModel: chatModel)
                           .then((value) {
                         textEditingController.text = '';
                         Get.back();
@@ -250,7 +223,7 @@ class AppBottomSheet {
 
   Row rocketAddComment(
     TextEditingController textEditingController,
-    String docIdChat, {
+     {
     required BuildContext context,
     required TextEditingController priceController,
     required TextEditingController amountController,
@@ -343,7 +316,7 @@ class AppBottomSheet {
 
               AppService()
                   .insertCommentChat(
-                      docIdChat: docIdChat, commentChatModel: chatModel)
+                       commentChatModel: chatModel)
                   .then((value) {
                 textEditingController.text = '';
                 appController.xFiles.clear();

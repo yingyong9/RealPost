@@ -52,6 +52,10 @@ var getPages = <GetPage<dynamic>>[
     name: '/deleteComment',
     page: () => const DeleteComment(),
   ),
+  GetPage(
+    name: '/upgradeAlertPage',
+    page: () => const UpgradeAlertPage(),
+  ),
 ];
 
 String? keyPage;
@@ -66,19 +70,16 @@ Future<void> main() async {
 
   await Firebase.initializeApp().then((value) {
     AppController appController = Get.put(AppController());
-    // AppService().readAllUserModel().then((value) {
-
-    // });
+    
 
     FirebaseAuth.instance.authStateChanges().listen((event) async {
       if (event == null) {
         keyPage = AppConstant.pagePhoneNumber;
-        // keyPage = '/mainPageForGuest';
+       
         runApp(const MyApp());
       } else {
         appController.mainUid.value = event.uid;
-        keyPage = '/commentChat';
-        // keyPage = '/deleteComment';
+        keyPage = '/upgradeAlertPage';
         runApp(const MyApp());
       }
     });
