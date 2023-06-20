@@ -114,6 +114,8 @@ class AppController extends GetxController {
 
   RxList<ChatModel> answerChatModels = <ChatModel>[].obs;
 
+  RxList<UserModel> commentUserModels = <UserModel>[].obs;
+
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
       salsegroups.clear();

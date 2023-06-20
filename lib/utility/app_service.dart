@@ -344,6 +344,7 @@ class AppService {
       if (appController.commentChatModels.isNotEmpty) {
         appController.commentChatModels.clear();
         appController.docIdCommentChats.clear();
+        appController.commentUserModels.clear();
       }
 
       if (event.docs.isNotEmpty) {
@@ -351,6 +352,12 @@ class AppService {
           ChatModel commentChatModel = ChatModel.fromMap(element.data());
           appController.commentChatModels.add(commentChatModel);
           appController.docIdCommentChats.add(element.id);
+
+          // UserModel? userModel =
+          //     await findUserModel(uid: commentChatModel.uidChat);
+          // if (userModel != null) {
+          //   appController.commentUserModels.add(userModel);
+          // }
         }
       }
     });
