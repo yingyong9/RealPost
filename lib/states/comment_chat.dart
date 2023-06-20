@@ -307,9 +307,11 @@ class _CommentChatState extends State<CommentChat> {
               onTap: () {
                 Map<String, dynamic> map =
                     appController.commentChatModels[index].toMap();
+
                 int up = map['up'];
                 up++;
                 map['up'] = up;
+
                 AppService().updateCommentChat(
                     map: map,
                     docIdComment: appController.docIdCommentChats[index]);
@@ -346,25 +348,33 @@ class _CommentChatState extends State<CommentChat> {
             ),
             InkWell(
               onTap: () {
-                print(
-                    '##18june docIdcomment ---> ${appController.docIdCommentChats[index]}');
-
                 Map<String, dynamic> map =
                     appController.commentChatModels[index].toMap();
+
                 map['timestamp'] = Timestamp.fromDate(DateTime.now());
+
+                int favorit = map['favorit'];
+                favorit++;
+                map['favorit'] = favorit;
+
                 AppService()
                     .updateCommentChat(
                         map: map,
                         docIdComment: appController.docIdCommentChats[index])
-                    .then((value) {
-                  print('##18june Success');
-                });
+                    .then((value) {});
               },
               child: const WidgetImage(
                 path: 'images/up.jpg',
                 size: 24,
               ),
-            )
+            ),
+            const SizedBox(
+              width: 8,
+            ),
+            WidgetText(
+              text: appController.commentChatModels[index].favorit.toString(),
+              textStyle: AppConstant().h3Style(color: Colors.white),
+            ),
           ],
         ),
         Row(
@@ -403,7 +413,7 @@ class _CommentChatState extends State<CommentChat> {
                     size: 33,
                   ),
             WidgetButton(
-              label: 'Live Chat',
+              label: 'Chat',
               pressFunc: () {
                 Get.to(AnswerChat(
                   docIdComment: appController.docIdCommentChats[index],
@@ -479,7 +489,8 @@ class _CommentChatState extends State<CommentChat> {
       {required BoxConstraints boxConstraints}) {
     return appController.commentChatModels[index].urlMultiImages.isEmpty
         ? const SizedBox()
-        : ImageSlideshow(height: boxConstraints.maxWidth*0.75,
+        : ImageSlideshow(
+            height: boxConstraints.maxWidth * 0.75,
             children: appController.commentChatModels[index].urlMultiImages
                 .map((e) => Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -512,8 +523,8 @@ class _CommentChatState extends State<CommentChat> {
             : const SizedBox();
   }
 
-  Row displayNameAvatar(AppController appController, int index) {
-    return Row(
+  Widget displayNameAvatar(AppController appController, int index) {
+    return  Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         WidgetCircularImage(
@@ -524,6 +535,50 @@ class _CommentChatState extends State<CommentChat> {
           width: 8,
         ),
         WidgetText(text: appController.commentChatModels[index].disPlayName),
+        const SizedBox(
+          width: 8,
+        ),
+        InkWell(
+          onTap: () {
+            Map<String, dynamic> map =
+                appController.commentChatModels[index].toMap();
+
+            int up = map['up'];
+            up++;
+            map['up'] = up;
+
+            AppService().updateCommentChat(
+                map: map, docIdComment: appController.docIdCommentChats[index]);
+          },
+          child: const WidgetImage(
+            path: 'images/arrowup.jpg',
+            size: 24,
+          ),
+        ),
+        WidgetText(text: '0'),
+        InkWell(
+          onTap: () {
+            Map<String, dynamic> map =
+                appController.commentChatModels[index].toMap();
+            int down = map['down'];
+            down--;
+            map['down'] = down;
+            AppService().updateCommentChat(
+                map: map, docIdComment: appController.docIdCommentChats[index]);
+          },
+          child: const WidgetImage(
+            path: 'images/arrowdown.jpg',
+            size: 24,
+          ),
+        ),
+        WidgetText(
+          text: '0',
+          textStyle: AppConstant().h3Style(color: Colors.red),
+        ),
+        // WidgetText(
+        //   text: appController.commentChatModels[index].uidChat
+          
+        // ),
       ],
     );
   }

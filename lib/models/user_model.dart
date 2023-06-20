@@ -12,6 +12,8 @@ class UserModel {
   final String? idReal;
   final List<String> followers;
   final List<String> followings;
+  final int? pointUp;
+  final int? pointDown;
 
   UserModel({
     this.displayName,
@@ -24,6 +26,8 @@ class UserModel {
     this.idReal,
     required this.followers,
     required this.followings,
+    this.pointUp,
+    this.pointDown,
   });
 
   Map<String, dynamic> toMap() {
@@ -38,6 +42,8 @@ class UserModel {
       'idReal': idReal,
       'followers': followers,
       'followings': followings,
+      'pointUp': pointUp,
+      'pointDown': pointDown,
     };
   }
 
@@ -53,16 +59,10 @@ class UserModel {
       idReal: map['idReal'] != null ? map['idReal'] as String : null,
       followers: List<String>.from(map['followers'] ?? []),
       followings: List<String>.from(map['followings'] ?? []),
+      pointUp: (map['pointUp'] ?? 0) as int,
+      pointDown: (map['pointDown'] ?? 0) as int,
     );
   }
-
-  // displayName: map['displayName'] ?? '',
-  // urlAvatar: map['urlAvatar']?? '',
-  // phoneNumber: map['phoneNumber'] ?? '',
-  // uidUser: map['uidUser'] ?? '',
-  // email: map['email']?? '',
-  // password: map['password'] ?? '',
-  // token: map['token']?? '',
 
   String toJson() => json.encode(toMap());
 

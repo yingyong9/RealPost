@@ -40,35 +40,15 @@ class _AnswerChatState extends State<AnswerChat> {
   @override
   void initState() {
     super.initState();
-    map = widget.commentChatModel.toMap();
+
     AppService().readAnswer(docIdComment: widget.docIdComment);
-    AppService().checkOwnerComment(
-        docIdComment: widget.docIdComment,
-        commentChatModel: widget.commentChatModel,
-        readed: true,
-        map: map);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppConstant.bgColor,
-      appBar: AppBar(
-        leading: WidgetIconButton(
-          pressFunc: () {
-            Get.back();
-
-            // AppService()
-            //     .checkOwnerComment(
-            //         docIdComment: widget.docIdComment,
-            //         commentChatModel: widget.commentChatModel,
-            //         readed: false, map: map)
-            //     .then((value) => Get.back());
-          },
-          iconData:
-              GetPlatform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
-        ),
-      ),
+      appBar: AppBar(),
       body: LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
         return SizedBox(
           width: boxConstraints.maxWidth,
@@ -214,9 +194,7 @@ class _AnswerChatState extends State<AnswerChat> {
                 pressFunc: () {
                   AppService().processChooseMultiImageChat().then((value) {
                     print('##29may xFiles ---> ${appController.xFiles.length}');
-                    AppBottomSheet().bottomSheetMultiImage(
-                       
-                        context: context);
+                    AppBottomSheet().bottomSheetMultiImage(context: context);
                   });
                 },
                 iconData: Icons.add_photo_alternate,
@@ -272,31 +250,33 @@ class _AnswerChatState extends State<AnswerChat> {
                       amountGraph: 0,
                     );
 
-                    print('##11june chatModel ----> ${chatModel.toMap()}');
+                    map = widget.commentChatModel.toMap();
+
+                    print('##20june chatModel ----> ${chatModel.toMap()}');
 
                     AppService()
                         .insertAnswer(
                             chatModel: chatModel,
                             docIdComment: widget.docIdComment)
                         .then((value) {
-                      print('##14june map before $map');
+                      print('##20june map before $map');
 
                       var answers = <String>[];
                       answers.addAll(map['answers']);
                       answers.add(textEditingController.text);
                       map['answers'] = answers;
 
-                      var avatars = <String>[];
-                      avatars.addAll(map['avatars']);
-                      avatars
-                          .add(appController.userModelsLogin.last.urlAvatar!);
-                      map['avatars'] = avatars;
+                      // var avatars = <String>[];
+                      // avatars.addAll(map['avatars']);
+                      // avatars
+                      //     .add(appController.userModelsLogin.last.urlAvatar!);
+                      // map['avatars'] = avatars;
 
-                      var names = <String>[];
-                      names.addAll(map['names']);
-                      names
-                          .add(appController.userModelsLogin.last.displayName!);
-                      map['names'] = names;
+                      // var names = <String>[];
+                      // names.addAll(map['names']);
+                      // names
+                      //     .add(appController.userModelsLogin.last.displayName!);
+                      // map['names'] = names;
 
                       print('##14june map after $map');
 

@@ -38,15 +38,12 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
-  DocumentReference documentReference = FirebaseFirestore.instance
-      .collection('room')
-      .doc(AppConstant.docIdRoomData)
-      .collection('chat')
-      .doc(AppConstant.docIdChat);
-
   Future<void> updateCommentChat(
       {required Map<String, dynamic> map, required String docIdComment}) async {
-    documentReference.collection('comment').doc(docIdComment).update(map);
+    FirebaseFirestore.instance
+        .collection('comment')
+        .doc(docIdComment)
+        .update(map);
   }
 
   Future<void> checkOwnerComment(
@@ -77,10 +74,6 @@ class AppService {
     }
 
     FirebaseFirestore.instance
-        .collection('room')
-        .doc(AppConstant.docIdRoomData)
-        .collection('chat')
-        .doc(AppConstant.docIdChat)
         .collection('comment')
         .doc(docIdComment)
         .collection('answer')
@@ -103,10 +96,6 @@ class AppService {
   Future<void> insertAnswer(
       {required ChatModel chatModel, required String docIdComment}) async {
     await FirebaseFirestore.instance
-        .collection('room')
-        .doc(AppConstant.docIdRoomData)
-        .collection('chat')
-        .doc(AppConstant.docIdChat)
         .collection('comment')
         .doc(docIdComment)
         .collection('answer')
@@ -330,8 +319,7 @@ class AppService {
         .update(map);
   }
 
-  Future<void> insertCommentChat(
-      { required ChatModel commentChatModel}) async {
+  Future<void> insertCommentChat({required ChatModel commentChatModel}) async {
     await FirebaseFirestore.instance
         .collection('comment')
         .doc()
@@ -344,8 +332,6 @@ class AppService {
       } else if (commentChatModel.urlMultiImages.isNotEmpty) {
         urlNewImage = commentChatModel.urlMultiImages[0];
       }
-
-     
     });
   }
 
@@ -355,17 +341,23 @@ class AppService {
         .orderBy('timestamp')
         .snapshots()
         .listen((event) async {
-     
       if (appController.commentChatModels.isNotEmpty) {
-      appController.commentChatModels.clear();
-      appController.docIdCommentChats.clear();
-    }
+        appController.commentChatModels.clear();
+        appController.docIdCommentChats.clear();
+        appController.commentUserModels.clear();
+      }
 
       if (event.docs.isNotEmpty) {
         for (var element in event.docs) {
           ChatModel commentChatModel = ChatModel.fromMap(element.data());
           appController.commentChatModels.add(commentChatModel);
           appController.docIdCommentChats.add(element.id);
+
+          // UserModel? userModel =
+          //     await findUserModel(uid: commentChatModel.uidChat);
+          // if (userModel != null) {
+          //   appController.commentUserModels.add(userModel);
+          // }
         }
       }
     });
@@ -1360,9 +1352,7 @@ class AppService {
       String docIdChat = reference.id;
 
       print('##8june docIdChat = $docIdChat');
-      AppService()
-          .insertCommentChat( commentChatModel: chatModel)
-          .then((value) {
+      AppService().insertCommentChat(commentChatModel: chatModel).then((value) {
         print('##8june Add coment Success');
       });
 
