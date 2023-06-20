@@ -40,35 +40,15 @@ class _AnswerChatState extends State<AnswerChat> {
   @override
   void initState() {
     super.initState();
-    map = widget.commentChatModel.toMap();
+
     AppService().readAnswer(docIdComment: widget.docIdComment);
-    AppService().checkOwnerComment(
-        docIdComment: widget.docIdComment,
-        commentChatModel: widget.commentChatModel,
-        readed: true,
-        map: map);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppConstant.bgColor,
-      appBar: AppBar(
-        leading: WidgetIconButton(
-          pressFunc: () {
-            Get.back();
-
-            // AppService()
-            //     .checkOwnerComment(
-            //         docIdComment: widget.docIdComment,
-            //         commentChatModel: widget.commentChatModel,
-            //         readed: false, map: map)
-            //     .then((value) => Get.back());
-          },
-          iconData:
-              GetPlatform.isAndroid ? Icons.arrow_back : Icons.arrow_back_ios,
-        ),
-      ),
+      appBar: AppBar(),
       body: LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
         return SizedBox(
           width: boxConstraints.maxWidth,
@@ -214,9 +194,7 @@ class _AnswerChatState extends State<AnswerChat> {
                 pressFunc: () {
                   AppService().processChooseMultiImageChat().then((value) {
                     print('##29may xFiles ---> ${appController.xFiles.length}');
-                    AppBottomSheet().bottomSheetMultiImage(
-                       
-                        context: context);
+                    AppBottomSheet().bottomSheetMultiImage(context: context);
                   });
                 },
                 iconData: Icons.add_photo_alternate,
@@ -272,7 +250,7 @@ class _AnswerChatState extends State<AnswerChat> {
                       amountGraph: 0,
                     );
 
-                    print('##11june chatModel ----> ${chatModel.toMap()}');
+                    print('##20june chatModel ----> ${chatModel.toMap()}');
 
                     AppService()
                         .insertAnswer(
