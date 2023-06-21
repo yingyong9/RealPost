@@ -3,7 +3,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -16,7 +15,6 @@ import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/utility/app_service.dart';
-import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
@@ -271,12 +269,12 @@ class _CommentChatState extends State<CommentChat> {
         children: [
           appController.commentChatModels.isEmpty
               ? const SizedBox()
-              : GridView.builder(
+              : GridView.builder(reverse: true,
                   shrinkWrap: true,
                   physics: const ScrollPhysics(),
                   itemCount: appController.commentChatModels.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, childAspectRatio: 0.6),
+                      crossAxisCount: 2, childAspectRatio: 0.55),
                   itemBuilder: (context, index) => Padding(
                     padding: const EdgeInsets.only(left: 16, bottom: 10),
                     child: Container(
@@ -502,6 +500,11 @@ class _CommentChatState extends State<CommentChat> {
             width: boxConstraints.maxWidth * 0.4,
             height: boxConstraints.maxWidth * 0.6,
             boxFit: BoxFit.cover,
+            tapFunc: () {
+              Get.to(AnswerChat(
+                  docIdComment: appController.docIdCommentChats[index],
+                  commentChatModel: appController.commentChatModels[index]));
+            },
           );
   }
 
@@ -532,11 +535,11 @@ class _CommentChatState extends State<CommentChat> {
           radius: 15,
         ),
         const SizedBox(
-          width: 8,
+          width: 4,
         ),
         WidgetText(text: appController.commentChatModels[index].disPlayName),
         const SizedBox(
-          width: 8,
+          width: 4,
         ),
         WidgetIconButton(
           iconData: Icons.favorite_outline,
