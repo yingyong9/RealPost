@@ -838,7 +838,7 @@ class AppService {
                     password: havePhoneUserModel.password!)
                 .then((value) {
               appController.mainUid.value = value.user!.uid;
-              Get.offAllNamed('/mainPageView');
+              Get.offAllNamed('/commentChat');
             });
           } else {
             print('##13may เบอร์ใหม่');

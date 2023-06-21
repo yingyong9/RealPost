@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/states/answer_chat.dart';
 import 'package:realpost/states/display_photo_view.dart';
+import 'package:realpost/states/display_profile.dart';
 import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
@@ -245,7 +246,11 @@ class _CommentChatState extends State<CommentChat> {
           return controller.userModelsLogin.isEmpty
               ? const SizedBox()
               : WidgetCircularImage(
-                  urlImage: controller.userModelsLogin.last.urlAvatar!);
+                  urlImage: controller.userModelsLogin.last.urlAvatar!,
+                  tapFunc: () {
+                    Get.to(const DisplayProfile());
+                  },
+                );
         })
       ],
     );
@@ -524,7 +529,7 @@ class _CommentChatState extends State<CommentChat> {
   }
 
   Widget displayNameAvatar(AppController appController, int index) {
-    return  Row(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         WidgetCircularImage(
@@ -577,7 +582,7 @@ class _CommentChatState extends State<CommentChat> {
         ),
         // WidgetText(
         //   text: appController.commentChatModels[index].uidChat
-          
+
         // ),
       ],
     );
