@@ -3,19 +3,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/states/answer_chat.dart';
 import 'package:realpost/states/display_photo_view.dart';
+import 'package:realpost/states/display_profile.dart';
 import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_dialog.dart';
 import 'package:realpost/utility/app_service.dart';
-import 'package:realpost/widgets/widget_button.dart';
 import 'package:realpost/widgets/widget_circular_image.dart';
 import 'package:realpost/widgets/widget_form.dart';
 import 'package:realpost/widgets/widget_icon_button.dart';
@@ -245,7 +244,11 @@ class _CommentChatState extends State<CommentChat> {
           return controller.userModelsLogin.isEmpty
               ? const SizedBox()
               : WidgetCircularImage(
-                  urlImage: controller.userModelsLogin.last.urlAvatar!);
+                  urlImage: controller.userModelsLogin.last.urlAvatar!,
+                  tapFunc: () {
+                    Get.to(const DisplayProfile());
+                  },
+                );
         })
       ],
     );
@@ -266,11 +269,12 @@ class _CommentChatState extends State<CommentChat> {
         children: [
           appController.commentChatModels.isEmpty
               ? const SizedBox()
-              : ListView.builder(
-                  physics: const ScrollPhysics(),
+              : GridView.builder(reverse: true,
                   shrinkWrap: true,
-                  reverse: true,
+                  physics: const ScrollPhysics(),
                   itemCount: appController.commentChatModels.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, childAspectRatio: 0.55),
                   itemBuilder: (context, index) => Padding(
                     padding: const EdgeInsets.only(left: 16, bottom: 10),
                     child: Container(
@@ -280,12 +284,13 @@ class _CommentChatState extends State<CommentChat> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           displayNameAvatar(appController, index),
-                          singleImage(appController, index),
+                          singleImage(appController, index,
+                              boxConstraints: boxConstraints),
                           multiImage(appController, index,
                               boxConstraints: boxConstraints),
                           messageText(appController, index),
-                          answerList(appController, index),
-                          displayPanal(appController, index, context),
+                          // answerList(appController, index),
+                          // displayPanal(appController, index, context),
                         ],
                       ),
                     ),
@@ -377,53 +382,53 @@ class _CommentChatState extends State<CommentChat> {
             ),
           ],
         ),
-        Row(
-          children: [
-            appController.commentChatModels[index].phone!.isEmpty
-                ? const SizedBox()
-                : const WidgetImage(
-                    path: 'images/phone.jpg',
-                    size: 33,
-                  ),
-            appController.commentChatModels[index].amount!.isEmpty
-                ? const SizedBox()
-                : InkWell(
-                    onTap: () {
-                      AppDialog(context: context).buyDialog(
-                          commentChatModel:
-                              appController.commentChatModels[index]);
-                    },
-                    child: badges.Badge(
-                      badgeContent: WidgetText(
-                          text: appController.commentChatModels[index].amount ??
-                              ''),
-                      child: const Icon(
-                        Icons.shopping_cart,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-            const SizedBox(
-              width: 12,
-            ),
-            appController.commentChatModels[index].line!.isEmpty
-                ? const SizedBox()
-                : const WidgetImage(
-                    path: 'images/line.jpg',
-                    size: 33,
-                  ),
-            WidgetButton(
-              label: 'Chat',
-              pressFunc: () {
-                Get.to(AnswerChat(
-                  docIdComment: appController.docIdCommentChats[index],
-                  commentChatModel: appController.commentChatModels[index],
-                ));
-              },
-              bgColor: Colors.red,
-            ),
-          ],
-        ),
+        // Row(
+        //   children: [
+        //     appController.commentChatModels[index].phone!.isEmpty
+        //         ? const SizedBox()
+        //         : const WidgetImage(
+        //             path: 'images/phone.jpg',
+        //             size: 33,
+        //           ),
+        //     appController.commentChatModels[index].amount!.isEmpty
+        //         ? const SizedBox()
+        //         : InkWell(
+        //             onTap: () {
+        //               AppDialog(context: context).buyDialog(
+        //                   commentChatModel:
+        //                       appController.commentChatModels[index]);
+        //             },
+        //             child: badges.Badge(
+        //               badgeContent: WidgetText(
+        //                   text: appController.commentChatModels[index].amount ??
+        //                       ''),
+        //               child: const Icon(
+        //                 Icons.shopping_cart,
+        //                 color: Colors.white,
+        //               ),
+        //             ),
+        //           ),
+        //     const SizedBox(
+        //       width: 12,
+        //     ),
+        //     appController.commentChatModels[index].line!.isEmpty
+        //         ? const SizedBox()
+        //         : const WidgetImage(
+        //             path: 'images/line.jpg',
+        //             size: 33,
+        //           ),
+        //     WidgetButton(
+        //       label: 'Chat',
+        //       pressFunc: () {
+        //         Get.to(AnswerChat(
+        //           docIdComment: appController.docIdCommentChats[index],
+        //           commentChatModel: appController.commentChatModels[index],
+        //         ));
+        //       },
+        //       bgColor: Colors.red,
+        //     ),
+        //   ],
+        // ),
       ],
     );
   }
@@ -489,31 +494,29 @@ class _CommentChatState extends State<CommentChat> {
       {required BoxConstraints boxConstraints}) {
     return appController.commentChatModels[index].urlMultiImages.isEmpty
         ? const SizedBox()
-        : ImageSlideshow(
-            height: boxConstraints.maxWidth * 0.75,
-            children: appController.commentChatModels[index].urlMultiImages
-                .map((e) => Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: WidgetImageInternet(
-                        urlImage: e,
-                        width: boxConstraints.maxWidth - 32,
-                        boxFit: BoxFit.cover,
-                        tapFunc: () {
-                          displayFullScreen(url: e);
-                        },
-                      ),
-                    ))
-                .toList());
+        : WidgetImageInternet(
+            urlImage:
+                appController.commentChatModels[index].urlMultiImages.last,
+            width: boxConstraints.maxWidth * 0.4,
+            height: boxConstraints.maxWidth * 0.6,
+            boxFit: BoxFit.cover,
+            tapFunc: () {
+              Get.to(AnswerChat(
+                  docIdComment: appController.docIdCommentChats[index],
+                  commentChatModel: appController.commentChatModels[index]));
+            },
+          );
   }
 
-  Widget singleImage(AppController appController, int index) {
+  Widget singleImage(AppController appController, int index,
+      {required BoxConstraints boxConstraints}) {
     return appController.commentChatModels[index].urlRealPost.isEmpty
         ? const SizedBox()
         : appController.commentChatModels[index].urlMultiImages.isEmpty
             ? WidgetImageInternet(
                 urlImage: appController.commentChatModels[index].urlRealPost,
-                width: 180,
-                height: 150,
+                width: boxConstraints.maxWidth * 0.3,
+                height: boxConstraints.maxWidth * 0.3,
                 boxFit: BoxFit.cover,
                 tapFunc: () {
                   displayFullScreen(
@@ -524,7 +527,7 @@ class _CommentChatState extends State<CommentChat> {
   }
 
   Widget displayNameAvatar(AppController appController, int index) {
-    return  Row(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         WidgetCircularImage(
@@ -532,14 +535,15 @@ class _CommentChatState extends State<CommentChat> {
           radius: 15,
         ),
         const SizedBox(
-          width: 8,
+          width: 4,
         ),
         WidgetText(text: appController.commentChatModels[index].disPlayName),
         const SizedBox(
-          width: 8,
+          width: 4,
         ),
-        InkWell(
-          onTap: () {
+        WidgetIconButton(
+          iconData: Icons.favorite_outline,
+          pressFunc: () {
             Map<String, dynamic> map =
                 appController.commentChatModels[index].toMap();
 
@@ -550,34 +554,30 @@ class _CommentChatState extends State<CommentChat> {
             AppService().updateCommentChat(
                 map: map, docIdComment: appController.docIdCommentChats[index]);
           },
-          child: const WidgetImage(
-            path: 'images/arrowup.jpg',
-            size: 24,
-          ),
         ),
-        WidgetText(text: '0'),
-        InkWell(
-          onTap: () {
-            Map<String, dynamic> map =
-                appController.commentChatModels[index].toMap();
-            int down = map['down'];
-            down--;
-            map['down'] = down;
-            AppService().updateCommentChat(
-                map: map, docIdComment: appController.docIdCommentChats[index]);
-          },
-          child: const WidgetImage(
-            path: 'images/arrowdown.jpg',
-            size: 24,
-          ),
-        ),
-        WidgetText(
-          text: '0',
-          textStyle: AppConstant().h3Style(color: Colors.red),
-        ),
+        const WidgetText(text: '0'),
+        // InkWell(
+        //   onTap: () {
+        //     Map<String, dynamic> map =
+        //         appController.commentChatModels[index].toMap();
+        //     int down = map['down'];
+        //     down--;
+        //     map['down'] = down;
+        //     AppService().updateCommentChat(
+        //         map: map, docIdComment: appController.docIdCommentChats[index]);
+        //   },
+        //   child: const WidgetImage(
+        //     path: 'images/arrowdown.jpg',
+        //     size: 24,
+        //   ),
+        // ),
+        // WidgetText(
+        //   text: '0',
+        //   textStyle: AppConstant().h3Style(color: Colors.red),
+        // ),
         // WidgetText(
         //   text: appController.commentChatModels[index].uidChat
-          
+
         // ),
       ],
     );

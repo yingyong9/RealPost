@@ -94,7 +94,7 @@ class TakePhotoOnly extends StatelessWidget {
                                                       map: map)
                                                   .then((value) {
                                                 Get.offAllNamed(
-                                                    '/mainPageView');
+                                                    '/commentChat');
                                               });
                                             }
 
