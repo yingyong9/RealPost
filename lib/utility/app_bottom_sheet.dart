@@ -30,7 +30,7 @@ class AppBottomSheet {
   AppController appController = Get.put(AppController());
 
   Future<void> bottomSheetMultiImage(
-      { required BuildContext context}) async {
+      {required BuildContext context, String? docIdComment}) async {
     TextEditingController textEditingController = TextEditingController();
     TextEditingController priceController = TextEditingController();
     TextEditingController amountController = TextEditingController();
@@ -44,7 +44,6 @@ class AppBottomSheet {
           height: 400,
           child: ListView(
             children: [
-             
               Row(
                 children: [
                   Expanded(
@@ -88,12 +87,15 @@ class AppBottomSheet {
                     ),
                     Positioned(
                       bottom: 0,
-                      child: rocketAddComment(textEditingController, 
-                          context: context,
-                          priceController: priceController,
-                          amountController: amountController,
-                          phoneController: phoneController,
-                          lineController: lineController),
+                      child: rocketAddComment(
+                        textEditingController,
+                        context: context,
+                        priceController: priceController,
+                        amountController: amountController,
+                        phoneController: phoneController,
+                        lineController: lineController,
+                        docIdComment: docIdComment,
+                      ),
                     ),
                   ],
                 ),
@@ -205,8 +207,7 @@ class AppBottomSheet {
                       print('##18may chatModel ---> ${chatModel.toMap()}');
 
                       AppService()
-                          .insertCommentChat(
-                              commentChatModel: chatModel)
+                          .insertCommentChat(commentChatModel: chatModel)
                           .then((value) {
                         textEditingController.text = '';
                         Get.back();
@@ -222,13 +223,13 @@ class AppBottomSheet {
   }
 
   Row rocketAddComment(
-    TextEditingController textEditingController,
-     {
+    TextEditingController textEditingController, {
     required BuildContext context,
     required TextEditingController priceController,
     required TextEditingController amountController,
     required TextEditingController phoneController,
     required TextEditingController lineController,
+    String? docIdComment,
   }) {
     return Row(
       children: [
@@ -314,15 +315,26 @@ class AppBottomSheet {
 
               print('##29may chatModel ---> ${chatModel.toMap()}');
 
-              AppService()
-                  .insertCommentChat(
-                       commentChatModel: chatModel)
-                  .then((value) {
-                textEditingController.text = '';
-                appController.xFiles.clear();
-                Get.back();
-                Get.back();
-              });
+              if (docIdComment == null) {
+                AppService()
+                    .insertCommentChat(commentChatModel: chatModel)
+                    .then((value) {
+                  textEditingController.text = '';
+                  appController.xFiles.clear();
+                  Get.back();
+                  Get.back();
+                });
+              } else {
+                AppService()
+                    .insertAnswer(
+                        chatModel: chatModel, docIdComment: docIdComment)
+                    .then((value) {
+                  textEditingController.text = '';
+                  appController.xFiles.clear();
+                  Get.back();
+                  Get.back();
+                });
+              }
             });
           },
         ),

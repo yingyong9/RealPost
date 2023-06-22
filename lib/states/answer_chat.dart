@@ -58,73 +58,87 @@ class _AnswerChatState extends State<AnswerChat> {
               Obx(() {
                 return appController.answerChatModels.isEmpty
                     ? const SizedBox()
-                    : ListView.builder(
-                        physics: const ScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: appController.answerChatModels.length,
-                        itemBuilder: (context, index) => Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: appController.mainUid ==
-                                      appController
-                                          .answerChatModels[index].uidChat
-                                  ? MainAxisAlignment.end
-                                  : MainAxisAlignment.start,
-                              children: appController.mainUid ==
-                                      appController
-                                          .answerChatModels[index].uidChat
-                                  ? [
-                                      BubbleSpecialThree(
-                                        text:
-                                            '${appController.answerChatModels[index].message}\n${AppService().timeStampToString(timestamp: appController.answerChatModels[index].timestamp, newPattern: "dd MMM HH:mm")}',
-                                        isSender: appController.mainUid.value ==
-                                            appController
+                    : SizedBox(
+                        width: double.infinity,
+                        height: boxConstraints.maxHeight - 70,
+                        child: ListView.builder(
+                          physics: const ScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: appController.answerChatModels.length,
+                          itemBuilder: (context, index) => Column(
+                            children: [
+                             
+                              Row(
+                                mainAxisAlignment: appController.mainUid ==
+                                        appController
+                                            .answerChatModels[index].uidChat
+                                    ? MainAxisAlignment.end
+                                    : MainAxisAlignment.start,
+                                children: appController.mainUid ==
+                                        appController
+                                            .answerChatModels[index].uidChat
+                                    ? [
+                                        Container(
+                                            decoration: AppConstant()
+                                                .boxChatLogin(),
+                                            child: Column(
+                                              children: [
+                                                 appController.answerChatModels[index]
+                                      .urlMultiImages.isEmpty
+                                  ? const SizedBox()
+                                  : Image.network(
+                                      appController.answerChatModels[index]
+                                          .urlMultiImages.last,
+                                      width: 100,height: 100,
+                                    ),
+                                                WidgetText(
+                                                    text:
+                                                        '${appController.answerChatModels[index].message}\n${AppService().timeStampToString(timestamp: appController.answerChatModels[index].timestamp, newPattern: "dd MMM HH:mm")}'),
+                                                        
+                                              ],
+                                            )),
+                                        WidgetCircularImage(
+                                            radius: 10,
+                                            urlImage: appController
                                                 .answerChatModels[index]
-                                                .uidChat, //true -> right, false ==> left
-                                        color: Colors.blue,
-                                        textStyle:
-                                            AppConstant().h3Style(size: 16),
-                                      ),
-                                      WidgetCircularImage(
-                                          radius: 10,
-                                          urlImage: appController
-                                              .answerChatModels[index]
-                                              .urlAvatar),
-                                    ]
-                                  : [
-                                      WidgetCircularImage(
-                                          radius: 10,
-                                          urlImage: appController
-                                              .answerChatModels[index]
-                                              .urlAvatar),
-                                      BubbleSpecialThree(
-                                        text:
-                                            '${appController.answerChatModels[index].message}\n${AppService().timeStampToString(timestamp: appController.answerChatModels[index].timestamp, newPattern: "dd MMM HH:mm")}',
-                                        isSender: appController.mainUid.value ==
-                                            appController
+                                                .urlAvatar),
+                                      ]
+                                    : [
+                                        WidgetCircularImage(
+                                            radius: 10,
+                                            urlImage: appController
                                                 .answerChatModels[index]
-                                                .uidChat, //true -> right, false ==> left
-                                        color: Colors.blue,
-                                        textStyle:
-                                            AppConstant().h3Style(size: 16),
-                                      ),
-                                    ],
-                            ),
-                            Row(
-                              mainAxisAlignment: appController.mainUid ==
-                                      appController
-                                          .answerChatModels[index].uidChat
-                                  ? MainAxisAlignment.end
-                                  : MainAxisAlignment.start,
-                              children: [
-                                WidgetText(
-                                  text: appController
-                                      .answerChatModels[index].disPlayName,
-                                  textStyle: AppConstant().h3Style(),
-                                ),
-                              ],
-                            ),
-                          ],
+                                                .urlAvatar),
+                                        BubbleSpecialThree(
+                                          text:
+                                              '${appController.answerChatModels[index].message}\n${AppService().timeStampToString(timestamp: appController.answerChatModels[index].timestamp, newPattern: "dd MMM HH:mm")}',
+                                          isSender: appController
+                                                  .mainUid.value ==
+                                              appController
+                                                  .answerChatModels[index]
+                                                  .uidChat, //true -> right, false ==> left
+                                          color: Colors.blue,
+                                          textStyle:
+                                              AppConstant().h3Style(size: 16),
+                                        ),
+                                      ],
+                              ),
+                              Row(
+                                mainAxisAlignment: appController.mainUid ==
+                                        appController
+                                            .answerChatModels[index].uidChat
+                                    ? MainAxisAlignment.end
+                                    : MainAxisAlignment.start,
+                                children: [
+                                  WidgetText(
+                                    text: appController
+                                        .answerChatModels[index].disPlayName,
+                                    textStyle: AppConstant().h3Style(),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       );
               }),
@@ -192,9 +206,12 @@ class _AnswerChatState extends State<AnswerChat> {
               ),
               WidgetIconButton(
                 pressFunc: () {
+                  print('##22june work');
                   AppService().processChooseMultiImageChat().then((value) {
-                    print('##29may xFiles ---> ${appController.xFiles.length}');
-                    AppBottomSheet().bottomSheetMultiImage(context: context);
+                    print(
+                        '##22june xFiles ---> ${appController.xFiles.length}');
+                    AppBottomSheet().bottomSheetMultiImage(
+                        context: context, docIdComment: widget.docIdComment);
                   });
                 },
                 iconData: Icons.add_photo_alternate,
