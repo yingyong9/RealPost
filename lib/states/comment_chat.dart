@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,7 +21,6 @@ import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
-import 'package:badges/badges.dart' as badges;
 
 class CommentChat extends StatefulWidget {
   const CommentChat({
@@ -269,30 +267,28 @@ class _CommentChatState extends State<CommentChat> {
         children: [
           appController.commentChatModels.isEmpty
               ? const SizedBox()
-              : GridView.builder(reverse: true,
+              : GridView.builder(
+                  reverse: true,
                   shrinkWrap: true,
                   physics: const ScrollPhysics(),
                   itemCount: appController.commentChatModels.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, childAspectRatio: 0.55),
-                  itemBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.only(left: 16, bottom: 10),
-                    child: Container(
-                      decoration: AppConstant().boxBlack(
-                          color: const Color.fromARGB(255, 26, 22, 22)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          displayNameAvatar(appController, index),
-                          singleImage(appController, index,
-                              boxConstraints: boxConstraints),
-                          multiImage(appController, index,
-                              boxConstraints: boxConstraints),
-                          messageText(appController, index),
-                          // answerList(appController, index),
-                          // displayPanal(appController, index, context),
-                        ],
-                      ),
+                      crossAxisCount: 2, childAspectRatio: 0.6),
+                  itemBuilder: (context, index) => Container(
+                    decoration: AppConstant()
+                        .boxBlack(color: const Color.fromARGB(255, 26, 22, 22)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        singleImage(appController, index,
+                            boxConstraints: boxConstraints),
+                        multiImage(appController, index,
+                            boxConstraints: boxConstraints),
+                        messageText(appController, index),
+                        displayNameAvatar(appController, index),
+                        // answerList(appController, index),
+                        // displayPanal(appController, index, context),
+                      ],
                     ),
                   ),
                 ),
@@ -478,33 +474,45 @@ class _CommentChatState extends State<CommentChat> {
           );
   }
 
-  ExpandableText messageText(AppController appController, int index) {
-    return ExpandableText(
-      appController.commentChatModels[index].message,
-      expandText: 'ดูเพิ่มเติม',
-      collapseText: '... ย่อ',
-      style: AppConstant().h3Style(),
-      linkStyle: AppConstant().h3Style(size: 19, fontWeight: FontWeight.bold),
-      maxLines: 2,
-      linkColor: Colors.white,
-    );
-  }
+  // ExpandableText messageText(AppController appController, int index) {
+  //   return ExpandableText(
+  //     appController.commentChatModels[index].message,
+  //     expandText: 'ดูเพิ่มเติม',
+  //     collapseText: '... ย่อ',
+  //     style: AppConstant().h3Style(),
+  //     linkStyle: AppConstant().h3Style(size: 19, fontWeight: FontWeight.bold),
+  //     maxLines: 2,
+  //     linkColor: Colors.white,
+  //   );
+  // }
+
+  Widget messageText(AppController appController, int index) => Text(
+        appController.commentChatModels[index].message,
+        style: AppConstant().h3Style(color: Colors.white),
+        maxLines: 2,overflow: TextOverflow.ellipsis,
+      );
 
   Widget multiImage(AppController appController, int index,
       {required BoxConstraints boxConstraints}) {
     return appController.commentChatModels[index].urlMultiImages.isEmpty
         ? const SizedBox()
-        : WidgetImageInternet(
-            urlImage:
-                appController.commentChatModels[index].urlMultiImages.last,
-            width: boxConstraints.maxWidth * 0.4,
-            height: boxConstraints.maxWidth * 0.6,
-            boxFit: BoxFit.cover,
-            tapFunc: () {
-              Get.to(AnswerChat(
-                  docIdComment: appController.docIdCommentChats[index],
-                  commentChatModel: appController.commentChatModels[index]));
-            },
+        : Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              WidgetImageInternet(
+                urlImage:
+                    appController.commentChatModels[index].urlMultiImages.last,
+                width: boxConstraints.maxWidth * 0.4,
+                height: boxConstraints.maxWidth * 0.6,
+                boxFit: BoxFit.cover,
+                tapFunc: () {
+                  Get.to(AnswerChat(
+                      docIdComment: appController.docIdCommentChats[index],
+                      commentChatModel:
+                          appController.commentChatModels[index]));
+                },
+              ),
+            ],
           );
   }
 
@@ -532,7 +540,7 @@ class _CommentChatState extends State<CommentChat> {
       children: [
         WidgetCircularImage(
           urlImage: appController.commentChatModels[index].urlAvatar,
-          radius: 15,
+          radius: 10,
         ),
         const SizedBox(
           width: 4,
@@ -543,6 +551,7 @@ class _CommentChatState extends State<CommentChat> {
         ),
         WidgetIconButton(
           iconData: Icons.favorite_outline,
+          size: 20,
           pressFunc: () {
             Map<String, dynamic> map =
                 appController.commentChatModels[index].toMap();
