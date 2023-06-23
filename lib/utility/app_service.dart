@@ -69,9 +69,9 @@ class AppService {
   }
 
   Future<void> readAnswer({required String docIdComment}) async {
-    if (appController.answerChatModels.isNotEmpty) {
-      appController.answerChatModels.clear();
-    }
+    // if (appController.answerChatModels.isNotEmpty) {
+    //   appController.answerChatModels.clear();
+    // }
 
     FirebaseFirestore.instance
         .collection('comment')
@@ -83,11 +83,25 @@ class AppService {
       if (event.docs.isNotEmpty) {
         if (appController.answerChatModels.isNotEmpty) {
           appController.answerChatModels.clear();
+          appController.answerChatModelsForGuest.clear();
+          appController.answerChatModelsForOwner.clear();
         }
 
         for (var element in event.docs) {
           ChatModel answerChatModel = ChatModel.fromMap(element.data());
           appController.answerChatModels.add(answerChatModel);
+
+          print(
+              '##22june answer uid --> ${answerChatModel.uidChat} ## login ---> ${appController.userModelsLogin.last.uidUser}');
+
+          if (answerChatModel.uidChat ==
+              appController.userModelsLogin.last.uidUser) {
+            //Owner
+            appController.answerChatModelsForOwner.add(answerChatModel);
+          } else {
+            //Guest
+            appController.answerChatModelsForGuest.add(answerChatModel);
+          }
         }
       }
     });

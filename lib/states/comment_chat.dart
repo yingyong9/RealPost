@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, avoid_print
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,7 +21,6 @@ import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
-import 'package:badges/badges.dart' as badges;
 
 class CommentChat extends StatefulWidget {
   const CommentChat({

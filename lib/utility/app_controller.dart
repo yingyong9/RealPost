@@ -113,6 +113,8 @@ class AppController extends GetxController {
   RxList<List<AnswerModel>> listAnswerModels = <List<AnswerModel>>[].obs;
 
   RxList<ChatModel> answerChatModels = <ChatModel>[].obs;
+  RxList<ChatModel> answerChatModelsForOwner = <ChatModel>[].obs;
+  RxList<ChatModel> answerChatModelsForGuest = <ChatModel>[].obs;
 
   RxList<UserModel> commentUserModels = <UserModel>[].obs;
 

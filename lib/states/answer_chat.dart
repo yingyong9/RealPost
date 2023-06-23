@@ -50,104 +50,118 @@ class _AnswerChatState extends State<AnswerChat> {
       backgroundColor: AppConstant.bgColor,
       appBar: AppBar(),
       body: LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
-        return SizedBox(
-          width: boxConstraints.maxWidth,
-          height: boxConstraints.maxHeight,
-          child: Stack(
-            children: [
-              Obx(() {
-                return appController.answerChatModels.isEmpty
-                    ? const SizedBox()
-                    : SizedBox(
-                        width: double.infinity,
-                        height: boxConstraints.maxHeight - 70,
-                        child: ListView.builder(
-                          physics: const ScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: appController.answerChatModels.length,
-                          itemBuilder: (context, index) => Column(
-                            children: [
-                             
-                              Row(
-                                mainAxisAlignment: appController.mainUid ==
-                                        appController
-                                            .answerChatModels[index].uidChat
-                                    ? MainAxisAlignment.end
-                                    : MainAxisAlignment.start,
-                                children: appController.mainUid ==
-                                        appController
-                                            .answerChatModels[index].uidChat
-                                    ? [
-                                        Container(
-                                            decoration: AppConstant()
-                                                .boxChatLogin(),
-                                            child: Column(
-                                              children: [
-                                                 appController.answerChatModels[index]
-                                      .urlMultiImages.isEmpty
-                                  ? const SizedBox()
-                                  : Image.network(
-                                      appController.answerChatModels[index]
-                                          .urlMultiImages.last,
-                                      width: 100,height: 100,
-                                    ),
-                                                WidgetText(
-                                                    text:
-                                                        '${appController.answerChatModels[index].message}\n${AppService().timeStampToString(timestamp: appController.answerChatModels[index].timestamp, newPattern: "dd MMM HH:mm")}'),
-                                                        
-                                              ],
-                                            )),
-                                        WidgetCircularImage(
-                                            radius: 10,
-                                            urlImage: appController
-                                                .answerChatModels[index]
-                                                .urlAvatar),
-                                      ]
-                                    : [
-                                        WidgetCircularImage(
-                                            radius: 10,
-                                            urlImage: appController
-                                                .answerChatModels[index]
-                                                .urlAvatar),
-                                        BubbleSpecialThree(
-                                          text:
-                                              '${appController.answerChatModels[index].message}\n${AppService().timeStampToString(timestamp: appController.answerChatModels[index].timestamp, newPattern: "dd MMM HH:mm")}',
-                                          isSender: appController
-                                                  .mainUid.value ==
-                                              appController
-                                                  .answerChatModels[index]
-                                                  .uidChat, //true -> right, false ==> left
-                                          color: Colors.blue,
-                                          textStyle:
-                                              AppConstant().h3Style(size: 16),
-                                        ),
-                                      ],
-                              ),
-                              Row(
-                                mainAxisAlignment: appController.mainUid ==
-                                        appController
-                                            .answerChatModels[index].uidChat
-                                    ? MainAxisAlignment.end
-                                    : MainAxisAlignment.start,
-                                children: [
-                                  WidgetText(
-                                    text: appController
-                                        .answerChatModels[index].disPlayName,
-                                    textStyle: AppConstant().h3Style(),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-              }),
-              panalFormChat(),
-            ],
+        return GestureDetector(
+          onTap: () => FocusManager.instance.primaryFocus!.unfocus(),
+          child: SizedBox(
+            width: boxConstraints.maxWidth,
+            height: boxConstraints.maxHeight,
+            child: Stack(
+              children: [
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                  width: double.infinity,
+                  height: boxConstraints.maxHeight - 60,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      guestListView(),
+                      const SizedBox(width: 8,),
+                      ownerListView(),
+                    ],
+                  ),
+                ),
+                panalFormChat(),
+              ],
+            ),
           ),
         );
       }),
     );
+  }
+
+  Widget ownerListView() {
+    return Obx(() {
+      return appController.answerChatModelsForOwner.isEmpty
+          ? const SizedBox()
+          : Expanded(
+              child: ListView.builder(
+                itemCount: appController.answerChatModelsForOwner.length,
+                shrinkWrap: true,
+                physics: const ScrollPhysics(),
+                itemBuilder: (context, index) => Container(
+                  margin: const EdgeInsets.only(top: 8),
+                  padding: const EdgeInsets.all(8),
+                  decoration: AppConstant().boxChatLogin(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      appController.answerChatModelsForOwner[index]
+                              .urlMultiImages.isEmpty
+                          ? const SizedBox()
+                          : ListView.builder(
+                              itemCount: appController
+                                  .answerChatModelsForOwner[index]
+                                  .urlMultiImages
+                                  .length,
+                              shrinkWrap: true,
+                              physics: const ScrollPhysics(),
+                              itemBuilder: (context, index2) => Container(
+                                margin: const EdgeInsets.only(bottom: 8),
+                                child: WidgetImageInternet(
+                                    urlImage: appController
+                                        .answerChatModelsForOwner[index]
+                                        .urlMultiImages[index2]),
+                              ),
+                            ),
+                      WidgetText(
+                          text: appController
+                              .answerChatModelsForOwner[index].message),
+                    ],
+                  ),
+                ),
+              ),
+            );
+    });
+  }
+
+  Widget guestListView() {
+    return appController.answerChatModelsForGuest.isEmpty
+        ? const SizedBox()
+        : Expanded(
+            child: ListView.builder(
+              itemCount: appController.answerChatModelsForGuest.length,
+              shrinkWrap: true,
+              physics: const ScrollPhysics(),
+              itemBuilder: (context, index) => Container(margin: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.all(8),
+                decoration: AppConstant().boxChatGuest(),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    WidgetCircularImage(
+                      urlImage: appController
+                          .answerChatModelsForGuest[index].urlAvatar,
+                      radius: 10,
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        WidgetText(
+                            text: appController
+                                .answerChatModelsForGuest[index].disPlayName),
+                        WidgetText(
+                            text: appController
+                                .answerChatModelsForGuest[index].message),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
   }
 
   Widget panalFormChat() => Column(
