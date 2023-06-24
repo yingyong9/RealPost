@@ -1,5 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, unrelated_type_equality_checks, avoid_print
-import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,10 +21,12 @@ class AnswerChat extends StatefulWidget {
     Key? key,
     required this.docIdComment,
     required this.commentChatModel,
+    required this.owner,
   }) : super(key: key);
 
   final String docIdComment;
   final ChatModel commentChatModel;
+  final bool owner;
 
   @override
   State<AnswerChat> createState() => _AnswerChatState();
@@ -41,7 +42,9 @@ class _AnswerChatState extends State<AnswerChat> {
   void initState() {
     super.initState();
 
-    AppService().readAnswer(docIdComment: widget.docIdComment);
+    print('##24june owner at answerCaht ----> ${widget.owner}');
+
+    AppService().readAnswer(docIdComment: widget.docIdComment, uidOwner: widget.commentChatModel.uidChat);
   }
 
   @override
@@ -62,13 +65,16 @@ class _AnswerChatState extends State<AnswerChat> {
                   width: double.infinity,
                   height: boxConstraints.maxHeight - 60,
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      guestListView(),
-                      const SizedBox(width: 8,),
-                      ownerListView(),
-                    ],
-                  ),
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ownerListView(),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            guestListView(),
+                          ],
+                        )
+                     ,
                 ),
                 panalFormChat(),
               ],
@@ -82,7 +88,7 @@ class _AnswerChatState extends State<AnswerChat> {
   Widget ownerListView() {
     return Obx(() {
       return appController.answerChatModelsForOwner.isEmpty
-          ? const SizedBox()
+          ? const Expanded(child:SizedBox())
           : Expanded(
               child: ListView.builder(
                 itemCount: appController.answerChatModelsForOwner.length,
@@ -125,43 +131,44 @@ class _AnswerChatState extends State<AnswerChat> {
   }
 
   Widget guestListView() {
-    return appController.answerChatModelsForGuest.isEmpty
-        ? const SizedBox()
-        : Expanded(
-            child: ListView.builder(
-              itemCount: appController.answerChatModelsForGuest.length,
-              shrinkWrap: true,
-              physics: const ScrollPhysics(),
-              itemBuilder: (context, index) => Container(margin: const EdgeInsets.only(bottom: 8),
-                padding: const EdgeInsets.all(8),
-                decoration: AppConstant().boxChatGuest(),
-                child: Row(
+    return Obx(() {
+      return Expanded(
+        child: ListView.builder(
+          itemCount: appController.answerChatModelsForGuest.length,
+          shrinkWrap: true,
+          physics: const ScrollPhysics(),
+          itemBuilder: (context, index) => Container(
+            margin: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.all(8),
+            decoration: AppConstant().boxChatGuest(),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                WidgetCircularImage(
+                  urlImage:
+                      appController.answerChatModelsForGuest[index].urlAvatar,
+                  radius: 10,
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    WidgetCircularImage(
-                      urlImage: appController
-                          .answerChatModelsForGuest[index].urlAvatar,
-                      radius: 10,
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        WidgetText(
-                            text: appController
-                                .answerChatModelsForGuest[index].disPlayName),
-                        WidgetText(
-                            text: appController
-                                .answerChatModelsForGuest[index].message),
-                      ],
-                    ),
+                    WidgetText(
+                        text: appController
+                            .answerChatModelsForGuest[index].disPlayName),
+                    WidgetText(
+                        text: appController
+                            .answerChatModelsForGuest[index].message),
                   ],
                 ),
-              ),
+              ],
             ),
-          );
+          ),
+        ),
+      );
+    });
   }
 
   Widget panalFormChat() => Column(
