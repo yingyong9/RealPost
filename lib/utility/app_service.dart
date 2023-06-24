@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, use_build_context_synchronously
+// ignore_for_file: avoid_print, use_build_context_synchronously, unused_local_variable
 
 import 'dart:io';
 import 'dart:math';
@@ -68,10 +68,13 @@ class AppService {
     }
   }
 
-  Future<void> readAnswer({required String docIdComment}) async {
-    // if (appController.answerChatModels.isNotEmpty) {
-    //   appController.answerChatModels.clear();
-    // }
+  Future<void> readAnswer(
+      {required String docIdComment, required String uidOwner}) async {
+    if (appController.answerChatModels.isNotEmpty) {
+      appController.answerChatModels.clear();
+      appController.answerChatModelsForGuest.clear();
+      appController.answerChatModelsForOwner.clear();
+    }
 
     FirebaseFirestore.instance
         .collection('comment')
@@ -91,11 +94,7 @@ class AppService {
           ChatModel answerChatModel = ChatModel.fromMap(element.data());
           appController.answerChatModels.add(answerChatModel);
 
-          print(
-              '##22june answer uid --> ${answerChatModel.uidChat} ## login ---> ${appController.userModelsLogin.last.uidUser}');
-
-          if (answerChatModel.uidChat ==
-              appController.userModelsLogin.last.uidUser) {
+          if (answerChatModel.uidChat == uidOwner) {
             //Owner
             appController.answerChatModelsForOwner.add(answerChatModel);
           } else {

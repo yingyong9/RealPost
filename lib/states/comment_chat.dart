@@ -21,7 +21,6 @@ import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_text.dart';
 
-
 class CommentChat extends StatefulWidget {
   const CommentChat({
     Key? key,
@@ -489,7 +488,8 @@ class _CommentChatState extends State<CommentChat> {
   Widget messageText(AppController appController, int index) => Text(
         appController.commentChatModels[index].message,
         style: AppConstant().h3Style(color: Colors.white),
-        maxLines: 2,overflow: TextOverflow.ellipsis,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
       );
 
   Widget multiImage(AppController appController, int index,
@@ -507,9 +507,11 @@ class _CommentChatState extends State<CommentChat> {
                 boxFit: BoxFit.cover,
                 tapFunc: () {
                   Get.to(AnswerChat(
-                      docIdComment: appController.docIdCommentChats[index],
-                      commentChatModel:
-                          appController.commentChatModels[index]));
+                    docIdComment: appController.docIdCommentChats[index],
+                    commentChatModel: appController.commentChatModels[index],
+                    owner: appController.userModelsLogin.last.uidUser ==
+                        appController.commentChatModels[index].uidChat,
+                  ));
                 },
               ),
             ],
