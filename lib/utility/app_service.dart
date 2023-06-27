@@ -74,6 +74,8 @@ class AppService {
       appController.answerChatModels.clear();
       appController.answerChatModelsForGuest.clear();
       appController.answerChatModelsForOwner.clear();
+      appController.listUrlImageAnswerOwners.clear();
+      appController.listMessageAnswerOwners.clear();
     }
 
     FirebaseFirestore.instance
@@ -97,6 +99,16 @@ class AppService {
           if (answerChatModel.uidChat == uidOwner) {
             //Owner
             appController.answerChatModelsForOwner.add(answerChatModel);
+
+            if (answerChatModel.urlMultiImages.isNotEmpty) {
+              appController.listUrlImageAnswerOwners
+                  .add(answerChatModel.urlMultiImages);
+            }
+
+            if (answerChatModel.message.isNotEmpty) {
+              appController.listMessageAnswerOwners
+                  .add(answerChatModel.message);
+            }
           } else {
             //Guest
             appController.answerChatModelsForGuest.add(answerChatModel);
