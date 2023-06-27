@@ -111,12 +111,13 @@ class AppController extends GetxController {
   RxBool checkIn = true.obs;
   RxList<StatDataModel> statDataModels = <StatDataModel>[].obs;
   RxList<List<AnswerModel>> listAnswerModels = <List<AnswerModel>>[].obs;
-
   RxList<ChatModel> answerChatModels = <ChatModel>[].obs;
   RxList<ChatModel> answerChatModelsForOwner = <ChatModel>[].obs;
   RxList<ChatModel> answerChatModelsForGuest = <ChatModel>[].obs;
-
   RxList<UserModel> commentUserModels = <UserModel>[].obs;
+
+  RxList<List<String>> listUrlImageAnswerOwners = <List<String>>[].obs;
+  RxList<String> listMessageAnswerOwners = <String>[].obs;
 
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {

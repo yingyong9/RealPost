@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, unrelated_type_equality_checks, avoid_print
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -15,6 +16,7 @@ import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_text.dart';
+import 'package:realpost/widgets/widget_text_button.dart';
 
 class AnswerChat extends StatefulWidget {
   const AnswerChat({
@@ -44,7 +46,9 @@ class _AnswerChatState extends State<AnswerChat> {
 
     print('##24june owner at answerCaht ----> ${widget.owner}');
 
-    AppService().readAnswer(docIdComment: widget.docIdComment, uidOwner: widget.commentChatModel.uidChat);
+    AppService().readAnswer(
+        docIdComment: widget.docIdComment,
+        uidOwner: widget.commentChatModel.uidChat);
   }
 
   @override
@@ -60,22 +64,57 @@ class _AnswerChatState extends State<AnswerChat> {
             height: boxConstraints.maxHeight,
             child: Stack(
               children: [
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 8),
-                  width: double.infinity,
-                  height: boxConstraints.maxHeight - 60,
-                  child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ownerListView(),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            guestListView(),
-                          ],
-                        )
-                     ,
-                ),
+                Obx(() {
+                  return appController.answerChatModelsForOwner.isEmpty
+                      ? const SizedBox()
+                      : appController.listUrlImageAnswerOwners.isEmpty
+                          ? Center(
+                              child: WidgetText(
+                                text: 'ไม่มีภาพ',
+                                textStyle:
+                                    AppConstant().h2Style(color: Colors.white),
+                              ),
+                            )
+                          : SizedBox(
+                              width: double.infinity,
+                              height: boxConstraints.maxHeight * 0.7 - 70,
+                              child: Stack(
+                                children: [
+                                  ImageSlideshow(
+                                      height:
+                                          boxConstraints.maxHeight * 0.7 - 70,
+                                      children: appController
+                                          .listUrlImageAnswerOwners.last
+                                          .map((e) => WidgetImageInternet(
+                                                urlImage: e,
+                                                boxFit: BoxFit.cover,
+                                              ))
+                                          .toList()),
+                                  appController.listMessageAnswerOwners.isEmpty
+                                      ? const SizedBox()
+                                      : Container(
+                                          margin: const EdgeInsets.all(8),
+                                          padding: const EdgeInsets.all(4),
+                                          decoration: AppConstant().boxCurve(
+                                              color: Colors.black
+                                                  .withOpacity(0.5)),
+                                          child: WidgetText(
+                                            text: appController
+                                                .listMessageAnswerOwners.last,
+                                            textStyle: AppConstant()
+                                                .h2Style(color: Colors.white),
+                                          ),
+                                        ),
+                                  Positioned(bottom: 0,right: 0,
+                                    child: WidgetIconButton(size: 45,
+                                      pressFunc: () {}, iconData:  Icons.add_box,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                }),
+                listChatAnswer(boxConstraints),
                 panalFormChat(),
               ],
             ),
@@ -85,10 +124,37 @@ class _AnswerChatState extends State<AnswerChat> {
     );
   }
 
+  Widget listChatAnswer(BoxConstraints boxConstraints) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 8),
+          width: double.infinity,
+          // height: boxConstraints.maxHeight - 60,
+          height: boxConstraints.maxHeight * 0.3,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ownerListView(),
+              // const SizedBox(
+              //   width: 8,
+              // ),
+              guestListView(),
+            ],
+          ),
+        ),
+        const SizedBox(
+          height: 60,
+        )
+      ],
+    );
+  }
+
   Widget ownerListView() {
     return Obx(() {
       return appController.answerChatModelsForOwner.isEmpty
-          ? const Expanded(child:SizedBox())
+          ? const Expanded(child: SizedBox())
           : Expanded(
               child: ListView.builder(
                 itemCount: appController.answerChatModelsForOwner.length,
@@ -158,9 +224,16 @@ class _AnswerChatState extends State<AnswerChat> {
                     WidgetText(
                         text: appController
                             .answerChatModelsForGuest[index].disPlayName),
-                    WidgetText(
-                        text: appController
-                            .answerChatModelsForGuest[index].message),
+                    Row(
+                      children: [
+                        WidgetText(
+                            text: appController
+                                .answerChatModelsForGuest[index].message),
+                                WidgetTextButton(text: 'ตอบ', pressFunc: () {
+                                  
+                                },)
+                      ],
+                    ),
                   ],
                 ),
               ],
