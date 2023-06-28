@@ -63,155 +63,7 @@ class _CommentChatState extends State<CommentChat> {
                       contentMain(
                           appController: appController,
                           boxConstraints: boxConstraints),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          appController.displayListEmoji.value
-                              ? SizedBox(
-                                  height: 80,
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    shrinkWrap: true,
-                                    physics: const ClampingScrollPhysics(),
-                                    itemCount: appController.stampModels.length,
-                                    itemBuilder: (context, index) => Container(
-                                      decoration: AppConstant().boxCurve(
-                                          color: appController.tapStamps[index]
-                                              ? Colors.red
-                                              : Colors.black),
-                                      padding: const EdgeInsets.only(left: 4),
-                                      child: WidgetImageInternet(
-                                          tapFunc: () {
-                                            clearAllTabStamp(appController);
-
-                                            appController.tapStamps[index] =
-                                                true;
-                                            appController.urlEmojiChooses.add(
-                                                appController
-                                                    .stampModels[index].url);
-                                            setState(() {});
-                                          },
-                                          width: 70,
-                                          urlImage: appController
-                                              .stampModels[index].url),
-                                    ),
-                                  ),
-                                )
-                              : const SizedBox(),
-                          Row(
-                            children: [
-                              WidgetIconButton(
-                                pressFunc: () {
-                                  AppService()
-                                      .processTakePhoto(
-                                          source: ImageSource.camera)
-                                      .then((value) {
-                                    AppService()
-                                        .processUploadPhoto(
-                                            file: value!, path: 'comment')
-                                        .then((value) {
-                                      String urlImageComment = value!;
-
-                                      AppBottomSheet().dipsplayImage(
-                                          urlImage: urlImageComment,
-                                          docIdChat:
-                                              appController.docIdChats[0]);
-                                    });
-                                  });
-                                },
-                                iconData: Icons.add_a_photo,
-                                color: AppConstant.realFront,
-                              ),
-                              WidgetIconButton(
-                                pressFunc: () {
-                                  AppService()
-                                      .processChooseMultiImageChat()
-                                      .then((value) {
-                                    AppBottomSheet().bottomSheetMultiImage(
-                                        context: context);
-                                  });
-                                },
-                                iconData: Icons.add_photo_alternate,
-                                color: AppConstant.realFront,
-                              ),
-                              SizedBox(
-                                width: 200,
-                                child: WidgetForm(
-                                  fillColor: AppConstant.realMid,
-                                  controller: textEditingController,
-                                  hint: 'Real Post',
-                                  hintStyle: AppConstant()
-                                      .h3Style(color: Colors.white),
-                                  textStyle: AppConstant()
-                                      .h3Style(color: Colors.white),
-                                  suffixIcon: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      WidgetImage(
-                                        path: 'images/emoj.jpg',
-                                        size: 36,
-                                        tapFunc: () {
-                                          print(
-                                              'Click Emoji ${appController.stampModels.length}');
-                                          appController.displayListEmoji.value =
-                                              !appController
-                                                  .displayListEmoji.value;
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              WidgetImage(
-                                path: 'images/rocket.png',
-                                size: 48,
-                                tapFunc: () {
-                                  if ((textEditingController.text.isNotEmpty) ||
-                                      (appController
-                                          .urlEmojiChooses.isNotEmpty)) {
-                                    AppDialog(context: context).dialogProcess();
-
-                                    ChatModel chatModel = ChatModel(
-                                      message: textEditingController.text,
-                                      timestamp:
-                                          Timestamp.fromDate(DateTime.now()),
-                                      uidChat: appController
-                                          .userModelsLogin.last.uidUser!,
-                                      disPlayName: appController
-                                          .userModelsLogin.last.displayName!,
-                                      urlAvatar: appController
-                                          .userModelsLogin.last.urlAvatar!,
-                                      urlRealPost: appController
-                                              .urlEmojiChooses.isEmpty
-                                          ? ''
-                                          : appController.urlEmojiChooses.last,
-                                      albums: [],
-                                      urlMultiImages: [],
-                                      up: 0,
-                                      amountComment: 0,
-                                      amountGraph: 0,
-                                    );
-
-                                    AppService()
-                                        .insertCommentChat(
-                                            commentChatModel: chatModel)
-                                        .then((value) async {
-                                      Get.back();
-
-                                      textEditingController.text = '';
-                                      appController.urlAvatarChooses.clear();
-                                      clearAllTabStamp(appController);
-                                      appController.displayListEmoji.value =
-                                          false;
-                                    });
-                                  }
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                      contentFormAddComment(appController, context),
                     ],
                   ),
                 );
@@ -219,6 +71,159 @@ class _CommentChatState extends State<CommentChat> {
         },
       ),
     );
+  }
+
+  Column contentFormAddComment(AppController appController, BuildContext context) {
+    return Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        appController.displayListEmoji.value
+                            ? SizedBox(
+                                height: 80,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  shrinkWrap: true,
+                                  physics: const ClampingScrollPhysics(),
+                                  itemCount: appController.stampModels.length,
+                                  itemBuilder: (context, index) => Container(
+                                    decoration: AppConstant().boxCurve(
+                                        color: appController.tapStamps[index]
+                                            ? Colors.red
+                                            : Colors.black),
+                                    padding: const EdgeInsets.only(left: 4),
+                                    child: WidgetImageInternet(
+                                        tapFunc: () {
+                                          clearAllTabStamp(appController);
+
+                                          appController.tapStamps[index] =
+                                              true;
+                                          appController.urlEmojiChooses.add(
+                                              appController
+                                                  .stampModels[index].url);
+                                          setState(() {});
+                                        },
+                                        width: 70,
+                                        urlImage: appController
+                                            .stampModels[index].url),
+                                  ),
+                                ),
+                              )
+                            : const SizedBox(),
+                        Row(
+                          children: [
+                            WidgetIconButton(
+                              pressFunc: () {
+                                AppService()
+                                    .processTakePhoto(
+                                        source: ImageSource.camera)
+                                    .then((value) {
+                                  AppService()
+                                      .processUploadPhoto(
+                                          file: value!, path: 'comment')
+                                      .then((value) {
+                                    String urlImageComment = value!;
+
+                                    AppBottomSheet().dipsplayImage(
+                                        urlImage: urlImageComment,
+                                        docIdChat:
+                                            appController.docIdChats[0]);
+                                  });
+                                });
+                              },
+                              iconData: Icons.add_a_photo,
+                              color: AppConstant.realFront,
+                            ),
+                            WidgetIconButton(
+                              pressFunc: () {
+                                AppService()
+                                    .processChooseMultiImageChat()
+                                    .then((value) {
+                                  AppBottomSheet().bottomSheetMultiImage(
+                                      context: context);
+                                });
+                              },
+                              iconData: Icons.add_photo_alternate,
+                              color: AppConstant.realFront,
+                            ),
+                            SizedBox(
+                              width: 200,
+                              child: WidgetForm(
+                                fillColor: AppConstant.realMid,
+                                controller: textEditingController,
+                                hint: 'Real Post',
+                                hintStyle: AppConstant()
+                                    .h3Style(color: Colors.white),
+                                textStyle: AppConstant()
+                                    .h3Style(color: Colors.white),
+                                suffixIcon: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    WidgetImage(
+                                      path: 'images/emoj.jpg',
+                                      size: 36,
+                                      tapFunc: () {
+                                        print(
+                                            'Click Emoji ${appController.stampModels.length}');
+                                        appController.displayListEmoji.value =
+                                            !appController
+                                                .displayListEmoji.value;
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            WidgetImage(
+                              path: 'images/rocket.png',
+                              size: 48,
+                              tapFunc: () {
+                                
+                                if ((textEditingController.text.isNotEmpty) ||
+                                    (appController
+                                        .urlEmojiChooses.isNotEmpty)) {
+                                  AppDialog(context: context).dialogProcess();
+
+                                  ChatModel chatModel = ChatModel(
+                                    message: textEditingController.text,
+                                    timestamp:
+                                        Timestamp.fromDate(DateTime.now()),
+                                    uidChat: appController
+                                        .userModelsLogin.last.uidUser!,
+                                    disPlayName: appController
+                                        .userModelsLogin.last.displayName!,
+                                    urlAvatar: appController
+                                        .userModelsLogin.last.urlAvatar!,
+                                    urlRealPost: appController
+                                            .urlEmojiChooses.isEmpty
+                                        ? ''
+                                        : appController.urlEmojiChooses.last,
+                                    albums: [],
+                                    urlMultiImages: [],
+                                    up: 0,
+                                    amountComment: 0,
+                                    amountGraph: 0,
+                                  );
+
+                                  AppService()
+                                      .insertCommentChat(
+                                          commentChatModel: chatModel)
+                                      .then((value) async {
+                                    Get.back();
+
+                                    textEditingController.text = '';
+                                    appController.urlAvatarChooses.clear();
+                                    clearAllTabStamp(appController);
+                                    appController.displayListEmoji.value =
+                                        false;
+                                  });
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
   }
 
   void displayFullScreen({required String url}) {
