@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, unrelated_type_equality_checks, avoid_print
+import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
@@ -77,84 +78,113 @@ class _AnswerChatState extends State<AnswerChat> {
 
   Obx imageSliteShow(BoxConstraints boxConstraints) {
     return Obx(() {
-                return appController.answerChatModelsForOwner.isEmpty
-                    ? const SizedBox()
-                    : appController.listUrlImageAnswerOwners.isEmpty
-                        ? Center(
-                            child: WidgetText(
-                              text: 'ไม่มีภาพ',
-                              textStyle:
-                                  AppConstant().h2Style(color: Colors.white),
-                            ),
-                          )
-                        : SizedBox(
-                            width: double.infinity,
-                            height: boxConstraints.maxHeight * 0.7 - 70,
-                            child: Stack(
-                              children: [
-                                ImageSlideshow(
-                                    height:
-                                        boxConstraints.maxHeight * 0.7 - 70,
-                                    children: appController
-                                        .listUrlImageAnswerOwners.last
-                                        .map((e) => WidgetImageInternet(
-                                              urlImage: e,
-                                              boxFit: BoxFit.cover,
-                                            ))
-                                        .toList()),
-                                appController.listMessageAnswerOwners.isEmpty
-                                    ? const SizedBox()
-                                    : Positioned(bottom: 4,
-                                      child: Container(width: boxConstraints.maxWidth - 60,
-                                          margin: const EdgeInsets.all(8),
-                                          padding: const EdgeInsets.all(4),
-                                          decoration: AppConstant().boxCurve(
-                                              color: Colors.black
-                                                  .withOpacity(0.5)),
-                                          child: WidgetText(
-                                            text: appController
-                                                .listMessageAnswerOwners.last,
-                                            textStyle: AppConstant()
-                                                .h3Style(color: Colors.white),
-                                          ),
-                                        ),
-                                    ),
-                                Positioned(bottom: 0,right: 0,
-                                  child: WidgetIconButton(size: 45,
-                                    pressFunc: () {}, iconData:  Icons.add_box,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-              });
+      return appController.answerChatModelsForOwner.isEmpty
+          ? const SizedBox()
+          : appController.listUrlImageAnswerOwners.isEmpty
+              ? Center(
+                  child: WidgetText(
+                    text: 'ไม่มีภาพ',
+                    textStyle: AppConstant().h2Style(color: Colors.white),
+                  ),
+                )
+              : SizedBox(
+                  width: double.infinity,
+                  height: boxConstraints.maxHeight - 70,
+                  child: Stack(
+                    children: [
+                      ImageSlideshow(
+                          height: boxConstraints.maxHeight-70,
+                          children: appController.listUrlImageAnswerOwners.last
+                              .map((e) => WidgetImageInternet(
+                                    urlImage: e,
+                                    boxFit: BoxFit.cover,
+                                  ))
+                              .toList(), isLoop: true,autoPlayInterval: 10000,),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: WidgetIconButton(
+                          size: 45,
+                          pressFunc: () {},
+                          iconData: Icons.add_box,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+    });
+  }
+
+  Widget displayMessage({required BoxConstraints boxConstraints}) {
+    return appController.listMessageAnswerOwners.isEmpty
+        ? const SizedBox()
+        : Positioned(
+            // bottom: 4,
+            top: boxConstraints.maxHeight * 0.7 - 70,
+            child: Container(
+              width: boxConstraints.maxWidth - 60,
+              margin: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(4),
+              decoration:
+                  AppConstant().boxCurve(color: Colors.black.withOpacity(0.5)),
+              child: WidgetText(
+                text: appController.listMessageAnswerOwners.last,
+                textStyle: AppConstant().h3Style(color: Colors.white),
+              ),
+            ),
+          );
   }
 
   Widget listChatAnswer(BoxConstraints boxConstraints) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 8),
-          width: double.infinity,
-          // height: boxConstraints.maxHeight - 60,
-          height: boxConstraints.maxHeight * 0.3,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ownerListView(),
-              // const SizedBox(
-              //   width: 8,
-              // ),
-              guestListView(),
-            ],
+    return Obx(() {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            width: double.infinity,
+            height: boxConstraints.maxHeight * 0.6,
+            child: appController.answerChatModels.isEmpty
+                ? const SizedBox()
+                : ListView.builder(reverse: true,
+                    itemBuilder: (context, index) => Row(
+                      mainAxisAlignment:
+                          appController.answerChatModels[index].uidChat ==
+                                  appController.userModelsLogin.last.uidUser
+                              ? MainAxisAlignment.end
+                              : MainAxisAlignment.start,
+                      children: [
+                        appController.answerChatModels[index].uidChat ==
+                                appController.userModelsLogin.last.uidUser
+                            ? const SizedBox()
+                            : WidgetCircularImage(
+                                radius: 12,
+                                urlImage: appController
+                                    .answerChatModels[index].urlAvatar),
+                        BubbleSpecialThree(
+                          text: appController.answerChatModels[index].message,
+                          isSender:
+                              appController.answerChatModels[index].uidChat ==
+                                  appController.userModelsLogin.last.uidUser,
+                          color:
+                              appController.answerChatModels[index].uidChat ==
+                                      appController.userModelsLogin.last.uidUser
+                                  ? Colors.green
+                                  : Colors.white,
+                        ),
+                      ],
+                    ),
+                    itemCount: appController.answerChatModels.length,
+                    physics: const ScrollPhysics(),
+                    shrinkWrap: true,
+                  ),
           ),
-        ),
-        const SizedBox(
-          height: 60,
-        )
-      ],
-    );
+          const SizedBox(
+            height: 60,
+          )
+        ],
+      );
+    });
   }
 
   Widget ownerListView() {
@@ -235,9 +265,10 @@ class _AnswerChatState extends State<AnswerChat> {
                         WidgetText(
                             text: appController
                                 .answerChatModelsForGuest[index].message),
-                                WidgetTextButton(text: 'ตอบ', pressFunc: () {
-                                  
-                                },)
+                        WidgetTextButton(
+                          text: 'ตอบ',
+                          pressFunc: () {},
+                        )
                       ],
                     ),
                   ],
@@ -322,7 +353,7 @@ class _AnswerChatState extends State<AnswerChat> {
                 child: WidgetForm(
                   fillColor: AppConstant.realMid,
                   controller: textEditingController,
-                  hint: 'Live Post',
+                  hint: 'แชดสด',
                   hintStyle: AppConstant().h3Style(color: Colors.white),
                   textStyle: AppConstant().h3Style(color: Colors.white),
                   suffixIcon: Row(

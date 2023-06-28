@@ -82,7 +82,7 @@ class AppService {
         .collection('comment')
         .doc(docIdComment)
         .collection('answer')
-        .orderBy('timestamp')
+        .orderBy('timestamp', descending: true)
         .snapshots()
         .listen((event) {
       if (event.docs.isNotEmpty) {
@@ -345,6 +345,17 @@ class AppService {
   }
 
   Future<void> insertCommentChat({required ChatModel commentChatModel}) async {
+    bool haveComment = false; // false ---> ไม่มี Comment Room
+
+    for (var element in appController.commentChatModels) {
+      if (element.uidChat == appController.userModelsLogin.last.uidUser) {
+        //มี Comment Room อยู่แล้ว ไม่ต้องสร้างใหม่
+        haveComment = true;
+      }
+    }
+
+    print('##28june haveComment ----> $haveComment');
+
     await FirebaseFirestore.instance
         .collection('comment')
         .doc()
