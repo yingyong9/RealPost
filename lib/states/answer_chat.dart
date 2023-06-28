@@ -64,35 +64,48 @@ class _AnswerChatState extends State<AnswerChat> {
             height: boxConstraints.maxHeight,
             child: Stack(
               children: [
-                Obx(() {
-                  return appController.answerChatModelsForOwner.isEmpty
-                      ? const SizedBox()
-                      : appController.listUrlImageAnswerOwners.isEmpty
-                          ? Center(
-                              child: WidgetText(
-                                text: 'ไม่มีภาพ',
-                                textStyle:
-                                    AppConstant().h2Style(color: Colors.white),
-                              ),
-                            )
-                          : SizedBox(
-                              width: double.infinity,
-                              height: boxConstraints.maxHeight * 0.7 - 70,
-                              child: Stack(
-                                children: [
-                                  ImageSlideshow(
-                                      height:
-                                          boxConstraints.maxHeight * 0.7 - 70,
-                                      children: appController
-                                          .listUrlImageAnswerOwners.last
-                                          .map((e) => WidgetImageInternet(
-                                                urlImage: e,
-                                                boxFit: BoxFit.cover,
-                                              ))
-                                          .toList()),
-                                  appController.listMessageAnswerOwners.isEmpty
-                                      ? const SizedBox()
-                                      : Container(
+                imageSliteShow(boxConstraints),
+                listChatAnswer(boxConstraints),
+                panalFormChat(),
+              ],
+            ),
+          ),
+        );
+      }),
+    );
+  }
+
+  Obx imageSliteShow(BoxConstraints boxConstraints) {
+    return Obx(() {
+                return appController.answerChatModelsForOwner.isEmpty
+                    ? const SizedBox()
+                    : appController.listUrlImageAnswerOwners.isEmpty
+                        ? Center(
+                            child: WidgetText(
+                              text: 'ไม่มีภาพ',
+                              textStyle:
+                                  AppConstant().h2Style(color: Colors.white),
+                            ),
+                          )
+                        : SizedBox(
+                            width: double.infinity,
+                            height: boxConstraints.maxHeight * 0.7 - 70,
+                            child: Stack(
+                              children: [
+                                ImageSlideshow(
+                                    height:
+                                        boxConstraints.maxHeight * 0.7 - 70,
+                                    children: appController
+                                        .listUrlImageAnswerOwners.last
+                                        .map((e) => WidgetImageInternet(
+                                              urlImage: e,
+                                              boxFit: BoxFit.cover,
+                                            ))
+                                        .toList()),
+                                appController.listMessageAnswerOwners.isEmpty
+                                    ? const SizedBox()
+                                    : Positioned(bottom: 4,
+                                      child: Container(width: boxConstraints.maxWidth - 60,
                                           margin: const EdgeInsets.all(8),
                                           padding: const EdgeInsets.all(4),
                                           decoration: AppConstant().boxCurve(
@@ -102,26 +115,19 @@ class _AnswerChatState extends State<AnswerChat> {
                                             text: appController
                                                 .listMessageAnswerOwners.last,
                                             textStyle: AppConstant()
-                                                .h2Style(color: Colors.white),
+                                                .h3Style(color: Colors.white),
                                           ),
                                         ),
-                                  Positioned(bottom: 0,right: 0,
-                                    child: WidgetIconButton(size: 45,
-                                      pressFunc: () {}, iconData:  Icons.add_box,
                                     ),
+                                Positioned(bottom: 0,right: 0,
+                                  child: WidgetIconButton(size: 45,
+                                    pressFunc: () {}, iconData:  Icons.add_box,
                                   ),
-                                ],
-                              ),
-                            );
-                }),
-                listChatAnswer(boxConstraints),
-                panalFormChat(),
-              ],
-            ),
-          ),
-        );
-      }),
-    );
+                                ),
+                              ],
+                            ),
+                          );
+              });
   }
 
   Widget listChatAnswer(BoxConstraints boxConstraints) {
