@@ -90,6 +90,7 @@ class AppService {
           appController.answerChatModels.clear();
           appController.answerChatModelsForGuest.clear();
           appController.answerChatModelsForOwner.clear();
+          appController.listUrlImageAnswerOwners.clear();
         }
 
         for (var element in event.docs) {
