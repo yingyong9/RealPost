@@ -1,4 +1,5 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, unrelated_type_equality_checks, avoid_print
+// ignore_for_file: public_member_api_docs, sort_constructors_first, unrelated_type_equality_checks, avoid_print, sort_child_properties_last
+import 'package:chat_bubbles/bubbles/bubble_normal.dart';
 import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -93,13 +94,16 @@ class _AnswerChatState extends State<AnswerChat> {
                   child: Stack(
                     children: [
                       ImageSlideshow(
-                          height: boxConstraints.maxHeight-70,
-                          children: appController.listUrlImageAnswerOwners.last
-                              .map((e) => WidgetImageInternet(
-                                    urlImage: e,
-                                    boxFit: BoxFit.cover,
-                                  ))
-                              .toList(), isLoop: true,autoPlayInterval: 10000,),
+                        height: boxConstraints.maxHeight - 70,
+                        children: appController.listUrlImageAnswerOwners[0]
+                            .map((e) => WidgetImageInternet(
+                                  urlImage: e,
+                                  boxFit: BoxFit.cover,
+                                ))
+                            .toList(),
+                        isLoop: true,
+                        autoPlayInterval: 10000,
+                      ),
                       Positioned(
                         bottom: 0,
                         right: 0,
@@ -146,31 +150,29 @@ class _AnswerChatState extends State<AnswerChat> {
             height: boxConstraints.maxHeight * 0.6,
             child: appController.answerChatModels.isEmpty
                 ? const SizedBox()
-                : ListView.builder(reverse: true,
+                : ListView.builder(
+                    reverse: true,
                     itemBuilder: (context, index) => Row(
-                      mainAxisAlignment:
-                          appController.answerChatModels[index].uidChat ==
-                                  appController.userModelsLogin.last.uidUser
-                              ? MainAxisAlignment.end
-                              : MainAxisAlignment.start,
                       children: [
-                        appController.answerChatModels[index].uidChat ==
-                                appController.userModelsLogin.last.uidUser
-                            ? const SizedBox()
-                            : WidgetCircularImage(
-                                radius: 12,
-                                urlImage: appController
-                                    .answerChatModels[index].urlAvatar),
-                        BubbleSpecialThree(
-                          text: appController.answerChatModels[index].message,
-                          isSender:
-                              appController.answerChatModels[index].uidChat ==
-                                  appController.userModelsLogin.last.uidUser,
-                          color:
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 4),
+                          padding: const EdgeInsets.all(8),
+                          decoration: AppConstant()
+                              .boxCurve(color: Colors.black.withOpacity(0.4)),
+                          child: Row(
+                            children: [
                               appController.answerChatModels[index].uidChat ==
                                       appController.userModelsLogin.last.uidUser
-                                  ? Colors.green
-                                  : Colors.white,
+                                  ? const SizedBox()
+                                  : WidgetCircularImage(
+                                      radius: 12,
+                                      urlImage: appController
+                                          .answerChatModels[index].urlAvatar),
+                              WidgetText(
+                                  text: appController
+                                      .answerChatModels[index].message),
+                            ],
+                          ),
                         ),
                       ],
                     ),
