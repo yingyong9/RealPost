@@ -104,15 +104,15 @@ class _AnswerChatState extends State<AnswerChat> {
                         isLoop: true,
                         autoPlayInterval: 10000,
                       ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: WidgetIconButton(
-                          size: 45,
-                          pressFunc: () {},
-                          iconData: Icons.add_box,
-                        ),
-                      ),
+                      // Positioned(
+                      //   bottom: 0,
+                      //   right: 0,
+                      //   child: WidgetIconButton(
+                      //     size: 45,
+                      //     pressFunc: () {},
+                      //     iconData: Icons.shopping_cart_outlined,
+                      //   ),
+                      // ),
                     ],
                   ),
                 );
@@ -158,8 +158,9 @@ class _AnswerChatState extends State<AnswerChat> {
                           margin: const EdgeInsets.only(bottom: 4),
                           padding: const EdgeInsets.all(8),
                           decoration: AppConstant()
-                              .boxCurve(color: Colors.black.withOpacity(0.4)),
+                              .boxCurve(color: Colors.black.withOpacity(0.2)),
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               appController.answerChatModels[index].uidChat ==
                                       appController.userModelsLogin.last.uidUser
@@ -168,9 +169,30 @@ class _AnswerChatState extends State<AnswerChat> {
                                       radius: 12,
                                       urlImage: appController
                                           .answerChatModels[index].urlAvatar),
-                              WidgetText(
-                                  text: appController
-                                      .answerChatModels[index].message),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  WidgetText(
+                                      text:  appController
+                                              .answerChatModels[index]
+                                              .disPlayName),
+                                  Container(
+                                    constraints: BoxConstraints(
+                                        maxWidth:
+                                            boxConstraints.maxWidth * 0.75),
+                                    child: WidgetText(
+                                        text: appController
+                                            .answerChatModels[index].message),
+                                  ),
+                                  appController.answerChatModels[index].uidChat == appController.userModelsLogin.last.uidUser ? const SizedBox() : WidgetTextButton(
+                                    text: 'ตอบ',color: Colors.yellow,
+                                    pressFunc: () {},
+                                  )
+                                ],
+                              ),
                             ],
                           ),
                         ),
