@@ -1,6 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, unrelated_type_equality_checks, avoid_print, sort_child_properties_last
-import 'package:chat_bubbles/bubbles/bubble_normal.dart';
-import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
@@ -46,7 +44,7 @@ class _AnswerChatState extends State<AnswerChat> {
   void initState() {
     super.initState();
 
-    print('##24june owner at answerCaht ----> ${widget.owner}');
+    print('##30june owner at answerCaht ----> ${widget.owner}');
 
     AppService().readAnswer(
         docIdComment: widget.docIdComment,
@@ -69,11 +67,46 @@ class _AnswerChatState extends State<AnswerChat> {
                 imageSliteShow(boxConstraints),
                 listChatAnswer(boxConstraints),
                 panalFormChat(),
+                panalAddLinePhone(),
               ],
             ),
           ),
         );
       }),
+    );
+  }
+
+  Positioned panalAddLinePhone() {
+    return Positioned(
+      right: 8,
+      bottom: 80,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          WidgetImage(
+            path: 'images/addgreen.png',
+            size: 36,
+          ),
+          SizedBox(
+            height: 12,
+          ),
+          widget.commentChatModel.line!.isEmpty
+              ? const SizedBox()
+              : WidgetImage(
+                  path: 'images/line.jpg',
+                  size: 36,
+                ),
+          SizedBox(
+            height: 12,
+          ),
+          widget.commentChatModel.phone!.isEmpty
+              ? const SizedBox()
+              : WidgetImage(
+                  path: 'images/phone.jpg',
+                  size: 36,
+                ),
+        ],
+      ),
     );
   }
 
@@ -176,9 +209,8 @@ class _AnswerChatState extends State<AnswerChat> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   WidgetText(
-                                      text:  appController
-                                              .answerChatModels[index]
-                                              .disPlayName),
+                                      text: appController
+                                          .answerChatModels[index].disPlayName),
                                   Container(
                                     constraints: BoxConstraints(
                                         maxWidth:
@@ -187,10 +219,16 @@ class _AnswerChatState extends State<AnswerChat> {
                                         text: appController
                                             .answerChatModels[index].message),
                                   ),
-                                  appController.answerChatModels[index].uidChat == appController.userModelsLogin.last.uidUser ? const SizedBox() : WidgetTextButton(
-                                    text: 'ตอบ',color: Colors.yellow,
-                                    pressFunc: () {},
-                                  )
+                                  appController.answerChatModels[index]
+                                              .uidChat ==
+                                          appController
+                                              .userModelsLogin.last.uidUser
+                                      ? const SizedBox()
+                                      : WidgetTextButton(
+                                          text: 'ตอบ',
+                                          color: Colors.yellow,
+                                          pressFunc: () {},
+                                        )
                                 ],
                               ),
                             ],
@@ -340,7 +378,7 @@ class _AnswerChatState extends State<AnswerChat> {
               : const SizedBox(),
           Row(
             children: [
-              WidgetIconButton(
+              widget.owner ? WidgetIconButton(
                 pressFunc: () {
                   AppService()
                       .processTakePhoto(source: ImageSource.camera)
@@ -358,20 +396,17 @@ class _AnswerChatState extends State<AnswerChat> {
                 },
                 iconData: Icons.add_a_photo,
                 color: AppConstant.realFront,
-              ),
-              WidgetIconButton(
+              ) : const SizedBox(),
+              widget.owner ? WidgetIconButton(
                 pressFunc: () {
-                  print('##22june work');
                   AppService().processChooseMultiImageChat().then((value) {
-                    print(
-                        '##22june xFiles ---> ${appController.xFiles.length}');
                     AppBottomSheet().bottomSheetMultiImage(
                         context: context, docIdComment: widget.docIdComment);
                   });
                 },
                 iconData: Icons.add_photo_alternate,
                 color: AppConstant.realFront,
-              ),
+              ) : const SizedBox(),
               SizedBox(
                 width: 200,
                 child: WidgetForm(
