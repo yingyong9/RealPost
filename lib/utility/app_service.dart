@@ -1273,8 +1273,13 @@ class AppService {
   }
 
   Future<void> processLunchUrl({required String url}) async {
-    print('url ----> $url');
+    
     final Uri uri = Uri.parse(url);
+    await canLaunchUrl(uri) ? await launchUrl(uri) : throw 'Link False';
+  }
+  Future<void> processPhoneLunchUrl({required String phone}) async {
+    
+    final Uri uri = Uri.parse('tel:$phone');
     await canLaunchUrl(uri) ? await launchUrl(uri) : throw 'Link False';
   }
 

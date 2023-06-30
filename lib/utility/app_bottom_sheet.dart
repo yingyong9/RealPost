@@ -292,7 +292,7 @@ class AppBottomSheet {
           tapFunc: () async {
             AppDialog(context: context).dialogProcess();
 
-            await AppService().processUploadMultiPhoto().then((value) {
+            await AppService().processUploadMultiPhoto().then((value) async {
               var albums = value;
               print('##29may albums ---> $albums');
 
@@ -313,7 +313,45 @@ class AppBottomSheet {
                   phone: phoneController.text,
                   line: lineController.text);
 
-              print('##29may chatModel ---> ${chatModel.toMap()}');
+              //Check Phone Null ??
+              if (phoneController.text.trim().isNotEmpty) {
+                await FirebaseFirestore.instance
+                    .collection('comment')
+                    .doc(docIdComment)
+                    .get()
+                    .then((value) {
+                  ChatModel commentChatModel = ChatModel.fromMap(value.data()!);
+                  print(
+                      '##30june commentChatModel ----> ${commentChatModel.toMap()}');
+
+                  Map<String, dynamic> map = commentChatModel.toMap();
+                  map['phone'] = phoneController.text;
+
+                  AppService()
+                      .updateCommentChat(map: map, docIdComment: docIdComment!)
+                      .then((value) {});
+                });
+              }
+
+              //Check Line NUll ??
+              if (lineController.text.trim().isNotEmpty) {
+                await FirebaseFirestore.instance
+                    .collection('comment')
+                    .doc(docIdComment)
+                    .get()
+                    .then((value) {
+                  ChatModel commentChatModel = ChatModel.fromMap(value.data()!);
+                  print(
+                      '##30june commentChatModel ----> ${commentChatModel.toMap()}');
+
+                  Map<String, dynamic> map = commentChatModel.toMap();
+                  map['line'] = lineController.text;
+
+                  AppService()
+                      .updateCommentChat(map: map, docIdComment: docIdComment!)
+                      .then((value) {});
+                });
+              }
 
               if (docIdComment == null) {
                 AppService()
