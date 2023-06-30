@@ -95,6 +95,10 @@ class _AnswerChatState extends State<AnswerChat> {
               : WidgetImage(
                   path: 'images/line.jpg',
                   size: 36,
+                  tapFunc: () {
+                    AppService()
+                        .processLunchUrl(url: widget.commentChatModel.line!);
+                  },
                 ),
           SizedBox(
             height: 12,
@@ -103,6 +107,10 @@ class _AnswerChatState extends State<AnswerChat> {
               ? const SizedBox()
               : WidgetImage(
                   path: 'images/phone.jpg',
+                  tapFunc: () {
+                    AppService().processPhoneLunchUrl(
+                        phone: widget.commentChatModel.phone!);
+                  },
                   size: 36,
                 ),
         ],
@@ -219,16 +227,16 @@ class _AnswerChatState extends State<AnswerChat> {
                                         text: appController
                                             .answerChatModels[index].message),
                                   ),
-                                  appController.answerChatModels[index]
-                                              .uidChat ==
-                                          appController
-                                              .userModelsLogin.last.uidUser
-                                      ? const SizedBox()
-                                      : WidgetTextButton(
-                                          text: 'ตอบ',
-                                          color: Colors.yellow,
-                                          pressFunc: () {},
-                                        )
+                                  // appController.answerChatModels[index]
+                                  //             .uidChat ==
+                                  //         appController
+                                  //             .userModelsLogin.last.uidUser
+                                  //     ? const SizedBox()
+                                  //     : WidgetTextButton(
+                                  //         text: 'ตอบ',
+                                  //         color: Colors.yellow,
+                                  //         pressFunc: () {},
+                                  //       )
                                 ],
                               ),
                             ],
@@ -327,10 +335,10 @@ class _AnswerChatState extends State<AnswerChat> {
                         WidgetText(
                             text: appController
                                 .answerChatModelsForGuest[index].message),
-                        WidgetTextButton(
-                          text: 'ตอบ',
-                          pressFunc: () {},
-                        )
+                        // WidgetTextButton(
+                        //   text: 'ตอบ',
+                        //   pressFunc: () {},
+                        // )
                       ],
                     ),
                   ],
@@ -378,37 +386,45 @@ class _AnswerChatState extends State<AnswerChat> {
               : const SizedBox(),
           Row(
             children: [
-              widget.owner ? WidgetIconButton(
-                pressFunc: () {
-                  AppService()
-                      .processTakePhoto(source: ImageSource.camera)
-                      .then((value) {
-                    AppService()
-                        .processUploadPhoto(file: value!, path: 'comment')
-                        .then((value) {
-                      String urlImageComment = value!;
+              widget.owner
+                  ? WidgetIconButton(
+                      pressFunc: () {
+                        AppService()
+                            .processTakePhoto(source: ImageSource.camera)
+                            .then((value) {
+                          AppService()
+                              .processUploadPhoto(file: value!, path: 'comment')
+                              .then((value) {
+                            String urlImageComment = value!;
 
-                      AppBottomSheet().dipsplayImage(
-                          urlImage: urlImageComment,
-                          docIdChat: appController.docIdChats[0]);
-                    });
-                  });
-                },
-                iconData: Icons.add_a_photo,
-                color: AppConstant.realFront,
-              ) : const SizedBox(),
-              widget.owner ? WidgetIconButton(
-                pressFunc: () {
-                  AppService().processChooseMultiImageChat().then((value) {
-                    AppBottomSheet().bottomSheetMultiImage(
-                        context: context, docIdComment: widget.docIdComment);
-                  });
-                },
-                iconData: Icons.add_photo_alternate,
-                color: AppConstant.realFront,
-              ) : const SizedBox(),
-              SizedBox(
-                width: 200,
+                            AppBottomSheet().dipsplayImage(
+                                urlImage: urlImageComment,
+                                docIdChat: appController.docIdChats[0]);
+                          });
+                        });
+                      },
+                      iconData: Icons.add_a_photo,
+                      color: AppConstant.realFront,
+                    )
+                  : const SizedBox(
+                      width: 32,
+                    ),
+              widget.owner
+                  ? WidgetIconButton(
+                      pressFunc: () {
+                        AppService()
+                            .processChooseMultiImageChat()
+                            .then((value) {
+                          AppBottomSheet().bottomSheetMultiImage(
+                              context: context,
+                              docIdComment: widget.docIdComment);
+                        });
+                      },
+                      iconData: Icons.add_photo_alternate,
+                      color: AppConstant.realFront,
+                    )
+                  : const SizedBox(),
+              Expanded(
                 child: WidgetForm(
                   fillColor: AppConstant.realMid,
                   controller: textEditingController,
