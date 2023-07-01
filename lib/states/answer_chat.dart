@@ -16,19 +16,11 @@ import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_text.dart';
-import 'package:realpost/widgets/widget_text_button.dart';
 
 class AnswerChat extends StatefulWidget {
   const AnswerChat({
     Key? key,
-    required this.docIdComment,
-    required this.commentChatModel,
-    required this.owner,
   }) : super(key: key);
-
-  final String docIdComment;
-  final ChatModel commentChatModel;
-  final bool owner;
 
   @override
   State<AnswerChat> createState() => _AnswerChatState();
@@ -40,15 +32,37 @@ class _AnswerChatState extends State<AnswerChat> {
   var textEditingController = TextEditingController();
   Map<String, dynamic> map = {};
 
+  String docIdComment = 'pND5LF4PLpme7rrkIcm3';
+  ChatModel? commentChatModel;
+  bool owner = true;
+
   @override
   void initState() {
     super.initState();
 
-    print('##30june owner at answerCaht ----> ${widget.owner}');
+    AppService().freshUserModelLogin();
+    AppService().aboutNoti(context: context);
 
-    AppService().readAnswer(
-        docIdComment: widget.docIdComment,
-        uidOwner: widget.commentChatModel.uidChat);
+    findCommentChatModel();
+  }
+
+  Future<void> findCommentChatModel() async {
+    await FirebaseFirestore.instance
+        .collection('comment')
+        .doc(docIdComment)
+        .get()
+        .then((value) {
+      commentChatModel = ChatModel.fromMap(value.data()!);
+
+      print('##1july commentChatModel ---> ${commentChatModel!.toMap()}');
+
+      AppService().readAnswer(
+          docIdComment: docIdComment, uidOwner: commentChatModel!.uidChat);
+
+      owner = appController.userModelsLogin.last.uidUser ==
+          commentChatModel!.uidChat;
+      setState(() {});
+    });
   }
 
   @override
@@ -59,25 +73,37 @@ class _AnswerChatState extends State<AnswerChat> {
       body: LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
         return GestureDetector(
           onTap: () => FocusManager.instance.primaryFocus!.unfocus(),
-          child: SizedBox(
-            width: boxConstraints.maxWidth,
-            height: boxConstraints.maxHeight,
-            child: Stack(
-              children: [
-                imageSliteShow(boxConstraints),
-                listChatAnswer(boxConstraints),
-                panalFormChat(),
-                panalAddLinePhone(),
-              ],
-            ),
-          ),
+          child: commentChatModel == null
+              ? const SizedBox()
+              : SizedBox(
+                  width: boxConstraints.maxWidth,
+                  height: boxConstraints.maxHeight,
+                  child: Stack(
+                    children: [
+                      imageSliteShow(boxConstraints),
+                      // listChatAnswer(boxConstraints),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          guestListView(boxConstraints: boxConstraints),
+                          ownerLast(boxConstraints: boxConstraints),
+                          const SizedBox(
+                            height: 60,
+                          ),
+                        ],
+                      ),
+                      panalFormChat(),
+                      panalAddLinePhone(),
+                    ],
+                  ),
+                ),
         );
       }),
     );
   }
 
   Positioned panalAddLinePhone() {
-    return Positioned(
+    return const Positioned(
       right: 8,
       bottom: 80,
       child: Column(
@@ -90,29 +116,37 @@ class _AnswerChatState extends State<AnswerChat> {
           SizedBox(
             height: 12,
           ),
-          widget.commentChatModel.line!.isEmpty
-              ? const SizedBox()
-              : WidgetImage(
-                  path: 'images/line.jpg',
-                  size: 36,
-                  tapFunc: () {
-                    AppService()
-                        .processLunchUrl(url: widget.commentChatModel.line!);
-                  },
-                ),
+          WidgetImage(
+            path: 'images/cart.png',
+            size: 36,
+          ),
           SizedBox(
             height: 12,
           ),
-          widget.commentChatModel.phone!.isEmpty
-              ? const SizedBox()
-              : WidgetImage(
-                  path: 'images/phone.jpg',
-                  tapFunc: () {
-                    AppService().processPhoneLunchUrl(
-                        phone: widget.commentChatModel.phone!);
-                  },
-                  size: 36,
-                ),
+
+          // widget.commentChatModel.line!.isEmpty
+          //     ? const SizedBox()
+          //     : WidgetImage(
+          //         path: 'images/line.jpg',
+          //         size: 36,
+          //         tapFunc: () {
+          //           AppService()
+          //               .processLunchUrl(url: widget.commentChatModel.line!);
+          //         },
+          //       ),
+          SizedBox(
+            height: 12,
+          ),
+          // widget.commentChatModel.phone!.isEmpty
+          //     ? const SizedBox()
+          //     : WidgetImage(
+          //         path: 'images/phone.jpg',
+          //         tapFunc: () {
+          //           AppService().processPhoneLunchUrl(
+          //               phone: widget.commentChatModel.phone!);
+          //         },
+          //         size: 36,
+          //       ),
         ],
       ),
     );
@@ -257,94 +291,119 @@ class _AnswerChatState extends State<AnswerChat> {
     });
   }
 
-  Widget ownerListView() {
+  Widget ownerListView({required BoxConstraints boxConstraints}) {
     return Obx(() {
       return appController.answerChatModelsForOwner.isEmpty
-          ? const Expanded(child: SizedBox())
-          : Expanded(
+          ? const SizedBox()
+          : SizedBox(
+              height: 80,
               child: ListView.builder(
                 itemCount: appController.answerChatModelsForOwner.length,
                 shrinkWrap: true,
                 physics: const ScrollPhysics(),
-                itemBuilder: (context, index) => Container(
-                  margin: const EdgeInsets.only(top: 8),
-                  padding: const EdgeInsets.all(8),
-                  decoration: AppConstant().boxChatLogin(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      appController.answerChatModelsForOwner[index]
-                              .urlMultiImages.isEmpty
-                          ? const SizedBox()
-                          : ListView.builder(
-                              itemCount: appController
-                                  .answerChatModelsForOwner[index]
-                                  .urlMultiImages
-                                  .length,
-                              shrinkWrap: true,
-                              physics: const ScrollPhysics(),
-                              itemBuilder: (context, index2) => Container(
-                                margin: const EdgeInsets.only(bottom: 8),
-                                child: WidgetImageInternet(
-                                    urlImage: appController
-                                        .answerChatModelsForOwner[index]
-                                        .urlMultiImages[index2]),
-                              ),
-                            ),
-                      WidgetText(
-                          text: appController
-                              .answerChatModelsForOwner[index].message),
-                    ],
-                  ),
-                ),
+                itemBuilder: (context, index) => appController
+                        .answerChatModelsForOwner[index].message.isEmpty
+                    ? const SizedBox()
+                    : Row(
+                        children: [
+                          Container(
+                            constraints: BoxConstraints(
+                                maxWidth: boxConstraints.maxWidth * 0.75),
+                            margin: const EdgeInsets.only(top: 8),
+                            padding: const EdgeInsets.all(8),
+                            decoration: AppConstant()
+                                .boxCurve(color: Colors.black.withOpacity(0.2)),
+                            child: WidgetText(
+                                text: appController
+                                    .answerChatModelsForOwner[index].message),
+                          ),
+                        ],
+                      ),
               ),
             );
     });
   }
 
-  Widget guestListView() {
+  Widget ownerLast({required BoxConstraints boxConstraints}) {
     return Obx(() {
-      return Expanded(
+      return appController.answerChatModelsForOwner.isEmpty
+          ? const SizedBox()
+          : SizedBox(
+              height: 60,
+              child: ListView.builder(
+                itemCount: 1,
+                shrinkWrap: true,
+                physics: const ScrollPhysics(),
+                itemBuilder: (context, index) => appController
+                        .answerChatModelsForOwner[index].message.isEmpty
+                    ? const SizedBox()
+                    : Row(
+                        children: [
+                          Container(
+                            constraints: BoxConstraints(
+                                maxWidth: boxConstraints.maxWidth * 0.75),
+                            margin: const EdgeInsets.only(top: 8),
+                            padding: const EdgeInsets.all(8),
+                            decoration: AppConstant()
+                                .boxCurve(color: Colors.red.withOpacity(0.5)),
+                            child: WidgetText(
+                                text: appController
+                                    .answerChatModelsForOwner[index].message),
+                          ),
+                        ],
+                      ),
+              ),
+            );
+    });
+  }
+
+  Widget guestListView({required BoxConstraints boxConstraints}) {
+    return Obx(() {
+      return SizedBox(
+        height: boxConstraints.maxHeight * 0.6,
         child: ListView.builder(
           itemCount: appController.answerChatModelsForGuest.length,
           shrinkWrap: true,
+          reverse: true,
           physics: const ScrollPhysics(),
-          itemBuilder: (context, index) => Container(
-            margin: const EdgeInsets.only(bottom: 8),
-            padding: const EdgeInsets.all(8),
-            decoration: AppConstant().boxChatGuest(),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                WidgetCircularImage(
-                  urlImage:
-                      appController.answerChatModelsForGuest[index].urlAvatar,
-                  radius: 10,
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                Column(
+          itemBuilder: (context, index) => Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.all(8),
+                decoration: AppConstant()
+                    .boxCurve(color: Colors.black.withOpacity(0.2)),
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    WidgetText(
-                        text: appController
-                            .answerChatModelsForGuest[index].disPlayName),
-                    Row(
+                    WidgetCircularImage(
+                      urlImage: appController
+                          .answerChatModelsForGuest[index].urlAvatar,
+                      radius: 10,
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         WidgetText(
                             text: appController
-                                .answerChatModelsForGuest[index].message),
-                        // WidgetTextButton(
-                        //   text: 'ตอบ',
-                        //   pressFunc: () {},
-                        // )
+                                .answerChatModelsForGuest[index].disPlayName),
+                        Row(
+                          children: [
+                            WidgetText(text: ': '),
+                            WidgetText(
+                                text: appController
+                                    .answerChatModelsForGuest[index].message),
+                          ],
+                        ),
                       ],
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       );
@@ -370,151 +429,137 @@ class _AnswerChatState extends State<AnswerChat> {
                               : Colors.black),
                       padding: const EdgeInsets.only(left: 4),
                       child: WidgetImageInternet(
-                          tapFunc: () {
-                            // clearAllTabStamp(appController);
-
-                            // appController.tapStamps[index] = true;
-                            // appController.urlEmojiChooses
-                            //     .add(appController.stampModels[index].url);
-                            // setState(() {});
-                          },
+                          tapFunc: () {},
                           width: 70,
                           urlImage: appController.stampModels[index].url),
                     ),
                   ),
                 )
               : const SizedBox(),
-          Row(
-            children: [
-              widget.owner
-                  ? WidgetIconButton(
-                      pressFunc: () {
-                        AppService()
-                            .processTakePhoto(source: ImageSource.camera)
-                            .then((value) {
-                          AppService()
-                              .processUploadPhoto(file: value!, path: 'comment')
-                              .then((value) {
-                            String urlImageComment = value!;
+          owner == null
+              ? const SizedBox()
+              : Row(
+                  children: [
+                    owner!
+                        ? WidgetIconButton(
+                            pressFunc: () {
+                              AppService()
+                                  .processTakePhoto(source: ImageSource.camera)
+                                  .then((value) {
+                                AppService()
+                                    .processUploadPhoto(
+                                        file: value!, path: 'comment')
+                                    .then((value) {
+                                  String urlImageComment = value!;
 
-                            AppBottomSheet().dipsplayImage(
-                                urlImage: urlImageComment,
-                                docIdChat: appController.docIdChats[0]);
-                          });
-                        });
-                      },
-                      iconData: Icons.add_a_photo,
-                      color: AppConstant.realFront,
-                    )
-                  : const SizedBox(
-                      width: 32,
-                    ),
-              widget.owner
-                  ? WidgetIconButton(
-                      pressFunc: () {
-                        AppService()
-                            .processChooseMultiImageChat()
-                            .then((value) {
-                          AppBottomSheet().bottomSheetMultiImage(
-                              context: context,
-                              docIdComment: widget.docIdComment);
-                        });
-                      },
-                      iconData: Icons.add_photo_alternate,
-                      color: AppConstant.realFront,
-                    )
-                  : const SizedBox(),
-              Expanded(
-                child: WidgetForm(
-                  fillColor: AppConstant.realMid,
-                  controller: textEditingController,
-                  hint: 'แชดสด',
-                  hintStyle: AppConstant().h3Style(color: Colors.white),
-                  textStyle: AppConstant().h3Style(color: Colors.white),
-                  suffixIcon: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      WidgetImage(
-                        path: 'images/emoj.jpg',
-                        size: 36,
-                        tapFunc: () {
-                          print(
-                              'Click Emoji ${appController.stampModels.length}');
-                          appController.displayListEmoji.value =
-                              !appController.displayListEmoji.value;
-                        },
+                                  AppBottomSheet().dipsplayImage(
+                                      urlImage: urlImageComment,
+                                      docIdChat: appController.docIdChats[0]);
+                                });
+                              });
+                            },
+                            iconData: Icons.add_a_photo,
+                            color: AppConstant.realFront,
+                          )
+                        : const SizedBox(
+                            width: 32,
+                          ),
+                    owner!
+                        ? WidgetIconButton(
+                            pressFunc: () {
+                              AppService()
+                                  .processChooseMultiImageChat()
+                                  .then((value) {
+                                AppBottomSheet().bottomSheetMultiImage(
+                                    context: context,
+                                    docIdComment: docIdComment);
+                              });
+                            },
+                            iconData: Icons.add_photo_alternate,
+                            color: AppConstant.realFront,
+                          )
+                        : const SizedBox(),
+                    Expanded(
+                      child: WidgetForm(
+                        fillColor: AppConstant.realMid,
+                        controller: textEditingController,
+                        hint: 'แชดสด',
+                        hintStyle: AppConstant().h3Style(color: Colors.white),
+                        textStyle: AppConstant().h3Style(color: Colors.white),
+                        suffixIcon: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            WidgetImage(
+                              path: 'images/emoj.jpg',
+                              size: 36,
+                              tapFunc: () {
+                                print(
+                                    'Click Emoji ${appController.stampModels.length}');
+                                appController.displayListEmoji.value =
+                                    !appController.displayListEmoji.value;
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
+                    ),
+                    WidgetImage(
+                      path: 'images/rocket.png',
+                      size: 48,
+                      tapFunc: () {
+                        if ((textEditingController.text.isNotEmpty) ||
+                            (appController.urlEmojiChooses.isNotEmpty)) {
+                          // AppDialog(context: context).dialogProcess();
+
+                          ChatModel chatModel = ChatModel(
+                            message: textEditingController.text,
+                            timestamp: Timestamp.fromDate(DateTime.now()),
+                            uidChat: appController.mainUid.value,
+                            disPlayName:
+                                appController.userModelsLogin.last.displayName!,
+                            urlAvatar:
+                                appController.userModelsLogin.last.urlAvatar!,
+                            urlRealPost: appController.urlEmojiChooses.isEmpty
+                                ? ''
+                                : appController.urlEmojiChooses.last,
+                            albums: [],
+                            urlMultiImages: [],
+                            up: 0,
+                            amountComment: 0,
+                            amountGraph: 0,
+                          );
+
+                          map = commentChatModel!.toMap();
+
+                          print(
+                              '##20june chatModel ----> ${chatModel.toMap()}');
+
+                          AppService()
+                              .insertAnswer(
+                                  chatModel: chatModel,
+                                  docIdComment: docIdComment)
+                              .then((value) {
+                            print('##20june map before $map');
+
+                            var answers = <String>[];
+                            answers.addAll(map['answers']);
+                            answers.add(textEditingController.text);
+                            map['answers'] = answers;
+
+                            print('##14june map after $map');
+
+                            AppService()
+                                .updateCommentChat(
+                                    map: map, docIdComment: docIdComment)
+                                .then((value) {
+                              textEditingController.text = '';
+                            });
+                          });
+                        }
+                      },
+                    ),
+                  ],
                 ),
-              ),
-              WidgetImage(
-                path: 'images/rocket.png',
-                size: 48,
-                tapFunc: () {
-                  if ((textEditingController.text.isNotEmpty) ||
-                      (appController.urlEmojiChooses.isNotEmpty)) {
-                    // AppDialog(context: context).dialogProcess();
-
-                    ChatModel chatModel = ChatModel(
-                      message: textEditingController.text,
-                      timestamp: Timestamp.fromDate(DateTime.now()),
-                      uidChat: appController.mainUid.value,
-                      disPlayName:
-                          appController.userModelsLogin.last.displayName!,
-                      urlAvatar: appController.userModelsLogin.last.urlAvatar!,
-                      urlRealPost: appController.urlEmojiChooses.isEmpty
-                          ? ''
-                          : appController.urlEmojiChooses.last,
-                      albums: [],
-                      urlMultiImages: [],
-                      up: 0,
-                      amountComment: 0,
-                      amountGraph: 0,
-                    );
-
-                    map = widget.commentChatModel.toMap();
-
-                    print('##20june chatModel ----> ${chatModel.toMap()}');
-
-                    AppService()
-                        .insertAnswer(
-                            chatModel: chatModel,
-                            docIdComment: widget.docIdComment)
-                        .then((value) {
-                      print('##20june map before $map');
-
-                      var answers = <String>[];
-                      answers.addAll(map['answers']);
-                      answers.add(textEditingController.text);
-                      map['answers'] = answers;
-
-                      // var avatars = <String>[];
-                      // avatars.addAll(map['avatars']);
-                      // avatars
-                      //     .add(appController.userModelsLogin.last.urlAvatar!);
-                      // map['avatars'] = avatars;
-
-                      // var names = <String>[];
-                      // names.addAll(map['names']);
-                      // names
-                      //     .add(appController.userModelsLogin.last.displayName!);
-                      // map['names'] = names;
-
-                      print('##14june map after $map');
-
-                      AppService()
-                          .updateCommentChat(
-                              map: map, docIdComment: widget.docIdComment)
-                          .then((value) {
-                        textEditingController.text = '';
-                      });
-                    });
-                  }
-                },
-              ),
-            ],
-          ),
         ],
       );
 }
