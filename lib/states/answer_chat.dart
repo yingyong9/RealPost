@@ -364,6 +364,7 @@ class _AnswerChatState extends State<AnswerChat> {
         child: ListView.builder(
           itemCount: appController.answerChatModelsForGuest.length,
           shrinkWrap: true,
+          reverse: true,
           physics: const ScrollPhysics(),
           itemBuilder: (context, index) => Row(
             children: [
