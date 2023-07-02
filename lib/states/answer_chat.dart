@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'package:realpost/models/chat_model.dart';
 import 'package:realpost/utility/app_bottom_sheet.dart';
 import 'package:realpost/utility/app_constant.dart';
@@ -52,15 +51,14 @@ class _AnswerChatState extends State<AnswerChat> {
         .doc(docIdComment)
         .get()
         .then((value) {
-      commentChatModel = ChatModel.fromMap(value.data()!);
-
-      print('##1july commentChatModel ---> ${commentChatModel!.toMap()}');
+      commentChatModel = ChatModel.fromMap(value.data()!);   
 
       AppService().readAnswer(
           docIdComment: docIdComment, uidOwner: commentChatModel!.uidChat);
 
       owner = appController.userModelsLogin.last.uidUser ==
           commentChatModel!.uidChat;
+
       setState(() {});
     });
   }
@@ -69,7 +67,7 @@ class _AnswerChatState extends State<AnswerChat> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppConstant.bgColor,
-      appBar: AppBar(),
+      // appBar: AppBar(),
       body: LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
         return GestureDetector(
           onTap: () => FocusManager.instance.primaryFocus!.unfocus(),
