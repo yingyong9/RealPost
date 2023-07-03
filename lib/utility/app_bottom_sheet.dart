@@ -369,6 +369,9 @@ class AppBottomSheet {
                     .then((value) {
                   textEditingController.text = '';
                   appController.xFiles.clear();
+
+                  appController.indexBodyPost.value = 0;
+
                   Get.back();
                   Get.back();
                 });
