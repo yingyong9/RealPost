@@ -58,7 +58,7 @@ class AppConstant {
 
   BoxDecoration boxCurve({Color? color, double? radius}) => BoxDecoration(
       color: color ?? Colors.pink.shade300,
-      border: Border.all(),
+      // border: Border.all(),
       borderRadius: BorderRadius.circular(radius ?? 10));
 
   BoxDecoration boxChatLogin() {

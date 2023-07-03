@@ -490,7 +490,7 @@ class _CommentChatState extends State<CommentChat> {
                 height: boxConstraints.maxWidth * 0.6,
                 boxFit: BoxFit.cover,
                 tapFunc: () {
-                  Get.to(const AnswerChat());
+                  // Get.to(const AnswerChat());
                 },
               ),
             ],

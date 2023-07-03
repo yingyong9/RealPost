@@ -35,13 +35,11 @@ class AppController extends GetxController {
   RxList<List<ChatModel>> listChatModels = <List<ChatModel>>[].obs;
   RxList<List<String>> listDocIdChats = <List<String>>[].obs;
   RxList<ChatModel> lastChatModelLogins = <ChatModel>[].obs;
-
   RxList<StampModel> stampModels = <StampModel>[].obs;
   RxList<bool> tapStamps = <bool>[].obs;
   RxList<String> emojiAddRoomChooses = <String>[].obs;
   RxBool displayListEmoji = false.obs;
   RxList<String> urlEmojiChooses = <String>[].obs;
-
   RxList<ChatModel> chatModels = <ChatModel>[].obs;
   RxList<String> docIdChats = <String>[].obs;
   RxList<int> amountComments = <int>[].obs;
@@ -115,9 +113,12 @@ class AppController extends GetxController {
   RxList<ChatModel> answerChatModelsForOwner = <ChatModel>[].obs;
   RxList<ChatModel> answerChatModelsForGuest = <ChatModel>[].obs;
   RxList<UserModel> commentUserModels = <UserModel>[].obs;
-
   RxList<List<String>> listUrlImageAnswerOwners = <List<String>>[].obs;
   RxList<String> listMessageAnswerOwners = <String>[].obs;
+
+  RxList<ChatModel> postChatModels = <ChatModel>[].obs;
+  RxList<String> docIdPosts = <String>[].obs;
+  RxInt indexBodyPost = 0.obs;
 
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {

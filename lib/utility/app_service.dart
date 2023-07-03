@@ -38,6 +38,21 @@ import 'package:url_launcher/url_launcher.dart';
 class AppService {
   AppController appController = Get.put(AppController());
 
+  Future<void> readAllPost() async {
+    FirebaseFirestore.instance.collection('post').snapshots().listen((event) {
+      if (appController.postChatModels.isNotEmpty) {
+        appController.postChatModels.clear();
+        appController.docIdPosts.clear();
+      }
+
+      for (var element in event.docs) {
+        ChatModel model = ChatModel.fromMap(element.data());
+        appController.postChatModels.add(model);
+        appController.docIdPosts.add(element.id);
+      }
+    });
+  }
+
   Future<void> updateCommentChat(
       {required Map<String, dynamic> map, required String docIdComment}) async {
     FirebaseFirestore.instance
@@ -79,7 +94,7 @@ class AppService {
     }
 
     FirebaseFirestore.instance
-        .collection('comment')
+        .collection('post')
         .doc(docIdComment)
         .collection('answer')
         .orderBy('timestamp', descending: true)
@@ -122,7 +137,7 @@ class AppService {
   Future<void> insertAnswer(
       {required ChatModel chatModel, required String docIdComment}) async {
     await FirebaseFirestore.instance
-        .collection('comment')
+        .collection('post')
         .doc(docIdComment)
         .collection('answer')
         .doc()
@@ -358,7 +373,7 @@ class AppService {
     print('##28june haveComment ----> $haveComment');
 
     await FirebaseFirestore.instance
-        .collection('comment')
+        .collection('post')
         .doc()
         .set(commentChatModel.toMap())
         .then((value) {
@@ -1273,12 +1288,11 @@ class AppService {
   }
 
   Future<void> processLunchUrl({required String url}) async {
-    
     final Uri uri = Uri.parse(url);
     await canLaunchUrl(uri) ? await launchUrl(uri) : throw 'Link False';
   }
+
   Future<void> processPhoneLunchUrl({required String phone}) async {
-    
     final Uri uri = Uri.parse('tel:$phone');
     await canLaunchUrl(uri) ? await launchUrl(uri) : throw 'Link False';
   }

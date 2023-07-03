@@ -20,7 +20,10 @@ import 'package:realpost/widgets/widget_text.dart';
 class AnswerChat extends StatefulWidget {
   const AnswerChat({
     Key? key,
+    required this.docIdPost,
   }) : super(key: key);
+
+  final String docIdPost;
 
   @override
   State<AnswerChat> createState() => _AnswerChatState();
@@ -32,7 +35,7 @@ class _AnswerChatState extends State<AnswerChat> {
   var textEditingController = TextEditingController();
   Map<String, dynamic> map = {};
 
-  String docIdComment = 'pND5LF4PLpme7rrkIcm3';
+  // String docIdComment = 'pND5LF4PLpme7rrkIcm3';
   ChatModel? commentChatModel;
   bool owner = true;
 
@@ -40,27 +43,25 @@ class _AnswerChatState extends State<AnswerChat> {
   void initState() {
     super.initState();
 
-    AppService().freshUserModelLogin();
-    AppService().aboutNoti(context: context);
-
     findCommentChatModel();
   }
 
   Future<void> findCommentChatModel() async {
-    await FirebaseFirestore.instance
-        .collection('comment')
-        .doc(docIdComment)
+     FirebaseFirestore.instance
+        .collection('post')
+        .doc(widget.docIdPost)
         .get()
         .then((value) {
       commentChatModel = ChatModel.fromMap(value.data()!);
 
-      print('##1july commentChatModel ---> ${commentChatModel!.toMap()}');
+      print('##2july commentChatModel---> ${commentChatModel!.toMap()}');
 
       AppService().readAnswer(
-          docIdComment: docIdComment, uidOwner: commentChatModel!.uidChat);
+          docIdComment: widget.docIdPost, uidOwner: commentChatModel!.uidChat);
 
       owner = appController.userModelsLogin.last.uidUser ==
           commentChatModel!.uidChat;
+
       setState(() {});
     });
   }
@@ -69,7 +70,7 @@ class _AnswerChatState extends State<AnswerChat> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppConstant.bgColor,
-      appBar: AppBar(),
+      // appBar: AppBar(),
       body: LayoutBuilder(builder: (context, BoxConstraints boxConstraints) {
         return GestureDetector(
           onTap: () => FocusManager.instance.primaryFocus!.unfocus(),
@@ -103,7 +104,7 @@ class _AnswerChatState extends State<AnswerChat> {
   }
 
   Positioned panalAddLinePhone() {
-    return const Positioned(
+    return Positioned(
       right: 8,
       bottom: 80,
       child: Column(
@@ -112,15 +113,64 @@ class _AnswerChatState extends State<AnswerChat> {
           WidgetImage(
             path: 'images/addgreen.png',
             size: 36,
+            tapFunc: () async {
+              String docIdpost = '';
+              FirebaseFirestore.instance.collection('post').get().then((value) {
+                for (var element in value.docs) {
+                  ChatModel chatModel = ChatModel.fromMap(element.data());
+                  if (chatModel.uidChat ==
+                      appController.userModelsLogin.last.uidUser) {
+                    docIdpost = element.id;
+                  }
+                }
+                print('##3july docIDpost ---> $docIdpost');
+                if (docIdpost.isEmpty) {
+                  //No Post
+
+                  ChatModel chatModel = ChatModel(
+                      message: '',
+                      timestamp: Timestamp.fromDate(DateTime.now()),
+                      uidChat: appController.userModelsLogin.last.uidUser!,
+                      disPlayName:
+                          appController.userModelsLogin.last.displayName!,
+                      urlAvatar: appController.userModelsLogin.last.urlAvatar!,
+                      urlRealPost: '',
+                      albums: [],
+                      urlMultiImages: [],
+                      amountComment: 0,
+                      amountGraph: 0);
+
+                  DocumentReference documentReference =
+                      FirebaseFirestore.instance.collection('post').doc();
+
+                  documentReference.set(chatModel.toMap()).then((value) {
+                    String docIdPost = documentReference.id;
+                    print(
+                        '##3july no Post documentReference ----> $documentReference');
+
+                    AppService().processChooseMultiImageChat().then((value) {
+                      AppBottomSheet().bottomSheetMultiImage(
+                          context: context, docIdComment: docIdPost);
+                    });
+                  });
+                } else {
+                  //Have Post
+                  AppService().processChooseMultiImageChat().then((value) {
+                    AppBottomSheet().bottomSheetMultiImage(
+                        context: context, docIdComment: docIdpost);
+                  });
+                }
+              });
+            },
           ),
-          SizedBox(
+          const SizedBox(
             height: 12,
           ),
-          WidgetImage(
+          const WidgetImage(
             path: 'images/cart.png',
             size: 36,
           ),
-          SizedBox(
+          const SizedBox(
             height: 12,
           ),
 
@@ -173,7 +223,7 @@ class _AnswerChatState extends State<AnswerChat> {
                         children: appController.listUrlImageAnswerOwners[0]
                             .map((e) => WidgetImageInternet(
                                   urlImage: e,
-                                  boxFit: BoxFit.cover,
+                                  boxFit: BoxFit.contain,
                                 ))
                             .toList(),
                         isLoop: true,
@@ -339,16 +389,24 @@ class _AnswerChatState extends State<AnswerChat> {
                     ? const SizedBox()
                     : Row(
                         children: [
-                          Container(
-                            constraints: BoxConstraints(
-                                maxWidth: boxConstraints.maxWidth * 0.75),
-                            margin: const EdgeInsets.only(top: 8),
-                            padding: const EdgeInsets.all(8),
-                            decoration: AppConstant()
-                                .boxCurve(color: Colors.red.withOpacity(0.5)),
-                            child: WidgetText(
-                                text: appController
-                                    .answerChatModelsForOwner[index].message),
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8,right: 8),
+                                child: WidgetCircularImage(urlImage: appController.answerChatModelsForOwner[index].urlAvatar),
+                              ),
+                              Container(
+                                constraints: BoxConstraints(
+                                    maxWidth: boxConstraints.maxWidth * 0.75),
+                                margin: const EdgeInsets.only(top: 8),
+                                padding: const EdgeInsets.all(8),
+                                decoration: AppConstant()
+                                    .boxCurve(color: Colors.red.withOpacity(0.5)),
+                                child: WidgetText(
+                                    text: appController
+                                        .answerChatModelsForOwner[index].message),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -464,7 +522,7 @@ class _AnswerChatState extends State<AnswerChat> {
                         : const SizedBox(
                             width: 32,
                           ),
-                    owner!
+                    owner
                         ? WidgetIconButton(
                             pressFunc: () {
                               AppService()
@@ -472,7 +530,7 @@ class _AnswerChatState extends State<AnswerChat> {
                                   .then((value) {
                                 AppBottomSheet().bottomSheetMultiImage(
                                     context: context,
-                                    docIdComment: docIdComment);
+                                    docIdComment: widget.docIdPost);
                               });
                             },
                             iconData: Icons.add_photo_alternate,
@@ -537,7 +595,7 @@ class _AnswerChatState extends State<AnswerChat> {
                           AppService()
                               .insertAnswer(
                                   chatModel: chatModel,
-                                  docIdComment: docIdComment)
+                                  docIdComment: widget.docIdPost)
                               .then((value) {
                             print('##20june map before $map');
 
@@ -550,7 +608,7 @@ class _AnswerChatState extends State<AnswerChat> {
 
                             AppService()
                                 .updateCommentChat(
-                                    map: map, docIdComment: docIdComment)
+                                    map: map, docIdComment: widget.docIdPost)
                                 .then((value) {
                               textEditingController.text = '';
                             });
