@@ -120,6 +120,8 @@ class AppController extends GetxController {
   RxList<String> docIdPosts = <String>[].obs;
   RxInt indexBodyPost = 0.obs;
 
+  RxList<PageController> postPageControllers = <PageController>[PageController()].obs;
+
   Future<void> readSalseGroups({required String docIdCommentSalse}) async {
     if (salsegroups.isNotEmpty) {
       salsegroups.clear();

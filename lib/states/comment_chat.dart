@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:realpost/models/chat_model.dart';
-import 'package:realpost/states/answer_chat.dart';
 import 'package:realpost/states/display_photo_view.dart';
 import 'package:realpost/states/display_profile.dart';
 import 'package:realpost/utility/app_bottom_sheet.dart';

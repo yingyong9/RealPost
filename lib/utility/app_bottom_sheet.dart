@@ -316,7 +316,7 @@ class AppBottomSheet {
               //Check Phone Null ??
               if (phoneController.text.trim().isNotEmpty) {
                 await FirebaseFirestore.instance
-                    .collection('comment')
+                    .collection('mainComment')
                     .doc(docIdComment)
                     .get()
                     .then((value) {
@@ -336,7 +336,7 @@ class AppBottomSheet {
               //Check Line NUll ??
               if (lineController.text.trim().isNotEmpty) {
                 await FirebaseFirestore.instance
-                    .collection('comment')
+                    .collection('mainComment')
                     .doc(docIdComment)
                     .get()
                     .then((value) {
@@ -367,10 +367,29 @@ class AppBottomSheet {
                     .insertAnswer(
                         chatModel: chatModel, docIdComment: docIdComment)
                     .then((value) {
+                  //update Time
+                  FirebaseFirestore.instance
+                      .collection('post')
+                      .doc(docIdComment)
+                      .get()
+                      .then((value) async {
+                    ChatModel model = ChatModel.fromMap(value.data()!);
+                    Map<String, dynamic> map = model.toMap();
+                    map['timestamp'] = Timestamp.fromDate(DateTime.now());
+
+                    FirebaseFirestore.instance
+                        .collection('post')
+                        .doc(docIdComment)
+                        .update(map)
+                        .then((value) {
+                      AppService().readAllPost().then((value) => appController.postPageControllers.last.jumpToPage(0));
+                    });
+                  });
+
                   textEditingController.text = '';
                   appController.xFiles.clear();
 
-                  appController.indexBodyPost.value = 0;
+                  // appController.postPageControllers.last.jumpToPage(0);
 
                   Get.back();
                   Get.back();

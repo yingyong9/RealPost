@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, unrelated_type_equality_checks, avoid_print, sort_child_properties_last
+// ignore_for_file: public_member_api_docs, sort_constructors_first, unrelated_type_equality_checks, avoid_print, sort_child_properties_last, unnecessary_null_comparison
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
@@ -47,7 +47,7 @@ class _AnswerChatState extends State<AnswerChat> {
   }
 
   Future<void> findCommentChatModel() async {
-     FirebaseFirestore.instance
+    FirebaseFirestore.instance
         .collection('post')
         .doc(widget.docIdPost)
         .get()
@@ -184,7 +184,7 @@ class _AnswerChatState extends State<AnswerChat> {
           //               .processLunchUrl(url: widget.commentChatModel.line!);
           //         },
           //       ),
-          SizedBox(
+          const SizedBox(
             height: 12,
           ),
           // widget.commentChatModel.phone!.isEmpty
@@ -392,19 +392,24 @@ class _AnswerChatState extends State<AnswerChat> {
                           Row(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(left: 8,right: 8),
-                                child: WidgetCircularImage(urlImage: appController.answerChatModelsForOwner[index].urlAvatar),
+                                padding:
+                                    const EdgeInsets.only(left: 8, right: 8),
+                                child: WidgetCircularImage(
+                                    urlImage: appController
+                                        .answerChatModelsForOwner[index]
+                                        .urlAvatar),
                               ),
                               Container(
                                 constraints: BoxConstraints(
                                     maxWidth: boxConstraints.maxWidth * 0.75),
                                 margin: const EdgeInsets.only(top: 8),
                                 padding: const EdgeInsets.all(8),
-                                decoration: AppConstant()
-                                    .boxCurve(color: Colors.red.withOpacity(0.5)),
+                                decoration: AppConstant().boxCurve(
+                                    color: Colors.red.withOpacity(0.5)),
                                 child: WidgetText(
                                     text: appController
-                                        .answerChatModelsForOwner[index].message),
+                                        .answerChatModelsForOwner[index]
+                                        .message),
                               ),
                             ],
                           ),
@@ -450,7 +455,7 @@ class _AnswerChatState extends State<AnswerChat> {
                                 .answerChatModelsForGuest[index].disPlayName),
                         Row(
                           children: [
-                            WidgetText(text: ': '),
+                            const WidgetText(text: ': '),
                             WidgetText(
                                 text: appController
                                     .answerChatModelsForGuest[index].message),
@@ -498,7 +503,7 @@ class _AnswerChatState extends State<AnswerChat> {
               ? const SizedBox()
               : Row(
                   children: [
-                    owner!
+                    owner
                         ? WidgetIconButton(
                             pressFunc: () {
                               AppService()
@@ -510,9 +515,13 @@ class _AnswerChatState extends State<AnswerChat> {
                                     .then((value) {
                                   String urlImageComment = value!;
 
-                                  AppBottomSheet().dipsplayImage(
-                                      urlImage: urlImageComment,
-                                      docIdChat: appController.docIdChats[0]);
+                                  print(
+                                      '##4july urlImage ---> $urlImageComment');
+
+                                 
+
+
+
                                 });
                               });
                             },
