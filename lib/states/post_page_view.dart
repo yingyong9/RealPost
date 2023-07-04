@@ -1,9 +1,10 @@
+// ignore_for_file: sort_child_properties_last
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:realpost/states/answer_chat.dart';
 import 'package:realpost/utility/app_controller.dart';
 import 'package:realpost/utility/app_service.dart';
-import 'package:realpost/widgets/widget_text.dart';
 
 class PostPageView extends StatefulWidget {
   const PostPageView({super.key});
@@ -13,9 +14,9 @@ class PostPageView extends StatefulWidget {
 }
 
 class _PostPageViewState extends State<PostPageView> {
-  AppController appController = Get.put(AppController());
 
-  PageController? pageController;
+  AppController appController = Get.put(AppController());
+  
 
   @override
   void initState() {
@@ -24,15 +25,15 @@ class _PostPageViewState extends State<PostPageView> {
     AppService().freshUserModelLogin().then((value) {
        AppService().readAllPost();
     });
-    AppService().aboutNoti(context: context);
 
-    pageController = PageController(initialPage: 0);
+    AppService().aboutNoti(context: context);
+    appController.postPageControllers.last = PageController(initialPage: appController.indexBodyPost.value);
    
   }
 
   @override
   void dispose() {
-    pageController!.dispose();
+    appController.postPageControllers.last.dispose();
     super.dispose();
   }
 
@@ -45,7 +46,7 @@ class _PostPageViewState extends State<PostPageView> {
           return appController.postChatModels.isEmpty
               ? const SizedBox()
               : PageView(
-                  controller: pageController,
+                  controller: appController.postPageControllers.last,
                   children: appController.docIdPosts
                       .map(
                         (element) => AnswerChat(

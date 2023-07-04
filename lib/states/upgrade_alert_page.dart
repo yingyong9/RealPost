@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:realpost/states/answer_chat.dart';
-import 'package:realpost/states/comment_chat.dart';
 import 'package:realpost/states/post_page_view.dart';
 import 'package:upgrader/upgrader.dart';
 

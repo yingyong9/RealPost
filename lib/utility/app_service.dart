@@ -33,13 +33,18 @@ import 'package:realpost/utility/app_snackbar.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_text.dart';
 import 'package:realpost/widgets/widget_text_button.dart';
+import 'package:restart_app/restart_app.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppService {
   AppController appController = Get.put(AppController());
 
   Future<void> readAllPost() async {
-    FirebaseFirestore.instance.collection('post').snapshots().listen((event) {
+    FirebaseFirestore.instance
+        .collection('post')
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .listen((event) {
       if (appController.postChatModels.isNotEmpty) {
         appController.postChatModels.clear();
         appController.docIdPosts.clear();
@@ -142,8 +147,11 @@ class AppService {
         .collection('answer')
         .doc()
         .set(chatModel.toMap())
-        .then((value) {
-      print('##11june ---> Success at insertAnser');
+        .then((value) async {
+     
+
+
+
     });
   }
 
