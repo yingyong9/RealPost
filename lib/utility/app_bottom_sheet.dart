@@ -29,13 +29,19 @@ import 'package:realpost/widgets/widget_text.dart';
 class AppBottomSheet {
   AppController appController = Get.put(AppController());
 
-  Future<void> bottomSheetMultiImage(
-      {required BuildContext context, String? docIdComment}) async {
+  
+
+  Future<void> bottomSheetMultiImage({
+    required BuildContext context,
+    String? docIdPost,
+  }) async {
     TextEditingController textEditingController = TextEditingController();
     TextEditingController priceController = TextEditingController();
     TextEditingController amountController = TextEditingController();
     TextEditingController phoneController = TextEditingController();
     TextEditingController lineController = TextEditingController();
+
+    print('##4july docIdPost at bottomSheetMultiImage --> $docIdPost');
 
     Get.bottomSheet(
         Container(
@@ -94,7 +100,7 @@ class AppBottomSheet {
                         amountController: amountController,
                         phoneController: phoneController,
                         lineController: lineController,
-                        docIdComment: docIdComment,
+                        docIdPost: docIdPost,
                       ),
                     ),
                   ],
@@ -229,7 +235,7 @@ class AppBottomSheet {
     required TextEditingController amountController,
     required TextEditingController phoneController,
     required TextEditingController lineController,
-    String? docIdComment,
+    String? docIdPost,
   }) {
     return Row(
       children: [
@@ -294,7 +300,7 @@ class AppBottomSheet {
 
             await AppService().processUploadMultiPhoto().then((value) async {
               var albums = value;
-              print('##29may albums ---> $albums');
+              print('##4july albums ---> $albums');
 
               ChatModel chatModel = ChatModel(
                   message: textEditingController.text,
@@ -316,8 +322,8 @@ class AppBottomSheet {
               //Check Phone Null ??
               if (phoneController.text.trim().isNotEmpty) {
                 await FirebaseFirestore.instance
-                    .collection('mainComment')
-                    .doc(docIdComment)
+                    .collection('post')
+                    .doc(docIdPost)
                     .get()
                     .then((value) {
                   ChatModel commentChatModel = ChatModel.fromMap(value.data()!);
@@ -328,7 +334,7 @@ class AppBottomSheet {
                   map['phone'] = phoneController.text;
 
                   AppService()
-                      .updateCommentChat(map: map, docIdComment: docIdComment!)
+                      .updateCommentChat(map: map, docIdComment: docIdPost!)
                       .then((value) {});
                 });
               }
@@ -337,7 +343,7 @@ class AppBottomSheet {
               if (lineController.text.trim().isNotEmpty) {
                 await FirebaseFirestore.instance
                     .collection('mainComment')
-                    .doc(docIdComment)
+                    .doc(docIdPost)
                     .get()
                     .then((value) {
                   ChatModel commentChatModel = ChatModel.fromMap(value.data()!);
@@ -348,12 +354,12 @@ class AppBottomSheet {
                   map['line'] = lineController.text;
 
                   AppService()
-                      .updateCommentChat(map: map, docIdComment: docIdComment!)
+                      .updateCommentChat(map: map, docIdComment: docIdPost!)
                       .then((value) {});
                 });
               }
 
-              if (docIdComment == null) {
+              if (docIdPost == null) {
                 AppService()
                     .insertCommentChat(commentChatModel: chatModel)
                     .then((value) {
@@ -364,13 +370,12 @@ class AppBottomSheet {
                 });
               } else {
                 AppService()
-                    .insertAnswer(
-                        chatModel: chatModel, docIdComment: docIdComment)
+                    .insertAnswer(chatModel: chatModel, docIdComment: docIdPost)
                     .then((value) {
                   //update Time
                   FirebaseFirestore.instance
                       .collection('post')
-                      .doc(docIdComment)
+                      .doc(docIdPost)
                       .get()
                       .then((value) async {
                     ChatModel model = ChatModel.fromMap(value.data()!);
@@ -379,10 +384,11 @@ class AppBottomSheet {
 
                     FirebaseFirestore.instance
                         .collection('post')
-                        .doc(docIdComment)
+                        .doc(docIdPost)
                         .update(map)
                         .then((value) {
-                      AppService().readAllPost().then((value) => appController.postPageControllers.last.jumpToPage(0));
+                      AppService().readAllPost().then((value) =>
+                          appController.postPageControllers.last.jumpToPage(0));
                     });
                   });
 

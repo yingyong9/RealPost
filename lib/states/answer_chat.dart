@@ -16,6 +16,7 @@ import 'package:realpost/widgets/widget_icon_button.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_image_internet.dart';
 import 'package:realpost/widgets/widget_text.dart';
+import 'package:realpost/widgets/widget_text_button.dart';
 
 class AnswerChat extends StatefulWidget {
   const AnswerChat({
@@ -38,6 +39,9 @@ class _AnswerChatState extends State<AnswerChat> {
   // String docIdComment = 'pND5LF4PLpme7rrkIcm3';
   ChatModel? commentChatModel;
   bool owner = true;
+
+  // TextEditingController topCommentController = TextEditingController();
+  String? topComment;
 
   @override
   void initState() {
@@ -95,6 +99,70 @@ class _AnswerChatState extends State<AnswerChat> {
                       ),
                       panalFormChat(),
                       panalAddLinePhone(),
+                      owner
+                          ? Positioned(
+                              right: 0,
+                              top: 50,
+                              child: WidgetIconButton(
+                                pressFunc: () {
+                                  appController.displayTextField.value = true;
+                                },
+                                iconData: Icons.keyboard,
+                              ),
+                            )
+                          : const SizedBox(),
+
+                      Obx(() {
+                        return appController.displayTextField.value
+                            ? Positioned(
+                                right: 0,
+                                child: WidgetTextButton(
+                                  text: 'เสร็จสิ้น',
+                                  color: Colors.white,
+                                  pressFunc: () {
+                                    if (topComment?.isEmpty ?? true) {
+                                      appController.displayTextField.value =
+                                          false;
+                                    } else {
+                                      Map<String, dynamic> map =
+                                          commentChatModel!.toMap();
+
+                                      map['topComment'] = topComment;
+
+                                      print('##4july map ----> $map');
+                                    }
+                                  },
+                                ),
+                              )
+                            : const SizedBox();
+                      }),
+
+                      Obx(() {
+                        return appController.displayTextField.value
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 80),
+                                    width: 250,
+                                    child: TextField(
+                                      onChanged: (value) {
+                                        topComment = value;
+                                        print(
+                                            '##4july topComment ==> $topComment');
+                                      },
+                                      autofocus: true,
+                                      style: AppConstant().h2Style(),
+                                      maxLines: 4,
+                                      textAlign: TextAlign.center,
+                                      decoration: const InputDecoration(
+                                          border: InputBorder.none),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : const SizedBox();
+                      }),
                     ],
                   ),
                 ),
@@ -150,14 +218,14 @@ class _AnswerChatState extends State<AnswerChat> {
 
                     AppService().processChooseMultiImageChat().then((value) {
                       AppBottomSheet().bottomSheetMultiImage(
-                          context: context, docIdComment: docIdPost);
+                          context: context, docIdPost: docIdPost);
                     });
                   });
                 } else {
                   //Have Post
                   AppService().processChooseMultiImageChat().then((value) {
                     AppBottomSheet().bottomSheetMultiImage(
-                        context: context, docIdComment: docIdpost);
+                        context: context, docIdPost: docIdpost);
                   });
                 }
               });
@@ -509,20 +577,25 @@ class _AnswerChatState extends State<AnswerChat> {
                               AppService()
                                   .processTakePhoto(source: ImageSource.camera)
                                   .then((value) {
-                                AppService()
-                                    .processUploadPhoto(
-                                        file: value!, path: 'comment')
-                                    .then((value) {
-                                  String urlImageComment = value!;
+                                if (appController.xFiles.isNotEmpty) {
+                                  appController.xFiles.clear();
+                                }
 
-                                  print(
-                                      '##4july urlImage ---> $urlImageComment');
+                                appController.xFiles.add(XFile(value!.path));
 
-                                 
+                                AppBottomSheet().bottomSheetMultiImage(
+                                    context: context,
+                                    docIdPost: widget.docIdPost);
 
+                                // AppService()
+                                //     .processUploadPhoto(
+                                //         file: value!, path: 'comment')
+                                //     .then((value) {
+                                //   String urlImageComment = value!;
 
-
-                                });
+                                //   print(
+                                //       '##4july urlImage ---> $urlImageComment');
+                                // });
                               });
                             },
                             iconData: Icons.add_a_photo,
@@ -539,7 +612,7 @@ class _AnswerChatState extends State<AnswerChat> {
                                   .then((value) {
                                 AppBottomSheet().bottomSheetMultiImage(
                                     context: context,
-                                    docIdComment: widget.docIdPost);
+                                    docIdPost: widget.docIdPost);
                               });
                             },
                             iconData: Icons.add_photo_alternate,

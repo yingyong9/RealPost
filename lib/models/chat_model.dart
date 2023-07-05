@@ -32,6 +32,7 @@ class ChatModel {
   final List<String>? avatars;
   final List<String>? names;
   final List<String>? imageSingle;
+  final String? topComment;
 
   ChatModel({
     required this.message,
@@ -50,8 +51,8 @@ class ChatModel {
     this.traffic,
     this.checkInOwnerChat,
     required this.urlMultiImages,
-     this.up,
-     this.down,
+    this.up,
+    this.down,
     required this.amountComment,
     required this.amountGraph,
     this.price,
@@ -62,6 +63,7 @@ class ChatModel {
     this.avatars,
     this.names,
     this.imageSingle,
+    this.topComment,
   });
 
   Map<String, dynamic> toMap() {
@@ -94,12 +96,13 @@ class ChatModel {
       'avatars': avatars,
       'names': names,
       'imageSingle': imageSingle,
+      'topComment': topComment,
     };
   }
 
   factory ChatModel.fromMap(Map<String, dynamic> map) {
     return ChatModel(
-      message: (map['message'] ?? '') as String,
+     message: (map['message'] ?? '') as String,
       timestamp: (map['timestamp']),
       uidChat: (map['uidChat'] ?? '') as String,
       disPlayName: (map['disPlayName'] ?? '') as String,
@@ -128,6 +131,7 @@ class ChatModel {
       avatars: List<String>.from(map['avatars'] ?? []),
       names: List<String>.from(map['names'] ?? []),
       imageSingle: List<String>.from(map['names'] ?? []),
+      topComment: (map['topComment'] ?? '') as String,
     );
   }
 
