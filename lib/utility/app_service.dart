@@ -33,7 +33,6 @@ import 'package:realpost/utility/app_snackbar.dart';
 import 'package:realpost/widgets/widget_image.dart';
 import 'package:realpost/widgets/widget_text.dart';
 import 'package:realpost/widgets/widget_text_button.dart';
-import 'package:restart_app/restart_app.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppService {
@@ -61,7 +60,7 @@ class AppService {
   Future<void> updateCommentChat(
       {required Map<String, dynamic> map, required String docIdComment}) async {
     FirebaseFirestore.instance
-        .collection('comment')
+        .collection('post')
         .doc(docIdComment)
         .update(map);
   }

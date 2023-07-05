@@ -150,14 +150,14 @@ class _AnswerChatState extends State<AnswerChat> {
 
                     AppService().processChooseMultiImageChat().then((value) {
                       AppBottomSheet().bottomSheetMultiImage(
-                          context: context, docIdComment: docIdPost);
+                          context: context, docIdPost: docIdPost);
                     });
                   });
                 } else {
                   //Have Post
                   AppService().processChooseMultiImageChat().then((value) {
                     AppBottomSheet().bottomSheetMultiImage(
-                        context: context, docIdComment: docIdpost);
+                        context: context, docIdPost: docIdpost);
                   });
                 }
               });
@@ -509,20 +509,25 @@ class _AnswerChatState extends State<AnswerChat> {
                               AppService()
                                   .processTakePhoto(source: ImageSource.camera)
                                   .then((value) {
-                                AppService()
-                                    .processUploadPhoto(
-                                        file: value!, path: 'comment')
-                                    .then((value) {
-                                  String urlImageComment = value!;
+                                if (appController.xFiles.isNotEmpty) {
+                                  appController.xFiles.clear();
+                                }
 
-                                  print(
-                                      '##4july urlImage ---> $urlImageComment');
+                                appController.xFiles.add(XFile(value!.path));
 
-                                 
+                                 AppBottomSheet().bottomSheetMultiImage(
+                                    context: context,
+                                    docIdPost: widget.docIdPost);
 
+                                // AppService()
+                                //     .processUploadPhoto(
+                                //         file: value!, path: 'comment')
+                                //     .then((value) {
+                                //   String urlImageComment = value!;
 
-
-                                });
+                                //   print(
+                                //       '##4july urlImage ---> $urlImageComment');
+                                // });
                               });
                             },
                             iconData: Icons.add_a_photo,
@@ -539,7 +544,7 @@ class _AnswerChatState extends State<AnswerChat> {
                                   .then((value) {
                                 AppBottomSheet().bottomSheetMultiImage(
                                     context: context,
-                                    docIdComment: widget.docIdPost);
+                                    docIdPost: widget.docIdPost);
                               });
                             },
                             iconData: Icons.add_photo_alternate,
