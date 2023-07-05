@@ -29,6 +29,8 @@ import 'package:realpost/widgets/widget_text.dart';
 class AppBottomSheet {
   AppController appController = Get.put(AppController());
 
+  
+
   Future<void> bottomSheetMultiImage({
     required BuildContext context,
     String? docIdPost,
@@ -368,8 +370,7 @@ class AppBottomSheet {
                 });
               } else {
                 AppService()
-                    .insertAnswer(
-                        chatModel: chatModel, docIdComment: docIdPost)
+                    .insertAnswer(chatModel: chatModel, docIdComment: docIdPost)
                     .then((value) {
                   //update Time
                   FirebaseFirestore.instance
